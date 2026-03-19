@@ -120,48 +120,74 @@ const VoiceEngine = {
     } catch (e) {}
   },
 
+  _tryPuter(text, opts, timeoutMs) {
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => reject(new Error('timeout')), timeoutMs);
+      window.puter.ai.txt2speech(text, opts)
+        .then(audio => { clearTimeout(timer); resolve(audio); })
+        .catch(err => { clearTimeout(timer); reject(err); });
+    });
+  },
+
   async speak(text, lang) {
     this.stop();
     if (!text) return;
 
-    // Start browser speech IMMEDIATELY as backup
+    // Start browser speech IMMEDIATELY (will be cancelled if Puter succeeds)
     this._browserSpeak(text, lang);
 
-    // Then try OpenAI neural voice via /api/tts (skip on localhost)
+    // Then try Puter.js neural voice in background (skip on localhost, 5s timeout)
     const isLocal = ['localhost','127.0.0.1',''].includes(window.location.hostname);
-    if (!isLocal) {
+    if (!isLocal && window.__puterOk && typeof window.puter !== 'undefined') {
+      const isHi = lang === 'hi';
+
+      // Try OpenAI
       try {
-        const isHi = lang === 'hi';
-        const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), 8000);
+        const audio = await this._tryPuter(text, {
+          provider: "openai",
+          voice: isHi ? "nova" : "onyx",
+          model: "gpt-4o-mini-tts",
+          instructions: isHi
+            ? "You are an ancient Indian storyteller narrating in Hindi. Speak slowly, mysteriously, with deep emotion."
+            : "You are an ancient sage narrating an epic tale. Speak slowly and dramatically with gravitas."
+        }, 5000);
+        try { window.speechSynthesis.cancel(); } catch(e) {}
+        this.audio = audio;
+        this.speaking = true;
+        audio.onended = () => { this.speaking = false; };
+        audio.play();
+        return;
+      } catch (e) { /* fall through */ }
 
-        const resp = await fetch('/api/tts', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            text,
-            voice: isHi ? 'nova' : 'onyx',
-            instructions: isHi
-              ? 'You are an ancient Indian storyteller narrating in Hindi. Speak slowly, mysteriously, with deep emotion. Pause dramatically between sentences.'
-              : 'You are an ancient sage narrating an epic tale. Speak slowly and dramatically with gravitas. Pause between sentences. Sound mysterious and wise.'
-          }),
-          signal: controller.signal,
-        });
-        clearTimeout(timer);
+      // Try ElevenLabs
+      try {
+        const audio = await this._tryPuter(text, {
+          provider: "elevenlabs",
+          voice: "21m00Tcm4TlvDq8ikWAM",
+          model: "eleven_multilingual_v2"
+        }, 5000);
+        try { window.speechSynthesis.cancel(); } catch(e) {}
+        this.audio = audio;
+        this.speaking = true;
+        audio.onended = () => { this.speaking = false; };
+        audio.play();
+        return;
+      } catch (e) { /* fall through */ }
 
-        if (resp.ok) {
-          const blob = await resp.blob();
-          const url = URL.createObjectURL(blob);
-          const audio = new Audio(url);
-          // OpenAI succeeded — stop browser speech, play neural
-          try { window.speechSynthesis.cancel(); } catch(e) {}
-          this.audio = audio;
-          this.speaking = true;
-          audio.onended = () => { this.speaking = false; URL.revokeObjectURL(url); };
-          audio.play();
-          return;
-        }
-      } catch (e) { /* timeout or network error — browser speech already playing */ }
+      // Try AWS Polly
+      try {
+        const audio = await this._tryPuter(text, {
+          voice: isHi ? "Kajal" : "Joanna",
+          engine: "neural",
+          language: isHi ? "hi-IN" : "en-US"
+        }, 5000);
+        try { window.speechSynthesis.cancel(); } catch(e) {}
+        this.audio = audio;
+        this.speaking = true;
+        audio.onended = () => { this.speaking = false; };
+        audio.play();
+        return;
+      } catch (e) { /* fall through */ }
     }
     // Browser speech already playing — nothing more to do
   },
