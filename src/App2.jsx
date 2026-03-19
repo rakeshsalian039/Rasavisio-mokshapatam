@@ -65,66 +65,28 @@ function rlm(n){return n<=33?"bhuloka":n<=66?"antarloka":"svargaloka"}
 
 /* ═══ AMBIENT MUSIC ENGINE ═══ */
 function useAmbient(){
-  const ctx=useRef(null);const nodes=useRef([]);const playing=useRef(false);
+  const audioRef=useRef(null);const playing=useRef(false);
   const start=useCallback(()=>{
     if(playing.current)return;
     try{
-      const c=new(window.AudioContext||window.webkitAudioContext)();ctx.current=c;
-      const t=c.currentTime;
-
-      // Deep Sa drone (tanpura fundamental)
-      const bass=c.createOscillator();const bassG=c.createGain();
-      bass.type="sine";bass.frequency.setValueAtTime(65.41,t); // C2 — deep Sa
-      bassG.gain.setValueAtTime(0,t);bassG.gain.linearRampToValueAtTime(0.025,t+3);
-      bass.connect(bassG);bassG.connect(c.destination);bass.start();
-      nodes.current.push({o:bass,g:bassG});
-
-      // Tanpura strings: Sa Pa Sa' (with rich harmonics)
-      const tanpura=[
-        {f:130.81,type:"sine",vol:0.018},   // Sa (C3)
-        {f:196.00,type:"sine",vol:0.014},   // Pa (G3)
-        {f:261.63,type:"sine",vol:0.012},   // Sa' (C4)
-        {f:131.81,type:"triangle",vol:0.006}, // Sa + 1Hz beating
-        {f:197.00,type:"triangle",vol:0.005}, // Pa + 1Hz beating
-      ];
-      tanpura.forEach(({f,type,vol},i)=>{
-        const o=c.createOscillator();const g=c.createGain();
-        o.type=type;o.frequency.setValueAtTime(f,t);
-        g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+2+i*0.5);
-        o.connect(g);g.connect(c.destination);o.start();
-        nodes.current.push({o,g});
-        // Slow breathing pulse per string
-        const lfo=c.createOscillator();const lfoG=c.createGain();
-        lfo.frequency.setValueAtTime(0.08+i*0.03,t);
-        lfoG.gain.setValueAtTime(vol*0.3,t);
-        lfo.connect(lfoG);lfoG.connect(g.gain);lfo.start();
-        nodes.current.push({o:lfo,g:lfoG});
-      });
-
-      // Soft bell / singing bowl overtone
-      const bell=c.createOscillator();const bellG=c.createGain();
-      bell.type="sine";bell.frequency.setValueAtTime(523.25,t); // C5
-      bellG.gain.setValueAtTime(0,t);bellG.gain.linearRampToValueAtTime(0.004,t+4);
-      bell.connect(bellG);bellG.connect(c.destination);bell.start();
-      nodes.current.push({o:bell,g:bellG});
-
-      // High shimmer (sitar-like)
-      const shim=c.createOscillator();const shimG=c.createGain();
-      shim.type="triangle";shim.frequency.setValueAtTime(1046.5,t); // C6 very soft
-      shimG.gain.setValueAtTime(0,t);shimG.gain.linearRampToValueAtTime(0.002,t+5);
-      shim.connect(shimG);shim.connect(c.destination);shim.start();
-      nodes.current.push({o:shim,g:shimG});
-
-      playing.current=true;
+      // ═══════════════════════════════════════════════════════════
+      // 🎵 TO CHANGE THE MUSIC:
+      // Put your audio file in the /public folder and change the
+      // filename below. Supports MP3, OGG, WAV.
+      // ═══════════════════════════════════════════════════════════
+      const a=new Audio("/ambient.mp3");
+      a.loop=true;
+      a.volume=0.1;
+      audioRef.current=a;
+      a.play().then(()=>{playing.current=true}).catch(()=>{});
     }catch(e){}
   },[]);
   const stop=useCallback(()=>{
-    if(!playing.current)return;
+    if(!playing.current||!audioRef.current)return;
     try{
-      const c=ctx.current;if(!c)return;
-      nodes.current.forEach(({o,g})=>{try{g.gain.linearRampToValueAtTime(0,c.currentTime+1.5);o.stop(c.currentTime+1.7)}catch(e){}});
-      nodes.current=[];playing.current=false;
-      setTimeout(()=>{try{c.close()}catch(e){}},2000);ctx.current=null;
+      const a=audioRef.current;
+      a.pause();a.currentTime=0;
+      playing.current=false;audioRef.current=null;
     }catch(e){}
   },[]);
   return{start,stop,playing};
@@ -135,9 +97,66 @@ const VoiceEngine = {
   audio: null,
   speaking: false,
 
-  _browserSpeak(text, lang) {
+  _isLocal() {
+    const h = window.location.hostname;
+    return h === 'localhost' || h === '127.0.0.1' || h === '';
+  },
+
+  async speak(text, lang) {
+    this.stop();
+    if (!text) return;
+
+    // Only try Puter.js on hosted URLs (not localhost)
+    if (!this._isLocal() && window.__puterOk && typeof window.puter !== 'undefined') {
+      try {
+        const isHi = lang === 'hi';
+        const audio = await window.puter.ai.txt2speech(text, {
+          provider: "openai",
+          voice: isHi ? "nova" : "onyx",
+          model: "gpt-4o-mini-tts",
+          instructions: isHi
+            ? "You are an ancient Indian storyteller narrating in Hindi. Speak slowly, mysteriously, with deep emotion. Pause dramatically between sentences."
+            : "You are an ancient sage narrating an epic tale. Speak slowly and dramatically with gravitas. Pause between sentences. Sound mysterious and wise."
+        });
+        this.audio = audio;
+        this.speaking = true;
+        audio.onended = () => { this.speaking = false; };
+        audio.play();
+        return;
+      } catch (e) { /* fall through */ }
+
+      // Try ElevenLabs via Puter
+      try {
+        const audio = await window.puter.ai.txt2speech(text, {
+          provider: "elevenlabs",
+          voice: "21m00Tcm4TlvDq8ikWAM",
+          model: "eleven_multilingual_v2"
+        });
+        this.audio = audio;
+        this.speaking = true;
+        audio.onended = () => { this.speaking = false; };
+        audio.play();
+        return;
+      } catch (e) { /* fall through */ }
+
+      // Try AWS Polly via Puter
+      try {
+        const isHi = lang === 'hi';
+        const audio = await window.puter.ai.txt2speech(text, {
+          voice: isHi ? "Kajal" : "Joanna",
+          engine: "neural",
+          language: isHi ? "hi-IN" : "en-US"
+        });
+        this.audio = audio;
+        this.speaking = true;
+        audio.onended = () => { this.speaking = false; };
+        audio.play();
+        return;
+      } catch (e) { /* fall through */ }
+    }
+
+    // Browser speech fallback (works on localhost)
     try {
-      window.speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
       u.rate = 0.8; u.pitch = 0.85; u.volume = 0.85;
       const voices = window.speechSynthesis.getVoices();
@@ -155,79 +174,6 @@ const VoiceEngine = {
       u.onend = () => { this.speaking = false; };
       window.speechSynthesis.speak(u);
     } catch (e) {}
-  },
-
-  _tryPuter(text, opts, timeoutMs) {
-    return new Promise((resolve, reject) => {
-      const timer = setTimeout(() => reject(new Error('timeout')), timeoutMs);
-      window.puter.ai.txt2speech(text, opts)
-        .then(audio => { clearTimeout(timer); resolve(audio); })
-        .catch(err => { clearTimeout(timer); reject(err); });
-    });
-  },
-
-  async speak(text, lang) {
-    this.stop();
-    if (!text) return;
-
-    // Start browser speech IMMEDIATELY as backup (will be cancelled if Puter succeeds)
-    this._browserSpeak(text, lang);
-
-    // Then try Puter.js neural voice (only on hosted URLs, with 5s timeout)
-    const isLocal = ['localhost','127.0.0.1',''].includes(window.location.hostname);
-    if (!isLocal && window.__puterOk && typeof window.puter !== 'undefined') {
-      const isHi = lang === 'hi';
-
-      // Try OpenAI
-      try {
-        const audio = await this._tryPuter(text, {
-          provider: "openai",
-          voice: isHi ? "nova" : "onyx",
-          model: "gpt-4o-mini-tts",
-          instructions: isHi
-            ? "You are an ancient Indian storyteller narrating in Hindi. Speak slowly, mysteriously, with deep emotion."
-            : "You are an ancient sage narrating an epic tale. Speak slowly and dramatically with gravitas."
-        }, 5000);
-        // Puter succeeded — stop browser speech, play neural
-        try { window.speechSynthesis.cancel(); } catch(e) {}
-        this.audio = audio;
-        this.speaking = true;
-        audio.onended = () => { this.speaking = false; };
-        audio.play();
-        return;
-      } catch (e) { /* fall through */ }
-
-      // Try ElevenLabs
-      try {
-        const audio = await this._tryPuter(text, {
-          provider: "elevenlabs",
-          voice: "21m00Tcm4TlvDq8ikWAM",
-          model: "eleven_multilingual_v2"
-        }, 5000);
-        try { window.speechSynthesis.cancel(); } catch(e) {}
-        this.audio = audio;
-        this.speaking = true;
-        audio.onended = () => { this.speaking = false; };
-        audio.play();
-        return;
-      } catch (e) { /* fall through */ }
-
-      // Try AWS Polly
-      try {
-        const audio = await this._tryPuter(text, {
-          voice: isHi ? "Kajal" : "Joanna",
-          engine: "neural",
-          language: isHi ? "hi-IN" : "en-US"
-        }, 5000);
-        try { window.speechSynthesis.cancel(); } catch(e) {}
-        this.audio = audio;
-        this.speaking = true;
-        audio.onended = () => { this.speaking = false; };
-        audio.play();
-        return;
-      } catch (e) { /* fall through */ }
-    }
-    // If we get here, browser speech is already playing — nothing more to do
   },
 
   stop() {
