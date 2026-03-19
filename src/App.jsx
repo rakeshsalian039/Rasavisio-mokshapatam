@@ -126,22 +126,22 @@ const VoiceEngine = {
 
     const isLocal = ['localhost','127.0.0.1',''].includes(window.location.hostname);
 
-    // On hosted site: try OpenAI neural FIRST
+    // On hosted site: try OpenAI neural via /api/tts
     if (!isLocal) {
       try {
         const isHi = lang === 'hi';
         const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), 10000);
+        const timer = setTimeout(() => controller.abort(), 30000);
 
         const resp = await fetch('/api/tts', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             text,
-            voice: isHi ? 'nova' : 'onyx',
+            voice: isHi ? 'nova' : 'ash',
             instructions: isHi
-              ? 'You are an ancient Indian storyteller narrating in Hindi. Speak slowly, mysteriously, with deep emotion. Pause dramatically between sentences.'
-              : 'You are an ancient sage narrating an epic tale. Speak slowly and dramatically with gravitas. Pause between sentences. Sound mysterious and wise, like a voice from thousands of years ago.'
+              ? 'You are an ancient Indian storyteller narrating in Hindi. Speak slowly, mysteriously, with deep emotion. Pause dramatically between sentences. Your voice should feel like a grandmother telling sacred tales by firelight.'
+              : 'You are an ancient Indian sage narrating a sacred epic in English. Speak slowly, with deep gravitas and reverence. Pause dramatically between sentences. Your voice should sound ancient, mysterious, and powerful — like a voice echoing from a thousand-year-old temple.'
           }),
           signal: controller.signal,
         });
