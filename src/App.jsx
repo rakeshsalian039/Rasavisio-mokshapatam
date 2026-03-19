@@ -77,7 +77,7 @@ function useAmbient(){
       // ═══════════════════════════════════════════════════════════
       const a=new Audio("/ambient.mp3");
       a.loop=true;
-      a.volume=0.2;
+      a.volume=0.1;
       audioRef.current=a;
       a.play().then(()=>{playing.current=true}).catch(()=>{});
     }catch(e){}
