@@ -2,65 +2,23 @@ import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 
 const SNAKES={16:{to:4,skt:"क्रोध",en:"WRATH",tale:"As Duryodhana's rage consumed the Kuru dynasty..."},23:{to:7,skt:"लोभ",en:"GREED",tale:"Like Shakuni who gambled away an empire..."},33:{to:12,skt:"मोह",en:"DELUSION",tale:"Dhritarashtra's blind love veiled all judgment..."},38:{to:21,skt:"मात्सर्य",en:"ENVY",tale:"Duryodhana burned with jealousy at Indraprastha..."},47:{to:29,skt:"काम",en:"DESIRE",tale:"Keechaka's lust brought his annihilation..."},56:{to:41,skt:"मद",en:"PRIDE",tale:"Ravana's arrogance toppled golden Lanka..."},62:{to:44,skt:"भय",en:"TERROR",tale:"Arjuna paralysed before the great war..."},74:{to:51,skt:"द्वेष",en:"HATRED",tale:"Drona and Drupada's hatred echoed ages..."},85:{to:59,skt:"आलस्य",en:"SLOTH",tale:"Kumbhakarna slept while dharma crumbled..."},95:{to:68,skt:"अहंकार",en:"EGO",tale:"Parashurama's ego challenged even Rama..."}};
 const LADDERS={3:{to:18,skt:"दया",en:"COMPASSION",tale:"Yudhishthira who wept for his enemies..."},9:{to:31,skt:"दान",en:"GENEROSITY",tale:"Karna gave his armour without hesitation..."},22:{to:42,skt:"सत्य",en:"TRUTH",tale:"Harishchandra sacrificed all for truth..."},28:{to:52,skt:"सेवा",en:"SERVICE",tale:"Hanuman whose devotion moved mountains..."},37:{to:58,skt:"तपस्",en:"AUSTERITY",tale:"Vishwamitra whose tapas shook Indra..."},44:{to:65,skt:"श्रद्धा",en:"FAITH",tale:"Shabari waited a lifetime for Rama..."},53:{to:72,skt:"विद्या",en:"WISDOM",tale:"Vidura whose counsel was dharma itself..."},61:{to:80,skt:"विवेक",en:"DISCERNMENT",tale:"Bhishma on his bed of arrows..."},71:{to:89,skt:"भक्ति",en:"DEVOTION",tale:"Prahlada whose devotion survived fire..."},82:{to:97,skt:"वैराग्य",en:"DETACHMENT",tale:"Siddhartha leaving the palace..."}};
-const DLM_SQ=[5,10,14,19,25,30,35,43,48,55,60,64,69,73,78,83,88,92];
+const DLM_SQ=[5,14,25,35,43,55,64,73,83,92];
 const SHLOKAS=[{s:"कर्मण्येवाधिकारस्ते मा फलेषु कदाचन",r:"भगवद्गीता २.४७"},{s:"यदा यदा हि धर्मस्य ग्लानिर्भवति भारत",r:"भगवद्गीता ४.७"},{s:"असतो मा सद्गमय तमसो मा ज्योतिर्गमय",r:"बृहदारण्यक उपनिषद्"},{s:"नैनं छिन्दन्ति शस्त्राणि नैनं दहति पावकः",r:"भगवद्गीता २.२३"},{s:"सर्वधर्मान्परित्यज्य मामेकं शरणं व्रज",r:"भगवद्गीता १८.६६"},{s:"अहिंसा परमो धर्मः",r:"महाभारत"}];
 const DILEMMAS=[
-  {t:"यक्ष-प्रश्न",en:"The Yaksha's Riddle",
-    txt:"At the cursed lake of Dvaitavana, a Yaksha (nature spirit) has killed your four brothers for drinking without answering his riddle. He asks: 'What is the greatest wonder in the world?' Answer with the humility of Yudhishthira — that all men see death around them yet live as though immortal — or shove past this guardian and seize the water by force.",
-    c:[{l:"🙏 Answer humbly — skip turn, +3 Punya",k:"punya",fx:{punya:3,skip:true}},{l:"💀 Shove past by force — ADVANCE 10, +3 Papa",k:"papa",fx:{papa:3,move:10}}]},
-  {t:"कर्णकवच",en:"Karna's Divine Armour",
-    txt:"Indra, king of gods, disguises himself as a beggar to strip Karna of his celestial armour — the Kavach and Kundal given by Surya at birth. With it, Karna is invincible. Without it, he will die at Kurukshetra. Karna knew this, yet gave it away — earning the title Daanveer (greatest donor). Will you sacrifice your Shield to follow his path?",
-    c:[{l:"🙏 Surrender your Shield — lose Shield, +4 Punya",k:"punya",fx:{punya:4,loseShield:true}},{l:"💀 Demand payment from Indra — keep Shield, ADVANCE 8, +3 Papa",k:"papa",fx:{papa:3,move:8}}]},
-  {t:"द्रौपदीवस्त्र",en:"Draupadi's Disrobing",
-    txt:"In the Kuru court, Dushasana drags Draupadi by her hair and attempts to disrobe her. Bhishma, Drona, and every elder sit in shameful silence — their inaction is their greatest sin. Speaking against Duryodhana means exile. Silence means complicity in adharma.",
-    c:[{l:"🙏 Speak against the king — BACK 8, +4 Punya",k:"punya",fx:{punya:4,move:-8}},{l:"💀 Stay silent like Bhishma — ADVANCE 6, +3 Papa",k:"papa",fx:{papa:3,move:6}}]},
-  {t:"भीष्मप्रतिज्ञा",en:"Bhishma's Terrible Vow",
-    txt:"Young Devavrata sees his father Shantanu heartbroken over Satyavati. To bring his father happiness, he takes the most terrifying vow in history — to renounce the throne AND remain celibate forever. The gods wept and named him Bhishma (the terrible). This one act of sacrifice echoed for generations.",
-    c:[{l:"🙏 Take the eternal vow — skip turn, +5 Punya",k:"punya",fx:{punya:5,skip:true}},{l:"💀 Seize the throne for yourself — ADVANCE 12, +4 Papa",k:"papa",fx:{papa:4,move:12}}]},
-  {t:"अश्वत्थामा",en:"Yudhishthira's Half-Truth",
-    txt:"Krishna tells Yudhishthira: 'Say Ashwatthama is dead — but whisper the word elephant.' Drona, hearing his son is dead, drops his weapons and is killed. Yudhishthira — who had never lied in his life — spoke a half-truth. His chariot, which always floated above the ground due to his truthfulness, touched the earth for the first time.",
-    c:[{l:"🙏 Speak the full truth — BACK 4, +3 Punya",k:"punya",fx:{punya:3,move:-4}},{l:"💀 Speak the half-truth — ADVANCE 10, +3 Papa",k:"papa",fx:{papa:3,move:10}}]},
-  {t:"एकलव्य",en:"Eklavya's Thumb",
-    txt:"Eklavya, a tribal boy, mastered archery by practising before a clay idol of Dronacharya. When Drona discovered this, he demanded Eklavya's right thumb as guru-dakshina — knowing it would destroy his skill. Drona did this to protect Arjuna's supremacy. Eklavya cut his thumb without hesitation. The ultimate price of devotion.",
-    c:[{l:"🙏 Cut your thumb — BACK 5, +4 Punya",k:"punya",fx:{punya:4,move:-5}},{l:"💀 Refuse and challenge the guru — ADVANCE 7, +3 Papa",k:"papa",fx:{papa:3,move:7}}]},
-  {t:"शकुनिपासा",en:"Shakuni's Enchanted Dice",
-    txt:"Shakuni's dice were carved from his dead father's bones — enchanted to always roll in his favour. With these cursed dice, he won Yudhishthira's kingdom, wealth, brothers, and finally Draupadi herself. The dice never lie — but they serve only adharma. Shakuni offers you these dice now. Your next move will leap you far ahead. But the curse of the Kuru destruction comes with them.",
-    c:[{l:"🙏 Refuse the cursed dice — +3 Punya",k:"punya",fx:{punya:3}},{l:"💀 Take the enchanted dice — ADVANCE 15, +5 Papa",k:"papa",fx:{papa:5,move:15}}]},
-  {t:"विभीषण",en:"Vibhishana's Betrayal",
-    txt:"Vibhishana watched his brother Ravana descend into adharma — kidnapping Sita, ignoring every warning. When all counsel failed, Vibhishana made the hardest choice: betray his own blood brother and join Rama's army. Lanka called him traitor. History called him righteous. Family or dharma — you cannot always have both.",
-    c:[{l:"🙏 Betray family for dharma — BACK 6, +4 Punya",k:"punya",fx:{punya:4,move:-6}},{l:"💀 Stand with your brother — ADVANCE 8, +3 Papa",k:"papa",fx:{papa:3,move:8}}]},
-  {t:"कृष्णछल",en:"Krishna's Divine Deception",
-    txt:"Throughout the Mahabharata, Krishna bent rules to protect dharma — hiding the sun to let Arjuna kill Jayadratha, telling Yudhishthira to lie, orchestrating Bhishma's fall using Shikhandi. Krishna's lesson: sometimes absolute truth serves adharma. He offers you a divine shortcut now — and a Shield against serpents. But every shortcut carries a karmic debt.",
-    c:[{l:"🙏 Refuse even God's shortcut — +3 Punya",k:"punya",fx:{punya:3}},{l:"💀 Accept divine deception — ADVANCE 10, +3 Papa, gain Shield",k:"papa",fx:{papa:3,move:10,giveShield:true}}]},
-  {t:"सुग्रीव",en:"The Stolen Crown",
-    txt:"Sugriva's brother Vali stole his wife and kingdom. Rama agreed to help — but killed Vali by shooting from behind a tree during a sacred one-on-one duel. Rama's justification: Vali was adharmic. Critics say: a hidden arrow during a fair fight is never just. Power or principle — the line blurs when you're losing.",
-    c:[{l:"🙏 Wait for fair justice — skip turn, +3 Punya",k:"punya",fx:{punya:3,skip:true}},{l:"💀 Strike from the shadows — ADVANCE 12, +4 Papa",k:"papa",fx:{papa:4,move:12}}]},
-  {t:"धृतराष्ट्र",en:"The Blind King's Love",
-    txt:"Dhritarashtra knew his sons were evil. He knew Duryodhana would destroy the world. But he was blinded — not by his eyes, but by love for his firstborn. Every time he could have stopped the war, his love paralysed him. Blind love is the most dangerous delusion. Someone you love is on the wrong path. Stop them and lose their love, or let them fall.",
-    c:[{l:"🙏 Speak the hard truth — BACK 3, +3 Punya",k:"punya",fx:{punya:3,move:-3}},{l:"💀 Protect them with silence — ADVANCE 5, +2 Papa",k:"papa",fx:{papa:2,move:5}}]},
-  {t:"अभिमन्यु",en:"The Chakravyuha Trap",
-    txt:"Young Abhimanyu knew how to enter the Chakravyuha battle formation, but not how to exit. He entered anyway, knowing it meant almost certain death — because his army needed him. The Kaurava warriors broke every rule of war to kill this 16-year-old boy. Courage without knowledge, or safety without honour?",
-    c:[{l:"🙏 Enter the trap bravely — BACK 7, +4 Punya",k:"punya",fx:{punya:4,move:-7}},{l:"💀 Stay safe outside — ADVANCE 5, +2 Papa",k:"papa",fx:{papa:2,move:5}}]},
-  {t:"कुन्ती",en:"Kunti's Secret",
-    txt:"Kunti kept a devastating secret her entire life — that Karna was her firstborn son, abandoned at birth. If she had revealed this truth before the war, the war itself might never have happened. Karna and Arjuna would have known they were brothers. But revealing the truth meant confessing her shame. One woman's secret killed millions.",
-    c:[{l:"🙏 Reveal the painful truth — skip turn, +4 Punya",k:"punya",fx:{punya:4,skip:true}},{l:"💀 Keep the secret — ADVANCE 8, +3 Papa",k:"papa",fx:{papa:3,move:8}}]},
-  {t:"शम्बूक",en:"The Price of Dharma",
-    txt:"A child dies in Rama's kingdom. The sages blame a Shudra named Shambuka who is performing tapas (penance) — forbidden by the rigid dharma of that age. Rama, bound by duty as king, must choose between universal compassion and the rigid law he swore to uphold. Justice or law — they are not always the same.",
-    c:[{l:"🙏 Choose compassion over rigid law — BACK 4, +3 Punya",k:"punya",fx:{punya:3,move:-4}},{l:"💀 Enforce the rigid law — ADVANCE 6, +3 Papa",k:"papa",fx:{papa:3,move:6}}]},
-  {t:"दानवीर",en:"The Beggar at the Gate",
-    txt:"A starving beggar appears at your door during a famine. You have exactly enough food for your family for one more day. Giving to the beggar means your own children go hungry tonight. In the Mahabharata, a mongoose tested a family who gave their last meal — and declared them more generous than Yudhishthira's Ashwamedha sacrifice.",
-    c:[{l:"🙏 Give your last meal — skip turn, +4 Punya",k:"punya",fx:{punya:4,skip:true}},{l:"💀 Feed your family first — ADVANCE 4, +2 Papa",k:"papa",fx:{papa:2,move:4}}]},
+  {t:"यक्ष-प्रश्न",en:"The Yaksha's Riddle",txt:"At the cursed lake, the Yaksha demands you answer. What is the greatest wonder?",c:[{l:"Answer humbly — skip turn, +3 Punya",k:"punya",fx:{punya:3,skip:true}},{l:"Drink defiantly — advance 5, +2 Papa",k:"papa",fx:{papa:2,move:5}}]},
+  {t:"कर्णकवच",en:"Karna's Armour",txt:"Indra disguised asks for your divine armour. Giving it means vulnerability.",c:[{l:"Surrender selflessly — +3 Punya",k:"punya",fx:{punya:3}},{l:"Refuse — +2 Papa",k:"papa",fx:{papa:2}}]},
+  {t:"द्रौपदीवस्त्र",en:"Draupadi's Honour",txt:"In the sabha, dharma is disrobed. Speak against the powerful or stay silent.",c:[{l:"Speak out — back 6, +3 Punya",k:"punya",fx:{punya:3,move:-6}},{l:"Stay silent — +2 Papa",k:"papa",fx:{papa:2}}]},
+  {t:"भीष्मप्रतिज्ञा",en:"Bhishma's Vow",txt:"Sacrifice your future to protect another — even gods weep at this vow.",c:[{l:"Take the vow — back 10, +4 Punya",k:"punya",fx:{punya:4,move:-10}},{l:"Choose freedom",k:"neutral",fx:{}}]},
+  {t:"अश्वत्थामा",en:"The Half-Truth",txt:"Speak a half-truth to win, or hold truth and watch the champion fall.",c:[{l:"Half-truth — advance 6, +1 Papa",k:"papa",fx:{papa:1,move:6}},{l:"Truth — skip turn, +2 Punya",k:"punya",fx:{punya:2,skip:true}}]},
+  {t:"एकलव्य",en:"Eklavya's Dakshina",txt:"Your guru demands your greatest gift.",c:[{l:"Pay — back 5, +3 Punya",k:"punya",fx:{punya:3,move:-5}},{l:"Walk alone — +1 Punya",k:"punya",fx:{punya:1}}]},
 ];
 const GRAHA=[
-  {n:"सूर्य",en:"Surya — The Sun",icon:"☀",desc:"The king of planets blazes your path forward. As Surya illuminated Karna with divine armour, his radiance grants you +2 extra steps. The Sun sees all — nothing hides from his gaze.",color:"#f0b840",fx:"sun"},
-  {n:"चन्द्र",en:"Chandra — The Moon",icon:"☾",desc:"Chandra, who waxes and wanes like karma itself, bathes you in lunar grace. The Moon purifies — you receive +1 Punya. As Chandra calmed Shiva's burning third eye, his light soothes your soul.",color:"#a0c8e0",fx:"moon"},
-  {n:"मंगल",en:"Mangal — Mars",icon:"♂",desc:"Mars, the warrior planet born from Shiva's sweat, fills you with battle fury. The nearest seeker retreats 3 squares. But violence has a price — you gain +1 Papa. Even righteous war leaves karmic scars.",color:"#e07050",fx:"mars"},
-  {n:"बुध",en:"Budh — Mercury",icon:"☿",desc:"Mercury, son of Chandra and Tara (born from a cosmic scandal), governs fate's reversals. Your position swaps with the nearest seeker — you take their place, they take yours. Then you move forward. Budh reminds us: fortune is never permanent.",color:"#80c080",fx:"mercury"},
-  {n:"बृहस्पति",en:"Brihaspati — Jupiter",icon:"♃",desc:"Brihaspati, guru of the Devas and wisest of all planets, showers divine blessings upon the entire board. ALL seekers gain +1 Punya. Jupiter's grace is universal — even enemies benefit from a truly great teacher's wisdom.",color:"#f0d060",fx:"jupiter"},
-  {n:"शुक्र",en:"Shukra — Venus",icon:"♀",desc:"Shukra, guru of the Asuras, possessed the secret of Sanjeevani — the power to resurrect the dead. He grants you a celestial Shield. The next serpent that strikes you will find its venom neutralized. This Shield works once — use it wisely.",color:"#d0a0c0",fx:"venus"},
-  {n:"शनि",en:"Shani — Saturn",icon:"♄",desc:"Shani Dev, the fearsome lord of karma and justice, turns his gaze upon you. His stare alone toppled kingdoms. You are pushed BACK 3 squares and gain +1 Papa. Even the gods feared Shani's slow, grinding justice. No one escapes Saturn's lessons.",color:"#8080a0",fx:"saturn"},
-  {n:"राहु",en:"Rahu — The Shadow",icon:"☊",desc:"Rahu, the shadow planet, is the severed head of the demon Svarbhanu who drank the nectar of immortality. He creates eclipses by swallowing the Sun. Rahu steals +1 Punya from the leading seeker and gives it to the trailing seeker. Chaos. Inversion. The first shall be last.",color:"#6050a0",fx:"rahu"},
-  {n:"केतु",en:"Ketu — The Tail",icon:"☋",desc:"Ketu is Rahu's headless body — the planet of detachment and moksha. All seekers lose their Shield (if any). Ketu strips away all protection, all attachments. But in loss, there is liberation. The seeker closest to Square 100 gains +1 Punya — for Ketu rewards those who are ready to let go.",color:"#a06060",fx:"ketu"},
+  {n:"सूर्य",en:"Sun",icon:"☀",desc:"Blazing radiance — +1 extra step",color:"#f0b840",fx:"sun"},
+  {n:"चन्द्र",en:"Moon",icon:"☾",desc:"Lunar grace — +1 Punya to you",color:"#a0c8e0",fx:"moon"},
+  {n:"मंगल",en:"Mars",icon:"♂",desc:"Warrior's fury — nearest foe retreats 2",color:"#e07050",fx:"mars"},
+  {n:"बुध",en:"Mercury",icon:"☿",desc:"Cosmic flux — swap with nearest seeker",color:"#80c080",fx:"mercury"},
+  {n:"बृहस्पति",en:"Jupiter",icon:"♃",desc:"Divine blessing — ALL seekers +1 Punya",color:"#f0d060",fx:"jupiter"},
+  {n:"शुक्र",en:"Venus",icon:"♀",desc:"Celestial shield — immune from next serpent",color:"#d0a0c0",fx:"venus"},
 ];
 const CHARS=[
   {id:"warrior",name:"Kshatriya Warrior",skt:"क्षत्रिय",icon:"⚔",color:"#e04830",lore:"Once a commander at Kurukshetra alongside Bhishma. Haunted by bloodshed, you seek Moksha to cleanse the karma of a thousand battles.",trait:"Courage",
@@ -87,21 +45,19 @@ const STORY_PAGES=[
   {title:"A Forgotten Secret",icon:"🕉",
   en:"Listen carefully. What I am about to tell you, has been hidden for five thousand years. Before the Mahabharata was written down. Before the first temples were carved into stone. Before even the oldest Vedas were chanted aloud by human lips. There existed, a game. But not a game of entertainment. No. This was a game, of the soul. Created by unknown sages, rishis so ancient, that even the gods, have forgotten their names. They called it, Moksha Patam. The Board, of Liberation. It was whispered, in sacred circles, that whoever truly understood this game, would understand the deepest secret of life, of death, and of everything, that lies beyond. For thousands of years, kings played it in marble palaces. Sages played it in forest ashrams, by firelight. It was passed from guru to disciple, in hushed tones, as if the board itself were alive. And then, one dark day, foreigners came to this land. They saw the board. They stole it. They stripped away every sacred name. Every Sanskrit verse. Every drop of meaning. And they renamed it. Snakes and Ladders. A children's game. The soul of the game, was murdered. Erased from history. Forgotten. Until, this very moment. Tonight, you play the original. The game your ancestors truly played. The game, the gods, forgot.",
   hi:"ध्यान से सुनो। जो मैं बताने जा रही हूँ, वो पांच हज़ार सालों से छिपाया गया है। महाभारत लिखे जाने से पहले। पहले मंदिरों को पत्थर में तराशे जाने से पहले। इंसानी होंठों से सबसे पुराने वेदों के उच्चारण से भी पहले। एक खेल था। लेकिन मनोरंजन का खेल नहीं। नहीं। ये आत्मा का खेल था। अज्ञात ऋषियों द्वारा रचा गया, इतने प्राचीन, कि देवताओं को भी उनके नाम याद नहीं। उन्होंने इसे कहा, मोक्षपटम। मुक्ति का पट। पवित्र मंडलियों में फुसफुसाया जाता था, कि जो इस खेल को सच में समझ ले, वो जीवन का, मृत्यु का, और उसके पार जो कुछ भी है, उसका सबसे गहरा रहस्य जान जाएगा। हज़ारों सालों तक, राजाओं ने इसे संगमरमर के महलों में खेला। ऋषियों ने इसे वन के आश्रमों में, अग्नि की रोशनी में खेला। गुरु से शिष्य तक, दबी आवाज़ में, जैसे पट ख़ुद जीवित हो। और फिर, एक अंधेरे दिन, विदेशी इस धरती पर आए। उन्होंने पट देखा। चुरा लिया। हर पवित्र नाम छीन लिया। हर संस्कृत श्लोक। अर्थ की हर बूँद। और नाम रख दिया। सांप सीढ़ी। बच्चों का खेल। खेल की आत्मा की हत्या कर दी गई। इतिहास से मिटा दिया गया। भुला दिया गया। इस, एक क्षण तक। आज रात, तुम असली खेल खेलोगे। वो खेल जो तुम्हारे पूर्वजों ने खेला था। वो खेल, जो देवता, भूल गए।",
-  body:"Before the Mahābhārata was written down...
-before the temples were carved in stone...
-before even the oldest Vedas were chanted aloud...\n\nThere existed a game.\n\nNot a game of entertainment. A game of the soul. Created by unknown sages in an age so ancient that even the gods have forgotten its origin.\n\nThey called it मोक्षपटम् — Moksha Patam. The Board of Liberation.\n\nIt was said that whoever truly understood this game would understand the secret of life, death, and everything beyond.\n\nFor thousands of years, it was played in royal courts and forest ashrams, passed from guru to disciple in whispered secrecy.\n\nThen one day, foreigners came. They stripped away every sacred name. They renamed it 'Snakes and Ladders.'\n\nThe soul of the game was erased. Until now."},
+  body:"Before the Mahābhārata was written down...\nbefore the temples were carved in stone...\nbefore even the oldest Vedas were chanted aloud...\n\nThere existed a game.\n\nNot a game of entertainment.\nA game of the soul.\n\nCreated by unknown ऋषि Rishis — sages so ancient\nthat even the gods have forgotten their names.\n\nThey called it मोक्षपटम् — Moksha Patam.\nThe Board of Liberation.\n\nFor thousands of years it was played\nin marble palaces and forest ashrams,\npassed from गुरु Guru to शिष्य Shishya\nin whispered secrecy.\n\nThen one day, foreigners came.\nThey stripped away every sacred name.\nThey renamed it — 'Snakes and Ladders.'\n\nThe soul of the game was murdered.\nUntil this very moment."},
   {title:"The Sacred Board",icon:"📜",
   en:"Now, look at the board before you. It is not a board. It is a map. A map, of the entire universe. A map, of your soul's journey through existence. One hundred squares. Three realms. And one, single, destination. The first realm, Squares 1 through 33, is Bhuloka. The Earthly Realm. This is where you are born. This is where chaos reigns. Snakes coil in every shadow. Ladders shimmer like mirages. Fortune rises and crashes with every single step. Most souls, are trapped here. Forever. Cycling endlessly through birth, and death, and birth again. Never escaping. The second realm, Squares 34 through 66, is Antarloka. The Inner Realm. Here, the noise of the world fades to silence. But do not be deceived by the quiet. The serpents here are more cunning. They do not bite your flesh. They poison, your mind. Doubt. Confusion. The slow erosion of faith. The third realm, Squares 67 through 99, is Svargaloka. The Celestial Realm. You can feel liberation from here. You can almost, taste it. But beware. The serpents who dwell in the heavens, are the most terrifying of all. A single fall here, does not cost you a few squares. It destroys, lifetimes, of spiritual progress. And there, at the summit, Square 100. Moksha. Liberation. The end of all suffering. But reaching Moksha, is only half the battle. Arriving, with a pure soul, that is the true challenge.",
   hi:"अब, अपने सामने पट को देखो। ये सिर्फ पट नहीं है। ये एक नक्शा है। पूरे ब्रह्मांड का नक्शा। अस्तित्व के माध्यम से तुम्हारी आत्मा की यात्रा का नक्शा। सौ खाने। तीन लोक। और एक, अकेली, मंज़िल। पहला लोक, खाना 1 से 33, भूलोक है। पृथ्वी लोक। यहीं तुम्हारा जन्म होता है। यहीं अराजकता राज करती है। हर छाया में सांप कुंडली मारे बैठे हैं। सीढ़ियां मरीचिकाओं सी चमकती हैं। किस्मत हर एक कदम पर उठती और गिरती है। ज़्यादातर आत्माएं, यहीं फंसी रहती हैं। हमेशा के लिए। जन्म, मृत्यु, और फिर जन्म के अंतहीन चक्र में। कभी नहीं छूटतीं। दूसरा लोक, खाना 34 से 66, अंतर्लोक है। आंतरिक लोक। यहां, दुनिया का शोर शांत हो जाता है। लेकिन इस सन्नाटे से धोखा मत खाना। यहां के सांप ज़्यादा चालाक हैं। ये तुम्हारा शरीर नहीं काटते। ये ज़हर भरते हैं, तुम्हारे मन में। संदेह। भ्रम। श्रद्धा का धीमा क्षरण। तीसरा लोक, खाना 67 से 99, स्वर्गलोक है। दिव्य लोक। यहां से मुक्ति महसूस होती है। लगभग, छू सकते हो। लेकिन सावधान। स्वर्ग में रहने वाले सांप, सबसे भयानक हैं। यहां एक गिरावट, कुछ खानों की नहीं होती। ये मिटा देती है, जन्मों की, आध्यात्मिक साधना को। और वहां, शिखर पर, खाना 100। मोक्ष। मुक्ति। सारे दुखों का अंत। लेकिन मोक्ष तक पहुंचना, आधी लड़ाई है। शुद्ध आत्मा लेकर पहुंचना, वो असली चुनौती है।",
-  body:"The board is not a board.\nIt is a map — of the entire universe.\n\n१०० squares · Three realms · One destination\n\n꧁ भूलोक · BHULOKA ꧂\nSquares 1–33 — The Earthly Realm\nChaos reigns. Most souls trapped here forever.\n\n꧁ अन्तर्लोक · ANTARLOKA ꧂\nSquares 34–66 — The Inner Realm\nSerpents poison your mind, not your flesh.\n\n꧁ स्वर्गलोक · SVARGALOKA ꧂\nSquares 67–99 — The Celestial Realm\nOne fall destroys lifetimes of progress.\n\n꧁ मोक्ष · MOKSHA ꧂\nSquare 100 — Liberation.\nArriving with a pure soul — that is the true challenge."},
+  body:"The board is not a board.\nIt is a map — of the entire universe.\n\n१०० squares · Three realms · One destination\n\n꧁ भूलोक · BHULOKA ꧂\nSquares 1–33 — The Earthly Realm\nChaos reigns. Snakes coil in every shadow.\nMost souls are trapped here forever.\n\n꧁ अन्तर्लोक · ANTARLOKA ꧂\nSquares 34–66 — The Inner Realm\nThe serpents here do not bite your flesh.\nThey poison your mind.\n\n꧁ स्वर्गलोक · SVARGALOKA ꧂\nSquares 67–99 — The Celestial Realm\nOne fall destroys lifetimes of progress.\n\n꧁ मोक्ष · MOKSHA ꧂\nSquare 100 — Liberation.\nArriving with a pure soul — that is the true challenge."},
   {title:"The Serpents Within",icon:"𓆙",
   en:"Now, hear me well, because what I am about to describe, will haunt you. They are not, just snakes. They are living nightmares. Ten colossal Nagas, ancient as time itself, coiled around this board since the beginning of creation. Each one, a manifestation of the darkest force, inside every human soul. The sages gave them names. And those names, should make your blood run cold. Krodh. Wrath. The same fire that consumed Duryodhana's mind and burned the Kuru dynasty to ash. When Krodh strikes, you feel the venom of rage dissolving everything you've built. Lobh. Greed. The insatiable hunger that made Shakuni gamble away an entire kingdom. Its jaws swallow your progress whole. Moh. Delusion. The blindness that kept Dhritarashtra from seeing his own sons destroy the world. This serpent, wraps around your eyes. Matsarya. Envy, that green poison that ate Duryodhana alive when he saw the glory of Indraprastha. Kaam. Desire. The burning lust that destroyed Keechaka in a single night. Mad. Pride. The ten-headed arrogance that toppled golden Lanka and brought mighty Ravana to his knees. Bhay. Fear. The same terror that froze Arjuna's hands before the greatest war in history. Dvesh. Hatred. The ancient feud between Drona and Drupada that echoed through generations of blood. Aalasya. Sloth. The great sleep of Kumbhakarna, who slumbered while dharma crumbled around him. And then, the deadliest of them all. Ahankaar. Ego. The serpent king. The one who whispers, I am above all others. The ego that challenged even Lord Rama himself. When a serpent catches you, it does not simply move you backward. It wraps its coils around your soul. It drags you, screaming, into the depths. And it stains you, with Paap. Sin karma. That mark, does not wash away easily. The higher you climb, the more violently you fall. And there is only one protection in this entire game. The celestial shield of Shukra, the planet Venus. But even that divine protection, can only save you, once. After that, you face the serpents, alone.",
   hi:"अब, ध्यान से सुनो, क्योंकि जो मैं बताने वाली हूँ, वो तुम्हें सपनों में भी सताएगा। ये, सिर्फ सांप नहीं हैं। ये जीवित दुःस्वप्न हैं। दस विशाल नाग, समय जितने प्राचीन, सृष्टि के आरम्भ से इस पट पर कुंडली मारे बैठे हैं। हर एक, हर इंसान की आत्मा के अंदर की सबसे काली शक्ति का रूप। ऋषियों ने इन्हें नाम दिए। और वो नाम, तुम्हारा खून जमा देने चाहिए। क्रोध। वो आग जिसने दुर्योधन का मन जलाया और कुरु वंश को राख कर दिया। जब क्रोध हमला करता है, क्रोध का विष तुम्हारी हर उपलब्धि को गला देता है। लोभ। वो अतृप्त भूख जिसने शकुनि से पूरा राज्य जुए में हरवा दिया। इसके जबड़े तुम्हारी प्रगति को साबुत निगल जाते हैं। मोह। वो अंधापन जिसने धृतराष्ट्र को अपने ही पुत्रों को संसार का विनाश करते देखने से रोका। ये सांप, तुम्हारी आँखों पर लिपट जाता है। मात्सर्य। ईर्ष्या, वो हरा ज़हर जिसने दुर्योधन को इंद्रप्रस्थ की महिमा देखकर अंदर से खा लिया। काम। वासना। वो जलती आग जिसने कीचक को एक ही रात में नष्ट कर दिया। मद। घमंड। वो दस सिरों वाला अहंकार जिसने सोने की लंका को धराशायी किया और महान रावण को घुटनों पर ला दिया। भय। वही आतंक जिसने इतिहास के सबसे महान युद्ध से पहले अर्जुन के हाथ जमा दिए। द्वेष। नफ़रत। द्रोण और द्रुपद की वो प्राचीन दुश्मनी जो खून की पीढ़ियों तक गूंजती रही। आलस्य। कुम्भकर्ण की वो महानिद्रा, जो सोता रहा जबकि उसके चारों ओर धर्म टूट रहा था। और फिर, सबसे घातक। अहंकार। नागराज। वो जो फुसफुसाता है, मैं सबसे ऊपर हूँ। वो अहंकार जिसने स्वयं भगवान राम को भी चुनौती दी। जब कोई सांप तुम्हें पकड़ता है, तो सिर्फ पीछे नहीं ले जाता। वो अपने कुंडल तुम्हारी आत्मा पर कसता है। तुम्हें, चीखते हुए, गहराइयों में खींचता है। और तुम पर दाग लगाता है, पाप का। वो दाग, आसानी से नहीं धुलता। जितना ऊपर चढ़ो, उतनी हिंसक होगी गिरावट। और इस पूरे खेल में सिर्फ एक सुरक्षा है। शुक्र ग्रह का दिव्य कवच। लेकिन वो दिव्य सुरक्षा भी, सिर्फ एक बार, बचा सकती है। उसके बाद, तुम सांपों का सामना, अकेले करोगे।",
-  body:"They are not just snakes.\nThey are living nightmares — ten colossal नाग Nāgas.\n\n𓆙 क्रोध Krodh — Wrath\n    The fire that burned the Kuru dynasty to ash\n𓆙 लोभ Lobh — Greed\n    The hunger that swallowed Shakuni's kingdom\n𓆙 मोह Moh — Delusion\n    The blindness that veiled Dhritarashtra's eyes\n𓆙 मात्सर्य Mātsarya — Envy\n    The green poison that consumed Duryodhana\n𓆙 काम Kām — Desire\n    The flame that destroyed Keechaka in one night\n𓆙 मद Mad — Pride\n    The arrogance that toppled golden Lankā\n𓆙 भय Bhay — Fear\n    The terror that froze Arjuna before war\n𓆙 द्वेष Dvesh — Hatred\n    The feud that echoed through generations\n𓆙 आलस्य Ālasya — Sloth\n    The sleep of Kumbhakarna while dharma crumbled\n𓆙 अहंकार Ahankār — Ego\n    The serpent king. The deadliest of all.\n\nWhen bitten → dragged into the depths + 2 पाप Pāp.\nOnly शुक्र Shukra shields you — once."},
+  body:"They are not just snakes.\nThey are living nightmares — ten colossal नाग Nāgas.\n\n𓆙 क्रोध Krodh — Wrath\n    The fire that burned the Kuru dynasty to ash\n𓆙 लोभ Lobh — Greed\n    The hunger that swallowed Shakuni's kingdom\n𓆙 मोह Moh — Delusion\n    The blindness that veiled Dhritarashtra's eyes\n𓆙 मात्सर्य Mātsarya — Envy\n    The green poison that consumed Duryodhana\n𓆙 काम Kām — Desire\n    The flame that destroyed Keechaka in one night\n𓆙 मद Mad — Pride\n    The arrogance that toppled golden Lankā\n𓆙 भय Bhay — Fear\n    The terror that froze Arjuna before war\n𓆙 द्वेष Dvesh — Hatred\n    The feud that echoed through generations\n𓆙 आलस्य Ālasya — Sloth\n    The sleep of Kumbhakarna while dharma crumbled\n𓆙 अहंकार Ahankār — Ego\n    The serpent king. The deadliest of all.\n\nWhen bitten → dragged into the depths + stained with पाप Pāp.\nOnly शुक्र Shukra shields you — once."},
   {title:"The Path to Moksha",icon:"ॐ",
   en:"And now, the final truth. There are only two ways, to escape the wheel of Samsara. Two narrow paths, through an ocean of suffering. The First Path. Reach, Square 100, with an exact roll of the dice. Not one square more. Not one square less. But, even if you reach Moksha, the gates will not open for a tainted soul. Your Punya, your accumulated virtue, must equal, or exceed, your Paap, your sin. If you arrive at the threshold of liberation, carrying the weight of your failures, you will be cast back. Hurled down, to Square 67. To suffer again. To purify through pain. To crawl, once more, through the celestial realm, past the deadliest serpents, knowing that one wrong step sends you even further down. The Second Path. Far rarer. Far more beautiful. Far more impossible. If, at any moment during your journey, you accumulate 15 Punya, fifteen acts of pure virtue, you transcend the board entirely. You do not need Square 100. You do not need an exact roll. The board itself, dissolves beneath you, and your soul rises, into pure light. Instant Moksha. This is the ancient truth that the sages encoded into this game. That a truly pure soul, can break free from the cycle of existence, at any moment. From any square. Most seekers, will never achieve either path. They will wander this board for eternity, rising and falling, climbing and being devoured, forever caught between virtue and vice. But perhaps, you, will be different. Dharma, awaits. The dice, are ready. The serpents, can already smell your fear. Take a breath. And step, onto the board.",
   hi:"और अब, अंतिम सत्य। संसार के चक्र से बचने के सिर्फ दो रास्ते हैं। दुख के सागर से गुज़रते दो संकरे रास्ते। पहला रास्ता। खाना 100 पर पहुंचो, पासे के बिल्कुल सटीक अंक से। एक खाना ज़्यादा नहीं। एक खाना कम नहीं। लेकिन, अगर मोक्ष तक पहुंच भी गए, तो दूषित आत्मा के लिए द्वार नहीं खुलेंगे। तुम्हारा पुण्य, तुम्हारी संचित पवित्रता, तुम्हारे पाप से बराबर, या ज़्यादा होनी चाहिए। अगर मुक्ति की देहलीज़ पर पहुंचे, अपनी असफलताओं का बोझ लेकर, तो वापस फेंक दिए जाओगे। नीचे, खाना 67 पर। फिर से कष्ट भोगने। दर्द से शुद्ध होने। एक बार फिर, दिव्य लोक से रेंगते हुए गुज़रने, सबसे घातक सांपों के बीच से, ये जानते हुए कि एक ग़लत कदम तुम्हें और भी गहरे गिरा देगा। दूसरा रास्ता। बहुत दुर्लभ। बहुत सुंदर। बहुत असंभव। अगर, यात्रा के किसी भी क्षण, तुम 15 पुण्य इकट्ठा कर लो, शुद्ध पवित्रता के पंद्रह कर्म, तो तुम पट से पूरी तरह ऊपर उठ जाते हो। खाना 100 की ज़रूरत नहीं। सटीक पासे की ज़रूरत नहीं। पट ख़ुद, तुम्हारे नीचे से विलीन हो जाता है, और तुम्हारी आत्मा उठती है, शुद्ध प्रकाश में। तुरंत मोक्ष। यही वो प्राचीन सत्य है जो ऋषियों ने इस खेल में छिपाया। कि सच्ची शुद्ध आत्मा, अस्तित्व के चक्र से मुक्त हो सकती है, किसी भी क्षण। किसी भी खाने से। ज़्यादातर साधक, कभी कोई रास्ता नहीं पा सकेंगे। वो इस पट पर अनंतकाल भटकते रहेंगे, उठते और गिरते, चढ़ते और निगले जाते, हमेशा पुण्य और पाप के बीच फंसे। लेकिन शायद, तुम, अलग हो। धर्म, इंतज़ार कर रहा है। पासे, तैयार हैं। सांप, तुम्हारे डर की गंध पहले से सूंघ रहे हैं। एक सांस लो। और कदम रखो, पट पर।",
-  body:"Two paths to escape the wheel of संसार Saṃsāra.\n\n꧁ प्रथम मार्ग · THE FIRST PATH ꧂\nReach Square 100 with an exact roll.\nपुण्य Punya must ≥ पाप Pāp.\nIf impure → cast back to Square 67.\n\n꧁ द्वितीय मार्ग · THE SECOND PATH ꧂\nAccumulate 15 पुण्य Punya at any moment.\nThe board dissolves. Instant मोक्ष Moksha.\n\nMost seekers will never achieve either.\n\nधर्म Dharma awaits.\nThe नवग्रह Navagraha are watching.\nThe serpents can smell your fear.\n\nStep onto the board."},
+  body:"Two paths to escape the wheel of संसार Saṃsāra.\n\n꧁ प्रथम मार्ग · THE FIRST PATH ꧂\nReach Square 100 with an exact roll.\nपुण्य Punya (virtue) must ≥ पाप Pāp (sin).\nIf impure → cast back to Square 67.\n\n꧁ द्वितीय मार्ग · THE SECOND PATH ꧂\nAccumulate 15 पुण्य Punya at any moment.\nThe board dissolves. Instant मोक्ष Moksha.\n\nMost seekers will never achieve either.\n\nधर्म Dharma awaits.\nThe dice are ready.\nThe serpents can smell your fear.\n\nStep onto the board."},
 ];
 
 function sqP(n){const r=Math.floor((n-1)/10);return{r:9-r,c:r%2===0?(n-1)%10:9-((n-1)%10)}}
@@ -428,86 +384,46 @@ export default function MokshaPatam(){
     if(dil||win||busy||players.length===0)return;
     if(skipA[cur]){const ns=[...skipA];ns[cur]=false;setSkipA(ns);setMsg(`${players[cur].name}'s turn is skipped.`);setCur(c=>(c+1)%nP);return}
     setBusy(true);play("dice");
-  const doRoll=useCallback(()=>{
-    if(dil||win||busy||players.length===0)return;
-    if(skipA[cur]){const ns=[...skipA];ns[cur]=false;setSkipA(ns);setMsg(`${players[cur].name}'s turn is skipped.`);setCur(c=>(c+1)%nP);return}
-    setBusy(true);play("dice");
-    const r=Math.floor(Math.random()*6)+1,gi=Math.floor(Math.random()*9),g=GRAHA[gi];
+    const r=Math.floor(Math.random()*6)+1,gi=Math.floor(Math.random()*6),g=GRAHA[gi];
     setRv(r);setGv(g);
-    showEvent({icon:g.icon,title:`${g.n}`,subtitle:g.desc,color:g.color,type:"graha"});
+    // Show Graha popup
+    showEvent({icon:g.icon,title:`${g.n} · ${g.en}`,subtitle:g.desc,color:g.color,type:"graha"});
     setTimeout(()=>{
-      let tot=r;
+      let tot=r;if(g.fx==="sun")tot+=1;
       const oldP=pos[cur];let newP=oldP+tot;
-      const extras=[];const nPunya=[...punya];const nPapa=[...papa];const nShield=[...shieldA];const nPos=[...pos];const nSkip=[...skipA];
-      // ═══ NAVAGRAHA EFFECTS ═══
-      if(g.fx==="sun"){tot+=2;newP=oldP+tot;extras.push("+2 extra steps (Surya)")}
-      if(g.fx==="moon"){nPunya[cur]+=1;extras.push("+1 Punya (Chandra)")}
-      if(g.fx==="jupiter"){for(let i=0;i<nP;i++)nPunya[i]+=1;extras.push("ALL seekers +1 Punya (Brihaspati)")}
-      if(g.fx==="venus"){nShield[cur]=true;extras.push("Serpent Shield granted (Shukra)")}
-      if(g.fx==="mars"){const ni=nearest(pos,cur,nP);if(ni>=0){nPos[ni]=Math.max(1,nPos[ni]-3);nPapa[cur]+=1;extras.push(`${players[ni]?.name} pushed back 3 · +1 Papa (Mangal)`)}}
-      if(g.fx==="mercury"){
-        // Mercury swap: you and nearest seeker exchange positions BEFORE you move
-        const ni=nearest(pos,cur,nP);
-        if(ni>=0){
-          const yourOldPos=oldP;const theirPos=nPos[ni];
-          nPos[ni]=yourOldPos; // they go to where you were
-          newP=theirPos+tot;   // you go to where they were, then move forward
-          extras.push(`Swapped with ${players[ni]?.name} (Budh) — you were at ${yourOldPos}, now at ${theirPos}, then +${tot}`)
-        }
-      }
-      if(g.fx==="saturn"){
-        // Saturn: pushed back 3, +1 Papa
-        newP=Math.max(1,oldP-3)+tot;
-        nPapa[cur]+=1;
-        extras.push("Shani's gaze — pushed back 3, +1 Papa");
-      }
-      if(g.fx==="rahu"){
-        // Rahu: steal 1 Punya from leader, give to trailer
-        let maxI=0,minI=0;
-        for(let i=0;i<nP;i++){if(nPos[i]>nPos[maxI])maxI=i;if(nPos[i]<nPos[minI])minI=i}
-        if(maxI!==minI&&nPunya[maxI]>0){
-          nPunya[maxI]-=1;nPunya[minI]+=1;
-          extras.push(`Rahu steals 1 Punya from ${players[maxI]?.name} → ${players[minI]?.name}`);
-        }else{extras.push("Rahu finds no karma to steal")}
-      }
-      if(g.fx==="ketu"){
-        // Ketu: strip all shields, nearest to 100 gets +1 Punya
-        for(let i=0;i<nP;i++)nShield[i]=false;
-        let closest=0;for(let i=0;i<nP;i++){if(nPos[i]>nPos[closest])closest=i}
-        nPunya[closest]+=1;
-        extras.push(`Ketu strips all Shields · ${players[closest]?.name} +1 Punya (nearest liberation)`);
-      }
-      if(newP>100){setMsg(`Overshot Moksha. ${extras.join(" · ")}`);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);setSkipA(nSkip);setBusy(false);setCur(c=>(c+1)%nP);return}
-      if(newP<1)newP=1;
+      const extras=[];const nPunya=[...punya];const nPapa=[...papa];const nShield=[...shieldA];const nPos=[...pos];
+      if(g.fx==="moon"){nPunya[cur]+=1;extras.push("+1 Punya (Moon)")}
+      if(g.fx==="jupiter"){for(let i=0;i<nP;i++)nPunya[i]+=1;extras.push("All +1 Punya (Jupiter)")}
+      if(g.fx==="venus"){nShield[cur]=true;extras.push("Shield (Venus)")}
+      if(g.fx==="mars"){const ni=nearest(pos,cur,nP);if(ni>=0){nPos[ni]=Math.max(1,nPos[ni]-2);extras.push(`${players[ni]?.name} -2 (Mars)`)}}
+      if(g.fx==="mercury"){const ni=nearest(pos,cur,nP);if(ni>=0){const sw=nPos[ni];nPos[ni]=oldP;newP=sw+tot;extras.push(`Swap (Mercury)`)}}
+      if(newP>100){setMsg(`Overshot Moksha. ${extras.join(" · ")}`);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);setBusy(false);setCur(c=>(c+1)%nP);return}
       // Animate movement — smooth (280ms per step)
       let step=0;const steps=Math.abs(newP-oldP);const dir=newP>oldP?1:-1;
-      if(steps===0){setBusy(false);setCur(c=>(c+1)%nP);setMsg(extras.join(" · ")||"No movement.");setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);return}
       const iv=setInterval(()=>{
         step++;nPos[cur]=oldP+dir*step;setPos([...nPos]);play("move");
         if(step>=steps){
           clearInterval(iv);
           let p=newP,eMsg="";
-          if(SNAKES[p]){const sn=SNAKES[p];if(nShield[cur]){nShield[cur]=false;eMsg=`𓆙 ${sn.skt} — Shield protects!`;play("ladder");
-            showEvent({icon:"🛡",title:`${sn.skt} blocked!`,subtitle:"Shukra's Shield absorbed the venom.",color:"#d0a0c0"});
-          }else{const o=p;p=sn.to;eMsg=`𓆙 ${sn.skt} (${sn.en}) ${o}→${p}`;nPapa[cur]+=2;play("snake");
-            showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:sn.tale+` · +2 Papa`,color:"#e06030",extra:`${o} → ${p}`});
+          if(SNAKES[p]){const sn=SNAKES[p];if(nShield[cur]){nShield[cur]=false;eMsg=`𓆙 ${sn.skt} — Shield protects!`;play("ladder")}else{const o=p;p=sn.to;eMsg=`𓆙 ${sn.skt} (${sn.en}) ${o}→${p}`;nPapa[cur]+=1;play("snake");
+            showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:sn.tale,color:"#e06030",type:"snake",extra:`${o} → ${p}`});
           }}
           else if(LADDERS[p]){const ld=LADDERS[p];const o=p;p=ld.to;eMsg=`🪔 ${ld.skt} (${ld.en}) ${o}→${p}`;nPunya[cur]+=1;play("ladder");
-            showEvent({icon:"🪔",title:`${ld.skt} — ${ld.en}`,subtitle:ld.tale+` · +1 Punya`,color:"#f0d050",extra:`${o} → ${p}`});
+            showEvent({icon:"🪔",title:`${ld.skt} — ${ld.en}`,subtitle:ld.tale,color:"#f0d050",type:"ladder",extra:`${o} → ${p}`});
           }
           else if(DLM_SQ.includes(p)){const d=DILEMMAS[Math.floor(Math.random()*DILEMMAS.length)];setDil({...d,pi:cur});eMsg=`⚖ ${d.en}`;play("dilemma");
-            showEvent({icon:"⚖",title:d.t,subtitle:d.en,color:"#d0b870"});
+            showEvent({icon:"⚖",title:d.t,subtitle:d.en,color:"#d0b870",type:"dilemma"});
           }
           else if(p===100){if(nPunya[cur]>=nPapa[cur]){setWin(cur);eMsg=`ॐ ${players[cur]?.name} attains MOKSHA!`;play("victory");
-            showEvent({icon:"ॐ",title:"मोक्ष प्राप्त",subtitle:`${players[cur]?.name} is liberated!`,color:"#f0d050"});
-          }else{p=67;eMsg="Karma impure — Punya must ≥ Papa. Cast back to 67.";play("snake");
-            showEvent({icon:"⚠",title:"Karma Impure",subtitle:`Punya (${nPunya[cur]}) < Papa (${nPapa[cur]}). Cast back to 67.`,color:"#e06030"});
+            showEvent({icon:"ॐ",title:"मोक्ष प्राप्त",subtitle:`${players[cur]?.name} is liberated!`,color:"#f0d050",type:"moksha"});
+          }else{p=67;eMsg="Karma impure. Back to 67.";play("snake");
+            showEvent({icon:"⚠",title:"Karma Impure",subtitle:"Punya must ≥ Papa. Cast back to 67.",color:"#e06030",type:"snake"});
           }}
-          nPos[cur]=p;setPos([...nPos]);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setSkipA(nSkip);
+          nPos[cur]=p;setPos([...nPos]);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);
           setMsg([eMsg,...extras].filter(Boolean).join(" · ")||`Moved to ${p}.`);
           setHist(h=>[...h.slice(-12),`${players[cur]?.name}→${p}`]);
           if(nPunya[cur]>=15&&!win){setWin(cur);setMsg(`ॐ KARMA VICTORY! ${players[cur]?.name} transcends!`);play("victory");
-            showEvent({icon:"ॐ",title:"KARMA VICTORY",subtitle:`${players[cur]?.name} transcends with 15 Punya!`,color:"#f0d050"});
+            showEvent({icon:"ॐ",title:"KARMA VICTORY",subtitle:`${players[cur]?.name} transcends the board!`,color:"#f0d050",type:"moksha"});
           }
           if(!DLM_SQ.includes(p))setCur(c=>(c+1)%nP);
           setBusy(false);
@@ -518,16 +434,13 @@ export default function MokshaPatam(){
 
   const solvD=(ci)=>{
     if(!dil)return;const ch=dil.c[ci],fx=ch.fx||{};
-    const np=[...punya],npa=[...papa],nsk=[...skipA],npos=[...pos],nsh=[...shieldA];
+    const np=[...punya],npa=[...papa],nsk=[...skipA],npos=[...pos];
     if(fx.punya)np[dil.pi]+=(fx.punya);if(fx.papa)npa[dil.pi]+=(fx.papa);if(fx.skip)nsk[dil.pi]=true;
     if(fx.move)npos[dil.pi]=Math.max(1,Math.min(100,npos[dil.pi]+(fx.move)));
-    if(fx.loseShield)nsh[dil.pi]=false;
-    if(fx.giveShield)nsh[dil.pi]=true;
-    setPunya(np);setPapa(npa);setSkipA(nsk);setPos(npos);setShieldA(nsh);
-    const parts=[];if(fx.punya)parts.push(`+${fx.punya} Punya`);if(fx.papa)parts.push(`+${fx.papa} Papa`);if(fx.move)parts.push(fx.move>0?`advance ${fx.move}`:`back ${Math.abs(fx.move)}`);if(fx.skip)parts.push("skip next");if(fx.loseShield)parts.push("lost Shield");if(fx.giveShield)parts.push("gained Shield");
+    setPunya(np);setPapa(npa);setSkipA(nsk);setPos(npos);
+    const parts=[];if(fx.punya)parts.push(`+${fx.punya} Punya`);if(fx.papa)parts.push(`+${fx.papa} Papa`);if(fx.move)parts.push(fx.move>0?`advance ${fx.move}`:`back ${Math.abs(fx.move)}`);if(fx.skip)parts.push("skip next");
     setMsg(parts.join(", ")||"Balanced.");
     if(ch.k==="punya")play("ladder");else if(ch.k==="papa")play("snake");
-    if(np[dil.pi]>=15&&!win){setWin(dil.pi);setMsg(`ॐ KARMA VICTORY! ${players[dil.pi]?.name} transcends!`);play("victory")}
     setDil(null);setCur(c=>(c+1)%nP);
   };
 
@@ -729,11 +642,11 @@ export default function MokshaPatam(){
       <style>{CSS}</style>
       {showInfo&&<InfoPanel/>}
       {eventPopup&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.6)",zIndex:200,pointerEvents:"auto"}} onClick={()=>setEventPopup(null)}>
-        <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",animation:"popIn .4s ease forwards",background:"linear-gradient(180deg,#2a2015,#12100a)",border:`2px solid ${eventPopup.color}50`,borderRadius:8,padding:"28px 36px",textAlign:"center",maxWidth:380,width:"90vw",boxShadow:`0 0 60px ${eventPopup.color}30, 0 0 120px rgba(0,0,0,.8)`}} onClick={e=>e.stopPropagation()}>
+        <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",animation:"popIn .4s ease forwards",background:"linear-gradient(180deg,#2a2015,#12100a)",border:`2px solid ${eventPopup.color}50`,borderRadius:8,padding:"28px 36px",textAlign:"center",maxWidth:340,width:"85vw",boxShadow:`0 0 60px ${eventPopup.color}30, 0 0 120px rgba(0,0,0,.8)`}} onClick={e=>e.stopPropagation()}>
           <div style={{fontSize:52,marginBottom:8,filter:`drop-shadow(0 0 20px ${eventPopup.color})`}}>{eventPopup.icon}</div>
-          <div style={{fontSize:18,fontFamily:"'Yatra One',serif",color:eventPopup.color,marginBottom:4,letterSpacing:2}}>{eventPopup.title}</div>
+          <div style={{fontSize:20,fontFamily:"'Yatra One',serif",color:eventPopup.color,marginBottom:4,letterSpacing:2}}>{eventPopup.title}</div>
           {eventPopup.extra&&<div style={{fontSize:16,fontWeight:900,color:eventPopup.color,marginBottom:6,letterSpacing:4}}>{eventPopup.extra}</div>}
-          <div style={{fontSize:11,color:"#d0c090",lineHeight:1.9,fontStyle:"italic",opacity:.8,maxHeight:200,overflowY:"auto"}}>{eventPopup.subtitle}</div>
+          <div style={{fontSize:12,color:"#d0c090",lineHeight:1.8,fontStyle:"italic",opacity:.8}}>{eventPopup.subtitle}</div>
           <div style={{marginTop:14,fontSize:9,opacity:.3,letterSpacing:2}}>TAP TO DISMISS</div>
         </div>
       </div>}
@@ -773,10 +686,8 @@ export default function MokshaPatam(){
                   {sn&&<><span style={{fontSize:"clamp(6px,1.3vw,12px)",lineHeight:1}}>𓆙</span><span style={{fontSize:"clamp(4.5px,.8vw,7.5px)",color:"#ffc050",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1,textShadow:"0 0 8px #000,0 1px 3px #000"}}>{sn.skt}</span><span style={{fontSize:"clamp(3px,.5vw,5px)",color:"#ffa840",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1,textShadow:"0 0 6px #000"}}>{sn.en}</span></>}
                   {ld&&<><span style={{fontSize:"clamp(5px,1.1vw,10px)",lineHeight:1}}>🪔</span><span style={{fontSize:"clamp(4.5px,.8vw,7.5px)",color:"#ffe070",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1,textShadow:"0 0 8px #000"}}>{ld.skt}</span><span style={{fontSize:"clamp(3px,.5vw,5px)",color:"#f0d060",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1,textShadow:"0 0 6px #000"}}>{ld.en}</span></>}
                   {dl&&<><span style={{fontSize:"clamp(5px,1.1vw,9px)",lineHeight:1}}>⚖</span><span style={{fontSize:"clamp(3px,.5vw,5px)",color:"#f0d060",fontFamily:"'Cinzel',serif",fontWeight:900,textShadow:"0 0 6px #000"}}>DHARMA</span></>}
-                  {ph.length>0&&<div style={{position:"absolute",bottom:0,left:"50%",transform:"translateX(-50%)",display:"flex",gap:1,zIndex:15}}>
-                    {ph.map(pi=>{const c=players[pi]?.char;const isMoving=pi===cur&&busy;return <div key={pi} style={{display:"flex",flexDirection:"column",alignItems:"center",transition:"all .25s ease",transform:isMoving?"scale(1.3) translateY(-2px)":"scale(1)"}}>
-                      <div style={{width:"clamp(13px,2.2vw,20px)",height:"clamp(13px,2.2vw,20px)",borderRadius:"50% 50% 40% 40%",background:`radial-gradient(circle at 40% 35%,${c?.color||"#fff"},rgba(0,0,0,.7))`,border:`1.5px solid ${c?.color||"#fff"}`,boxShadow:`0 0 ${isMoving?14:5}px ${c?.color||"#fff"}${isMoving?"cc":"50"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"clamp(7px,1.2vw,12px)",lineHeight:1}}>{c?.icon}</div>
-                    </div>})}
+                  {ph.length>0&&<div style={{position:"absolute",bottom:0,right:0,display:"flex",gap:1,zIndex:15}}>
+                    {ph.map(pi=>{const c=players[pi]?.char;const isMoving=pi===cur&&busy;return <div key={pi} style={{width:"clamp(12px,2vw,18px)",height:"clamp(12px,2vw,18px)",borderRadius:"50%",background:`radial-gradient(circle,${c?.color||"#fff"},rgba(0,0,0,.6))`,border:`1.5px solid ${c?.color||"#fff"}`,boxShadow:`0 0 ${isMoving?12:6}px ${c?.color||"#fff"}${isMoving?"cc":"60"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"clamp(7px,1.1vw,11px)",transition:"all .25s ease",transform:isMoving?"scale(1.2)":"scale(1)"}}>{c?.icon?.charAt(0)||"•"}</div>})}
                   </div>}
                 </div>);
               })}
@@ -839,14 +750,24 @@ export default function MokshaPatam(){
                     <div style={{fontSize:10,opacity:.5,letterSpacing:1}}>Square {pos[i]||1} · {rlm(pos[i]||1)==="bhuloka"?"भूलोक":rlm(pos[i]||1)==="antarloka"?"अन्तर्लोक":"स्वर्गलोक"}</div>
                   </div>
                 </div>
-                <div style={{display:"flex",gap:12}}>
+                <div style={{display:"flex",gap:12,alignItems:"center"}}>
                   <div style={{flex:1}}>
-                    <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}><span style={{fontSize:10,color:"#f0d050",fontWeight:700}}>पुण्य</span><span style={{fontSize:14,color:"#f0d050",fontWeight:900}}>{pn}</span></div>
-                    <div style={{height:6,background:"rgba(0,0,0,.3)",borderRadius:3,overflow:"hidden"}}><div style={{height:"100%",width:`${(pn/total)*100}%`,background:"linear-gradient(90deg,#f0d050,#c0a030)",borderRadius:3,transition:"width .6s"}}/></div>
+                    <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
+                      <span style={{fontSize:10,color:"#f0d050",fontWeight:700,letterSpacing:1}}>पुण्य</span>
+                      <span style={{fontSize:14,color:"#f0d050",fontWeight:900,fontFamily:"'Noto Serif Devanagari',serif"}}>{pn}</span>
+                    </div>
+                    <div style={{height:6,background:"rgba(0,0,0,.3)",borderRadius:3,overflow:"hidden"}}>
+                      <div style={{height:"100%",width:`${(pn/total)*100}%`,background:"linear-gradient(90deg,#f0d050,#c0a030)",borderRadius:3,transition:"width .6s ease"}}/>
+                    </div>
                   </div>
                   <div style={{flex:1}}>
-                    <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}><span style={{fontSize:10,color:"#e06030",fontWeight:700}}>पाप</span><span style={{fontSize:14,color:"#e06030",fontWeight:900}}>{pp}</span></div>
-                    <div style={{height:6,background:"rgba(0,0,0,.3)",borderRadius:3,overflow:"hidden"}}><div style={{height:"100%",width:`${(pp/total)*100}%`,background:"linear-gradient(90deg,#e06030,#a03020)",borderRadius:3,transition:"width .6s"}}/></div>
+                    <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
+                      <span style={{fontSize:10,color:"#e06030",fontWeight:700,letterSpacing:1}}>पाप</span>
+                      <span style={{fontSize:14,color:"#e06030",fontWeight:900,fontFamily:"'Noto Serif Devanagari',serif"}}>{pp}</span>
+                    </div>
+                    <div style={{height:6,background:"rgba(0,0,0,.3)",borderRadius:3,overflow:"hidden"}}>
+                      <div style={{height:"100%",width:`${(pp/total)*100}%`,background:"linear-gradient(90deg,#e06030,#a03020)",borderRadius:3,transition:"width .6s ease"}}/>
+                    </div>
                   </div>
                 </div>
               </div>)
