@@ -741,12 +741,12 @@ export default function MokshaPatam(){
         <div style={{marginTop:4}}><InstaBadge/></div>
       </div>
       <div style={{background:"linear-gradient(90deg,transparent,rgba(30,24,14,.6),transparent)",borderTop:"1px solid rgba(200,160,60,.2)",borderBottom:"1px solid rgba(200,160,60,.2)",padding:"8px 14px",marginBottom:8,textAlign:"center",fontSize:"clamp(10px,1.4vw,12px)",maxWidth:780,width:"100%",fontStyle:"italic",lineHeight:1.7,color:"#c0b080"}}>{msg}</div>
-      <div style={{display:"flex",gap:14,flexWrap:"wrap",justifyContent:"center",width:"100%",maxWidth:1140}}>
+      <div style={{display:"flex",gap:14,flexWrap:"wrap",justifyContent:"center",width:"100%",maxWidth:1040}}>
         {/* BOARD */}
-        <div style={{flex:"1 1 340px",maxWidth:720,minWidth:300}}>
+        <div style={{flex:"1 1 300px",maxWidth:640,minWidth:280}}>
           <div style={{position:"relative",border:"2px solid rgba(200,160,60,.3)",background:"radial-gradient(ellipse at 30% 30%,rgba(60,45,20,.2),transparent 50%),radial-gradient(ellipse at 70% 70%,rgba(60,45,20,.15),transparent 50%),#1e1810",boxShadow:"0 0 60px rgba(0,0,0,.5),inset 0 0 40px rgba(0,0,0,.3)",borderRadius:2}}>
             <div style={{position:"absolute",inset:4,border:"1px solid rgba(200,160,60,.1)",pointerEvents:"none",zIndex:10}}/>
-            {[{top:"1%",t:"स्वर्गलोक CELESTIAL"},{top:"34.5%",t:"अन्तर्लोक INNER"},{top:"67.5%",t:"भूलोक EARTHLY"}].map((r,i)=><div key={i} style={{position:"absolute",top:r.top,left:"50%",transform:"translateX(-50%)",fontSize:"clamp(6px,1vw,9px)",letterSpacing:4,opacity:.22,color:"#f0d050",zIndex:10,pointerEvents:"none",whiteSpace:"nowrap"}}>{r.t}</div>)}
+            {[{top:"1%",t:"स्वर्गलोक CELESTIAL"},{top:"34.5%",t:"अन्तर्लोक INNER"},{top:"67.5%",t:"भूलोक EARTHLY"}].map((r,i)=><div key={i} style={{position:"absolute",top:r.top,left:"50%",transform:"translateX(-50%)",fontSize:"clamp(5px,.8vw,7px)",letterSpacing:4,opacity:.18,color:"#f0d050",zIndex:10,pointerEvents:"none",whiteSpace:"nowrap"}}>{r.t}</div>)}
             <div style={{position:"absolute",top:"33.3%",left:"2%",right:"2%",height:1,background:"linear-gradient(90deg,transparent,rgba(200,160,60,.18),transparent)",pointerEvents:"none",zIndex:10}}/>
             <div style={{position:"absolute",top:"66.6%",left:"2%",right:"2%",height:1,background:"linear-gradient(90deg,transparent,rgba(200,160,60,.18),transparent)",pointerEvents:"none",zIndex:10}}/>
             <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{position:"absolute",inset:0,width:"100%",height:"100%",pointerEvents:"none",zIndex:5}}>
@@ -757,16 +757,16 @@ export default function MokshaPatam(){
                 const sn=SNAKES[num],ld=LADDERS[num],dl=DLM_SQ.includes(num),mk=num===100;
                 const ph=[];for(let i=0;i<nP;i++){if((pos[i]||1)===num)ph.push(i)}
                 let bg="transparent",bdr="rgba(200,160,60,.08)";
-                if(mk){bg="radial-gradient(circle,rgba(240,200,80,.2),transparent)";bdr="rgba(240,200,80,.5)"}
-                else if(sn){bg="radial-gradient(circle,rgba(180,60,20,.2),transparent)";bdr="rgba(180,60,20,.3)"}
-                else if(ld){bg="radial-gradient(circle,rgba(200,160,60,.15),transparent)";bdr="rgba(200,160,60,.2)"}
-                else if(dl){bg="radial-gradient(circle,rgba(120,80,180,.2),transparent)";bdr="rgba(140,100,200,.35)"}
-                return(<div key={num} onMouseEnter={()=>setHov(num)} onMouseLeave={()=>setHov(null)} style={{aspectRatio:"1",background:bg,border:`0.5px solid ${hov===num?"rgba(240,200,80,.6)":bdr}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .2s"}}>
-                  <span style={{position:"absolute",top:1,left:2,fontSize:"clamp(7px,1.2vw,11px)",color:"rgba(240,210,130,.5)",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:700}}>{num}</span>
-                  {mk&&<span style={{fontSize:"clamp(14px,2.5vw,22px)",animation:"mp 3s ease infinite",color:"#f0d050"}}>ॐ</span>}
-                  {sn&&<><span style={{fontSize:"clamp(8px,1.6vw,14px)",lineHeight:1}}>𓆙</span><span style={{fontSize:"clamp(6px,1vw,9px)",color:"#ffc050",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1,textShadow:"0 0 8px #000,0 1px 3px #000"}}>{sn.skt}</span><span style={{fontSize:"clamp(4px,.7vw,7px)",color:"#ffa840",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1,textShadow:"0 0 6px #000"}}>{sn.en}</span></>}
-                  {ld&&<><span style={{fontSize:"clamp(7px,1.4vw,12px)",lineHeight:1}}>🪔</span><span style={{fontSize:"clamp(6px,1vw,9px)",color:"#ffe070",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1,textShadow:"0 0 8px #000"}}>{ld.skt}</span><span style={{fontSize:"clamp(4px,.7vw,7px)",color:"#f0d060",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1,textShadow:"0 0 6px #000"}}>{ld.en}</span></>}
-                  {dl&&<><span style={{fontSize:"clamp(8px,1.5vw,13px)",lineHeight:1}}>⚖</span><span style={{fontSize:"clamp(5px,.8vw,7px)",color:"#c8a0f0",fontFamily:"'Cinzel',serif",fontWeight:900,textShadow:"0 0 8px #000",letterSpacing:1}}>DHARMA</span></>}
+                if(mk){bg="radial-gradient(circle,rgba(240,200,80,.15),transparent)";bdr="rgba(240,200,80,.4)"}
+                else if(sn){bg="radial-gradient(circle,rgba(160,80,30,.15),transparent)";bdr="rgba(160,80,30,.2)"}
+                else if(ld){bg="radial-gradient(circle,rgba(200,160,60,.1),transparent)";bdr="rgba(200,160,60,.15)"}
+                else if(dl){bg="radial-gradient(circle,rgba(180,150,80,.1),transparent)";bdr="rgba(180,150,80,.18)"}
+                return(<div key={num} onMouseEnter={()=>setHov(num)} onMouseLeave={()=>setHov(null)} style={{aspectRatio:"1",background:bg,border:`0.5px solid ${hov===num?"rgba(240,200,80,.5)":bdr}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .2s"}}>
+                  <span style={{position:"absolute",top:1,left:2,fontSize:"clamp(5px,.9vw,9px)",color:"rgba(240,210,130,.45)",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:700}}>{num}</span>
+                  {mk&&<span style={{fontSize:"clamp(10px,2vw,18px)",animation:"mp 3s ease infinite",color:"#f0d050"}}>ॐ</span>}
+                  {sn&&<><span style={{fontSize:"clamp(6px,1.3vw,12px)",lineHeight:1}}>𓆙</span><span style={{fontSize:"clamp(4.5px,.8vw,7.5px)",color:"#ffc050",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1,textShadow:"0 0 8px #000,0 1px 3px #000"}}>{sn.skt}</span><span style={{fontSize:"clamp(3px,.5vw,5px)",color:"#ffa840",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1,textShadow:"0 0 6px #000"}}>{sn.en}</span></>}
+                  {ld&&<><span style={{fontSize:"clamp(5px,1.1vw,10px)",lineHeight:1}}>🪔</span><span style={{fontSize:"clamp(4.5px,.8vw,7.5px)",color:"#ffe070",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1,textShadow:"0 0 8px #000"}}>{ld.skt}</span><span style={{fontSize:"clamp(3px,.5vw,5px)",color:"#f0d060",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1,textShadow:"0 0 6px #000"}}>{ld.en}</span></>}
+                  {dl&&<><span style={{fontSize:"clamp(5px,1.1vw,9px)",lineHeight:1}}>⚖</span><span style={{fontSize:"clamp(3px,.5vw,5px)",color:"#f0d060",fontFamily:"'Cinzel',serif",fontWeight:900,textShadow:"0 0 6px #000"}}>DHARMA</span></>}
                   {ph.length>0&&<div style={{position:"absolute",bottom:0,left:"50%",transform:"translateX(-50%)",display:"flex",gap:1,zIndex:15}}>
                     {ph.map(pi=>{const c=players[pi]?.char;const isMoving=pi===cur&&busy;return <div key={pi} style={{display:"flex",flexDirection:"column",alignItems:"center",transition:"all .25s ease",transform:isMoving?"scale(1.3) translateY(-2px)":"scale(1)"}}>
                       <div style={{width:"clamp(13px,2.2vw,20px)",height:"clamp(13px,2.2vw,20px)",borderRadius:"50% 50% 40% 40%",background:`radial-gradient(circle at 40% 35%,${c?.color||"#fff"},rgba(0,0,0,.7))`,border:`1.5px solid ${c?.color||"#fff"}`,boxShadow:`0 0 ${isMoving?14:5}px ${c?.color||"#fff"}${isMoving?"cc":"50"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"clamp(7px,1.2vw,12px)",lineHeight:1}}>{c?.icon}</div>
@@ -776,8 +776,8 @@ export default function MokshaPatam(){
               })}
             </div>
           </div>
-          <div style={{display:"flex",justifyContent:"center",gap:"clamp(10px,2.5vw,20px)",marginTop:6,fontSize:"clamp(8px,1.1vw,10px)",opacity:.45,color:"#c0b080",flexWrap:"wrap"}}>
-            <span style={{color:"#e08040"}}>𓆙 Nāga</span><span style={{color:"#f0d050"}}>🪔 Virtue</span><span style={{color:"#c8a0f0"}}>⚖ Dharma</span><span style={{color:"#f0d050"}}>ॐ Moksha</span>
+          <div style={{display:"flex",justifyContent:"center",gap:"clamp(8px,2vw,16px)",marginTop:5,fontSize:"clamp(7px,1vw,9px)",opacity:.35,color:"#c0b080",flexWrap:"wrap"}}>
+            <span>𓆙 Nāga</span><span>🪔 Virtue</span><span>⚖ Dharma</span><span>ॐ Moksha</span>
           </div>
         </div>
         {/* PANEL */}
@@ -816,30 +816,11 @@ export default function MokshaPatam(){
             <div style={{fontSize:12,opacity:.6}}>{players[win]?.char?.name} is liberated</div>
             <button onClick={()=>{setScreen("title");setWin(null);setPlayers([]);ambient.stop()}} className="gb" style={{marginTop:14}}>New Journey</button>
           </div>}
-          {dil&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.85)",zIndex:250,display:"flex",alignItems:"center",justifyContent:"center",padding:16,overflowY:"auto"}}>
-            <div style={{background:"linear-gradient(180deg,#2a2015,#12100a)",border:"2px solid rgba(220,180,80,.3)",borderRadius:8,padding:"clamp(20px,4vw,32px)",maxWidth:480,width:"100%",boxShadow:"0 0 80px rgba(200,160,60,.15), 0 0 200px rgba(0,0,0,.9)",animation:"popIn .5s ease forwards",position:"relative"}}>
-              <div style={{position:"absolute",top:-1,left:"50%",transform:"translateX(-50)",width:60,height:3,background:"linear-gradient(90deg,transparent,rgba(220,180,80,.5),transparent)"}}/>
-              <div style={{textAlign:"center",marginBottom:16}}>
-                <div style={{fontSize:48,marginBottom:6,filter:"drop-shadow(0 0 15px rgba(200,160,60,.4))"}}>⚖</div>
-                <div style={{fontSize:8,letterSpacing:5,color:"#d0b870",opacity:.6,fontWeight:700,marginBottom:4}}>DHARMA DILEMMA</div>
-                <div style={{fontSize:"clamp(18px,4vw,24px)",fontFamily:"'Yatra One',serif",color:"#f0d050",letterSpacing:2}}>{dil.t}</div>
-                <div style={{fontSize:13,color:"#d0b870",fontWeight:700,marginTop:4,letterSpacing:1}}>{dil.en}</div>
-              </div>
-              <div style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",background:"rgba(200,160,60,.06)",border:"1px solid rgba(200,160,60,.12)",borderRadius:4,marginBottom:16}}>
-                <span style={{fontSize:24}}>{players[dil.pi]?.char?.icon}</span>
-                <div>
-                  <div style={{fontSize:13,color:players[dil.pi]?.char?.color,fontWeight:700}}>{players[dil.pi]?.name}</div>
-                  <div style={{fontSize:10,opacity:.5}}>{players[dil.pi]?.char?.name} · Square {pos[dil.pi]||1} · पुण्य {punya[dil.pi]||0} · पाप {papa[dil.pi]||0}</div>
-                </div>
-              </div>
-              <div style={{fontSize:"clamp(12px,1.5vw,14px)",color:"#e0d0a0",lineHeight:2,marginBottom:20,fontStyle:"italic",padding:"0 4px",maxHeight:200,overflowY:"auto"}}>{dil.txt}</div>
-              <div style={{display:"flex",flexDirection:"column",gap:10}}>
-                {dil.c.map((ch,ci)=><button key={ci} onClick={()=>solvD(ci)} style={{display:"block",width:"100%",background:ch.k==="punya"?"rgba(200,160,60,.1)":"rgba(180,50,20,.1)",border:`2px solid ${ch.k==="punya"?"rgba(220,180,80,.4)":"rgba(200,60,30,.4)"}`,color:ch.k==="punya"?"#f0d050":"#e08040",padding:"14px 16px",fontSize:"clamp(12px,1.4vw,14px)",fontFamily:"'Cinzel',serif",cursor:"pointer",textAlign:"left",lineHeight:1.7,borderRadius:6,transition:"all .2s",letterSpacing:1}}>
-                  {ch.l}
-                </button>)}
-              </div>
-              <div style={{textAlign:"center",marginTop:14,fontSize:9,opacity:.25,letterSpacing:2}}>CHOOSE YOUR PATH WISELY</div>
-            </div>
+          {dil&&<div style={{background:"linear-gradient(180deg,#221a10,#1a1408)",border:"1px solid rgba(220,180,80,.25)",padding:14,borderRadius:3}}>
+            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}><span style={{fontSize:22}}>⚖</span><div><div style={{fontSize:8,letterSpacing:3,color:"#f0d050",opacity:.6,fontWeight:700}}>DHARMA DILEMMA</div><div style={{fontSize:"clamp(13px,2vw,16px)",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:700,color:"#f0d050"}}>{dil.t}</div></div></div>
+            <div style={{fontSize:11,color:"#f0d050",opacity:.55,fontWeight:700,marginBottom:6}}>{dil.en}</div>
+            <div style={{fontSize:12,fontStyle:"italic",opacity:.8,marginBottom:14,lineHeight:1.8,color:"#e0d0a0"}}>{dil.txt}</div>
+            {dil.c.map((ch,ci)=><button key={ci} onClick={()=>solvD(ci)} style={{display:"block",width:"100%",marginBottom:7,background:ch.k==="punya"?"rgba(200,160,60,.08)":"rgba(180,70,30,.08)",border:`1px solid ${ch.k==="punya"?"rgba(220,180,80,.35)":"rgba(180,70,30,.3)"}`,color:"#e0d0a0",padding:"11px 13px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",textAlign:"left",lineHeight:1.5,borderRadius:3}}>{ch.l}</button>)}
           </div>}
           <div style={{background:"linear-gradient(180deg,#1e1810,#14100a)",border:"1px solid rgba(200,160,60,.2)",padding:12,borderRadius:4}}>
             <div style={{fontSize:9,letterSpacing:4,opacity:.5,marginBottom:10,color:"#f0d050",fontWeight:700,textAlign:"center"}}>⚔ KARMA SCOREBOARD ⚔</div>
