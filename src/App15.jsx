@@ -119,7 +119,7 @@ function useAmbient(){
       // ═══════════════════════════════════════════════════════════
       const a=new Audio("/ambient.mp3");
       a.loop=true;
-      a.volume=0.08;
+      a.volume=0.2;
       audioRef.current=a;
       a.play().then(()=>{playing.current=true}).catch(()=>{});
     }catch(e){}
@@ -441,59 +441,49 @@ export default function MokshaPatam(){
     setBusy(true);play("dice");
     const r=Math.floor(Math.random()*6)+1,gi=Math.floor(Math.random()*9),g=GRAHA[gi];
     setRv(r);setGv(g);
-    const pName=players[cur]?.name||"Seeker";
+    showEvent({icon:g.icon,title:`${g.n}`,subtitle:g.desc,color:g.color,type:"graha"});
     setTimeout(()=>{
       let tot=r;
       const oldP=pos[cur];let newP=oldP+tot;
       const extras=[];const nPunya=[...punya];const nPapa=[...papa];const nShield=[...shieldA];const nPos=[...pos];const nSkip=[...skipA];
-      let grahaStory="";
-      // ═══ NAVAGRAHA EFFECTS with clear narration ═══
-      if(g.fx==="sun"){tot+=2;newP=oldP+tot;extras.push("+2 extra steps");
-        grahaStory=`${pName}, Surya the Sun God blazes your path! You get 2 EXTRA STEPS this turn. Move ${tot} squares forward instead of ${r}.`}
-      if(g.fx==="moon"){nPunya[cur]+=1;extras.push("+1 Punya");
-        grahaStory=`${pName}, Chandra the Moon bathes you in divine light. You receive +1 PUNYA (virtue). Your soul grows purer.`}
-      if(g.fx==="jupiter"){for(let i=0;i<nP;i++)nPunya[i]+=1;extras.push("ALL +1 Punya");
-        grahaStory=`Brihaspati, Guru of the Gods, blesses the ENTIRE BOARD! Every seeker receives +1 PUNYA. Even your enemies benefit from a great teacher's wisdom.`}
-      if(g.fx==="venus"){nShield[cur]=true;extras.push("Shield granted");
-        grahaStory=`${pName}, Shukra grants you a CELESTIAL SHIELD! The next serpent that strikes you will find its venom neutralized. But this shield works only ONCE.`}
-      if(g.fx==="mars"){const ni=nearest(pos,cur,nP);if(ni>=0){nPos[ni]=Math.max(1,nPos[ni]-3);nPapa[cur]+=1;
-        extras.push(`${players[ni]?.name} -3, you +1 Papa`);
-        grahaStory=`${pName}, Mangal the War Planet fills you with fury! ${players[ni]?.name} is PUSHED BACK 3 squares. But violence carries karma — you gain +1 PAPA (sin).`}
-        else{grahaStory=`${pName}, Mangal's fury finds no target. The warrior energy dissipates.`}}
+      // ═══ NAVAGRAHA EFFECTS ═══
+      if(g.fx==="sun"){tot+=2;newP=oldP+tot;extras.push("+2 extra steps (Surya)")}
+      if(g.fx==="moon"){nPunya[cur]+=1;extras.push("+1 Punya (Chandra)")}
+      if(g.fx==="jupiter"){for(let i=0;i<nP;i++)nPunya[i]+=1;extras.push("ALL seekers +1 Punya (Brihaspati)")}
+      if(g.fx==="venus"){nShield[cur]=true;extras.push("Serpent Shield granted (Shukra)")}
+      if(g.fx==="mars"){const ni=nearest(pos,cur,nP);if(ni>=0){nPos[ni]=Math.max(1,nPos[ni]-3);nPapa[cur]+=1;extras.push(`${players[ni]?.name} pushed back 3 · +1 Papa (Mangal)`)}}
       if(g.fx==="mercury"){
+        // Mercury swap: you and nearest seeker exchange positions BEFORE you move
         const ni=nearest(pos,cur,nP);
         if(ni>=0){
           const yourOldPos=oldP;const theirPos=nPos[ni];
-          nPos[ni]=yourOldPos;
-          newP=theirPos+tot;
-          extras.push(`Swapped with ${players[ni]?.name}`);
-          grahaStory=`${pName}, Budh the Trickster reverses fortune! You SWAP PLACES with ${players[ni]?.name}. You were at square ${yourOldPos}, now you jump to their position at square ${theirPos}, then move ${tot} forward!`
-        }else{grahaStory=`${pName}, Budh finds no one nearby to swap with.`}
+          nPos[ni]=yourOldPos; // they go to where you were
+          newP=theirPos+tot;   // you go to where they were, then move forward
+          extras.push(`Swapped with ${players[ni]?.name} (Budh) — you were at ${yourOldPos}, now at ${theirPos}, then +${tot}`)
+        }
       }
       if(g.fx==="saturn"){
+        // Saturn: pushed back 3, +1 Papa
         newP=Math.max(1,oldP-3)+tot;
         nPapa[cur]+=1;
-        extras.push("Back 3, +1 Papa");
-        grahaStory=`${pName}, SHANI DEV turns his fearsome gaze upon you! Even gods fear Saturn's justice. You are PUSHED BACK 3 squares and gain +1 PAPA. No one escapes Shani's lessons.`;
+        extras.push("Shani's gaze — pushed back 3, +1 Papa");
       }
       if(g.fx==="rahu"){
+        // Rahu: steal 1 Punya from leader, give to trailer
         let maxI=0,minI=0;
         for(let i=0;i<nP;i++){if(nPos[i]>nPos[maxI])maxI=i;if(nPos[i]<nPos[minI])minI=i}
         if(maxI!==minI&&nPunya[maxI]>0){
           nPunya[maxI]-=1;nPunya[minI]+=1;
-          extras.push(`${players[maxI]?.name} → ${players[minI]?.name}`);
-          grahaStory=`RAHU the shadow demon STEALS 1 Punya from the leader ${players[maxI]?.name} and gives it to ${players[minI]?.name} who trails behind! The first shall be last.`;
-        }else{extras.push("No effect");grahaStory=`Rahu's shadow passes over the board. No karma to steal this time.`}
+          extras.push(`Rahu steals 1 Punya from ${players[maxI]?.name} → ${players[minI]?.name}`);
+        }else{extras.push("Rahu finds no karma to steal")}
       }
       if(g.fx==="ketu"){
+        // Ketu: strip all shields, nearest to 100 gets +1 Punya
         for(let i=0;i<nP;i++)nShield[i]=false;
         let closest=0;for(let i=0;i<nP;i++){if(nPos[i]>nPos[closest])closest=i}
         nPunya[closest]+=1;
-        extras.push(`All Shields gone, ${players[closest]?.name} +1 Punya`);
-        grahaStory=`KETU strips away ALL SHIELDS from every seeker! All protection is gone. But ${players[closest]?.name}, closest to Moksha, receives +1 Punya — for Ketu rewards those ready to let go.`;
+        extras.push(`Ketu strips all Shields · ${players[closest]?.name} +1 Punya (nearest liberation)`);
       }
-      // Show graha narration popup
-      showEvent({icon:g.icon,title:`${g.n} · ${g.en}`,subtitle:grahaStory,color:g.color,type:"graha"});
       if(newP>100){setMsg(`Overshot Moksha. ${extras.join(" · ")}`);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);setSkipA(nSkip);setBusy(false);setCur(c=>(c+1)%nP);return}
       if(newP<1)newP=1;
       // Animate movement — smooth (280ms per step)
@@ -505,26 +495,26 @@ export default function MokshaPatam(){
           clearInterval(iv);
           let p=newP,eMsg="";
           if(SNAKES[p]){const sn=SNAKES[p];if(nShield[cur]){nShield[cur]=false;eMsg=`𓆙 ${sn.skt} — Shield protects!`;play("ladder");
-            showEvent({icon:"🛡",title:`Shield Saved ${pName}!`,subtitle:`The serpent ${sn.skt} (${sn.en}) struck — but Shukra's celestial shield absorbed the venom! The shield is now gone. You are vulnerable again.`,color:"#d0a0c0"});
+            showEvent({icon:"🛡",title:`${sn.skt} blocked!`,subtitle:"Shukra's Shield absorbed the venom.",color:"#d0a0c0"});
           }else{const o=p;p=sn.to;eMsg=`𓆙 ${sn.skt} (${sn.en}) ${o}→${p}`;nPapa[cur]+=2;play("snake");
-            showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} has caught you! ${sn.tale} You are dragged from square ${o} down to square ${p}. Your soul is stained with +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`});
+            showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:sn.tale+` · +2 Papa`,color:"#e06030",extra:`${o} → ${p}`});
           }}
           else if(LADDERS[p]){const ld=LADDERS[p];const o=p;p=ld.to;eMsg=`🪔 ${ld.skt} (${ld.en}) ${o}→${p}`;nPunya[cur]+=1;play("ladder");
-            showEvent({icon:"🪔",title:`${ld.skt} — ${ld.en}`,subtitle:`${pName}, the virtue of ${ld.en} lifts your soul! ${ld.tale} You rise from square ${o} to square ${p}. You gain +1 PUNYA.`,color:"#f0d050",extra:`${o} → ${p}`});
+            showEvent({icon:"🪔",title:`${ld.skt} — ${ld.en}`,subtitle:ld.tale+` · +1 Punya`,color:"#f0d050",extra:`${o} → ${p}`});
           }
           else if(DLM_SQ.includes(p)){const d=DILEMMAS[Math.floor(Math.random()*DILEMMAS.length)];setDil({...d,pi:cur});eMsg=`⚖ ${d.en}`;play("dilemma");
-            showEvent({icon:"⚖",title:`${d.t} — ${d.en}`,subtitle:`${pName} faces a moral crossroad! A Dharma Dilemma from the Mahābhārata awaits. Read the story carefully and choose your path.`,color:"#d0b870"});
+            showEvent({icon:"⚖",title:d.t,subtitle:d.en,color:"#d0b870"});
           }
-          else if(p===100){if(nPunya[cur]>=nPapa[cur]){setWin(cur);eMsg=`ॐ ${pName} attains MOKSHA!`;play("victory");
-            showEvent({icon:"ॐ",title:"मोक्ष प्राप्त — MOKSHA!",subtitle:`${pName} has reached Square 100 with Punya (${nPunya[cur]}) ≥ Papa (${nPapa[cur]}). The gates of liberation open. The cycle of Samsara ends. ${pName} is FREE.`,color:"#f0d050"});
-          }else{p=67;eMsg="Karma impure — cast back to 67.";play("snake");
-            showEvent({icon:"⚠",title:"Gates of Moksha REJECT You!",subtitle:`${pName} reached Square 100, but your soul is impure! Punya (${nPunya[cur]}) < Papa (${nPapa[cur]}). You are cast back to Square 67 to suffer, purify, and try again.`,color:"#e06030"});
+          else if(p===100){if(nPunya[cur]>=nPapa[cur]){setWin(cur);eMsg=`ॐ ${players[cur]?.name} attains MOKSHA!`;play("victory");
+            showEvent({icon:"ॐ",title:"मोक्ष प्राप्त",subtitle:`${players[cur]?.name} is liberated!`,color:"#f0d050"});
+          }else{p=67;eMsg="Karma impure — Punya must ≥ Papa. Cast back to 67.";play("snake");
+            showEvent({icon:"⚠",title:"Karma Impure",subtitle:`Punya (${nPunya[cur]}) < Papa (${nPapa[cur]}). Cast back to 67.`,color:"#e06030"});
           }}
           nPos[cur]=p;setPos([...nPos]);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setSkipA(nSkip);
           setMsg([eMsg,...extras].filter(Boolean).join(" · ")||`Moved to ${p}.`);
-          setHist(h=>[...h.slice(-12),`${pName}→${p}`]);
-          if(nPunya[cur]>=20&&!win){setWin(cur);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory");
-            showEvent({icon:"ॐ",title:"KARMA VICTORY!",subtitle:`${pName} has accumulated 20 Punya! The board dissolves beneath you. Your soul rises into pure light. Instant Moksha — liberation from any square!`,color:"#f0d050"});
+          setHist(h=>[...h.slice(-12),`${players[cur]?.name}→${p}`]);
+          if(nPunya[cur]>=20&&!win){setWin(cur);setMsg(`ॐ KARMA VICTORY! ${players[cur]?.name} transcends!`);play("victory");
+            showEvent({icon:"ॐ",title:"KARMA VICTORY",subtitle:`${players[cur]?.name} transcends with 20 Punya!`,color:"#f0d050"});
           }
           if(!DLM_SQ.includes(p))setCur(c=>(c+1)%nP);
           setBusy(false);
