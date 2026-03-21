@@ -165,7 +165,7 @@ function useAmbient(){
       // ═══════════════════════════════════════════════════════════
       const a=new Audio("/ambient.mp3");
       a.loop=true;
-      a.volume=0.08;
+      a.volume=0.04;
       audioRef.current=a;
       a.play().then(()=>{playing.current=true}).catch(()=>{});
     }catch(e){}
@@ -178,9 +178,7 @@ function useAmbient(){
       playing.current=false;audioRef.current=null;
     }catch(e){}
   },[]);
-  const duck=useCallback(()=>{if(audioRef.current)audioRef.current.volume=0.01},[]);
-  const unduck=useCallback(()=>{if(audioRef.current)audioRef.current.volume=0.08},[]);
-  return{start,stop,duck,unduck,playing};
+  return{start,stop,playing};
 }
 
 /* ═══ VOICEOVER — Puter.js Neural AI → Browser Fallback ═══ */
@@ -268,7 +266,7 @@ const VoiceEngine = {
     try {
       window.speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
-      u.rate = 0.75; u.pitch = 0.8; u.volume = 1.0;
+      u.rate = 0.75; u.pitch = 0.8; u.volume = 0.9;
       u.lang = lang === 'hi' ? 'hi-IN' : 'en-GB';
       const voices = window.speechSynthesis.getVoices();
       const best = this._pickBestVoice(voices, lang);
@@ -290,7 +288,6 @@ const VoiceEngine = {
       const cached = AudioCache.get(text);
       if (cached) {
         const audio = new Audio(cached);
-        audio.volume=1.0;
         this.audio = audio;
         this.speaking = true;
         audio.onended = () => { this.speaking = false; };
@@ -303,7 +300,6 @@ const VoiceEngine = {
         const url = await AudioCache.fetchTTS(text, lang);
         if (url) {
           const audio = new Audio(url);
-          audio.volume=1.0;
           this.audio = audio;
           this.speaking = true;
           audio.onended = () => { this.speaking = false; };
@@ -419,7 +415,6 @@ export default function MokshaPatam(){
   const[shF,setShF]=useState(true);
   const[muted,setMuted]=useState(false);
   const[showInfo,setShowInfo]=useState(false);
-  const[showGuide,setShowGuide]=useState(false);
   const[chosenLang,setChosenLang]=useState("en");
   const[preloading,setPreloading]=useState(false);
   const[preloadPct,setPreloadPct]=useState(0);
@@ -445,17 +440,16 @@ export default function MokshaPatam(){
   const showEvent = useCallback((popup, onDismiss) => {
     setEventPopup(popup);
     eventCallback.current=onDismiss||null;
+    // Read popup aloud (not for CPU dharma, not when muted)
     if(!muted&&popup.subtitle){
-      ambient.duck();
       VoiceEngine.speak(popup.subtitle,chosenLang);
     }
-  }, [muted,chosenLang,ambient]);
+  }, [muted,chosenLang]);
   const dismissEvent = useCallback(() => {
     VoiceEngine.stop();
-    ambient.unduck();
     setEventPopup(null);
     if(eventCallback.current){const cb=eventCallback.current;eventCallback.current=null;setTimeout(cb,100);}
-  }, [ambient]);
+  }, []);
 
   useEffect(()=>{try{window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices()}catch(e){}},[]);
   useEffect(()=>{const iv=setInterval(()=>{setShF(false);setTimeout(()=>{setShI(i=>(i+1)%SHLOKAS.length);setShF(true)},700)},6e3);return()=>clearInterval(iv)},[]);
@@ -488,7 +482,7 @@ export default function MokshaPatam(){
     if(isCPU[1]&&np.length===1){
       const cpuIdx=CHARS.findIndex((_,i)=>!uc.includes(i));
       if(cpuIdx>=0){
-        np.push({name:"Yama",char:{...CHARS[cpuIdx],icon:"🐂",name:"God of Death",skt:"यम",color:"#a04040"},charIdx:cpuIdx,cpu:true});
+        np.push({name:"Yama (CPU)",char:CHARS[cpuIdx],charIdx:cpuIdx,cpu:true});
         uc.push(cpuIdx);
       }
     }
@@ -748,7 +742,7 @@ export default function MokshaPatam(){
         <p style={{fontSize:13,opacity:.4,marginBottom:24,letterSpacing:3}}>Each soul walks a different path</p>
         <div style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap"}}>
           <button className="gb gp" onClick={()=>{setNP(2);setIsCPU([false,true]);setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("setup")}} style={{padding:"18px 36px",fontSize:16}}>
-            <div style={{fontSize:22,marginBottom:4}}>🐂</div>1 vs Yama
+            <div style={{fontSize:22,marginBottom:4}}>🤖</div>1 vs CPU
           </button>
           {[2,3,4].map(n=><button key={n} className="gb" onClick={()=>{setNP(n);setIsCPU(Array(n).fill(false));setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("setup")}} style={{padding:"18px 36px",fontSize:16}}>{n} Players</button>)}
         </div>
@@ -847,29 +841,6 @@ export default function MokshaPatam(){
           </div>)}
         </div>
       </div>}
-      {showGuide&&<div key="guide-panel" style={{position:"fixed",inset:0,background:"rgba(6,5,3,.95)",zIndex:300,overflowY:"auto",padding:"clamp(12px,3vw,24px)",animation:"fadeIn .3s ease"}}>
-        <div style={{maxWidth:700,margin:"0 auto"}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
-            <h2 style={{fontSize:"clamp(18px,4vw,28px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:0}}>📜 How to Play</h2>
-            <button className="gb" onClick={()=>setShowGuide(false)} style={{padding:"6px 16px",fontSize:12}}>✕ Close</button>
-          </div>
-          {[
-            {t:"🎯 Goal",d:"Reach Square 100 (Moksha) with your Punya (virtue) equal to or greater than your Papa (sin). Alternatively, collect 20 Punya at any point for an instant Karma Victory — the board dissolves and your soul transcends!"},
-            {t:"🎲 Your Turn",d:"Each turn you roll TWO dice simultaneously: the Karma Die (1-6, determines how many squares you move) and the Graha Die (one of 9 Navagraha planets, each with a cosmic effect). A popup will explain exactly what happened — read it carefully before dismissing."},
-            {t:"☀ The 9 Navagraha (Planet Effects)",d:"Surya (Sun) = +2 extra steps. Chandra (Moon) = +1 Punya. Mangal (Mars) = push nearest rival back 3, but you get +1 Papa. Budh (Mercury) = swap positions with nearest seeker. Brihaspati (Jupiter) = ALL players +1 Punya. Shukra (Venus) = get a serpent Shield. Shani (Saturn) = pushed back 3 + 1 Papa. Rahu = steals Punya from leader, gives to trailer. Ketu = strips all Shields."},
-            {t:"𓆙 Serpents (Red Squares)",d:"10 Nāga serpents lurk on the board — each named after a vice (Wrath, Greed, Ego, etc). Landing on one drags you DOWN to a lower square and stains you with +2 Papa. The higher you are, the harder you fall."},
-            {t:"🪔 Virtues (Gold Squares)",d:"10 divine ladders represent virtues (Compassion, Truth, Devotion, etc). Landing on one lifts you UP to a higher square and grants +1 Punya."},
-            {t:"⚖ Dharma Dilemmas (Purple Squares)",d:"The heart of the game! Land on a purple square and face a moral choice from the Mahābhārata or real life. The 🙏 virtuous path gives Punya but costs position (go back, skip turn). The 💀 tempting path gives Papa but advances you far ahead. Choose wisely — your Punya must beat your Papa at Moksha!"},
-            {t:"🛡 Shukra's Shield",d:"When Venus appears on the Graha Die, you receive a one-time celestial shield. The next serpent that bites you will be blocked. The shield disappears after one use, or if Ketu strips it away."},
-            {t:"ॐ Reaching Moksha (Square 100)",d:"You must land EXACTLY on Square 100. If you overshoot, you stay put. When you reach 100: if Punya ≥ Papa, the gates open — you WIN! If Papa > Punya, your soul is impure and you're cast back to Square 67 to purify and try again."},
-            {t:"⚡ Karma Victory (20 Punya)",d:"If at any point you accumulate 20 Punya, you achieve instant Moksha from ANY square. The board dissolves beneath you. This is the rarer, more beautiful path — a truly pure soul transcends without needing Square 100."},
-            {t:"🐂 Playing vs Yama",d:"In solo mode, you face Yama — the Hindu God of Death who rides a buffalo. Yama is ruthless: he favours the 💀 Papa path 60% of the time on Dharma cards. Can you stay purer than Death itself? Yama auto-rolls after your turn."},
-          ].map((s,i)=><div key={i} style={{background:"rgba(20,16,10,.5)",border:"1px solid rgba(200,160,60,.1)",padding:14,borderRadius:4,marginBottom:10}}>
-            <div style={{fontSize:14,fontWeight:700,color:"#f0d050",marginBottom:6}}>{s.t}</div>
-            <p style={{fontSize:12,color:"#c0b080",lineHeight:1.8,margin:0}}>{s.d}</p>
-          </div>)}
-        </div>
-      </div>}
       {eventPopup&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.6)",zIndex:200,pointerEvents:"auto"}} onClick={dismissEvent}>
         <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",animation:"popIn .4s ease forwards",background:"linear-gradient(180deg,#2a2015,#12100a)",border:`2px solid ${eventPopup.color}50`,borderRadius:8,padding:"28px 36px",textAlign:"center",maxWidth:380,width:"90vw",boxShadow:`0 0 60px ${eventPopup.color}30, 0 0 120px rgba(0,0,0,.8)`}} onClick={e=>e.stopPropagation()}>
           <div style={{fontSize:52,marginBottom:8,filter:`drop-shadow(0 0 20px ${eventPopup.color})`}}>{eventPopup.icon}</div>
@@ -889,13 +860,10 @@ export default function MokshaPatam(){
       <div style={{textAlign:"center",marginBottom:4,width:"100%"}}>
         <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:10}}>
           <div style={{fontSize:"clamp(18px,3.5vw,28px)",fontFamily:"'Yatra One',serif",letterSpacing:3,color:"#f0d050"}}>मोक्षपटम्</div>
+          <button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"2px 8px",fontSize:11,cursor:"pointer",borderRadius:3}}>📖</button>
           <button onClick={toggleMute} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"2px 8px",fontSize:12,cursor:"pointer",borderRadius:3}}>{muted?"🔇":"🔊"}</button>
         </div>
-        <div style={{display:"flex",justifyContent:"center",gap:10,marginTop:6,flexWrap:"wrap"}}>
-          <button onClick={()=>setShowGuide(true)} style={{background:"rgba(200,160,60,.08)",border:"1px solid rgba(200,160,60,.25)",color:"#e8c850",padding:"5px 14px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2}}>📜 How to Play</button>
-          <button onClick={()=>setShowInfo(true)} style={{background:"rgba(200,160,60,.08)",border:"1px solid rgba(200,160,60,.25)",color:"#e8c850",padding:"5px 14px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2}}>📖 Encyclopaedia</button>
-        </div>
-        <div style={{fontSize:8,letterSpacing:5,opacity:.3,color:"#c0b080",marginTop:4}}>{rlm(pos[cur]||1)==="bhuloka"?"भूलोक EARTHLY":rlm(pos[cur]||1)==="antarloka"?"अन्तर्लोक INNER":"स्वर्गलोक CELESTIAL"}</div>
+        <div style={{fontSize:8,letterSpacing:5,opacity:.3,color:"#c0b080"}}>{rlm(pos[cur]||1)==="bhuloka"?"भूलोक EARTHLY":rlm(pos[cur]||1)==="antarloka"?"अन्तर्लोक INNER":"स्वर्गलोक CELESTIAL"}</div>
         <div style={{marginTop:4}}><InstaBadge/></div>
       </div>
       <div style={{background:"linear-gradient(90deg,transparent,rgba(30,24,14,.6),transparent)",borderTop:"1px solid rgba(200,160,60,.2)",borderBottom:"1px solid rgba(200,160,60,.2)",padding:"8px 14px",marginBottom:8,textAlign:"center",fontSize:"clamp(10px,1.4vw,12px)",maxWidth:780,width:"100%",fontStyle:"italic",lineHeight:1.7,color:"#c0b080"}}>{msg}</div>
