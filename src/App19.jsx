@@ -442,7 +442,7 @@ export default function MokshaPatam(){
     eventCallback.current=onDismiss||null;
     // Read popup aloud (not for CPU dharma, not when muted)
     if(!muted&&popup.subtitle){
-      VoiceEngine.speak(popup.subtitle,chosenLang);
+      VoiceEngine.speak(`${popup.title}. ${popup.subtitle}`,chosenLang);
     }
   }, [muted,chosenLang]);
   const dismissEvent = useCallback(() => {
