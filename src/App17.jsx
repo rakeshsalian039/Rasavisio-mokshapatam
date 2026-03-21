@@ -50,52 +50,6 @@ const DILEMMAS=[
   {t:"दानवीर",en:"The Beggar at the Gate",
     txt:"A starving beggar appears at your door during a famine. You have exactly enough food for your family for one more day. Giving to the beggar means your own children go hungry tonight. In the Mahabharata, a mongoose tested a family who gave their last meal — and declared them more generous than Yudhishthira's Ashwamedha sacrifice.",
     c:[{l:"🙏 Give your last meal — skip turn, +4 Punya",k:"punya",fx:{punya:4,skip:true}},{l:"💀 Feed your family first — ADVANCE 4, +2 Papa",k:"papa",fx:{papa:2,move:4}}]},
-  // ═══ MODERN REAL-LIFE DHARMA DILEMMAS ═══
-  {t:"सत्यवचन",en:"The Honest Tax Return",
-    txt:"You discover a way to save ₹5 lakhs on your taxes by hiding freelance income. The government wastes crores anyway — would anyone even notice? But your accountant warns: 'If caught, the penalty is 3x.' Your colleague says everyone does it. Your conscience says otherwise. Small dishonesty or heavy honesty?",
-    c:[{l:"🙏 File honestly — skip turn, +3 Punya",k:"punya",fx:{punya:3,skip:true}},{l:"💀 Hide the income — ADVANCE 8, +3 Papa",k:"papa",fx:{papa:3,move:8}}]},
-  {t:"परीक्षा",en:"The Exam Cheat Sheet",
-    txt:"It's the final exam. Your best friend — the one who helped you through your darkest days — slides you a cheat sheet under the desk. If you refuse, they'll feel betrayed. If you accept, you pass easily but your degree means nothing. The invigilator isn't looking. No one will ever know. Except you.",
-    c:[{l:"🙏 Refuse and face the exam alone — BACK 3, +3 Punya",k:"punya",fx:{punya:3,move:-3}},{l:"💀 Accept the cheat sheet — ADVANCE 7, +3 Papa",k:"papa",fx:{papa:3,move:7}}]},
-  {t:"प्रेमधर्म",en:"The Arranged vs Love Marriage",
-    txt:"Your parents have found a 'perfect match' — wealthy family, same caste, stable career. But your heart belongs to someone they would never approve of — different background, uncertain future, but a soul connection you've never felt before. Breaking your parents' heart or breaking your own?",
-    c:[{l:"🙏 Follow your heart — BACK 5, +4 Punya",k:"punya",fx:{punya:4,move:-5}},{l:"💀 Marry for family honour — ADVANCE 6, +2 Papa",k:"papa",fx:{papa:2,move:6}}]},
-  {t:"कर्मचारी",en:"The Whistleblower's Choice",
-    txt:"Your company is dumping toxic waste into a river that flows through a tribal village. Children are getting sick. You have proof on your laptop. If you leak it, you'll lose your job — the only income for your aging parents. If you stay silent, the poisoning continues. Your manager says: 'Don't be a hero. Think of your family.'",
-    c:[{l:"🙏 Blow the whistle — skip turn, +5 Punya",k:"punya",fx:{punya:5,skip:true}},{l:"💀 Stay silent for your family — ADVANCE 10, +4 Papa",k:"papa",fx:{papa:4,move:10}}]},
-  {t:"वृद्धसेवा",en:"The Aging Parent",
-    txt:"Your mother has dementia. She needs full-time care. You got a dream job offer in another city — double salary, career breakthrough. Your siblings refuse to help. The nursing home nearby has bad reviews. If you stay, your career stalls. If you leave, she's alone. There is no perfect answer.",
-    c:[{l:"🙏 Stay and care for her — BACK 6, +4 Punya",k:"punya",fx:{punya:4,move:-6}},{l:"💀 Take the job — ADVANCE 8, +3 Papa",k:"papa",fx:{papa:3,move:8}}]},
-  {t:"मित्रद्रोह",en:"The Friend's Secret",
-    txt:"Your closest friend confesses they've been having an affair. Their spouse — who is also your friend — asks you directly: 'Is something going on?' You have three people's trust in your hands. Telling the truth destroys a family. Lying makes you complicit. Silence is its own answer.",
-    c:[{l:"🙏 Tell the truth gently — BACK 4, +3 Punya",k:"punya",fx:{punya:3,move:-4}},{l:"💀 Protect your friend's secret — ADVANCE 5, +3 Papa",k:"papa",fx:{papa:3,move:5}}]},
-  {t:"दानशीलता",en:"The Viral Donation",
-    txt:"You donated ₹1 lakh to flood victims. Your friend suggests filming it and posting on Instagram — 'It will inspire others to donate too!' The video would get millions of views and boost your business. But is charity still charity when it's performed for an audience? Does intention matter if the result is good?",
-    c:[{l:"🙏 Donate silently — +3 Punya",k:"punya",fx:{punya:3}},{l:"💀 Film it for views — ADVANCE 6, +2 Papa",k:"papa",fx:{papa:2,move:6}}]},
-  {t:"न्यायालय",en:"The Bribe at the Courthouse",
-    txt:"Your land case has been stuck in court for 8 years. Your lawyer says: 'Pay ₹50,000 to the clerk and your hearing gets scheduled next week. Otherwise, wait another 2 years.' Your father fought for this land. The system is broken — but does participating in corruption fix anything?",
-    c:[{l:"🙏 Wait for justice — skip turn, +3 Punya",k:"punya",fx:{punya:3,skip:true}},{l:"💀 Pay the bribe — ADVANCE 10, +4 Papa",k:"papa",fx:{papa:4,move:10}}]},
-  {t:"पर्यावरण",en:"The Plastic Factory",
-    txt:"You can invest in a plastic manufacturing unit — guaranteed 40% returns. The factory will employ 200 people from a poor village. But it will also pollute the local river irreversibly. The villagers need the jobs desperately. The river feeds 10,000 people downstream. Prosperity or planet?",
-    c:[{l:"🙏 Refuse the investment — BACK 4, +4 Punya",k:"punya",fx:{punya:4,move:-4}},{l:"💀 Invest for jobs and profit — ADVANCE 12, +4 Papa",k:"papa",fx:{papa:4,move:12}}]},
-  {t:"सेवानिवृत्ति",en:"The Retirement Fund",
-    txt:"Your father worked 35 years and saved ₹30 lakhs for retirement. Your startup needs exactly ₹30 lakhs to survive. He offers it willingly — 'Beta, your dreams matter more.' But if the startup fails, his entire life savings are gone. He'll have nothing. He says he trusts you. Should you take it?",
-    c:[{l:"🙏 Refuse his money — BACK 5, +4 Punya",k:"punya",fx:{punya:4,move:-5}},{l:"💀 Take the investment — ADVANCE 10, +3 Papa",k:"papa",fx:{papa:3,move:10}}]},
-  {t:"अंतिमसंस्कार",en:"The Funeral Leave",
-    txt:"Your colleague's mother passed away. Your boss says the team is too busy — 'Send condolences on WhatsApp.' You know how it feels to grieve alone. Going to the funeral means missing the client deadline. Your promotion depends on this project. But some things matter more than promotions.",
-    c:[{l:"🙏 Attend the funeral — skip turn, +3 Punya",k:"punya",fx:{punya:3,skip:true}},{l:"💀 Stay and meet the deadline — ADVANCE 5, +2 Papa",k:"papa",fx:{papa:2,move:5}}]},
-  {t:"विद्यालय",en:"The School Admission",
-    txt:"The best school in the city has one seat left. The principal hints that a ₹2 lakh 'donation' will secure it. Another child — from a poorer family — scored higher than yours. Your child's entire future could depend on this school. Or could it? Is a good education worth a stolen seat?",
-    c:[{l:"🙏 Let merit decide — BACK 3, +3 Punya",k:"punya",fx:{punya:3,move:-3}},{l:"💀 Pay the donation — ADVANCE 8, +4 Papa",k:"papa",fx:{papa:4,move:8}}]},
-  {t:"रोगी",en:"The Expensive Medicine",
-    txt:"A life-saving medicine costs ₹5 lakhs. A friend offers you the same drug, smuggled from abroad, for ₹50,000. It's the exact same formula. The pharma company charges 10x because they can. Is it wrong to save a life by breaking an unjust law?",
-    c:[{l:"🙏 Pay the full price legally — BACK 6, +3 Punya",k:"punya",fx:{punya:3,move:-6}},{l:"💀 Buy the smuggled drug — ADVANCE 8, +3 Papa",k:"papa",fx:{papa:3,move:8}}]},
-  {t:"गृहस्थ",en:"The Joint Family",
-    txt:"Your wife wants to move out of the joint family. She's unhappy, your mother is dominating, and the fights are daily. But your father built this house brick by brick. Leaving would break his heart. He's 75. Staying means watching two women you love suffer. There is no winning move.",
-    c:[{l:"🙏 Move out with compassion — BACK 3, +3 Punya",k:"punya",fx:{punya:3,move:-3}},{l:"💀 Force everyone to adjust — ADVANCE 4, +2 Papa",k:"papa",fx:{papa:2,move:4}}]},
-  {t:"सोशलमीडिया",en:"The Viral Lie",
-    txt:"Someone posted a lie about your business competitor on social media. It's going viral and destroying their reputation. You know it's false. Speaking up means people will attack you too — cancel culture spares no one. Staying silent costs nothing. But you know the truth. And silence is a choice.",
-    c:[{l:"🙏 Speak the truth publicly — BACK 4, +4 Punya",k:"punya",fx:{punya:4,move:-4}},{l:"💀 Stay silent and benefit — ADVANCE 6, +3 Papa",k:"papa",fx:{papa:3,move:6}}]},
 ];
 const GRAHA=[
   {n:"सूर्य",en:"Surya — The Sun",icon:"☀",desc:"The king of planets blazes your path forward. As Surya illuminated Karna with divine armour, his radiance grants you +2 extra steps. The Sun sees all — nothing hides from his gaze.",color:"#f0b840",fx:"sun"},
@@ -421,8 +375,7 @@ export default function MokshaPatam(){
   const[cacheCount,setCacheCount]=useState(0);
   const[eventPopup,setEventPopup]=useState(null);
   const[turnBanner,setTurnBanner]=useState(null);
-  const[isCPU,setIsCPU]=useState([]);
-  const[usedDharma,setUsedDharma]=useState([]); // tracks which players are CPU
+  const[isCPU,setIsCPU]=useState([]); // tracks which players are CPU
 
   const sfx=useSound();
   const ambient=useAmbient();
@@ -468,7 +421,7 @@ export default function MokshaPatam(){
     const n=pList.length;
     setPos(Array(n).fill(1));setPunya(Array(n).fill(0));setPapa(Array(n).fill(0));
     setShieldA(Array(n).fill(false));setSkipA(Array(n).fill(false));
-    setCur(0);setWin(null);setHist([]);setRv(null);setGv(null);setBusy(false);setDil(null);setUsedDharma([]);
+    setCur(0);setWin(null);setHist([]);setRv(null);setGv(null);setBusy(false);setDil(null);
     setMsg(`${pList[0].name} the ${pList[0].char.name} — your journey begins.`);
     setScreen("game");
   };
@@ -506,34 +459,34 @@ export default function MokshaPatam(){
     const extras=[];const nPunya=[...punya];const nPapa=[...papa];const nShield=[...shieldA];const nPos=[...pos];const nSkip=[...skipA];
     let grahaStory="";
     if(g.fx==="sun"){tot+=2;newP=oldP+tot;extras.push("+2 extra steps");
-      grahaStory=`${pName}, you rolled Surya, the Sun! The king of planets blazes your path. You get 2 EXTRA STEPS — move ${tot} squares instead of ${r}.`}
+      grahaStory=`${pName}, Surya the Sun God blazes your path! You get 2 EXTRA STEPS this turn. Move ${tot} squares forward instead of ${r}.`}
     if(g.fx==="moon"){nPunya[cur]+=1;extras.push("+1 Punya");
-      grahaStory=`${pName}, you rolled Chandra, the Moon! Lunar grace purifies your soul. You receive +1 PUNYA. Your karma grows lighter.`}
+      grahaStory=`${pName}, Chandra the Moon bathes you in divine light. You receive +1 PUNYA. Your soul grows purer.`}
     if(g.fx==="jupiter"){for(let i=0;i<nP;i++)nPunya[i]+=1;extras.push("ALL +1 Punya");
-      grahaStory=`${pName}, you rolled Brihaspati, Jupiter! The divine guru blesses the ENTIRE BOARD. Every seeker receives +1 PUNYA — even your rivals benefit from wisdom.`}
+      grahaStory=`Brihaspati, Guru of the Gods, blesses the ENTIRE BOARD! Every seeker receives +1 PUNYA.`}
     if(g.fx==="venus"){nShield[cur]=true;extras.push("Shield granted");
-      grahaStory=`${pName}, you rolled Shukra, Venus! The guru of Asuras grants you a CELESTIAL SHIELD. The next serpent that bites you will find its venom neutralized. This shield works only ONCE.`}
+      grahaStory=`${pName}, Shukra grants you a CELESTIAL SHIELD! The next serpent's venom will be neutralized. Works only ONCE.`}
     if(g.fx==="mars"){const ni=nearest(pos,cur,nP);if(ni>=0){nPos[ni]=Math.max(1,nPos[ni]-3);nPapa[cur]+=1;
       extras.push(`${players[ni]?.name} -3`);
-      grahaStory=`${pName}, you rolled Mangal, Mars! The warrior planet fills you with rage. ${players[ni]?.name} is PUSHED BACK 3 squares! But violence has a karmic price — you gain +1 PAPA.`}
-      else{grahaStory=`${pName}, you rolled Mangal, Mars! But there's no one nearby to strike. The warrior energy fades.`}}
+      grahaStory=`${pName}, Mangal fills you with fury! ${players[ni]?.name} is PUSHED BACK 3 squares. But violence costs +1 PAPA.`}
+      else{grahaStory=`${pName}, Mangal's fury finds no target.`}}
     if(g.fx==="mercury"){const ni=nearest(pos,cur,nP);
       if(ni>=0){const yourOldPos=oldP;const theirPos=nPos[ni];nPos[ni]=yourOldPos;newP=theirPos+tot;
         extras.push(`Swapped with ${players[ni]?.name}`);
-        grahaStory=`${pName}, you rolled Budh, Mercury! The trickster planet reverses fortune. You SWAP PLACES with ${players[ni]?.name}! You were at square ${yourOldPos} — now you jump to their square ${theirPos}, then move ${tot} forward.`}
-      else{grahaStory=`${pName}, you rolled Budh, Mercury! But there's no one nearby to swap with.`}}
+        grahaStory=`${pName}, Budh the Trickster reverses fortune! You SWAP with ${players[ni]?.name}. You were at ${yourOldPos}, now at ${theirPos}, then +${tot} forward!`}
+      else{grahaStory=`${pName}, Budh finds no one to swap with.`}}
     if(g.fx==="saturn"){newP=Math.max(1,oldP-3)+tot;nPapa[cur]+=1;extras.push("Back 3, +1 Papa");
-      grahaStory=`${pName}, you rolled Shani, Saturn! The lord of karma turns his fearsome gaze upon you. You are PUSHED BACK 3 squares and gain +1 PAPA. No one escapes Shani's justice.`}
+      grahaStory=`${pName}, SHANI DEV turns his gaze upon you! Pushed BACK 3 squares and +1 PAPA. No one escapes Saturn.`}
     if(g.fx==="rahu"){let maxI=0,minI=0;
       for(let i=0;i<nP;i++){if(nPos[i]>nPos[maxI])maxI=i;if(nPos[i]<nPos[minI])minI=i}
       if(maxI!==minI&&nPunya[maxI]>0){nPunya[maxI]-=1;nPunya[minI]+=1;
         extras.push(`${players[maxI]?.name}→${players[minI]?.name}`);
-        grahaStory=`${pName}, you rolled Rahu, the Shadow! The demon who swallows the sun STEALS 1 Punya from ${players[maxI]?.name} (the leader) and gives it to ${players[minI]?.name} (trailing behind). The first shall be last!`}
-      else{extras.push("No effect");grahaStory=`${pName}, you rolled Rahu, the Shadow! But Rahu finds no karma to steal this time.`}}
+        grahaStory=`RAHU STEALS 1 Punya from leader ${players[maxI]?.name} and gives to ${players[minI]?.name}! The first shall be last.`}
+      else{extras.push("No effect");grahaStory=`Rahu's shadow passes. No karma to steal.`}}
     if(g.fx==="ketu"){for(let i=0;i<nP;i++)nShield[i]=false;
       let closest=0;for(let i=0;i<nP;i++){if(nPos[i]>nPos[closest])closest=i}
       nPunya[closest]+=1;extras.push(`${players[closest]?.name} +1 Punya`);
-      grahaStory=`${pName}, you rolled Ketu, the Tail! The planet of detachment strips ALL SHIELDS from every seeker. But ${players[closest]?.name}, closest to Moksha, receives +1 Punya — Ketu rewards those ready to let go.`}
+      grahaStory=`KETU strips ALL SHIELDS! ${players[closest]?.name}, closest to Moksha, gains +1 Punya.`}
 
     // ═══ STEP 1: Show graha popup, wait for user dismiss ═══
     const startMovement=()=>{
@@ -567,13 +520,7 @@ export default function MokshaPatam(){
           else if(LADDERS[p]){const ld=LADDERS[p];const o=p;p=ld.to;eMsg=`🪔 ${o}→${p}`;nPunya[cur]+=1;play("ladder");
             showEvent({icon:"🪔",title:`${ld.skt} — ${ld.en}`,subtitle:`${pName}, the virtue of ${ld.en} lifts you! ${ld.tale} Rise from ${o} to ${p}. +1 PUNYA.`,color:"#f0d050",extra:`${o} → ${p}`},finishTurn);
           }
-          else if(DLM_SQ.includes(p)){
-            // No-repeat dharma: pick from unused pool, reset if all used
-            let pool=DILEMMAS.map((_,i)=>i).filter(i=>!usedDharma.includes(i));
-            if(pool.length===0){pool=DILEMMAS.map((_,i)=>i);setUsedDharma([]);}
-            const dIdx=pool[Math.floor(Math.random()*pool.length)];
-            const d=DILEMMAS[dIdx];
-            setUsedDharma(u=>[...u,dIdx]);
+          else if(DLM_SQ.includes(p)){const d=DILEMMAS[Math.floor(Math.random()*DILEMMAS.length)];
             eMsg=`⚖ ${d.en}`;play("dilemma");
             showEvent({icon:"⚖",title:`${d.t} — ${d.en}`,subtitle:`${pName} faces a Dharma Dilemma! Dismiss to read the story and choose your path.`,color:"#d0b870"},()=>{
               setDil({...d,pi:cur});finishTurn();
@@ -799,7 +746,7 @@ export default function MokshaPatam(){
   }
 
   // ═══ INFO ═══
-  const InfoPanel=useMemo(()=><div style={{position:"fixed",inset:0,background:"rgba(6,5,3,.95)",zIndex:300,overflowY:"auto",padding:"clamp(12px,3vw,24px)",animation:"fadeIn .3s ease"}}>
+  const InfoPanel=()=>(<div style={{position:"fixed",inset:0,background:"rgba(6,5,3,.95)",zIndex:300,overflowY:"auto",padding:"clamp(12px,3vw,24px)",animation:"fadeIn .3s ease"}}>
     <div style={{maxWidth:700,margin:"0 auto"}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
         <h2 style={{fontSize:"clamp(18px,4vw,28px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:0}}>Game Encyclopaedia</h2>
@@ -811,8 +758,8 @@ export default function MokshaPatam(){
         <p style={{fontSize:12,color:"#c0b080",lineHeight:1.7,margin:0}}>Determines movement forward.</p>
       </div>
       <div style={{background:"rgba(20,16,10,.5)",padding:14,borderRadius:4,marginBottom:20,border:"1px solid rgba(200,160,60,.1)"}}>
-        <div style={{fontSize:13,fontWeight:700,color:"#f0d050",marginBottom:8}}>🌌 GRAHA DIE (9 Navagraha)</div>
-        {GRAHA.map((g,i)=><div key={i} style={{display:"flex",gap:10,padding:"6px 0",borderBottom:i<8?"1px solid rgba(200,160,60,.06)":"none"}}>
+        <div style={{fontSize:13,fontWeight:700,color:"#f0d050",marginBottom:8}}>🌌 GRAHA DIE</div>
+        {GRAHA.map((g,i)=><div key={i} style={{display:"flex",gap:10,padding:"6px 0",borderBottom:i<5?"1px solid rgba(200,160,60,.06)":"none"}}>
           <span style={{fontSize:18,color:g.color,minWidth:24}}>{g.icon}</span>
           <span style={{fontSize:11,color:"#c0b080"}}><strong style={{color:g.color}}>{g.n} · {g.en}</strong> — {g.desc}</span>
         </div>)}
@@ -832,7 +779,7 @@ export default function MokshaPatam(){
         {d.c.map((ch,ci)=><div key={ci} style={{fontSize:10,color:ch.k==="punya"?"#f0d050":"#e08040",padding:"1px 0"}}>→ {ch.l}</div>)}
       </div>)}
     </div>
-  </div>,[]);
+  </div>);
 
   // ═══ GAME ═══
   if(screen!=="game"||players.length===0)return null;
@@ -842,7 +789,7 @@ export default function MokshaPatam(){
   return(
     <div style={{...PG,padding:"10px 8px",display:"flex",flexDirection:"column",alignItems:"center"}}>
       <style>{CSS}</style>
-      {showInfo&&InfoPanel}
+      {showInfo&&<InfoPanel/>}
       {eventPopup&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.6)",zIndex:200,pointerEvents:"auto"}} onClick={dismissEvent}>
         <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",animation:"popIn .4s ease forwards",background:"linear-gradient(180deg,#2a2015,#12100a)",border:`2px solid ${eventPopup.color}50`,borderRadius:8,padding:"28px 36px",textAlign:"center",maxWidth:380,width:"90vw",boxShadow:`0 0 60px ${eventPopup.color}30, 0 0 120px rgba(0,0,0,.8)`}} onClick={e=>e.stopPropagation()}>
           <div style={{fontSize:52,marginBottom:8,filter:`drop-shadow(0 0 20px ${eventPopup.color})`}}>{eventPopup.icon}</div>
