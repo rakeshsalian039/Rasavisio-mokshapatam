@@ -97,7 +97,7 @@ const STORY_PAGES=[
   hi:"अब, ध्यान से सुनो, क्योंकि जो मैं बताने वाली हूँ, वो तुम्हें सपनों में भी सताएगा। ये, सिर्फ सांप नहीं हैं। ये जीवित दुःस्वप्न हैं। दस विशाल नाग, समय जितने प्राचीन, सृष्टि के आरम्भ से इस पट पर कुंडली मारे बैठे हैं। हर एक, हर इंसान की आत्मा के अंदर की सबसे काली शक्ति का रूप। ऋषियों ने इन्हें नाम दिए। और वो नाम, तुम्हारा खून जमा देने चाहिए। क्रोध। वो आग जिसने दुर्योधन का मन जलाया और कुरु वंश को राख कर दिया। जब क्रोध हमला करता है, क्रोध का विष तुम्हारी हर उपलब्धि को गला देता है। लोभ। वो अतृप्त भूख जिसने शकुनि से पूरा राज्य जुए में हरवा दिया। इसके जबड़े तुम्हारी प्रगति को साबुत निगल जाते हैं। मोह। वो अंधापन जिसने धृतराष्ट्र को अपने ही पुत्रों को संसार का विनाश करते देखने से रोका। ये सांप, तुम्हारी आँखों पर लिपट जाता है। मात्सर्य। ईर्ष्या, वो हरा ज़हर जिसने दुर्योधन को इंद्रप्रस्थ की महिमा देखकर अंदर से खा लिया। काम। वासना। वो जलती आग जिसने कीचक को एक ही रात में नष्ट कर दिया। मद। घमंड। वो दस सिरों वाला अहंकार जिसने सोने की लंका को धराशायी किया और महान रावण को घुटनों पर ला दिया। भय। वही आतंक जिसने इतिहास के सबसे महान युद्ध से पहले अर्जुन के हाथ जमा दिए। द्वेष। नफ़रत। द्रोण और द्रुपद की वो प्राचीन दुश्मनी जो खून की पीढ़ियों तक गूंजती रही। आलस्य। कुम्भकर्ण की वो महानिद्रा, जो सोता रहा जबकि उसके चारों ओर धर्म टूट रहा था। और फिर, सबसे घातक। अहंकार। नागराज। वो जो फुसफुसाता है, मैं सबसे ऊपर हूँ। वो अहंकार जिसने स्वयं भगवान राम को भी चुनौती दी। जब कोई सांप तुम्हें पकड़ता है, तो सिर्फ पीछे नहीं ले जाता। वो अपने कुंडल तुम्हारी आत्मा पर कसता है। तुम्हें, चीखते हुए, गहराइयों में खींचता है। और तुम पर दाग लगाता है, पाप का। वो दाग, आसानी से नहीं धुलता। जितना ऊपर चढ़ो, उतनी हिंसक होगी गिरावट। और इस पूरे खेल में सिर्फ एक सुरक्षा है। शुक्र ग्रह का दिव्य कवच। लेकिन वो दिव्य सुरक्षा भी, सिर्फ एक बार, बचा सकती है। उसके बाद, तुम सांपों का सामना, अकेले करोगे।",
   body:"They are not just snakes.\nThey are living nightmares — ten colossal नाग Nāgas.\n\n𓆙 क्रोध Krodh — Wrath\n    The fire that burned the Kuru dynasty to ash\n𓆙 लोभ Lobh — Greed\n    The hunger that swallowed Shakuni's kingdom\n𓆙 मोह Moh — Delusion\n    The blindness that veiled Dhritarashtra's eyes\n𓆙 मात्सर्य Mātsarya — Envy\n    The green poison that consumed Duryodhana\n𓆙 काम Kām — Desire\n    The flame that destroyed Keechaka in one night\n𓆙 मद Mad — Pride\n    The arrogance that toppled golden Lankā\n𓆙 भय Bhay — Fear\n    The terror that froze Arjuna before war\n𓆙 द्वेष Dvesh — Hatred\n    The feud that echoed through generations\n𓆙 आलस्य Ālasya — Sloth\n    The sleep of Kumbhakarna while dharma crumbled\n𓆙 अहंकार Ahankār — Ego\n    The serpent king. The deadliest of all.\n\nWhen bitten → dragged into the depths + 2 पाप Pāp.\nOnly शुक्र Shukra shields you — once."},
   {title:"The Path to Moksha",icon:"ॐ",
-  en:"And now, the final truth. There are only two ways, to escape the wheel of Samsara. Two narrow paths, through an ocean of suffering. The First Path. Reach, Square 100, with an exact roll of the dice. Not one square more. Not one square less. But, even if you reach Moksha, the gates will not open for a tainted soul. Your Punya, your accumulated virtue, must equal, or exceed, your Paap, your sin. If you arrive at the threshold of liberation, carrying the weight of your failures, you will be cast back. Hurled down, to Square 67. To suffer again. To purify through pain. To crawl, once more, through the celestial realm, past the deadliest serpents, knowing that one wrong step sends you even further down. The Second Path. Far rarer. Far more beautiful. Far more impossible. If, at any moment during your journey, you accumulate 15 Punya, fifteen acts of pure virtue, you transcend the board entirely. You do not need Square 100. You do not need an exact roll. The board itself, dissolves beneath you, and your soul rises, into pure light. Instant Moksha. This is the ancient truth that the sages encoded into this game. That a truly pure soul, can break free from the cycle of existence, at any moment. From any square. Most seekers, will never achieve either path. They will wander this board for eternity, rising and falling, climbing and being devoured, forever caught between virtue and vice. But perhaps, you, will be different. Dharma, awaits. The dice, are ready. The serpents, can already smell your fear. Take a breath. And step, onto the board.",
+  en:"And now, the final truth. There are only two ways, to escape the wheel of Samsara. Two narrow paths, through an ocean of suffering. The First Path. Reach, Square 100, with an exact roll of the dice. Not one square more. Not one square less. But, even if you reach Moksha, the gates will not open for a tainted soul. Your Punya, your accumulated virtue, must equal, or exceed, your Paap, your sin. If you arrive at the threshold of liberation, carrying the weight of your failures, you will be cast back. Hurled down, to Square 67. To suffer again. To purify through pain. To crawl, once more, through the celestial realm, past the deadliest serpents, knowing that one wrong step sends you even further down. The Second Path. Far rarer. Far more beautiful. Far more impossible. If, at any moment during your journey, you accumulate 20 Punya, fifteen acts of pure virtue, you transcend the board entirely. You do not need Square 100. You do not need an exact roll. The board itself, dissolves beneath you, and your soul rises, into pure light. Instant Moksha. This is the ancient truth that the sages encoded into this game. That a truly pure soul, can break free from the cycle of existence, at any moment. From any square. Most seekers, will never achieve either path. They will wander this board for eternity, rising and falling, climbing and being devoured, forever caught between virtue and vice. But perhaps, you, will be different. Dharma, awaits. The dice, are ready. The serpents, can already smell your fear. Take a breath. And step, onto the board.",
   hi:"और अब, अंतिम सत्य। संसार के चक्र से बचने के सिर्फ दो रास्ते हैं। दुख के सागर से गुज़रते दो संकरे रास्ते। पहला रास्ता। खाना 100 पर पहुंचो, पासे के बिल्कुल सटीक अंक से। एक खाना ज़्यादा नहीं। एक खाना कम नहीं। लेकिन, अगर मोक्ष तक पहुंच भी गए, तो दूषित आत्मा के लिए द्वार नहीं खुलेंगे। तुम्हारा पुण्य, तुम्हारी संचित पवित्रता, तुम्हारे पाप से बराबर, या ज़्यादा होनी चाहिए। अगर मुक्ति की देहलीज़ पर पहुंचे, अपनी असफलताओं का बोझ लेकर, तो वापस फेंक दिए जाओगे। नीचे, खाना 67 पर। फिर से कष्ट भोगने। दर्द से शुद्ध होने। एक बार फिर, दिव्य लोक से रेंगते हुए गुज़रने, सबसे घातक सांपों के बीच से, ये जानते हुए कि एक ग़लत कदम तुम्हें और भी गहरे गिरा देगा। दूसरा रास्ता। बहुत दुर्लभ। बहुत सुंदर। बहुत असंभव। अगर, यात्रा के किसी भी क्षण, तुम 15 पुण्य इकट्ठा कर लो, शुद्ध पवित्रता के पंद्रह कर्म, तो तुम पट से पूरी तरह ऊपर उठ जाते हो। खाना 100 की ज़रूरत नहीं। सटीक पासे की ज़रूरत नहीं। पट ख़ुद, तुम्हारे नीचे से विलीन हो जाता है, और तुम्हारी आत्मा उठती है, शुद्ध प्रकाश में। तुरंत मोक्ष। यही वो प्राचीन सत्य है जो ऋषियों ने इस खेल में छिपाया। कि सच्ची शुद्ध आत्मा, अस्तित्व के चक्र से मुक्त हो सकती है, किसी भी क्षण। किसी भी खाने से। ज़्यादातर साधक, कभी कोई रास्ता नहीं पा सकेंगे। वो इस पट पर अनंतकाल भटकते रहेंगे, उठते और गिरते, चढ़ते और निगले जाते, हमेशा पुण्य और पाप के बीच फंसे। लेकिन शायद, तुम, अलग हो। धर्म, इंतज़ार कर रहा है। पासे, तैयार हैं। सांप, तुम्हारे डर की गंध पहले से सूंघ रहे हैं। एक सांस लो। और कदम रखो, पट पर।",
   body:"Two paths to escape the wheel of संसार Saṃsāra.\n\n꧁ प्रथम मार्ग · THE FIRST PATH ꧂\nReach Square 100 with an exact roll.\nपुण्य Punya must ≥ पाप Pāp.\nIf impure → cast back to Square 67.\n\n꧁ द्वितीय मार्ग · THE SECOND PATH ꧂\nAccumulate 15 पुण्य Punya at any moment.\nThe board dissolves. Instant मोक्ष Moksha.\n\nMost seekers will never achieve either.\n\nधर्म Dharma awaits.\nThe नवग्रह Navagraha are watching.\nThe serpents can smell your fear.\n\nStep onto the board."},
 ];
@@ -334,6 +334,7 @@ const CSS=`
 @keyframes fadeIn{0%{opacity:0}100%{opacity:1}}
 @keyframes popIn{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}60%{transform:translate(-50%,-50%) scale(1.05)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}
 @keyframes dharmaIn{0%{opacity:0;transform:scale(.3)}60%{transform:scale(1.05)}100%{opacity:1;transform:scale(1)}}
+@keyframes turnFlash{0%{opacity:0;transform:scale(.5)}20%{opacity:1;transform:scale(1.1)}80%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.8)}}
 .gb{background:transparent;border:1px solid rgba(200,160,60,.3);color:#e8c850;padding:12px 32px;font-size:14px;font-family:'Cinzel',serif;cursor:pointer;transition:all .4s;letter-spacing:3px;border-radius:2px}
 .gb:hover{background:rgba(200,160,60,.08);border-color:rgba(240,200,80,.6)}
 .gp{background:linear-gradient(180deg,rgba(200,160,60,.2),rgba(200,160,60,.08));border-color:rgba(200,160,60,.5)}
@@ -373,6 +374,8 @@ export default function MokshaPatam(){
   const[preloadPct,setPreloadPct]=useState(0);
   const[cacheCount,setCacheCount]=useState(0);
   const[eventPopup,setEventPopup]=useState(null);
+  const[turnBanner,setTurnBanner]=useState(null);
+  const[isCPU,setIsCPU]=useState([]); // tracks which players are CPU
 
   const sfx=useSound();
   const ambient=useAmbient();
@@ -416,8 +419,17 @@ export default function MokshaPatam(){
   const addPlayer=()=>{
     if(!tempName.trim()||tempChar<0)return;
     const ch=CHARS[tempChar];
-    const np=[...players,{name:tempName.trim(),char:ch,charIdx:tempChar}];
-    setPlayers(np);setUsedChars(u=>[...u,tempChar]);setTempName("");setTempChar(-1);
+    let np=[...players,{name:tempName.trim(),char:ch,charIdx:tempChar}];
+    let uc=[...usedChars,tempChar];
+    // If 1vsCPU, auto-add CPU player after human
+    if(isCPU[1]&&np.length===1){
+      const cpuIdx=CHARS.findIndex((_,i)=>!uc.includes(i));
+      if(cpuIdx>=0){
+        np.push({name:"Yama (CPU)",char:CHARS[cpuIdx],charIdx:cpuIdx,cpu:true});
+        uc.push(cpuIdx);
+      }
+    }
+    setPlayers(np);setUsedChars(uc);setTempName("");setTempChar(-1);
     if(np.length>=nP)setTimeout(()=>startGame(np),100);
   };
 
@@ -501,8 +513,8 @@ export default function MokshaPatam(){
           nPos[cur]=p;setPos([...nPos]);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setSkipA(nSkip);
           setMsg([eMsg,...extras].filter(Boolean).join(" · ")||`Moved to ${p}.`);
           setHist(h=>[...h.slice(-12),`${players[cur]?.name}→${p}`]);
-          if(nPunya[cur]>=15&&!win){setWin(cur);setMsg(`ॐ KARMA VICTORY! ${players[cur]?.name} transcends!`);play("victory");
-            showEvent({icon:"ॐ",title:"KARMA VICTORY",subtitle:`${players[cur]?.name} transcends with 15 Punya!`,color:"#f0d050"});
+          if(nPunya[cur]>=20&&!win){setWin(cur);setMsg(`ॐ KARMA VICTORY! ${players[cur]?.name} transcends!`);play("victory");
+            showEvent({icon:"ॐ",title:"KARMA VICTORY",subtitle:`${players[cur]?.name} transcends with 20 Punya!`,color:"#f0d050"});
           }
           if(!DLM_SQ.includes(p))setCur(c=>(c+1)%nP);
           setBusy(false);
@@ -522,9 +534,45 @@ export default function MokshaPatam(){
     const parts=[];if(fx.punya)parts.push(`+${fx.punya} Punya`);if(fx.papa)parts.push(`+${fx.papa} Papa`);if(fx.move)parts.push(fx.move>0?`advance ${fx.move}`:`back ${Math.abs(fx.move)}`);if(fx.skip)parts.push("skip next");if(fx.loseShield)parts.push("lost Shield");if(fx.giveShield)parts.push("gained Shield");
     setMsg(parts.join(", ")||"Balanced.");
     if(ch.k==="punya")play("ladder");else if(ch.k==="papa")play("snake");
-    if(np[dil.pi]>=15&&!win){setWin(dil.pi);setMsg(`ॐ KARMA VICTORY! ${players[dil.pi]?.name} transcends!`);play("victory")}
+    if(np[dil.pi]>=20&&!win){setWin(dil.pi);setMsg(`ॐ KARMA VICTORY! ${players[dil.pi]?.name} transcends!`);play("victory")}
     setDil(null);setCur(c=>(c+1)%nP);
   };
+
+  // ═══ TURN ANNOUNCEMENT + CPU AUTO-PLAY ═══
+  useEffect(()=>{
+    if(screen!=="game"||win!==null||players.length===0)return;
+    const p=players[cur];
+    if(!p)return;
+    // Show turn banner
+    setTurnBanner({name:p.name,icon:p.char.icon,color:p.char.color,cpu:!!p.cpu});
+    const bannerTimer=setTimeout(()=>setTurnBanner(null),2000);
+    // CPU auto-play after a delay
+    if(p.cpu&&!dil&&!busy){
+      const cpuTimer=setTimeout(()=>{doRoll()},2500);
+      return()=>{clearTimeout(bannerTimer);clearTimeout(cpuTimer)};
+    }
+    return()=>clearTimeout(bannerTimer);
+  },[cur,screen,win,players,dil,busy]);
+
+  // CPU auto-solve dharma dilemmas (picks randomly, leans papa for difficulty)
+  useEffect(()=>{
+    if(!dil||!players[dil.pi]?.cpu)return;
+    const cpuTimer=setTimeout(()=>{
+      // CPU picks papa choice 60% of time (it's the god of death after all)
+      const pick=Math.random()<0.6?1:0;
+      solvD(pick);
+    },2500);
+    return()=>clearTimeout(cpuTimer);
+  },[dil]);
+
+  // ═══ DHARMA VOICE — read aloud when card appears ═══
+  useEffect(()=>{
+    if(!dil||muted)return;
+    const p=players[dil.pi];
+    const voiceText=`Dharma Dilemma. ${dil.en}. ${dil.txt}. Your choices are: ${dil.c.map((c,i)=>c.l).join('. Or. ')}`;
+    VoiceEngine.speak(voiceText,chosenLang);
+    return()=>VoiceEngine.stop();
+  },[dil,muted]);
 
   const board=useMemo(()=>{const s=[];for(let r=0;r<10;r++)for(let c=0;c<10;c++){const a=9-r;s.push({num:a*10+(a%2===0?c:9-c)+1})}return s},[]);
   const conns=useMemo(()=>{const l=[];Object.entries(SNAKES).forEach(([f,{to}])=>{const a=sqP(+f),b=sqP(to);l.push({f:a,t:b,type:"s",id:+f})});Object.entries(LADDERS).forEach(([f,{to}])=>{const a=sqP(+f),b=sqP(to);l.push({f:a,t:b,type:"l",id:+f})});return l},[]);
@@ -624,7 +672,10 @@ export default function MokshaPatam(){
         <h2 style={{fontSize:"clamp(20px,4vw,32px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"0 0 8px"}}>How Many Seekers?</h2>
         <p style={{fontSize:13,opacity:.4,marginBottom:24,letterSpacing:3}}>Each soul walks a different path</p>
         <div style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap"}}>
-          {[2,3,4].map(n=><button key={n} className="gb gp" onClick={()=>{setNP(n);setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("setup")}} style={{padding:"18px 50px",fontSize:18}}>{n}</button>)}
+          <button className="gb gp" onClick={()=>{setNP(2);setIsCPU([false,true]);setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("setup")}} style={{padding:"18px 36px",fontSize:16}}>
+            <div style={{fontSize:22,marginBottom:4}}>🤖</div>1 vs CPU
+          </button>
+          {[2,3,4].map(n=><button key={n} className="gb" onClick={()=>{setNP(n);setIsCPU(Array(n).fill(false));setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("setup")}} style={{padding:"18px 36px",fontSize:16}}>{n} Players</button>)}
         </div>
         <div style={{marginTop:24}}><InstaBadge/></div>
       </div>
@@ -732,6 +783,13 @@ export default function MokshaPatam(){
           <div style={{marginTop:14,fontSize:9,opacity:.3,letterSpacing:2}}>TAP TO DISMISS</div>
         </div>
       </div>}
+      {turnBanner&&!dil&&<div style={{position:"fixed",inset:0,zIndex:180,display:"flex",alignItems:"center",justifyContent:"center",pointerEvents:"none"}}>
+        <div style={{animation:"turnFlash 2s ease forwards",background:"linear-gradient(180deg,rgba(20,16,10,.95),rgba(12,10,7,.95))",border:`2px solid ${turnBanner.color}60`,borderRadius:12,padding:"24px 48px",textAlign:"center",boxShadow:`0 0 60px ${turnBanner.color}30`}}>
+          <div style={{fontSize:44,marginBottom:4}}>{turnBanner.icon}</div>
+          <div style={{fontSize:22,fontFamily:"'Yatra One',serif",color:turnBanner.color,letterSpacing:3}}>{turnBanner.name}</div>
+          <div style={{fontSize:11,opacity:.5,letterSpacing:4,marginTop:4}}>{turnBanner.cpu?"🤖 CPU THINKING...":"YOUR TURN"}</div>
+        </div>
+      </div>}
       <div style={{textAlign:"center",marginBottom:4,width:"100%"}}>
         <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:10}}>
           <div style={{fontSize:"clamp(18px,3.5vw,28px)",fontFamily:"'Yatra One',serif",letterSpacing:3,color:"#f0d050"}}>मोक्षपटम्</div>
@@ -768,9 +826,10 @@ export default function MokshaPatam(){
                   {sn&&<><span style={{fontSize:"clamp(8px,1.6vw,14px)",lineHeight:1}}>𓆙</span><span style={{fontSize:"clamp(6px,1vw,9px)",color:"#ffc050",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1,textShadow:"0 0 8px #000,0 1px 3px #000"}}>{sn.skt}</span><span style={{fontSize:"clamp(4px,.7vw,7px)",color:"#ffa840",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1,textShadow:"0 0 6px #000"}}>{sn.en}</span></>}
                   {ld&&<><span style={{fontSize:"clamp(7px,1.4vw,12px)",lineHeight:1}}>🪔</span><span style={{fontSize:"clamp(6px,1vw,9px)",color:"#ffe070",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1,textShadow:"0 0 8px #000"}}>{ld.skt}</span><span style={{fontSize:"clamp(4px,.7vw,7px)",color:"#f0d060",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1,textShadow:"0 0 6px #000"}}>{ld.en}</span></>}
                   {dl&&<><span style={{fontSize:"clamp(8px,1.5vw,13px)",lineHeight:1}}>⚖</span><span style={{fontSize:"clamp(5px,.8vw,7px)",color:"#c8a0f0",fontFamily:"'Cinzel',serif",fontWeight:900,textShadow:"0 0 8px #000",letterSpacing:1}}>DHARMA</span></>}
-                  {ph.length>0&&<div style={{position:"absolute",bottom:0,left:"50%",transform:"translateX(-50%)",display:"flex",gap:1,zIndex:15}}>
-                    {ph.map(pi=>{const c=players[pi]?.char;const isMoving=pi===cur&&busy;return <div key={pi} style={{display:"flex",flexDirection:"column",alignItems:"center",transition:"all .25s ease",transform:isMoving?"scale(1.3) translateY(-2px)":"scale(1)"}}>
-                      <div style={{width:"clamp(13px,2.2vw,20px)",height:"clamp(13px,2.2vw,20px)",borderRadius:"50% 50% 40% 40%",background:`radial-gradient(circle at 40% 35%,${c?.color||"#fff"},rgba(0,0,0,.7))`,border:`1.5px solid ${c?.color||"#fff"}`,boxShadow:`0 0 ${isMoving?14:5}px ${c?.color||"#fff"}${isMoving?"cc":"50"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"clamp(7px,1.2vw,12px)",lineHeight:1}}>{c?.icon}</div>
+                  {ph.length>0&&<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",gap:2,zIndex:15,pointerEvents:"none"}}>
+                    {ph.map(pi=>{const c=players[pi]?.char;const isMoving=pi===cur&&busy;const isActive=pi===cur;return <div key={pi} style={{display:"flex",flexDirection:"column",alignItems:"center",transition:"all .3s ease",transform:isMoving?"scale(1.5) translateY(-4px)":isActive?"scale(1.2)":"scale(1)",zIndex:isActive?20:15,filter:isActive?"drop-shadow(0 0 8px "+c?.color+")":"none"}}>
+                      <div style={{width:"clamp(18px,3vw,28px)",height:"clamp(18px,3vw,28px)",borderRadius:"50%",background:`radial-gradient(circle at 35% 30%,${c?.color||"#fff"},#1a1408)`,border:`2px solid ${c?.color||"#fff"}`,boxShadow:`0 0 ${isMoving?18:isActive?10:4}px ${c?.color||"#fff"}${isMoving?"ee":isActive?"aa":"40"}, inset 0 -3px 6px rgba(0,0,0,.4)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"clamp(10px,1.8vw,16px)",lineHeight:1}}>{c?.icon}</div>
+                      {isActive&&<div style={{fontSize:"clamp(5px,.7vw,7px)",color:c?.color,fontWeight:900,marginTop:1,textShadow:"0 0 4px #000,0 0 8px #000",whiteSpace:"nowrap",letterSpacing:1}}>{players[pi]?.name?.slice(0,5)}</div>}
                     </div>})}
                   </div>}
                 </div>);
@@ -849,7 +908,7 @@ export default function MokshaPatam(){
                 <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
                   <span style={{fontSize:20}}>{pl.char.icon}</span>
                   <div style={{flex:1}}>
-                    <div style={{fontSize:13,color:pl.char.color,fontWeight:700}}>{pl.name}{isActive?" ◄":""}{shieldA[i]?" 🛡":""}{skipA[i]?" ⏭":""}</div>
+                    <div style={{fontSize:13,color:pl.char.color,fontWeight:700}}>{pl.name}{pl.cpu?" 🤖":""}{isActive?" ◄":""}{shieldA[i]?" 🛡":""}{skipA[i]?" ⏭":""}</div>
                     <div style={{fontSize:10,opacity:.5,letterSpacing:1}}>Square {pos[i]||1} · {rlm(pos[i]||1)==="bhuloka"?"भूलोक":rlm(pos[i]||1)==="antarloka"?"अन्तर्लोक":"स्वर्गलोक"}</div>
                   </div>
                 </div>
