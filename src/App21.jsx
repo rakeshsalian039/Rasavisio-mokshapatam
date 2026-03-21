@@ -178,14 +178,8 @@ function useAmbient(){
       playing.current=false;audioRef.current=null;
     }catch(e){}
   },[]);
-  // Mobile browsers (iOS/Android) ignore volume changes on audio elements.
-  // So we pause/resume instead of duck/unduck for reliable behavior.
-  const duck=useCallback(()=>{
-    if(audioRef.current){try{audioRef.current.pause()}catch(e){}}
-  },[]);
-  const unduck=useCallback(()=>{
-    if(audioRef.current&&playing.current){try{audioRef.current.play().catch(()=>{})}catch(e){}}
-  },[]);
+  const duck=useCallback(()=>{if(audioRef.current)audioRef.current.volume=0.01},[]);
+  const unduck=useCallback(()=>{if(audioRef.current)audioRef.current.volume=0.08},[]);
   return{start,stop,duck,unduck,playing};
 }
 
