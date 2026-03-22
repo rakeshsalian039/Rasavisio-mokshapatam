@@ -661,7 +661,7 @@ export default function MokshaPatam(){
 
   // ═══ GLOBAL OVERLAYS — rendered on every screen ═══
   const globalOverlays=<>
-    {globalOverlays}
+    <style>{CSS}</style>
     {showInfo&&<div key="info-panel" style={{position:"fixed",inset:0,background:"rgba(6,5,3,.95)",zIndex:300,overflowY:"auto",padding:"clamp(12px,3vw,24px)",animation:"fadeIn .3s ease"}}>
       <div style={{maxWidth:700,margin:"0 auto"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
