@@ -494,7 +494,7 @@ export default function MokshaPatam(){
     if(isCPU[1]&&np.length===1){
       const cpuIdx=CHARS.findIndex((_,i)=>!uc.includes(i));
       if(cpuIdx>=0){
-        np.push({name:"Yama",char:{...CHARS[cpuIdx],icon:"☠️",name:"God of Death",skt:"यम",color:"#a04040"},charIdx:cpuIdx,cpu:true});
+        np.push({name:"Yama",char:{...CHARS[cpuIdx],icon:"🐂",name:"God of Death",skt:"यम",color:"#a04040"},charIdx:cpuIdx,cpu:true});
         uc.push(cpuIdx);
       }
     }
@@ -659,72 +659,10 @@ export default function MokshaPatam(){
   const conns=useMemo(()=>{const l=[];Object.entries(SNAKES).forEach(([f,{to}])=>{const a=sqP(+f),b=sqP(to);l.push({f:a,t:b,type:"s",id:+f})});Object.entries(LADDERS).forEach(([f,{to}])=>{const a=sqP(+f),b=sqP(to);l.push({f:a,t:b,type:"l",id:+f})});return l},[]);
   const shl=SHLOKAS[shI];
 
-  // ═══ GLOBAL OVERLAYS — rendered on every screen ═══
-  const globalOverlays=<>
-    {globalOverlays}
-    {showInfo&&<div key="info-panel" style={{position:"fixed",inset:0,background:"rgba(6,5,3,.95)",zIndex:300,overflowY:"auto",padding:"clamp(12px,3vw,24px)",animation:"fadeIn .3s ease"}}>
-      <div style={{maxWidth:700,margin:"0 auto"}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
-          <h2 style={{fontSize:"clamp(18px,4vw,28px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:0}}>Game Encyclopaedia</h2>
-          <button className="gb" onClick={()=>setShowInfo(false)} style={{padding:"6px 16px",fontSize:12}}>✕ Close</button>
-        </div>
-        <h3 style={{fontSize:15,color:"#f0d050",letterSpacing:3,borderBottom:"1px solid rgba(200,160,60,.15)",paddingBottom:6,marginBottom:10}}>THE TWO DICE</h3>
-        <div style={{background:"rgba(20,16,10,.5)",padding:14,borderRadius:4,marginBottom:8,border:"1px solid rgba(200,160,60,.1)"}}>
-          <div style={{fontSize:13,fontWeight:700,color:"#f0d050",marginBottom:4}}>🎲 KARMA DIE (1-6)</div>
-          <p style={{fontSize:12,color:"#c0b080",lineHeight:1.7,margin:0}}>Determines movement forward.</p>
-        </div>
-        <div style={{background:"rgba(20,16,10,.5)",padding:14,borderRadius:4,marginBottom:20,border:"1px solid rgba(200,160,60,.1)"}}>
-          <div style={{fontSize:13,fontWeight:700,color:"#f0d050",marginBottom:8}}>🌌 GRAHA DIE (9 Navagraha)</div>
-          {GRAHA.map((g,i)=><div key={i} style={{display:"flex",gap:10,padding:"6px 0",borderBottom:i<8?"1px solid rgba(200,160,60,.06)":"none"}}>
-            <span style={{fontSize:18,color:g.color,minWidth:24}}>{g.icon}</span>
-            <span style={{fontSize:11,color:"#c0b080"}}><strong style={{color:g.color}}>{g.n} · {g.en}</strong> — {g.desc}</span>
-          </div>)}
-        </div>
-        <h3 style={{fontSize:15,color:"#e08040",letterSpacing:3,borderBottom:"1px solid rgba(200,160,60,.15)",paddingBottom:6,marginBottom:10}}>𓆙 SERPENTS</h3>
-        {Object.entries(SNAKES).map(([sq,sn])=><div key={sq} style={{padding:"6px 0",borderBottom:"1px solid rgba(200,160,60,.04)",fontSize:11}}>
-          <span style={{color:"#e08040",fontWeight:700}}>Sq {sq}</span> <span style={{fontFamily:"'Noto Serif Devanagari',serif",color:"#ffc050"}}>{sn.skt}</span> {sn.en} → {sn.to}
-        </div>)}
-        <h3 style={{fontSize:15,color:"#f0d050",letterSpacing:3,borderBottom:"1px solid rgba(200,160,60,.15)",paddingBottom:6,margin:"16px 0 10px"}}>🪔 VIRTUES</h3>
-        {Object.entries(LADDERS).map(([sq,ld])=><div key={sq} style={{padding:"6px 0",borderBottom:"1px solid rgba(200,160,60,.04)",fontSize:11}}>
-          <span style={{color:"#f0d050",fontWeight:700}}>Sq {sq}</span> <span style={{fontFamily:"'Noto Serif Devanagari',serif",color:"#ffe070"}}>{ld.skt}</span> {ld.en} → {ld.to}
-        </div>)}
-        <h3 style={{fontSize:15,color:"#d0b870",letterSpacing:3,borderBottom:"1px solid rgba(200,160,60,.15)",paddingBottom:6,margin:"16px 0 10px"}}>⚖ DHARMA CARDS ({DILEMMAS.length})</h3>
-        {DILEMMAS.map((d,i)=><div key={i} style={{background:"rgba(20,16,10,.4)",border:"1px solid rgba(200,160,60,.08)",padding:10,borderRadius:4,marginBottom:8}}>
-          <div style={{fontSize:12,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:700,color:"#f0d050"}}>{d.t} — <span style={{fontFamily:"'Cinzel',serif",fontSize:11,opacity:.7}}>{d.en}</span></div>
-          <p style={{fontSize:11,color:"#c0b080",lineHeight:1.6,margin:"4px 0",fontStyle:"italic"}}>{d.txt}</p>
-          {d.c.map((ch,ci)=><div key={ci} style={{fontSize:10,color:ch.k==="punya"?"#f0d050":"#e08040",padding:"1px 0"}}>→ {ch.l}</div>)}
-        </div>)}
-      </div>
-    </div>}
-    {showGuide&&<div key="guide-panel" style={{position:"fixed",inset:0,background:"rgba(6,5,3,.95)",zIndex:300,overflowY:"auto",padding:"clamp(12px,3vw,24px)",animation:"fadeIn .3s ease"}}>
-      <div style={{maxWidth:700,margin:"0 auto"}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
-          <h2 style={{fontSize:"clamp(18px,4vw,28px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:0}}>📜 How to Play</h2>
-          <button className="gb" onClick={()=>setShowGuide(false)} style={{padding:"6px 16px",fontSize:12}}>✕ Close</button>
-        </div>
-        {[
-          {t:"🎯 Goal",d:"Reach Square 100 (Moksha) with your Punya (virtue) equal to or greater than your Papa (sin). Alternatively, collect 20 Punya at any point for an instant Karma Victory — the board dissolves and your soul transcends!"},
-          {t:"🎲 Your Turn",d:"Each turn you roll TWO dice simultaneously: the Karma Die (1-6, determines how many squares you move) and the Graha Die (one of 9 Navagraha planets, each with a cosmic effect). A popup will explain exactly what happened — read it carefully before dismissing."},
-          {t:"☀ The 9 Navagraha",d:"Surya = +2 steps. Chandra = +1 Punya. Mangal = push rival back 3 (+1 Papa to you). Budh = swap positions. Brihaspati = ALL +1 Punya. Shukra = Shield. Shani = back 3 +1 Papa. Rahu = steal Punya from leader. Ketu = strip all Shields."},
-          {t:"𓆙 Serpents (Red)",d:"10 Nāga serpents named after vices. Landing = dragged DOWN + 2 Papa."},
-          {t:"🪔 Virtues (Gold)",d:"10 divine ladders of virtue. Landing = lifted UP + 1 Punya."},
-          {t:"⚖ Dharma (Purple)",d:"Moral dilemmas from Mahābhārata & real life. 🙏 Virtue = Punya but costs position. 💀 Temptation = advance fast but gain Papa."},
-          {t:"🛡 Shield",d:"Shukra grants a one-time shield blocking the next serpent. Lost after use or when Ketu appears."},
-          {t:"ॐ Moksha (Sq 100)",d:"Land exactly on 100. If Punya ≥ Papa → WIN. If Papa > Punya → back to 67."},
-          {t:"⚡ Karma Victory",d:"Accumulate 20 Punya from any square = instant Moksha. The rarer, beautiful path."},
-          {t:"☠️ Playing vs Yama",d:"Solo mode against the God of Death. Yama favours 💀 Papa 60% of the time. Can you stay purer than Death?"},
-        ].map((s,i)=><div key={i} style={{background:"rgba(20,16,10,.5)",border:"1px solid rgba(200,160,60,.1)",padding:14,borderRadius:4,marginBottom:10}}>
-          <div style={{fontSize:14,fontWeight:700,color:"#f0d050",marginBottom:6}}>{s.t}</div>
-          <p style={{fontSize:12,color:"#c0b080",lineHeight:1.8,margin:0}}>{s.d}</p>
-        </div>)}
-      </div>
-    </div>}
-  </>;
-
   // ═══ TITLE ═══
   if(screen==="title")return(
     <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20}}>
-      {globalOverlays}
+      <style>{CSS}</style>
       <div style={{position:"fixed",inset:0,background:"radial-gradient(ellipse at center,transparent 35%,rgba(8,6,3,.8) 100%)",pointerEvents:"none"}}/>
       <div style={{fontSize:52,marginBottom:12,animation:"pulse 3s ease infinite"}}>🔱</div>
       <h1 style={{fontSize:"clamp(38px,9vw,72px)",fontFamily:"'Yatra One',serif",margin:"0 0 6px",letterSpacing:4,textShadow:"0 2px 10px rgba(0,0,0,.7)",color:"#f0d050",animation:"reveal 1.5s ease"}}>मोक्षपटम्</h1>
@@ -763,11 +701,7 @@ export default function MokshaPatam(){
         <button className="gb" onClick={()=>{ambient.start();setScreen("pickcount")}} style={{fontSize:14,padding:"14px 32px",letterSpacing:3,opacity:.6}}>⚡ SKIP TO GAME</button>
       </div>
       <div style={{marginTop:10,opacity:.15,fontSize:9}}>Screen text is always English · Voice follows your choice</div>
-      <div style={{display:"flex",gap:10,justifyContent:"center",marginTop:16,flexWrap:"wrap"}}>
-        <button onClick={()=>setShowGuide(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📜 How to Play</button>
-        <button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📖 Encyclopaedia</button>
-      </div>
-      <div style={{marginTop:10}}><InstaBadge/></div>
+      <div style={{marginTop:20}}><InstaBadge/></div>
     </div>
   );
 
@@ -776,7 +710,7 @@ export default function MokshaPatam(){
     const pg=STORY_PAGES[storyPage];
     return(
       <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",padding:"clamp(16px,4vw,40px)",overflowY:"auto"}}>
-        {globalOverlays}
+        <style>{CSS}</style>
         <div style={{maxWidth:640,width:"100%",animation:"slideUp .8s ease"}} key={storyPage}>
           <div style={{textAlign:"center",marginBottom:24}}>
             <div style={{fontSize:40,marginBottom:8}}>{pg.icon}</div>
@@ -805,7 +739,7 @@ export default function MokshaPatam(){
               <button className="gb gp" onClick={()=>{VoiceEngine.stop();setScreen("pickcount")}}>Choose Seekers →</button>}
           </div>
         </div>
-        <div style={{textAlign:"center",marginTop:12}}><div style={{display:"flex",gap:10,justifyContent:"center",marginBottom:8,flexWrap:"wrap"}}><button onClick={()=>setShowGuide(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📜 How to Play</button><button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📖 Encyclopaedia</button></div><InstaBadge/></div>
+        <div style={{textAlign:"center",marginTop:16}}><InstaBadge/></div>
       </div>
     );
   }
@@ -813,26 +747,18 @@ export default function MokshaPatam(){
   // ═══ PICK COUNT ═══
   if(screen==="pickcount")return(
     <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20}}>
-      {globalOverlays}
+      <style>{CSS}</style>
       <div style={{animation:"slideUp .8s ease",textAlign:"center"}}>
         <div style={{fontSize:32,marginBottom:12}}>🔱</div>
         <h2 style={{fontSize:"clamp(20px,4vw,32px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"0 0 8px"}}>How Many Seekers?</h2>
         <p style={{fontSize:13,opacity:.4,marginBottom:24,letterSpacing:3}}>Each soul walks a different path</p>
         <div style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap"}}>
-          <button className="gb gp" onClick={()=>{
-            setNP(2);setIsCPU([false,true]);setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("setup");
-            if(!muted){
-              const yamaVoice=chosenLang==='hi'
-                ?'तुम मुझसे खेलना चाहते हो? मैं यमराज हूँ। मृत्यु का देवता। हर आत्मा जो इस पट पर चलती है, अंत में मेरे पास आती है। तुम अलग नहीं हो। खेलो। मैं इंतज़ार करूँगा।'
-                :'So, you dare to challenge me? I am Yama. The God of Death. Every soul that walks this board eventually comes to me. You are no different. I have been waiting since the beginning of time. Play your little game. I will be watching every move. And when your karma falters, I will be there.';
-              setTimeout(()=>VoiceEngine.speak(yamaVoice,chosenLang),500);
-            }
-          }} style={{padding:"18px 36px",fontSize:16}}>
-            <div style={{fontSize:22,marginBottom:4}}>☠️</div>1 vs Yama
+          <button className="gb gp" onClick={()=>{setNP(2);setIsCPU([false,true]);setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("setup")}} style={{padding:"18px 36px",fontSize:16}}>
+            <div style={{fontSize:22,marginBottom:4}}>🐂</div>1 vs Yama
           </button>
           {[2,3,4].map(n=><button key={n} className="gb" onClick={()=>{setNP(n);setIsCPU(Array(n).fill(false));setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("setup")}} style={{padding:"18px 36px",fontSize:16}}>{n} Players</button>)}
         </div>
-        <div style={{marginTop:16}}><div style={{display:"flex",gap:10,justifyContent:"center",marginBottom:8,flexWrap:"wrap"}}><button onClick={()=>setShowGuide(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📜 How to Play</button><button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📖 Encyclopaedia</button></div><InstaBadge/></div>
+        <div style={{marginTop:24}}><InstaBadge/></div>
       </div>
     </div>
   );
@@ -842,7 +768,7 @@ export default function MokshaPatam(){
     const pidx=players.length;
     return(
       <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",padding:"clamp(16px,4vw,32px)",overflowY:"auto"}}>
-        {globalOverlays}
+        <style>{CSS}</style>
         <div style={{maxWidth:680,width:"100%",animation:"slideUp .6s ease"}} key={pidx}>
           <div style={{textAlign:"center",marginBottom:20}}>
             <div style={{fontSize:10,opacity:.3,letterSpacing:5}}>SEEKER {pidx+1} OF {nP}</div>
@@ -878,7 +804,7 @@ export default function MokshaPatam(){
             <div style={{fontSize:9,letterSpacing:3,opacity:.3,marginBottom:6}}>CHOSEN</div>
             {players.map((p,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"3px 0",opacity:.6}}><span style={{fontSize:16}}>{p.char.icon}</span><span style={{fontSize:12,color:p.char.color}}>{p.name}</span><span style={{fontSize:10,opacity:.4}}>— {p.char.name}</span></div>)}
           </div>}
-          <div style={{textAlign:"center",marginTop:12}}><div style={{display:"flex",gap:10,justifyContent:"center",marginBottom:8,flexWrap:"wrap"}}><button onClick={()=>setShowGuide(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📜 How to Play</button><button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📖 Encyclopaedia</button></div><InstaBadge/></div>
+          <div style={{textAlign:"center",marginTop:16}}><InstaBadge/></div>
         </div>
       </div>
     );
@@ -892,7 +818,64 @@ export default function MokshaPatam(){
 
   return(
     <div style={{...PG,padding:"10px 8px",display:"flex",flexDirection:"column",alignItems:"center"}}>
-      {globalOverlays}
+      <style>{CSS}</style>
+      {showInfo&&<div key="info-panel" style={{position:"fixed",inset:0,background:"rgba(6,5,3,.95)",zIndex:300,overflowY:"auto",padding:"clamp(12px,3vw,24px)",animation:"fadeIn .3s ease"}}>
+        <div style={{maxWidth:700,margin:"0 auto"}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+            <h2 style={{fontSize:"clamp(18px,4vw,28px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:0}}>Game Encyclopaedia</h2>
+            <button className="gb" onClick={()=>setShowInfo(false)} style={{padding:"6px 16px",fontSize:12}}>✕ Close</button>
+          </div>
+          <h3 style={{fontSize:15,color:"#f0d050",letterSpacing:3,borderBottom:"1px solid rgba(200,160,60,.15)",paddingBottom:6,marginBottom:10}}>THE TWO DICE</h3>
+          <div style={{background:"rgba(20,16,10,.5)",padding:14,borderRadius:4,marginBottom:8,border:"1px solid rgba(200,160,60,.1)"}}>
+            <div style={{fontSize:13,fontWeight:700,color:"#f0d050",marginBottom:4}}>🎲 KARMA DIE (1-6)</div>
+            <p style={{fontSize:12,color:"#c0b080",lineHeight:1.7,margin:0}}>Determines movement forward.</p>
+          </div>
+          <div style={{background:"rgba(20,16,10,.5)",padding:14,borderRadius:4,marginBottom:20,border:"1px solid rgba(200,160,60,.1)"}}>
+            <div style={{fontSize:13,fontWeight:700,color:"#f0d050",marginBottom:8}}>🌌 GRAHA DIE (9 Navagraha)</div>
+            {GRAHA.map((g,i)=><div key={i} style={{display:"flex",gap:10,padding:"6px 0",borderBottom:i<8?"1px solid rgba(200,160,60,.06)":"none"}}>
+              <span style={{fontSize:18,color:g.color,minWidth:24}}>{g.icon}</span>
+              <span style={{fontSize:11,color:"#c0b080"}}><strong style={{color:g.color}}>{g.n} · {g.en}</strong> — {g.desc}</span>
+            </div>)}
+          </div>
+          <h3 style={{fontSize:15,color:"#e08040",letterSpacing:3,borderBottom:"1px solid rgba(200,160,60,.15)",paddingBottom:6,marginBottom:10}}>𓆙 SERPENTS</h3>
+          {Object.entries(SNAKES).map(([sq,sn])=><div key={sq} style={{padding:"6px 0",borderBottom:"1px solid rgba(200,160,60,.04)",fontSize:11}}>
+            <span style={{color:"#e08040",fontWeight:700}}>Sq {sq}</span> <span style={{fontFamily:"'Noto Serif Devanagari',serif",color:"#ffc050"}}>{sn.skt}</span> {sn.en} → {sn.to}
+          </div>)}
+          <h3 style={{fontSize:15,color:"#f0d050",letterSpacing:3,borderBottom:"1px solid rgba(200,160,60,.15)",paddingBottom:6,margin:"16px 0 10px"}}>🪔 VIRTUES</h3>
+          {Object.entries(LADDERS).map(([sq,ld])=><div key={sq} style={{padding:"6px 0",borderBottom:"1px solid rgba(200,160,60,.04)",fontSize:11}}>
+            <span style={{color:"#f0d050",fontWeight:700}}>Sq {sq}</span> <span style={{fontFamily:"'Noto Serif Devanagari',serif",color:"#ffe070"}}>{ld.skt}</span> {ld.en} → {ld.to}
+          </div>)}
+          <h3 style={{fontSize:15,color:"#d0b870",letterSpacing:3,borderBottom:"1px solid rgba(200,160,60,.15)",paddingBottom:6,margin:"16px 0 10px"}}>⚖ DHARMA CARDS ({DILEMMAS.length})</h3>
+          {DILEMMAS.map((d,i)=><div key={i} style={{background:"rgba(20,16,10,.4)",border:"1px solid rgba(200,160,60,.08)",padding:10,borderRadius:4,marginBottom:8}}>
+            <div style={{fontSize:12,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:700,color:"#f0d050"}}>{d.t} — <span style={{fontFamily:"'Cinzel',serif",fontSize:11,opacity:.7}}>{d.en}</span></div>
+            <p style={{fontSize:11,color:"#c0b080",lineHeight:1.6,margin:"4px 0",fontStyle:"italic"}}>{d.txt}</p>
+            {d.c.map((ch,ci)=><div key={ci} style={{fontSize:10,color:ch.k==="punya"?"#f0d050":"#e08040",padding:"1px 0"}}>→ {ch.l}</div>)}
+          </div>)}
+        </div>
+      </div>}
+      {showGuide&&<div key="guide-panel" style={{position:"fixed",inset:0,background:"rgba(6,5,3,.95)",zIndex:300,overflowY:"auto",padding:"clamp(12px,3vw,24px)",animation:"fadeIn .3s ease"}}>
+        <div style={{maxWidth:700,margin:"0 auto"}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+            <h2 style={{fontSize:"clamp(18px,4vw,28px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:0}}>📜 How to Play</h2>
+            <button className="gb" onClick={()=>setShowGuide(false)} style={{padding:"6px 16px",fontSize:12}}>✕ Close</button>
+          </div>
+          {[
+            {t:"🎯 Goal",d:"Reach Square 100 (Moksha) with your Punya (virtue) equal to or greater than your Papa (sin). Alternatively, collect 20 Punya at any point for an instant Karma Victory — the board dissolves and your soul transcends!"},
+            {t:"🎲 Your Turn",d:"Each turn you roll TWO dice simultaneously: the Karma Die (1-6, determines how many squares you move) and the Graha Die (one of 9 Navagraha planets, each with a cosmic effect). A popup will explain exactly what happened — read it carefully before dismissing."},
+            {t:"☀ The 9 Navagraha (Planet Effects)",d:"Surya (Sun) = +2 extra steps. Chandra (Moon) = +1 Punya. Mangal (Mars) = push nearest rival back 3, but you get +1 Papa. Budh (Mercury) = swap positions with nearest seeker. Brihaspati (Jupiter) = ALL players +1 Punya. Shukra (Venus) = get a serpent Shield. Shani (Saturn) = pushed back 3 + 1 Papa. Rahu = steals Punya from leader, gives to trailer. Ketu = strips all Shields."},
+            {t:"𓆙 Serpents (Red Squares)",d:"10 Nāga serpents lurk on the board — each named after a vice (Wrath, Greed, Ego, etc). Landing on one drags you DOWN to a lower square and stains you with +2 Papa. The higher you are, the harder you fall."},
+            {t:"🪔 Virtues (Gold Squares)",d:"10 divine ladders represent virtues (Compassion, Truth, Devotion, etc). Landing on one lifts you UP to a higher square and grants +1 Punya."},
+            {t:"⚖ Dharma Dilemmas (Purple Squares)",d:"The heart of the game! Land on a purple square and face a moral choice from the Mahābhārata or real life. The 🙏 virtuous path gives Punya but costs position (go back, skip turn). The 💀 tempting path gives Papa but advances you far ahead. Choose wisely — your Punya must beat your Papa at Moksha!"},
+            {t:"🛡 Shukra's Shield",d:"When Venus appears on the Graha Die, you receive a one-time celestial shield. The next serpent that bites you will be blocked. The shield disappears after one use, or if Ketu strips it away."},
+            {t:"ॐ Reaching Moksha (Square 100)",d:"You must land EXACTLY on Square 100. If you overshoot, you stay put. When you reach 100: if Punya ≥ Papa, the gates open — you WIN! If Papa > Punya, your soul is impure and you're cast back to Square 67 to purify and try again."},
+            {t:"⚡ Karma Victory (20 Punya)",d:"If at any point you accumulate 20 Punya, you achieve instant Moksha from ANY square. The board dissolves beneath you. This is the rarer, more beautiful path — a truly pure soul transcends without needing Square 100."},
+            {t:"🐂 Playing vs Yama",d:"In solo mode, you face Yama — the Hindu God of Death who rides a buffalo. Yama is ruthless: he favours the 💀 Papa path 60% of the time on Dharma cards. Can you stay purer than Death itself? Yama auto-rolls after your turn."},
+          ].map((s,i)=><div key={i} style={{background:"rgba(20,16,10,.5)",border:"1px solid rgba(200,160,60,.1)",padding:14,borderRadius:4,marginBottom:10}}>
+            <div style={{fontSize:14,fontWeight:700,color:"#f0d050",marginBottom:6}}>{s.t}</div>
+            <p style={{fontSize:12,color:"#c0b080",lineHeight:1.8,margin:0}}>{s.d}</p>
+          </div>)}
+        </div>
+      </div>}
       {eventPopup&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.6)",zIndex:200,pointerEvents:"auto"}} onClick={dismissEvent}>
         <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",animation:"popIn .4s ease forwards",background:"linear-gradient(180deg,#2a2015,#12100a)",border:`2px solid ${eventPopup.color}50`,borderRadius:8,padding:"28px 36px",textAlign:"center",maxWidth:380,width:"90vw",boxShadow:`0 0 60px ${eventPopup.color}30, 0 0 120px rgba(0,0,0,.8)`}} onClick={e=>e.stopPropagation()}>
           <div style={{fontSize:52,marginBottom:8,filter:`drop-shadow(0 0 20px ${eventPopup.color})`}}>{eventPopup.icon}</div>
