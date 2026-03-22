@@ -208,7 +208,7 @@ const AudioCache = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         text,
-        voice: isHi ? 'ash' : 'ash',
+        voice: isHi ? 'nova' : 'ash',
         instructions: isHi
           ? 'You are an ancient Indian storyteller narrating in Hindi. Speak slowly, mysteriously, with deep emotion. Pause dramatically between sentences.'
           : 'You are an ancient Indian sage narrating a sacred epic in English. Speak slowly, with deep gravitas and reverence. Pause dramatically between sentences.'
@@ -235,22 +235,6 @@ const AudioCache = {
   preloadAll(lang) {
     const texts = [];
     STORY_PAGES.forEach(p => texts.push({ text: p[lang], lang }));
-    CHARS.forEach(c => texts.push({ text: lang === 'hi' ? c.voiceHi : c.voiceEn, lang }));
-    let done = 0;
-    const total = texts.length;
-    const progress = () => Math.round((done / total) * 100);
-    return {
-      promise: Promise.all(texts.map(t => this.fetchTTS(t.text, t.lang).then(() => { done++; }))),
-      progress, total,
-    };
-  },
-
-  // Preload Yama intro + all character voices for instant playback
-  preloadGameVoices(lang) {
-    const yamaEn='So, you dare to challenge me? I am Yama. The God of Death. Every soul that walks this board eventually comes to me. You are no different. Play your little game. I will be watching every move.';
-    const yamaHi='तुम मुझसे खेलना चाहते हो? मैं यमराज हूँ। मृत्यु का देवता। हर आत्मा जो इस पट पर चलती है, अंत में मेरे पास आती है। तुम अलग नहीं हो। खेलो। मैं इंतज़ार करूँगा।';
-    const texts = [];
-    texts.push({ text: lang === 'hi' ? yamaHi : yamaEn, lang });
     CHARS.forEach(c => texts.push({ text: lang === 'hi' ? c.voiceHi : c.voiceEn, lang }));
     let done = 0;
     const total = texts.length;
@@ -408,9 +392,6 @@ const CSS=`
 @keyframes dharmaIn{0%{opacity:0;transform:scale(.3)}60%{transform:scale(1.05)}100%{opacity:1;transform:scale(1)}}
 @keyframes turnFlash{0%{opacity:0;transform:scale(.5)}20%{opacity:1;transform:scale(1.1)}80%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.8)}}
 @keyframes activeGlow{0%{box-shadow:0 0 8px var(--pc),0 0 16px var(--pc)}50%{box-shadow:0 0 16px var(--pc),0 0 32px var(--pc),0 0 48px var(--pc)}100%{box-shadow:0 0 8px var(--pc),0 0 16px var(--pc)}}
-@keyframes yamaBreath{0%{text-shadow:0 0 20px #a04040,0 0 40px #a04040}50%{text-shadow:0 0 40px #e04040,0 0 80px #a04040,0 0 120px #60202060}100%{text-shadow:0 0 20px #a04040,0 0 40px #a04040}}
-@keyframes yamaReveal{0%{opacity:0;transform:scale(2);filter:blur(20px)}100%{opacity:1;transform:scale(1);filter:blur(0)}}
-@keyframes yamaTextReveal{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
 .gb{background:transparent;border:1px solid rgba(200,160,60,.3);color:#e8c850;padding:12px 32px;font-size:14px;font-family:'Cinzel',serif;cursor:pointer;transition:all .4s;letter-spacing:3px;border-radius:2px}
 .gb:hover{background:rgba(200,160,60,.08);border-color:rgba(240,200,80,.6)}
 .gp{background:linear-gradient(180deg,rgba(200,160,60,.2),rgba(200,160,60,.08));border-color:rgba(200,160,60,.5)}
@@ -453,11 +434,7 @@ export default function MokshaPatam(){
   const[eventPopup,setEventPopup]=useState(null);
   const[turnBanner,setTurnBanner]=useState(null);
   const[isCPU,setIsCPU]=useState([]);
-  const[usedDharma,setUsedDharma]=useState([]);
-  const[gameVoicesLoading,setGameVoicesLoading]=useState(false);
-  const[gameVoicesPct,setGameVoicesPct]=useState(0);
-  const[gameVoicesReady,setGameVoicesReady]=useState(false);
-  const[yamaPhase,setYamaPhase]=useState(0); // 0=intro speaking, 1=who are you?, 2=go to setup // tracks which players are CPU
+  const[usedDharma,setUsedDharma]=useState([]); // tracks which players are CPU
 
   const sfx=useSound();
   const ambient=useAmbient();
@@ -489,34 +466,6 @@ export default function MokshaPatam(){
 
   useEffect(()=>{try{window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices()}catch(e){}},[]);
   useEffect(()=>{const iv=setInterval(()=>{setShF(false);setTimeout(()=>{setShI(i=>(i+1)%SHLOKAS.length);setShF(true)},700)},6e3);return()=>clearInterval(iv)},[]);
-
-  // Preload Yama + character voices when entering pickcount
-  useEffect(()=>{
-    if(screen!=="pickcount"&&screen!=="yama")return;
-    if(gameVoicesReady||gameVoicesLoading)return;
-    const isLocal=['localhost','127.0.0.1',''].includes(window.location.hostname);
-    if(isLocal)return;
-    setGameVoicesLoading(true);setGameVoicesPct(0);
-    const{promise,progress}=AudioCache.preloadGameVoices(chosenLang);
-    const iv=setInterval(()=>setGameVoicesPct(progress()),400);
-    promise.then(()=>{clearInterval(iv);setGameVoicesPct(100);setGameVoicesReady(true);setGameVoicesLoading(false)})
-      .catch(()=>{clearInterval(iv);setGameVoicesLoading(false)});
-    return()=>clearInterval(iv);
-  },[screen,gameVoicesReady,gameVoicesLoading,chosenLang]);
-
-  // Yama intro screen — speak then transition to phase 1
-  useEffect(()=>{
-    if(screen!=="yama")return;
-    setYamaPhase(0);
-    const yamaEn='So, you dare to challenge me? I am Yama. The God of Death. I ride the great buffalo through the realm of the dead. Every soul that walks this board, eventually, comes to me. You think you can outwit Death? Play your little game, mortal. I will be watching every single move. And when your karma falters, I will be there. Now tell me, little soul. Who are you?';
-    const yamaHi='तो, तुम मुझसे खेलना चाहते हो? मैं यमराज हूँ। मृत्यु का देवता। हर आत्मा जो इस पट पर चलती है, अंत में मेरे पास आती है। तुम्हें लगता है तुम मृत्यु को हरा सकते हो? खेलो अपना छोटा सा खेल। मैं देख रहा हूँ। हर एक कदम। अब बताओ, छोटी सी आत्मा। तुम कौन हो?';
-    if(!muted){
-      setTimeout(()=>VoiceEngine.speak(chosenLang==='hi'?yamaHi:yamaEn,chosenLang),1500);
-    }
-    // Transition to phase 1 after voice finishes (estimate ~20s for full speech, or 8s for short)
-    const timer=setTimeout(()=>setYamaPhase(1),muted?4000:22000);
-    return()=>{clearTimeout(timer);VoiceEngine.stop()};
-  },[screen,muted,chosenLang]);
 
   // Speak story page on change
   useEffect(()=>{
@@ -869,18 +818,16 @@ export default function MokshaPatam(){
       <div style={{animation:"slideUp .8s ease",textAlign:"center"}}>
         <div style={{fontSize:32,marginBottom:12}}>🔱</div>
         <h2 style={{fontSize:"clamp(20px,4vw,32px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"0 0 8px"}}>How Many Seekers?</h2>
-        <p style={{fontSize:13,opacity:.4,marginBottom:12,letterSpacing:3}}>Each soul walks a different path</p>
-        {gameVoicesLoading&&<div style={{marginBottom:16,animation:"pulse 2s ease infinite"}}>
-          <div style={{fontSize:11,color:"#d0b870",letterSpacing:3,marginBottom:6}}>🔮 Summoning seekers... {gameVoicesPct}%</div>
-          <div style={{width:200,height:4,background:"rgba(200,160,60,.15)",borderRadius:2,margin:"0 auto",overflow:"hidden"}}>
-            <div style={{height:"100%",width:`${gameVoicesPct}%`,background:"linear-gradient(90deg,#f0d050,#c0a030)",borderRadius:2,transition:"width .4s"}}/>
-          </div>
-        </div>}
-        {!gameVoicesLoading&&gameVoicesReady&&<div style={{fontSize:10,color:"#80c080",opacity:.5,marginBottom:12,letterSpacing:2}}>✓ All voices ready</div>}
+        <p style={{fontSize:13,opacity:.4,marginBottom:24,letterSpacing:3}}>Each soul walks a different path</p>
         <div style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap"}}>
           <button className="gb gp" onClick={()=>{
-            setNP(2);setIsCPU([false,true]);setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);
-            setScreen("yama");
+            setNP(2);setIsCPU([false,true]);setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("setup");
+            if(!muted){
+              const yamaVoice=chosenLang==='hi'
+                ?'तुम मुझसे खेलना चाहते हो? मैं यमराज हूँ। मृत्यु का देवता। हर आत्मा जो इस पट पर चलती है, अंत में मेरे पास आती है। तुम अलग नहीं हो। खेलो। मैं इंतज़ार करूँगा।'
+                :'So, you dare to challenge me? I am Yama. The God of Death. Every soul that walks this board eventually comes to me. You are no different. I have been waiting since the beginning of time. Play your little game. I will be watching every move. And when your karma falters, I will be there.';
+              setTimeout(()=>VoiceEngine.speak(yamaVoice,chosenLang),500);
+            }
           }} style={{padding:"18px 36px",fontSize:16}}>
             <div style={{fontSize:22,marginBottom:4}}>☠️</div>1 vs Yama
           </button>
@@ -890,54 +837,6 @@ export default function MokshaPatam(){
       </div>
     </div>
   );
-
-  // ═══ YAMA INTRO ═══
-  if(screen==="yama"){
-    // Phase 0: Yama speaks intro
-    // Phase 1: "Who dares challenge me?" - go to setup
-    const yamaIntroEn='So, you dare to challenge me? I am Yama. The God of Death. I ride the great buffalo through the realm of the dead. Every soul that walks this board, eventually, comes to me. I have been waiting since the beginning of time. You think you can outwit Death? You think your little virtues will save you? I have watched a million souls fall. Brave warriors. Wise sages. Holy saints. They all fell. And I devoured their karma. Play your little game, mortal. I will be watching. Every. Single. Move. And when your karma falters, even by a whisper, I will be there. Waiting. Now tell me, little soul. Who are you?';
-    const yamaIntroHi='तो, तुम मुझसे खेलना चाहते हो? मैं यमराज हूँ। मृत्यु का देवता। मैं महान भैंसे पर सवार होकर मृतकों के लोक से गुज़रता हूँ। हर आत्मा जो इस पट पर चलती है, अंत में मेरे पास आती है। मैं सृष्टि के आरम्भ से प्रतीक्षा कर रहा हूँ। तुम्हें लगता है तुम मृत्यु को हरा सकते हो? तुम्हें लगता है तुम्हारे छोटे-छोटे पुण्य तुम्हें बचा लेंगे? मैंने लाखों आत्माओं को गिरते देखा है। वीर योद्धा। ज्ञानी ऋषि। पवित्र संत। सब गिरे। और मैंने उनका कर्म निगल लिया। खेलो अपना छोटा सा खेल, नश्वर प्राणी। मैं देख रहा हूँ। हर एक कदम। और जब तुम्हारा कर्म डगमगाएगा, एक फुसफुसाहट भर भी, मैं वहीं रहूँगा। इंतज़ार करता हुआ। अब बताओ, छोटी सी आत्मा। तुम कौन हो?';
-
-    return(
-      <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20,minHeight:"100vh",background:"radial-gradient(ellipse at center,#1a0808 0%,#0c0505 40%,#050202 100%)"}}>
-        {globalOverlays}
-        <div style={{position:"fixed",inset:0,background:"radial-gradient(ellipse at center,rgba(160,40,40,.08),transparent 60%)",pointerEvents:"none"}}/>
-        
-        {yamaPhase===0&&<div style={{textAlign:"center",animation:"yamaReveal 2s ease forwards"}}>
-          <div style={{fontSize:"clamp(80px,20vw,140px)",animation:"yamaBreath 3s ease infinite",marginBottom:16}}>☠️</div>
-          <div style={{fontSize:"clamp(28px,6vw,48px)",fontFamily:"'Yatra One',serif",color:"#a04040",letterSpacing:4,animation:"yamaTextReveal 1.5s ease .5s both"}}>यमराज</div>
-          <div style={{fontSize:"clamp(14px,3vw,22px)",fontFamily:"'Cinzel Decorative',serif",color:"#804040",letterSpacing:8,marginTop:4,animation:"yamaTextReveal 1.5s ease 1s both"}}>YAMA</div>
-          <div style={{fontSize:"clamp(10px,2vw,14px)",color:"#604040",letterSpacing:4,marginTop:4,fontStyle:"italic",animation:"yamaTextReveal 1.5s ease 1.5s both"}}>God of Death · Lord of Dharma · The Inescapable</div>
-          <div style={{width:60,height:1,background:"linear-gradient(90deg,transparent,#a0404060,transparent)",margin:"20px auto",animation:"yamaTextReveal 1s ease 2s both"}}/>
-          <div style={{maxWidth:500,fontSize:"clamp(11px,1.5vw,14px)",color:"#906060",lineHeight:2.2,fontStyle:"italic",margin:"0 auto",animation:"yamaTextReveal 1.5s ease 2.5s both",padding:"0 20px"}}>
-            {chosenLang==='hi'
-              ?"सुनो... यमराज बोल रहे हैं..."
-              :"Listen... Yama is speaking..."}
-          </div>
-          <div style={{marginTop:24,animation:"yamaTextReveal 1s ease 3s both"}}>
-            <div style={{width:160,height:3,background:"rgba(160,64,64,.15)",borderRadius:2,margin:"0 auto",overflow:"hidden"}}>
-              <div style={{height:"100%",background:"#a04040",borderRadius:2,animation:"pulse 2s ease infinite",width:"60%"}}/>
-            </div>
-          </div>
-        </div>}
-
-        {yamaPhase===1&&<div style={{textAlign:"center",animation:"dharmaIn .6s ease forwards"}}>
-          <div style={{fontSize:"clamp(60px,15vw,100px)",marginBottom:12,animation:"yamaBreath 2s ease infinite"}}>☠️</div>
-          <div style={{fontSize:"clamp(20px,5vw,36px)",fontFamily:"'Yatra One',serif",color:"#c04040",letterSpacing:3,marginBottom:8}}>
-            {chosenLang==='hi'?"तुम कौन हो?":"Who dares challenge me?"}
-          </div>
-          <div style={{fontSize:"clamp(11px,1.5vw,14px)",color:"#806060",marginBottom:28,fontStyle:"italic",letterSpacing:2}}>
-            {chosenLang==='hi'?"अपनी पहचान बताओ, नश्वर प्राणी":"Identify yourself, mortal"}
-          </div>
-          <button className="gb gp" onClick={()=>setScreen("setup")} style={{padding:"14px 40px",fontSize:16,letterSpacing:4,background:"rgba(160,64,64,.15)",border:"2px solid rgba(160,64,64,.4)",color:"#e08080"}}>
-            {chosenLang==='hi'?"अपना योद्धा चुनो ▸":"CHOOSE YOUR SEEKER ▸"}
-          </button>
-        </div>}
-
-        <div style={{position:"fixed",bottom:20,textAlign:"center"}}><InstaBadge/></div>
-      </div>
-    );
-  }
 
   // ═══ SETUP ═══
   if(screen==="setup"){
@@ -952,7 +851,7 @@ export default function MokshaPatam(){
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(clamp(140px,30vw,200px),1fr))",gap:10,marginBottom:20}}>
             {CHARS.map((ch,i)=>{const used=usedChars.includes(i);const sel=tempChar===i;
-              return(<div key={i} onClick={()=>{if(!used){setTempChar(i);if(!muted){VoiceEngine.stop();VoiceEngine.speak(chosenLang==='hi'?ch.voiceHi:ch.voiceEn,chosenLang)}}}} style={{background:sel?"rgba(200,160,60,.12)":"rgba(20,16,10,.5)",border:`1px solid ${sel?"rgba(240,200,80,.6)":used?"rgba(100,80,50,.15)":"rgba(200,160,60,.2)"}`,padding:14,borderRadius:4,cursor:used?"not-allowed":"pointer",opacity:used?.3:1,transition:"all .3s"}}>
+              return(<div key={i} onClick={()=>{if(!used){setTempChar(i);if(!muted){VoiceEngine.stop();setTimeout(()=>VoiceEngine.speak(chosenLang==='hi'?ch.voiceHi:ch.voiceEn,chosenLang),200)}}}} style={{background:sel?"rgba(200,160,60,.12)":"rgba(20,16,10,.5)",border:`1px solid ${sel?"rgba(240,200,80,.6)":used?"rgba(100,80,50,.15)":"rgba(200,160,60,.2)"}`,padding:14,borderRadius:4,cursor:used?"not-allowed":"pointer",opacity:used?.3:1,transition:"all .3s"}}>
                 <div style={{fontSize:28,marginBottom:6}}>{ch.icon}</div>
                 <div style={{fontSize:13,fontWeight:700,color:ch.color}}>{ch.name}</div>
                 <div style={{fontSize:11,fontFamily:"'Noto Serif Devanagari',serif",color:"#f0d050",opacity:.6,marginBottom:4}}>{ch.skt}</div>
