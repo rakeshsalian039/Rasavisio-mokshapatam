@@ -178,7 +178,15 @@ function useAmbient(){
       playing.current=false;audioRef.current=null;
     }catch(e){}
   },[]);
-  return{start,stop,playing};
+  // Mobile browsers (iOS/Android) ignore volume changes on audio elements.
+  // So we pause/resume instead of duck/unduck for reliable behavior.
+  const duck=useCallback(()=>{
+    if(audioRef.current){try{audioRef.current.pause()}catch(e){}}
+  },[]);
+  const unduck=useCallback(()=>{
+    if(audioRef.current&&playing.current){try{audioRef.current.play().catch(()=>{})}catch(e){}}
+  },[]);
+  return{start,stop,duck,unduck,playing};
 }
 
 /* ═══ VOICEOVER — Puter.js Neural AI → Browser Fallback ═══ */
@@ -200,7 +208,7 @@ const AudioCache = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         text,
-        voice: isHi ? 'nova' : 'ash',
+        voice: isHi ? 'ash' : 'ash',
         instructions: isHi
           ? 'You are an ancient Indian storyteller narrating in Hindi. Speak slowly, mysteriously, with deep emotion. Pause dramatically between sentences.'
           : 'You are an ancient Indian sage narrating a sacred epic in English. Speak slowly, with deep gravitas and reverence. Pause dramatically between sentences.'
@@ -227,6 +235,22 @@ const AudioCache = {
   preloadAll(lang) {
     const texts = [];
     STORY_PAGES.forEach(p => texts.push({ text: p[lang], lang }));
+    CHARS.forEach(c => texts.push({ text: lang === 'hi' ? c.voiceHi : c.voiceEn, lang }));
+    let done = 0;
+    const total = texts.length;
+    const progress = () => Math.round((done / total) * 100);
+    return {
+      promise: Promise.all(texts.map(t => this.fetchTTS(t.text, t.lang).then(() => { done++; }))),
+      progress, total,
+    };
+  },
+
+  // Preload Yama intro + all character voices for instant playback
+  preloadGameVoices(lang) {
+    const yamaEn='So, you dare to challenge me? I am Yama. The God of Death. Every soul that walks this board eventually comes to me. You are no different. Play your little game. I will be watching every move.';
+    const yamaHi='तुम मुझसे खेलना चाहते हो? मैं यमराज हूँ। मृत्यु का देवता। हर आत्मा जो इस पट पर चलती है, अंत में मेरे पास आती है। तुम अलग नहीं हो। खेलो। मैं इंतज़ार करूँगा।';
+    const texts = [];
+    texts.push({ text: lang === 'hi' ? yamaHi : yamaEn, lang });
     CHARS.forEach(c => texts.push({ text: lang === 'hi' ? c.voiceHi : c.voiceEn, lang }));
     let done = 0;
     const total = texts.length;
@@ -266,7 +290,7 @@ const VoiceEngine = {
     try {
       window.speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
-      u.rate = 0.75; u.pitch = 0.8; u.volume = 0.9;
+      u.rate = 0.75; u.pitch = 0.8; u.volume = 1.0;
       u.lang = lang === 'hi' ? 'hi-IN' : 'en-GB';
       const voices = window.speechSynthesis.getVoices();
       const best = this._pickBestVoice(voices, lang);
@@ -288,6 +312,7 @@ const VoiceEngine = {
       const cached = AudioCache.get(text);
       if (cached) {
         const audio = new Audio(cached);
+        audio.volume=1.0;
         this.audio = audio;
         this.speaking = true;
         audio.onended = () => { this.speaking = false; };
@@ -300,6 +325,7 @@ const VoiceEngine = {
         const url = await AudioCache.fetchTTS(text, lang);
         if (url) {
           const audio = new Audio(url);
+          audio.volume=1.0;
           this.audio = audio;
           this.speaking = true;
           audio.onended = () => { this.speaking = false; };
@@ -381,6 +407,10 @@ const CSS=`
 @keyframes popIn{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}60%{transform:translate(-50%,-50%) scale(1.05)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}
 @keyframes dharmaIn{0%{opacity:0;transform:scale(.3)}60%{transform:scale(1.05)}100%{opacity:1;transform:scale(1)}}
 @keyframes turnFlash{0%{opacity:0;transform:scale(.5)}20%{opacity:1;transform:scale(1.1)}80%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.8)}}
+@keyframes activeGlow{0%{box-shadow:0 0 8px var(--pc),0 0 16px var(--pc)}50%{box-shadow:0 0 16px var(--pc),0 0 32px var(--pc),0 0 48px var(--pc)}100%{box-shadow:0 0 8px var(--pc),0 0 16px var(--pc)}}
+@keyframes yamaBreath{0%{text-shadow:0 0 20px #a04040,0 0 40px #a04040}50%{text-shadow:0 0 40px #e04040,0 0 80px #a04040,0 0 120px #60202060}100%{text-shadow:0 0 20px #a04040,0 0 40px #a04040}}
+@keyframes yamaReveal{0%{opacity:0;transform:scale(2);filter:blur(20px)}100%{opacity:1;transform:scale(1);filter:blur(0)}}
+@keyframes yamaTextReveal{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
 .gb{background:transparent;border:1px solid rgba(200,160,60,.3);color:#e8c850;padding:12px 32px;font-size:14px;font-family:'Cinzel',serif;cursor:pointer;transition:all .4s;letter-spacing:3px;border-radius:2px}
 .gb:hover{background:rgba(200,160,60,.08);border-color:rgba(240,200,80,.6)}
 .gp{background:linear-gradient(180deg,rgba(200,160,60,.2),rgba(200,160,60,.08));border-color:rgba(200,160,60,.5)}
@@ -415,6 +445,7 @@ export default function MokshaPatam(){
   const[shF,setShF]=useState(true);
   const[muted,setMuted]=useState(false);
   const[showInfo,setShowInfo]=useState(false);
+  const[showGuide,setShowGuide]=useState(false);
   const[chosenLang,setChosenLang]=useState("en");
   const[preloading,setPreloading]=useState(false);
   const[preloadPct,setPreloadPct]=useState(0);
@@ -422,7 +453,11 @@ export default function MokshaPatam(){
   const[eventPopup,setEventPopup]=useState(null);
   const[turnBanner,setTurnBanner]=useState(null);
   const[isCPU,setIsCPU]=useState([]);
-  const[usedDharma,setUsedDharma]=useState([]); // tracks which players are CPU
+  const[usedDharma,setUsedDharma]=useState([]);
+  const[gameVoicesLoading,setGameVoicesLoading]=useState(false);
+  const[gameVoicesPct,setGameVoicesPct]=useState(0);
+  const[gameVoicesReady,setGameVoicesReady]=useState(false);
+  const[yamaPhase,setYamaPhase]=useState(0); // 0=intro speaking, 1=who are you?, 2=go to setup // tracks which players are CPU
 
   const sfx=useSound();
   const ambient=useAmbient();
@@ -440,19 +475,48 @@ export default function MokshaPatam(){
   const showEvent = useCallback((popup, onDismiss) => {
     setEventPopup(popup);
     eventCallback.current=onDismiss||null;
-    // Read popup aloud (not for CPU dharma, not when muted)
     if(!muted&&popup.subtitle){
-      VoiceEngine.speak(`${popup.title}. ${popup.subtitle}`,chosenLang);
+      ambient.duck();
+      VoiceEngine.speak(popup.subtitle,chosenLang);
     }
-  }, [muted,chosenLang]);
+  }, [muted,chosenLang,ambient]);
   const dismissEvent = useCallback(() => {
     VoiceEngine.stop();
+    ambient.unduck();
     setEventPopup(null);
     if(eventCallback.current){const cb=eventCallback.current;eventCallback.current=null;setTimeout(cb,100);}
-  }, []);
+  }, [ambient]);
 
   useEffect(()=>{try{window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices()}catch(e){}},[]);
   useEffect(()=>{const iv=setInterval(()=>{setShF(false);setTimeout(()=>{setShI(i=>(i+1)%SHLOKAS.length);setShF(true)},700)},6e3);return()=>clearInterval(iv)},[]);
+
+  // Preload Yama + character voices when entering pickcount
+  useEffect(()=>{
+    if(screen!=="pickcount"&&screen!=="yama")return;
+    if(gameVoicesReady||gameVoicesLoading)return;
+    const isLocal=['localhost','127.0.0.1',''].includes(window.location.hostname);
+    if(isLocal)return;
+    setGameVoicesLoading(true);setGameVoicesPct(0);
+    const{promise,progress}=AudioCache.preloadGameVoices(chosenLang);
+    const iv=setInterval(()=>setGameVoicesPct(progress()),400);
+    promise.then(()=>{clearInterval(iv);setGameVoicesPct(100);setGameVoicesReady(true);setGameVoicesLoading(false)})
+      .catch(()=>{clearInterval(iv);setGameVoicesLoading(false)});
+    return()=>clearInterval(iv);
+  },[screen,gameVoicesReady,gameVoicesLoading,chosenLang]);
+
+  // Yama intro screen — speak then transition to phase 1
+  useEffect(()=>{
+    if(screen!=="yama")return;
+    setYamaPhase(0);
+    const yamaEn='So, you dare to challenge me? I am Yama. The God of Death. I ride the great buffalo through the realm of the dead. Every soul that walks this board, eventually, comes to me. You think you can outwit Death? Play your little game, mortal. I will be watching every single move. And when your karma falters, I will be there. Now tell me, little soul. Who are you?';
+    const yamaHi='तो, तुम मुझसे खेलना चाहते हो? मैं यमराज हूँ। मृत्यु का देवता। हर आत्मा जो इस पट पर चलती है, अंत में मेरे पास आती है। तुम्हें लगता है तुम मृत्यु को हरा सकते हो? खेलो अपना छोटा सा खेल। मैं देख रहा हूँ। हर एक कदम। अब बताओ, छोटी सी आत्मा। तुम कौन हो?';
+    if(!muted){
+      setTimeout(()=>VoiceEngine.speak(chosenLang==='hi'?yamaHi:yamaEn,chosenLang),1500);
+    }
+    // Transition to phase 1 after voice finishes (estimate ~20s for full speech, or 8s for short)
+    const timer=setTimeout(()=>setYamaPhase(1),muted?4000:22000);
+    return()=>{clearTimeout(timer);VoiceEngine.stop()};
+  },[screen,muted,chosenLang]);
 
   // Speak story page on change
   useEffect(()=>{
@@ -482,7 +546,7 @@ export default function MokshaPatam(){
     if(isCPU[1]&&np.length===1){
       const cpuIdx=CHARS.findIndex((_,i)=>!uc.includes(i));
       if(cpuIdx>=0){
-        np.push({name:"Yama (CPU)",char:CHARS[cpuIdx],charIdx:cpuIdx,cpu:true});
+        np.push({name:"Yama",char:{...CHARS[cpuIdx],icon:"☠️",name:"God of Death",skt:"यम",color:"#a04040"},charIdx:cpuIdx,cpu:true});
         uc.push(cpuIdx);
       }
     }
@@ -647,10 +711,72 @@ export default function MokshaPatam(){
   const conns=useMemo(()=>{const l=[];Object.entries(SNAKES).forEach(([f,{to}])=>{const a=sqP(+f),b=sqP(to);l.push({f:a,t:b,type:"s",id:+f})});Object.entries(LADDERS).forEach(([f,{to}])=>{const a=sqP(+f),b=sqP(to);l.push({f:a,t:b,type:"l",id:+f})});return l},[]);
   const shl=SHLOKAS[shI];
 
+  // ═══ GLOBAL OVERLAYS — rendered on every screen ═══
+  const globalOverlays=<>
+    <style>{CSS}</style>
+    {showInfo&&<div key="info-panel" style={{position:"fixed",inset:0,background:"rgba(6,5,3,.95)",zIndex:300,overflowY:"auto",padding:"clamp(12px,3vw,24px)",animation:"fadeIn .3s ease"}}>
+      <div style={{maxWidth:700,margin:"0 auto"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+          <h2 style={{fontSize:"clamp(18px,4vw,28px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:0}}>Game Encyclopaedia</h2>
+          <button className="gb" onClick={()=>setShowInfo(false)} style={{padding:"6px 16px",fontSize:12}}>✕ Close</button>
+        </div>
+        <h3 style={{fontSize:15,color:"#f0d050",letterSpacing:3,borderBottom:"1px solid rgba(200,160,60,.15)",paddingBottom:6,marginBottom:10}}>THE TWO DICE</h3>
+        <div style={{background:"rgba(20,16,10,.5)",padding:14,borderRadius:4,marginBottom:8,border:"1px solid rgba(200,160,60,.1)"}}>
+          <div style={{fontSize:13,fontWeight:700,color:"#f0d050",marginBottom:4}}>🎲 KARMA DIE (1-6)</div>
+          <p style={{fontSize:12,color:"#c0b080",lineHeight:1.7,margin:0}}>Determines movement forward.</p>
+        </div>
+        <div style={{background:"rgba(20,16,10,.5)",padding:14,borderRadius:4,marginBottom:20,border:"1px solid rgba(200,160,60,.1)"}}>
+          <div style={{fontSize:13,fontWeight:700,color:"#f0d050",marginBottom:8}}>🌌 GRAHA DIE (9 Navagraha)</div>
+          {GRAHA.map((g,i)=><div key={i} style={{display:"flex",gap:10,padding:"6px 0",borderBottom:i<8?"1px solid rgba(200,160,60,.06)":"none"}}>
+            <span style={{fontSize:18,color:g.color,minWidth:24}}>{g.icon}</span>
+            <span style={{fontSize:11,color:"#c0b080"}}><strong style={{color:g.color}}>{g.n} · {g.en}</strong> — {g.desc}</span>
+          </div>)}
+        </div>
+        <h3 style={{fontSize:15,color:"#e08040",letterSpacing:3,borderBottom:"1px solid rgba(200,160,60,.15)",paddingBottom:6,marginBottom:10}}>𓆙 SERPENTS</h3>
+        {Object.entries(SNAKES).map(([sq,sn])=><div key={sq} style={{padding:"6px 0",borderBottom:"1px solid rgba(200,160,60,.04)",fontSize:11}}>
+          <span style={{color:"#e08040",fontWeight:700}}>Sq {sq}</span> <span style={{fontFamily:"'Noto Serif Devanagari',serif",color:"#ffc050"}}>{sn.skt}</span> {sn.en} → {sn.to}
+        </div>)}
+        <h3 style={{fontSize:15,color:"#f0d050",letterSpacing:3,borderBottom:"1px solid rgba(200,160,60,.15)",paddingBottom:6,margin:"16px 0 10px"}}>🪔 VIRTUES</h3>
+        {Object.entries(LADDERS).map(([sq,ld])=><div key={sq} style={{padding:"6px 0",borderBottom:"1px solid rgba(200,160,60,.04)",fontSize:11}}>
+          <span style={{color:"#f0d050",fontWeight:700}}>Sq {sq}</span> <span style={{fontFamily:"'Noto Serif Devanagari',serif",color:"#ffe070"}}>{ld.skt}</span> {ld.en} → {ld.to}
+        </div>)}
+        <h3 style={{fontSize:15,color:"#d0b870",letterSpacing:3,borderBottom:"1px solid rgba(200,160,60,.15)",paddingBottom:6,margin:"16px 0 10px"}}>⚖ DHARMA CARDS ({DILEMMAS.length})</h3>
+        {DILEMMAS.map((d,i)=><div key={i} style={{background:"rgba(20,16,10,.4)",border:"1px solid rgba(200,160,60,.08)",padding:10,borderRadius:4,marginBottom:8}}>
+          <div style={{fontSize:12,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:700,color:"#f0d050"}}>{d.t} — <span style={{fontFamily:"'Cinzel',serif",fontSize:11,opacity:.7}}>{d.en}</span></div>
+          <p style={{fontSize:11,color:"#c0b080",lineHeight:1.6,margin:"4px 0",fontStyle:"italic"}}>{d.txt}</p>
+          {d.c.map((ch,ci)=><div key={ci} style={{fontSize:10,color:ch.k==="punya"?"#f0d050":"#e08040",padding:"1px 0"}}>→ {ch.l}</div>)}
+        </div>)}
+      </div>
+    </div>}
+    {showGuide&&<div key="guide-panel" style={{position:"fixed",inset:0,background:"rgba(6,5,3,.95)",zIndex:300,overflowY:"auto",padding:"clamp(12px,3vw,24px)",animation:"fadeIn .3s ease"}}>
+      <div style={{maxWidth:700,margin:"0 auto"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+          <h2 style={{fontSize:"clamp(18px,4vw,28px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:0}}>📜 How to Play</h2>
+          <button className="gb" onClick={()=>setShowGuide(false)} style={{padding:"6px 16px",fontSize:12}}>✕ Close</button>
+        </div>
+        {[
+          {t:"🎯 Goal",d:"Reach Square 100 (Moksha) with your Punya (virtue) equal to or greater than your Papa (sin). Alternatively, collect 20 Punya at any point for an instant Karma Victory — the board dissolves and your soul transcends!"},
+          {t:"🎲 Your Turn",d:"Each turn you roll TWO dice simultaneously: the Karma Die (1-6, determines how many squares you move) and the Graha Die (one of 9 Navagraha planets, each with a cosmic effect). A popup will explain exactly what happened — read it carefully before dismissing."},
+          {t:"☀ The 9 Navagraha",d:"Surya = +2 steps. Chandra = +1 Punya. Mangal = push rival back 3 (+1 Papa to you). Budh = swap positions. Brihaspati = ALL +1 Punya. Shukra = Shield. Shani = back 3 +1 Papa. Rahu = steal Punya from leader. Ketu = strip all Shields."},
+          {t:"𓆙 Serpents (Red)",d:"10 Nāga serpents named after vices. Landing = dragged DOWN + 2 Papa."},
+          {t:"🪔 Virtues (Gold)",d:"10 divine ladders of virtue. Landing = lifted UP + 1 Punya."},
+          {t:"⚖ Dharma (Purple)",d:"Moral dilemmas from Mahābhārata & real life. 🙏 Virtue = Punya but costs position. 💀 Temptation = advance fast but gain Papa."},
+          {t:"🛡 Shield",d:"Shukra grants a one-time shield blocking the next serpent. Lost after use or when Ketu appears."},
+          {t:"ॐ Moksha (Sq 100)",d:"Land exactly on 100. If Punya ≥ Papa → WIN. If Papa > Punya → back to 67."},
+          {t:"⚡ Karma Victory",d:"Accumulate 20 Punya from any square = instant Moksha. The rarer, beautiful path."},
+          {t:"☠️ Playing vs Yama",d:"Solo mode against the God of Death. Yama favours 💀 Papa 60% of the time. Can you stay purer than Death?"},
+        ].map((s,i)=><div key={i} style={{background:"rgba(20,16,10,.5)",border:"1px solid rgba(200,160,60,.1)",padding:14,borderRadius:4,marginBottom:10}}>
+          <div style={{fontSize:14,fontWeight:700,color:"#f0d050",marginBottom:6}}>{s.t}</div>
+          <p style={{fontSize:12,color:"#c0b080",lineHeight:1.8,margin:0}}>{s.d}</p>
+        </div>)}
+      </div>
+    </div>}
+  </>;
+
   // ═══ TITLE ═══
   if(screen==="title")return(
     <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20}}>
-      <style>{CSS}</style>
+      {globalOverlays}
       <div style={{position:"fixed",inset:0,background:"radial-gradient(ellipse at center,transparent 35%,rgba(8,6,3,.8) 100%)",pointerEvents:"none"}}/>
       <div style={{fontSize:52,marginBottom:12,animation:"pulse 3s ease infinite"}}>🔱</div>
       <h1 style={{fontSize:"clamp(38px,9vw,72px)",fontFamily:"'Yatra One',serif",margin:"0 0 6px",letterSpacing:4,textShadow:"0 2px 10px rgba(0,0,0,.7)",color:"#f0d050",animation:"reveal 1.5s ease"}}>मोक्षपटम्</h1>
@@ -689,7 +815,11 @@ export default function MokshaPatam(){
         <button className="gb" onClick={()=>{ambient.start();setScreen("pickcount")}} style={{fontSize:14,padding:"14px 32px",letterSpacing:3,opacity:.6}}>⚡ SKIP TO GAME</button>
       </div>
       <div style={{marginTop:10,opacity:.15,fontSize:9}}>Screen text is always English · Voice follows your choice</div>
-      <div style={{marginTop:20}}><InstaBadge/></div>
+      <div style={{display:"flex",gap:10,justifyContent:"center",marginTop:16,flexWrap:"wrap"}}>
+        <button onClick={()=>setShowGuide(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📜 How to Play</button>
+        <button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📖 Encyclopaedia</button>
+      </div>
+      <div style={{marginTop:10}}><InstaBadge/></div>
     </div>
   );
 
@@ -698,7 +828,7 @@ export default function MokshaPatam(){
     const pg=STORY_PAGES[storyPage];
     return(
       <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",padding:"clamp(16px,4vw,40px)",overflowY:"auto"}}>
-        <style>{CSS}</style>
+        {globalOverlays}
         <div style={{maxWidth:640,width:"100%",animation:"slideUp .8s ease"}} key={storyPage}>
           <div style={{textAlign:"center",marginBottom:24}}>
             <div style={{fontSize:40,marginBottom:8}}>{pg.icon}</div>
@@ -727,7 +857,7 @@ export default function MokshaPatam(){
               <button className="gb gp" onClick={()=>{VoiceEngine.stop();setScreen("pickcount")}}>Choose Seekers →</button>}
           </div>
         </div>
-        <div style={{textAlign:"center",marginTop:16}}><InstaBadge/></div>
+        <div style={{textAlign:"center",marginTop:12}}><div style={{display:"flex",gap:10,justifyContent:"center",marginBottom:8,flexWrap:"wrap"}}><button onClick={()=>setShowGuide(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📜 How to Play</button><button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📖 Encyclopaedia</button></div><InstaBadge/></div>
       </div>
     );
   }
@@ -735,28 +865,86 @@ export default function MokshaPatam(){
   // ═══ PICK COUNT ═══
   if(screen==="pickcount")return(
     <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20}}>
-      <style>{CSS}</style>
+      {globalOverlays}
       <div style={{animation:"slideUp .8s ease",textAlign:"center"}}>
         <div style={{fontSize:32,marginBottom:12}}>🔱</div>
         <h2 style={{fontSize:"clamp(20px,4vw,32px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"0 0 8px"}}>How Many Seekers?</h2>
-        <p style={{fontSize:13,opacity:.4,marginBottom:24,letterSpacing:3}}>Each soul walks a different path</p>
+        <p style={{fontSize:13,opacity:.4,marginBottom:12,letterSpacing:3}}>Each soul walks a different path</p>
+        {gameVoicesLoading&&<div style={{marginBottom:16,animation:"pulse 2s ease infinite"}}>
+          <div style={{fontSize:11,color:"#d0b870",letterSpacing:3,marginBottom:6}}>🔮 Summoning seekers... {gameVoicesPct}%</div>
+          <div style={{width:200,height:4,background:"rgba(200,160,60,.15)",borderRadius:2,margin:"0 auto",overflow:"hidden"}}>
+            <div style={{height:"100%",width:`${gameVoicesPct}%`,background:"linear-gradient(90deg,#f0d050,#c0a030)",borderRadius:2,transition:"width .4s"}}/>
+          </div>
+        </div>}
+        {!gameVoicesLoading&&gameVoicesReady&&<div style={{fontSize:10,color:"#80c080",opacity:.5,marginBottom:12,letterSpacing:2}}>✓ All voices ready</div>}
         <div style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap"}}>
-          <button className="gb gp" onClick={()=>{setNP(2);setIsCPU([false,true]);setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("setup")}} style={{padding:"18px 36px",fontSize:16}}>
-            <div style={{fontSize:22,marginBottom:4}}>🤖</div>1 vs CPU
+          <button className="gb gp" onClick={()=>{
+            setNP(2);setIsCPU([false,true]);setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);
+            setScreen("yama");
+          }} style={{padding:"18px 36px",fontSize:16}}>
+            <div style={{fontSize:22,marginBottom:4}}>☠️</div>1 vs Yama
           </button>
           {[2,3,4].map(n=><button key={n} className="gb" onClick={()=>{setNP(n);setIsCPU(Array(n).fill(false));setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("setup")}} style={{padding:"18px 36px",fontSize:16}}>{n} Players</button>)}
         </div>
-        <div style={{marginTop:24}}><InstaBadge/></div>
+        <div style={{marginTop:16}}><div style={{display:"flex",gap:10,justifyContent:"center",marginBottom:8,flexWrap:"wrap"}}><button onClick={()=>setShowGuide(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📜 How to Play</button><button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📖 Encyclopaedia</button></div><InstaBadge/></div>
       </div>
     </div>
   );
+
+  // ═══ YAMA INTRO ═══
+  if(screen==="yama"){
+    // Phase 0: Yama speaks intro
+    // Phase 1: "Who dares challenge me?" - go to setup
+    const yamaIntroEn='So, you dare to challenge me? I am Yama. The God of Death. I ride the great buffalo through the realm of the dead. Every soul that walks this board, eventually, comes to me. I have been waiting since the beginning of time. You think you can outwit Death? You think your little virtues will save you? I have watched a million souls fall. Brave warriors. Wise sages. Holy saints. They all fell. And I devoured their karma. Play your little game, mortal. I will be watching. Every. Single. Move. And when your karma falters, even by a whisper, I will be there. Waiting. Now tell me, little soul. Who are you?';
+    const yamaIntroHi='तो, तुम मुझसे खेलना चाहते हो? मैं यमराज हूँ। मृत्यु का देवता। मैं महान भैंसे पर सवार होकर मृतकों के लोक से गुज़रता हूँ। हर आत्मा जो इस पट पर चलती है, अंत में मेरे पास आती है। मैं सृष्टि के आरम्भ से प्रतीक्षा कर रहा हूँ। तुम्हें लगता है तुम मृत्यु को हरा सकते हो? तुम्हें लगता है तुम्हारे छोटे-छोटे पुण्य तुम्हें बचा लेंगे? मैंने लाखों आत्माओं को गिरते देखा है। वीर योद्धा। ज्ञानी ऋषि। पवित्र संत। सब गिरे। और मैंने उनका कर्म निगल लिया। खेलो अपना छोटा सा खेल, नश्वर प्राणी। मैं देख रहा हूँ। हर एक कदम। और जब तुम्हारा कर्म डगमगाएगा, एक फुसफुसाहट भर भी, मैं वहीं रहूँगा। इंतज़ार करता हुआ। अब बताओ, छोटी सी आत्मा। तुम कौन हो?';
+
+    return(
+      <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20,minHeight:"100vh",background:"radial-gradient(ellipse at center,#1a0808 0%,#0c0505 40%,#050202 100%)"}}>
+        {globalOverlays}
+        <div style={{position:"fixed",inset:0,background:"radial-gradient(ellipse at center,rgba(160,40,40,.08),transparent 60%)",pointerEvents:"none"}}/>
+        
+        {yamaPhase===0&&<div style={{textAlign:"center",animation:"yamaReveal 2s ease forwards"}}>
+          <div style={{fontSize:"clamp(80px,20vw,140px)",animation:"yamaBreath 3s ease infinite",marginBottom:16}}>☠️</div>
+          <div style={{fontSize:"clamp(28px,6vw,48px)",fontFamily:"'Yatra One',serif",color:"#a04040",letterSpacing:4,animation:"yamaTextReveal 1.5s ease .5s both"}}>यमराज</div>
+          <div style={{fontSize:"clamp(14px,3vw,22px)",fontFamily:"'Cinzel Decorative',serif",color:"#804040",letterSpacing:8,marginTop:4,animation:"yamaTextReveal 1.5s ease 1s both"}}>YAMA</div>
+          <div style={{fontSize:"clamp(10px,2vw,14px)",color:"#604040",letterSpacing:4,marginTop:4,fontStyle:"italic",animation:"yamaTextReveal 1.5s ease 1.5s both"}}>God of Death · Lord of Dharma · The Inescapable</div>
+          <div style={{width:60,height:1,background:"linear-gradient(90deg,transparent,#a0404060,transparent)",margin:"20px auto",animation:"yamaTextReveal 1s ease 2s both"}}/>
+          <div style={{maxWidth:500,fontSize:"clamp(11px,1.5vw,14px)",color:"#906060",lineHeight:2.2,fontStyle:"italic",margin:"0 auto",animation:"yamaTextReveal 1.5s ease 2.5s both",padding:"0 20px"}}>
+            {chosenLang==='hi'
+              ?"सुनो... यमराज बोल रहे हैं..."
+              :"Listen... Yama is speaking..."}
+          </div>
+          <div style={{marginTop:24,animation:"yamaTextReveal 1s ease 3s both"}}>
+            <div style={{width:160,height:3,background:"rgba(160,64,64,.15)",borderRadius:2,margin:"0 auto",overflow:"hidden"}}>
+              <div style={{height:"100%",background:"#a04040",borderRadius:2,animation:"pulse 2s ease infinite",width:"60%"}}/>
+            </div>
+          </div>
+        </div>}
+
+        {yamaPhase===1&&<div style={{textAlign:"center",animation:"dharmaIn .6s ease forwards"}}>
+          <div style={{fontSize:"clamp(60px,15vw,100px)",marginBottom:12,animation:"yamaBreath 2s ease infinite"}}>☠️</div>
+          <div style={{fontSize:"clamp(20px,5vw,36px)",fontFamily:"'Yatra One',serif",color:"#c04040",letterSpacing:3,marginBottom:8}}>
+            {chosenLang==='hi'?"तुम कौन हो?":"Who dares challenge me?"}
+          </div>
+          <div style={{fontSize:"clamp(11px,1.5vw,14px)",color:"#806060",marginBottom:28,fontStyle:"italic",letterSpacing:2}}>
+            {chosenLang==='hi'?"अपनी पहचान बताओ, नश्वर प्राणी":"Identify yourself, mortal"}
+          </div>
+          <button className="gb gp" onClick={()=>setScreen("setup")} style={{padding:"14px 40px",fontSize:16,letterSpacing:4,background:"rgba(160,64,64,.15)",border:"2px solid rgba(160,64,64,.4)",color:"#e08080"}}>
+            {chosenLang==='hi'?"अपना योद्धा चुनो ▸":"CHOOSE YOUR SEEKER ▸"}
+          </button>
+        </div>}
+
+        <div style={{position:"fixed",bottom:20,textAlign:"center"}}><InstaBadge/></div>
+      </div>
+    );
+  }
 
   // ═══ SETUP ═══
   if(screen==="setup"){
     const pidx=players.length;
     return(
       <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",padding:"clamp(16px,4vw,32px)",overflowY:"auto"}}>
-        <style>{CSS}</style>
+        {globalOverlays}
         <div style={{maxWidth:680,width:"100%",animation:"slideUp .6s ease"}} key={pidx}>
           <div style={{textAlign:"center",marginBottom:20}}>
             <div style={{fontSize:10,opacity:.3,letterSpacing:5}}>SEEKER {pidx+1} OF {nP}</div>
@@ -764,7 +952,7 @@ export default function MokshaPatam(){
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(clamp(140px,30vw,200px),1fr))",gap:10,marginBottom:20}}>
             {CHARS.map((ch,i)=>{const used=usedChars.includes(i);const sel=tempChar===i;
-              return(<div key={i} onClick={()=>{if(!used){setTempChar(i);if(!muted){VoiceEngine.stop();setTimeout(()=>VoiceEngine.speak(chosenLang==='hi'?ch.voiceHi:ch.voiceEn,chosenLang),200)}}}} style={{background:sel?"rgba(200,160,60,.12)":"rgba(20,16,10,.5)",border:`1px solid ${sel?"rgba(240,200,80,.6)":used?"rgba(100,80,50,.15)":"rgba(200,160,60,.2)"}`,padding:14,borderRadius:4,cursor:used?"not-allowed":"pointer",opacity:used?.3:1,transition:"all .3s"}}>
+              return(<div key={i} onClick={()=>{if(!used){setTempChar(i);if(!muted){VoiceEngine.stop();VoiceEngine.speak(chosenLang==='hi'?ch.voiceHi:ch.voiceEn,chosenLang)}}}} style={{background:sel?"rgba(200,160,60,.12)":"rgba(20,16,10,.5)",border:`1px solid ${sel?"rgba(240,200,80,.6)":used?"rgba(100,80,50,.15)":"rgba(200,160,60,.2)"}`,padding:14,borderRadius:4,cursor:used?"not-allowed":"pointer",opacity:used?.3:1,transition:"all .3s"}}>
                 <div style={{fontSize:28,marginBottom:6}}>{ch.icon}</div>
                 <div style={{fontSize:13,fontWeight:700,color:ch.color}}>{ch.name}</div>
                 <div style={{fontSize:11,fontFamily:"'Noto Serif Devanagari',serif",color:"#f0d050",opacity:.6,marginBottom:4}}>{ch.skt}</div>
@@ -792,48 +980,13 @@ export default function MokshaPatam(){
             <div style={{fontSize:9,letterSpacing:3,opacity:.3,marginBottom:6}}>CHOSEN</div>
             {players.map((p,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"3px 0",opacity:.6}}><span style={{fontSize:16}}>{p.char.icon}</span><span style={{fontSize:12,color:p.char.color}}>{p.name}</span><span style={{fontSize:10,opacity:.4}}>— {p.char.name}</span></div>)}
           </div>}
-          <div style={{textAlign:"center",marginTop:16}}><InstaBadge/></div>
+          <div style={{textAlign:"center",marginTop:12}}><div style={{display:"flex",gap:10,justifyContent:"center",marginBottom:8,flexWrap:"wrap"}}><button onClick={()=>setShowGuide(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📜 How to Play</button><button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📖 Encyclopaedia</button></div><InstaBadge/></div>
         </div>
       </div>
     );
   }
 
   // ═══ INFO ═══
-  const InfoPanel=useMemo(()=><div style={{position:"fixed",inset:0,background:"rgba(6,5,3,.95)",zIndex:300,overflowY:"auto",padding:"clamp(12px,3vw,24px)",animation:"fadeIn .3s ease"}}>
-    <div style={{maxWidth:700,margin:"0 auto"}}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
-        <h2 style={{fontSize:"clamp(18px,4vw,28px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:0}}>Game Encyclopaedia</h2>
-        <button className="gb" onClick={()=>setShowInfo(false)} style={{padding:"6px 16px",fontSize:12}}>✕ Close</button>
-      </div>
-      <h3 style={{fontSize:15,color:"#f0d050",letterSpacing:3,borderBottom:"1px solid rgba(200,160,60,.15)",paddingBottom:6,marginBottom:10}}>THE TWO DICE</h3>
-      <div style={{background:"rgba(20,16,10,.5)",padding:14,borderRadius:4,marginBottom:8,border:"1px solid rgba(200,160,60,.1)"}}>
-        <div style={{fontSize:13,fontWeight:700,color:"#f0d050",marginBottom:4}}>🎲 KARMA DIE (1-6)</div>
-        <p style={{fontSize:12,color:"#c0b080",lineHeight:1.7,margin:0}}>Determines movement forward.</p>
-      </div>
-      <div style={{background:"rgba(20,16,10,.5)",padding:14,borderRadius:4,marginBottom:20,border:"1px solid rgba(200,160,60,.1)"}}>
-        <div style={{fontSize:13,fontWeight:700,color:"#f0d050",marginBottom:8}}>🌌 GRAHA DIE (9 Navagraha)</div>
-        {GRAHA.map((g,i)=><div key={i} style={{display:"flex",gap:10,padding:"6px 0",borderBottom:i<8?"1px solid rgba(200,160,60,.06)":"none"}}>
-          <span style={{fontSize:18,color:g.color,minWidth:24}}>{g.icon}</span>
-          <span style={{fontSize:11,color:"#c0b080"}}><strong style={{color:g.color}}>{g.n} · {g.en}</strong> — {g.desc}</span>
-        </div>)}
-      </div>
-      <h3 style={{fontSize:15,color:"#e08040",letterSpacing:3,borderBottom:"1px solid rgba(200,160,60,.15)",paddingBottom:6,marginBottom:10}}>𓆙 SERPENTS</h3>
-      {Object.entries(SNAKES).map(([sq,sn])=><div key={sq} style={{padding:"6px 0",borderBottom:"1px solid rgba(200,160,60,.04)",fontSize:11}}>
-        <span style={{color:"#e08040",fontWeight:700}}>Sq {sq}</span> <span style={{fontFamily:"'Noto Serif Devanagari',serif",color:"#ffc050"}}>{sn.skt}</span> {sn.en} → {sn.to}
-      </div>)}
-      <h3 style={{fontSize:15,color:"#f0d050",letterSpacing:3,borderBottom:"1px solid rgba(200,160,60,.15)",paddingBottom:6,margin:"16px 0 10px"}}>🪔 VIRTUES</h3>
-      {Object.entries(LADDERS).map(([sq,ld])=><div key={sq} style={{padding:"6px 0",borderBottom:"1px solid rgba(200,160,60,.04)",fontSize:11}}>
-        <span style={{color:"#f0d050",fontWeight:700}}>Sq {sq}</span> <span style={{fontFamily:"'Noto Serif Devanagari',serif",color:"#ffe070"}}>{ld.skt}</span> {ld.en} → {ld.to}
-      </div>)}
-      <h3 style={{fontSize:15,color:"#d0b870",letterSpacing:3,borderBottom:"1px solid rgba(200,160,60,.15)",paddingBottom:6,margin:"16px 0 10px"}}>⚖ DHARMA CARDS</h3>
-      {DILEMMAS.map((d,i)=><div key={i} style={{background:"rgba(20,16,10,.4)",border:"1px solid rgba(200,160,60,.08)",padding:10,borderRadius:4,marginBottom:8}}>
-        <div style={{fontSize:12,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:700,color:"#f0d050"}}>{d.t} — <span style={{fontFamily:"'Cinzel',serif",fontSize:11,opacity:.7}}>{d.en}</span></div>
-        <p style={{fontSize:11,color:"#c0b080",lineHeight:1.6,margin:"4px 0",fontStyle:"italic"}}>{d.txt}</p>
-        {d.c.map((ch,ci)=><div key={ci} style={{fontSize:10,color:ch.k==="punya"?"#f0d050":"#e08040",padding:"1px 0"}}>→ {ch.l}</div>)}
-      </div>)}
-    </div>
-  </div>,[]);
-
   // ═══ GAME ═══
   if(screen!=="game"||players.length===0)return null;
   const cp=players[cur]||players[0];
@@ -841,8 +994,7 @@ export default function MokshaPatam(){
 
   return(
     <div style={{...PG,padding:"10px 8px",display:"flex",flexDirection:"column",alignItems:"center"}}>
-      <style>{CSS}</style>
-      {showInfo&&InfoPanel}
+      {globalOverlays}
       {eventPopup&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.6)",zIndex:200,pointerEvents:"auto"}} onClick={dismissEvent}>
         <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",animation:"popIn .4s ease forwards",background:"linear-gradient(180deg,#2a2015,#12100a)",border:`2px solid ${eventPopup.color}50`,borderRadius:8,padding:"28px 36px",textAlign:"center",maxWidth:380,width:"90vw",boxShadow:`0 0 60px ${eventPopup.color}30, 0 0 120px rgba(0,0,0,.8)`}} onClick={e=>e.stopPropagation()}>
           <div style={{fontSize:52,marginBottom:8,filter:`drop-shadow(0 0 20px ${eventPopup.color})`}}>{eventPopup.icon}</div>
@@ -862,10 +1014,13 @@ export default function MokshaPatam(){
       <div style={{textAlign:"center",marginBottom:4,width:"100%"}}>
         <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:10}}>
           <div style={{fontSize:"clamp(18px,3.5vw,28px)",fontFamily:"'Yatra One',serif",letterSpacing:3,color:"#f0d050"}}>मोक्षपटम्</div>
-          <button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"2px 8px",fontSize:11,cursor:"pointer",borderRadius:3}}>📖</button>
           <button onClick={toggleMute} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"2px 8px",fontSize:12,cursor:"pointer",borderRadius:3}}>{muted?"🔇":"🔊"}</button>
         </div>
-        <div style={{fontSize:8,letterSpacing:5,opacity:.3,color:"#c0b080"}}>{rlm(pos[cur]||1)==="bhuloka"?"भूलोक EARTHLY":rlm(pos[cur]||1)==="antarloka"?"अन्तर्लोक INNER":"स्वर्गलोक CELESTIAL"}</div>
+        <div style={{display:"flex",justifyContent:"center",gap:10,marginTop:6,flexWrap:"wrap"}}>
+          <button onClick={()=>setShowGuide(true)} style={{background:"rgba(200,160,60,.08)",border:"1px solid rgba(200,160,60,.25)",color:"#e8c850",padding:"5px 14px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2}}>📜 How to Play</button>
+          <button onClick={()=>setShowInfo(true)} style={{background:"rgba(200,160,60,.08)",border:"1px solid rgba(200,160,60,.25)",color:"#e8c850",padding:"5px 14px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2}}>📖 Encyclopaedia</button>
+        </div>
+        <div style={{fontSize:8,letterSpacing:5,opacity:.3,color:"#c0b080",marginTop:4}}>{rlm(pos[cur]||1)==="bhuloka"?"भूलोक EARTHLY":rlm(pos[cur]||1)==="antarloka"?"अन्तर्लोक INNER":"स्वर्गलोक CELESTIAL"}</div>
         <div style={{marginTop:4}}><InstaBadge/></div>
       </div>
       <div style={{background:"linear-gradient(90deg,transparent,rgba(30,24,14,.6),transparent)",borderTop:"1px solid rgba(200,160,60,.2)",borderBottom:"1px solid rgba(200,160,60,.2)",padding:"8px 14px",marginBottom:8,textAlign:"center",fontSize:"clamp(10px,1.4vw,12px)",maxWidth:780,width:"100%",fontStyle:"italic",lineHeight:1.7,color:"#c0b080"}}>{msg}</div>
@@ -896,9 +1051,10 @@ export default function MokshaPatam(){
                   {ld&&<><span style={{fontSize:"clamp(7px,1.4vw,12px)",lineHeight:1}}>🪔</span><span style={{fontSize:"clamp(6px,1vw,9px)",color:"#ffe070",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1,textShadow:"0 0 8px #000"}}>{ld.skt}</span><span style={{fontSize:"clamp(4px,.7vw,7px)",color:"#f0d060",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1,textShadow:"0 0 6px #000"}}>{ld.en}</span></>}
                   {dl&&<><span style={{fontSize:"clamp(8px,1.5vw,13px)",lineHeight:1}}>⚖</span><span style={{fontSize:"clamp(5px,.8vw,7px)",color:"#c8a0f0",fontFamily:"'Cinzel',serif",fontWeight:900,textShadow:"0 0 8px #000",letterSpacing:1}}>DHARMA</span></>}
                   {ph.length>0&&<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",gap:2,zIndex:15,pointerEvents:"none"}}>
-                    {ph.map(pi=>{const c=players[pi]?.char;const isMoving=pi===cur&&busy;const isActive=pi===cur;return <div key={pi} style={{display:"flex",flexDirection:"column",alignItems:"center",transition:"all .3s ease",transform:isMoving?"scale(1.5) translateY(-4px)":isActive?"scale(1.2)":"scale(1)",zIndex:isActive?20:15,filter:isActive?"drop-shadow(0 0 8px "+c?.color+")":"none"}}>
-                      <div style={{width:"clamp(18px,3vw,28px)",height:"clamp(18px,3vw,28px)",borderRadius:"50%",background:`radial-gradient(circle at 35% 30%,${c?.color||"#fff"},#1a1408)`,border:`2px solid ${c?.color||"#fff"}`,boxShadow:`0 0 ${isMoving?18:isActive?10:4}px ${c?.color||"#fff"}${isMoving?"ee":isActive?"aa":"40"}, inset 0 -3px 6px rgba(0,0,0,.4)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"clamp(10px,1.8vw,16px)",lineHeight:1}}>{c?.icon}</div>
-                      {isActive&&<div style={{fontSize:"clamp(5px,.7vw,7px)",color:c?.color,fontWeight:900,marginTop:1,textShadow:"0 0 4px #000,0 0 8px #000",whiteSpace:"nowrap",letterSpacing:1}}>{players[pi]?.name?.slice(0,5)}</div>}
+                    {ph.map(pi=>{const c=players[pi]?.char;const isMoving=pi===cur&&busy;const isActive=pi===cur;const pc=c?.color||"#fff";return <div key={pi} style={{display:"flex",flexDirection:"column",alignItems:"center",transition:"all .3s ease",transform:isMoving?"scale(1.6) translateY(-6px)":isActive?"scale(1.25)":"scale(0.9)",zIndex:isActive?20:15}}>
+                      {isActive&&<div style={{position:"absolute",inset:-2,borderRadius:4,background:`${pc}15`,border:`1.5px solid ${pc}40`,animation:"activeGlow 1.5s ease infinite","--pc":pc}}/>}
+                      <div style={{width:"clamp(20px,3.2vw,30px)",height:"clamp(20px,3.2vw,30px)",borderRadius:"50%",background:`radial-gradient(circle at 35% 30%,${pc},${pc}40 70%,#0c0a07)`,border:`2.5px solid ${pc}`,boxShadow:`0 0 ${isMoving?20:isActive?12:5}px ${pc}${isMoving?"dd":isActive?"99":"30"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"clamp(11px,2vw,17px)",lineHeight:1,animation:isActive&&!isMoving?"activeGlow 1.5s ease infinite":"none","--pc":pc}}>{c?.icon}</div>
+                      <div style={{fontSize:"clamp(5px,.8vw,8px)",color:pc,fontWeight:900,marginTop:1,textShadow:`0 0 4px #000,0 0 8px #000,0 0 12px ${pc}40`,whiteSpace:"nowrap",letterSpacing:1,opacity:isActive?1:.7}}>{players[pi]?.name?.slice(0,6)}</div>
                     </div>})}
                   </div>}
                 </div>);
@@ -915,10 +1071,11 @@ export default function MokshaPatam(){
             <div style={{fontSize:"clamp(11px,1.5vw,13px)",fontFamily:"'Noto Serif Devanagari',serif",lineHeight:1.9,color:"#f0d050"}}>{shl.s}</div>
             <div style={{fontSize:8,opacity:.35,fontFamily:"'Noto Serif Devanagari',serif"}}>{shl.r}</div>
           </div>
-          {!win&&<div style={{background:"#1a1408",border:"1px solid rgba(200,160,60,.2)",padding:"clamp(10px,2vw,14px)"}}>
-            <div style={{fontSize:11,opacity:.5,marginBottom:10,letterSpacing:2,textAlign:"center",color:"#c0b080"}}>
-              <span style={{fontSize:14}}>{cp.char.icon}</span> <span style={{color:cp.char.color,fontWeight:700}}>{cp.name}</span>
-              <span style={{opacity:.5}}> — {cp.char.name}</span>
+          {!win&&<div style={{background:"#1a1408",border:`1px solid ${cp.char.color}30`,borderTop:`3px solid ${cp.char.color}`,padding:"clamp(10px,2vw,14px)",borderRadius:4}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginBottom:10,padding:"6px 12px",background:`${cp.char.color}10`,borderRadius:4}}>
+              <span style={{fontSize:20}}>{cp.char.icon}</span>
+              <span style={{fontSize:14,color:cp.char.color,fontWeight:700,letterSpacing:2}}>{cp.name}</span>
+              <span style={{fontSize:10,opacity:.4}}>— {cp.char.name}</span>
             </div>
             <div style={{display:"flex",justifyContent:"center",gap:"clamp(12px,2vw,20px)",marginBottom:14}}>
               <div style={{textAlign:"center"}}><div style={{fontSize:8,letterSpacing:2,opacity:.5,marginBottom:5,color:"#f0d050",fontWeight:700}}>KARMA</div><div style={{width:"clamp(50px,8vw,60px)",height:"clamp(50px,8vw,60px)",border:"2px solid rgba(200,160,60,.5)",borderRadius:6,background:"linear-gradient(135deg,#2a2015,#1a1408)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"clamp(24px,4vw,32px)",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,animation:busy?"dt .6s ease":"none",color:"#f0d050",boxShadow:"inset 0 0 15px rgba(0,0,0,.3)"}}>{rv||"?"}</div><div style={{fontSize:8,opacity:.4,marginTop:4}}>Movement</div></div>
@@ -972,12 +1129,12 @@ export default function MokshaPatam(){
           </div>}
           <div style={{background:"linear-gradient(180deg,#1e1810,#14100a)",border:"1px solid rgba(200,160,60,.2)",padding:12,borderRadius:4}}>
             <div style={{fontSize:9,letterSpacing:4,opacity:.5,marginBottom:10,color:"#f0d050",fontWeight:700,textAlign:"center"}}>⚔ KARMA SCOREBOARD ⚔</div>
-            {players.map((pl,i)=>{const isActive=cur===i;const pn=punya[i]||0;const pp=papa[i]||0;const total=Math.max(pn+pp,1);
-              return(<div key={i} style={{background:isActive?"rgba(200,160,60,.08)":"transparent",border:`1px solid ${isActive?"rgba(240,200,80,.3)":"rgba(200,160,60,.08)"}`,borderRadius:4,padding:"10px 12px",marginBottom:i<nP-1?8:0,transition:"all .3s"}}>
+            {players.map((pl,i)=>{const isActive=cur===i;const pn=punya[i]||0;const pp=papa[i]||0;const total=Math.max(pn+pp,1);const pc=pl.char.color;
+              return(<div key={i} style={{background:isActive?`${pc}12`:"transparent",borderLeft:`4px solid ${isActive?pc:"transparent"}`,border:`1px solid ${isActive?pc+"50":"rgba(200,160,60,.08)"}`,borderLeftWidth:4,borderLeftColor:isActive?pc:"rgba(200,160,60,.08)",borderRadius:4,padding:"10px 12px",marginBottom:i<nP-1?8:0,transition:"all .3s",boxShadow:isActive?`inset 0 0 20px ${pc}10, 0 0 12px ${pc}15`:"none"}}>
                 <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
-                  <span style={{fontSize:20}}>{pl.char.icon}</span>
+                  <div style={{fontSize:isActive?24:20,width:32,height:32,display:"flex",alignItems:"center",justifyContent:"center",borderRadius:"50%",background:isActive?`${pc}20`:"transparent",border:isActive?`2px solid ${pc}50`:"2px solid transparent",transition:"all .3s"}}>{pl.char.icon}</div>
                   <div style={{flex:1}}>
-                    <div style={{fontSize:13,color:pl.char.color,fontWeight:700}}>{pl.name}{pl.cpu?" 🤖":""}{isActive?" ◄":""}{shieldA[i]?" 🛡":""}{skipA[i]?" ⏭":""}</div>
+                    <div style={{fontSize:isActive?14:12,color:pc,fontWeight:700,transition:"all .3s"}}>{pl.name}{pl.cpu?" ☠️":""}{isActive?" ◄":""}{shieldA[i]?" 🛡":""}{skipA[i]?" ⏭":""}</div>
                     <div style={{fontSize:10,opacity:.5,letterSpacing:1}}>Square {pos[i]||1} · {rlm(pos[i]||1)==="bhuloka"?"भूलोक":rlm(pos[i]||1)==="antarloka"?"अन्तर्लोक":"स्वर्गलोक"}</div>
                   </div>
                 </div>
