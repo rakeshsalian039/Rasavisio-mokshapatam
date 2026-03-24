@@ -361,7 +361,6 @@ const VoiceEngine = {
     let audioUrl = null;
 
     if (!isLocal) {
-      // Try cache first
       audioUrl = AudioCache.get(text);
       if (!audioUrl) {
         const yamaInstruct='Speak like Thanos — impossibly deep, heavy, rumbling bass. Extremely slow. Each word like a boulder. Long pauses. Cold, inevitable, cosmic authority.';
@@ -372,136 +371,130 @@ const VoiceEngine = {
     if (!audioUrl) { this._browserSpeak(text, lang); return; }
 
     try {
-      // Fetch audio buffer
+      // Fetch the blob from the blob URL
       const resp = await fetch(audioUrl);
-      const arrayBuf = await resp.arrayBuffer();
+      const blob = await resp.blob();
+      const arrayBuf = await blob.arrayBuffer();
+
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      // iOS requires resume after user gesture
+      if (ctx.state === 'suspended') await ctx.resume();
       this._yamaCtx = ctx;
+
       const buffer = await ctx.decodeAudioData(arrayBuf);
 
-      // ═══ LAYER 1: Main voice (pitch 0.8) ═══
+      // ═══ LAYER 1: Main voice (pitch 0.82) ═══
       const source1 = ctx.createBufferSource();
       source1.buffer = buffer;
-      source1.playbackRate.value = 0.82; // Pitch down
+      source1.playbackRate.value = 0.82;
       this._yamaSource = source1;
 
-      // ═══ LAYER 2: Deep echo (pitch 0.65, low volume) ═══
+      // ═══ LAYER 2: Deep shadow (pitch 0.65, quiet) ═══
       const source2 = ctx.createBufferSource();
       source2.buffer = buffer;
-      source2.playbackRate.value = 0.65; // Much deeper
+      source2.playbackRate.value = 0.65;
       this._yamaSource2 = source2;
 
       const layer2Gain = ctx.createGain();
-      layer2Gain.gain.value = 0.35; // Quieter shadow layer
+      layer2Gain.gain.value = 0.35;
 
-      // ═══ SUB-BASS BOOST (60-120 Hz, +6dB) ═══
+      // ═══ SUB-BASS BOOST ═══
       const bassBoost = ctx.createBiquadFilter();
       bassBoost.type = 'lowshelf';
       bassBoost.frequency.value = 120;
-      bassBoost.gain.value = 8; // +8dB bass boost
+      bassBoost.gain.value = 8;
 
-      // ═══ EQ: Cut highs above 5kHz ═══
+      // ═══ HIGH CUT ═══
       const highCut = ctx.createBiquadFilter();
       highCut.type = 'lowpass';
       highCut.frequency.value = 5000;
-      highCut.Q.value = 0.7;
 
-      // ═══ EQ: Boost clarity 1-2kHz ═══
+      // ═══ MID CLARITY ═══
       const midBoost = ctx.createBiquadFilter();
       midBoost.type = 'peaking';
       midBoost.frequency.value = 1500;
       midBoost.gain.value = 3;
       midBoost.Q.value = 1;
 
-      // ═══ DISTORTION (subtle tube saturation) ═══
+      // ═══ DISTORTION ═══
       const distortion = ctx.createWaveShaper();
       const curve = new Float32Array(256);
       for (let i = 0; i < 256; i++) {
         const x = (i * 2) / 256 - 1;
-        curve[i] = (Math.PI + 10) * x / (Math.PI + 10 * Math.abs(x)); // Soft clip
+        curve[i] = (Math.PI + 10) * x / (Math.PI + 10 * Math.abs(x));
       }
       distortion.curve = curve;
       distortion.oversample = '4x';
 
-      const distGain = ctx.createGain();
-      distGain.gain.value = 0.9; // Mix dry/wet
-
-      // ═══ DELAY (300ms, 15% feedback) ═══
+      // ═══ DELAY ═══
       const delay = ctx.createDelay(1.0);
       delay.delayTime.value = 0.3;
-      const delayFeedback = ctx.createGain();
-      delayFeedback.gain.value = 0.15;
+      const delayFb = ctx.createGain();
+      delayFb.gain.value = 0.15;
       const delayMix = ctx.createGain();
       delayMix.gain.value = 0.25;
-
-      delay.connect(delayFeedback);
-      delayFeedback.connect(delay);
+      delay.connect(delayFb);
+      delayFb.connect(delay);
       delay.connect(delayMix);
 
-      // ═══ REVERB (dark hall, 2.5s decay) ═══
-      const reverbLen = 2.5 * ctx.sampleRate;
-      const reverbBuf = ctx.createBuffer(2, reverbLen, ctx.sampleRate);
+      // ═══ REVERB ═══
+      const rvLen = 2.5 * ctx.sampleRate;
+      const rvBuf = ctx.createBuffer(2, rvLen, ctx.sampleRate);
       for (let ch = 0; ch < 2; ch++) {
-        const data = reverbBuf.getChannelData(ch);
-        for (let i = 0; i < reverbLen; i++) {
-          // Dark reverb — more low freq energy
-          data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / reverbLen, 2.5);
-        }
+        const d = rvBuf.getChannelData(ch);
+        for (let i = 0; i < rvLen; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / rvLen, 2.5);
       }
-      const convolver = ctx.createConvolver();
-      convolver.buffer = reverbBuf;
-      const reverbMix = ctx.createGain();
-      reverbMix.gain.value = 0.25; // 25% wet
+      const conv = ctx.createConvolver();
+      conv.buffer = rvBuf;
+      const rvMix = ctx.createGain();
+      rvMix.gain.value = 0.25;
 
-      // ═══ COMPRESSION (tighten lows) ═══
-      const compressor = ctx.createDynamicsCompressor();
-      compressor.threshold.value = -20;
-      compressor.knee.value = 10;
-      compressor.ratio.value = 4;
-      compressor.attack.value = 0.005;
-      compressor.release.value = 0.1;
+      // ═══ COMPRESSOR ═══
+      const comp = ctx.createDynamicsCompressor();
+      comp.threshold.value = -20;
+      comp.ratio.value = 4;
+      comp.attack.value = 0.005;
+      comp.release.value = 0.1;
 
-      // ═══ MASTER GAIN ═══
-      const masterGain = ctx.createGain();
-      masterGain.gain.value = 1.2;
+      // ═══ MASTER ═══
+      const master = ctx.createGain();
+      master.gain.value = 1.3;
 
       // ═══ ROUTING ═══
-      // Layer 1: source1 → bassBoost → highCut → midBoost → distortion → compressor
       source1.connect(bassBoost);
-      // Layer 2: source2 → layer2Gain → bassBoost
       source2.connect(layer2Gain);
       layer2Gain.connect(bassBoost);
-
       bassBoost.connect(highCut);
       highCut.connect(midBoost);
       midBoost.connect(distortion);
-      distortion.connect(compressor);
+      distortion.connect(comp);
+      comp.connect(master);
+      comp.connect(delay);
+      comp.connect(conv);
+      delayMix.connect(master);
+      conv.connect(rvMix);
+      rvMix.connect(master);
+      master.connect(ctx.destination);
 
-      // Compressor → master + delay + reverb
-      compressor.connect(masterGain);
-      compressor.connect(delay);
-      compressor.connect(convolver);
-      delayMix.connect(masterGain);
-      convolver.connect(reverbMix);
-      reverbMix.connect(masterGain);
-
-      masterGain.connect(ctx.destination);
-
-      // ═══ PLAY ═══
       this.speaking = true;
       source1.onended = () => { this.speaking = false; try{ctx.close()}catch(e){} this._yamaCtx=null; };
       source1.start(0);
       source2.start(0);
-
+      return; // Success!
     } catch(e) {
-      console.warn('Yama audio processing failed, fallback:', e);
-      // Fallback to normal playback
+      console.warn('Yama Web Audio failed:', e.message);
+    }
+
+    // Fallback: play without processing (still onyx voice, just no effects)
+    try {
       const audio = new Audio(audioUrl);
       audio.volume = 1.0;
       this.audio = audio;
       this.speaking = true;
       audio.onended = () => { this.speaking = false; };
-      audio.play().catch(()=>{});
+      await audio.play().catch(()=>{});
+    } catch(e) {
+      this._browserSpeak(text, lang);
     }
   }
 };
