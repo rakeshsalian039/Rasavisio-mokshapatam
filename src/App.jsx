@@ -250,7 +250,7 @@ const AudioCache = {
     const yamaEn='So, you dare to challenge me? I am Yama. The God of Death. I ride the great buffalo through the realm of the dead. Every soul that walks this board eventually comes to me. You think you can outwit Death? I have watched a million souls fall. Brave warriors. Wise sages. They all fell. And I devoured their karma. Play your little game, mortal. I will be watching every single move. And when your karma falters, I will be there. Now tell me, little soul. Who are you?';
     const yamaHi='तो, तुम मुझसे खेलना चाहते हो? मैं यमराज हूँ। मृत्यु का देवता। मैं महान भैंसे पर सवार होकर मृतकों के लोक से गुज़रता हूँ। हर आत्मा जो इस पट पर चलती है, अंत में मेरे पास आती है। मैंने लाखों आत्माओं को गिरते देखा है। वीर योद्धा। ज्ञानी ऋषि। सब गिरे। और मैंने उनका कर्म निगल लिया। खेलो अपना छोटा सा खेल, नश्वर प्राणी। मैं देख रहा हूँ। हर एक कदम। अब बताओ, छोटी सी आत्मा। तुम कौन हो?';
     const yamaVoice='onyx';
-    const yamaInstructions='You are Yama, the terrifying Hindu God of Death. Speak with an extremely deep, slow, menacing voice. Every word drips with ancient power and dread. Pause between sentences as if savouring fear. Your tone should make the listener feel like they are standing before Death itself.';
+    const yamaInstructions='Speak like Thanos — an impossibly deep, heavy, rumbling bass voice that vibrates through the chest. Extremely slow and deliberate. Each word lands like a boulder. Long pauses between sentences. Absolute calm confidence of someone who has already won. No emotion, no anger — just cold, inevitable, cosmic authority. The voice of someone who has existed for billions of years and knows exactly how this ends. Whisper certain words for emphasis. This is not a villain — this is a force of nature speaking.';
     const texts = [];
     // Yama gets onyx voice with scary instructions
     texts.push({ text: lang === 'hi' ? yamaHi : yamaEn, lang, voice: yamaVoice, instructions: yamaInstructions });
@@ -527,11 +527,21 @@ export default function MokshaPatam(){
     setYamaPhase(0);
     const yamaEn='So, you dare to challenge me? I am Yama. The God of Death. I ride the great buffalo through the realm of the dead. Every soul that walks this board, eventually, comes to me. You think you can outwit Death? Play your little game, mortal. I will be watching every single move. And when your karma falters, I will be there. Now tell me, little soul. Who are you?';
     const yamaHi='तो, तुम मुझसे खेलना चाहते हो? मैं यमराज हूँ। मृत्यु का देवता। हर आत्मा जो इस पट पर चलती है, अंत में मेरे पास आती है। तुम्हें लगता है तुम मृत्यु को हरा सकते हो? खेलो अपना छोटा सा खेल। मैं देख रहा हूँ। हर एक कदम। अब बताओ, छोटी सी आत्मा। तुम कौन हो?';
+    const yamaText=chosenLang==='hi'?yamaHi:yamaEn;
     if(!muted){
-      setTimeout(()=>VoiceEngine.speak(chosenLang==='hi'?yamaHi:yamaEn,chosenLang),1500);
+      const isLocal=['localhost','127.0.0.1',''].includes(window.location.hostname);
+      setTimeout(()=>{
+        if(!isLocal){
+          // Try cached onyx voice first, fetch with Thanos instructions if not cached
+          const yamaInstruct='Speak like Thanos — impossibly deep, heavy, rumbling bass. Extremely slow. Each word lands like a boulder. Long pauses. Cold, inevitable, cosmic authority. No emotion — just a force of nature.';
+          AudioCache.fetchTTS(yamaText,chosenLang,'onyx',yamaInstruct).then(url=>{
+            if(url){VoiceEngine.stop();const a=new Audio(url);a.volume=1.0;VoiceEngine.audio=a;VoiceEngine.speaking=true;a.onended=()=>{VoiceEngine.speaking=false};a.play().catch(()=>{})}
+            else VoiceEngine.speak(yamaText,chosenLang);
+          });
+        }else{VoiceEngine.speak(yamaText,chosenLang)}
+      },1500);
     }
-    // Transition to phase 1 after voice finishes (estimate ~20s for full speech, or 8s for short)
-    const timer=setTimeout(()=>setYamaPhase(1),muted?4000:22000);
+    const timer=setTimeout(()=>setYamaPhase(1),muted?4000:25000);
     return()=>{clearTimeout(timer);VoiceEngine.stop()};
   },[screen,muted,chosenLang]);
 
