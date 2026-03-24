@@ -274,31 +274,9 @@ const AudioCache = {
   count() { return Object.keys(this.cache).length; },
 };
 
-/* ═══ STATIC VOICE FILES — zero API cost ═══ */
-const STATIC_VOICES = {
-  yama: { en: '/yama-en.mp3', hi: '/yama-hi.mp3' },
-  warrior: { en: '/char-warrior-en.mp3', hi: '/char-warrior-hi.mp3' },
-  sage: { en: '/char-sage-en.mp3', hi: '/char-sage-hi.mp3' },
-  healer: { en: '/char-healer-en.mp3', hi: '/char-healer-hi.mp3' },
-  dancer: { en: '/char-dancer-en.mp3', hi: '/char-dancer-hi.mp3' },
-  merchant: { en: '/char-merchant-en.mp3', hi: '/char-merchant-hi.mp3' },
-  ascetic: { en: '/char-ascetic-en.mp3', hi: '/char-ascetic-hi.mp3' },
-};
-
 const VoiceEngine = {
   audio: null,
   speaking: false,
-
-  // Play a static MP3 file — instant, zero API cost
-  playStatic(url) {
-    this.stop();
-    const audio = new Audio(url);
-    audio.volume = 1.0;
-    this.audio = audio;
-    this.speaking = true;
-    audio.onended = () => { this.speaking = false; };
-    audio.play().catch(()=>{});
-  },
 
   _pickBestVoice(voices, lang) {
     if (lang === 'hi') {
@@ -379,15 +357,27 @@ const VoiceEngine = {
     this.stop();
     if (!text) return;
 
-    // Use static MP3 file — zero API cost
-    const staticUrl = STATIC_VOICES.yama[lang==='hi'?'hi':'en'];
+    const isLocal = ['localhost','127.0.0.1',''].includes(window.location.hostname);
+    let audioUrl = null;
+
+    if (!isLocal) {
+      audioUrl = AudioCache.get(text);
+      if (!audioUrl) {
+        const yamaInstruct='Speak like Thanos — impossibly deep, heavy, rumbling bass. Extremely slow. Each word like a boulder. Long pauses. Cold, inevitable, cosmic authority.';
+        audioUrl = await AudioCache.fetchTTS(text, lang, 'onyx', yamaInstruct);
+      }
+    }
+
+    if (!audioUrl) { this._browserSpeak(text, lang); return; }
 
     try {
-      const resp = await fetch(staticUrl);
+      // Fetch the blob from the blob URL
+      const resp = await fetch(audioUrl);
       const blob = await resp.blob();
       const arrayBuf = await blob.arrayBuffer();
 
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      // iOS requires resume after user gesture
       if (ctx.state === 'suspended') await ctx.resume();
       this._yamaCtx = ctx;
 
@@ -495,9 +485,14 @@ const VoiceEngine = {
       console.warn('Yama Web Audio failed:', e.message);
     }
 
-    // Fallback: play static file without processing
+    // Fallback: play without processing (still onyx voice, just no effects)
     try {
-      this.playStatic(staticUrl);
+      const audio = new Audio(audioUrl);
+      audio.volume = 1.0;
+      this.audio = audio;
+      this.speaking = true;
+      audio.onended = () => { this.speaking = false; };
+      await audio.play().catch(()=>{});
     } catch(e) {
       this._browserSpeak(text, lang);
     }
@@ -660,6 +655,20 @@ export default function MokshaPatam(){
 
   useEffect(()=>{try{window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices()}catch(e){}},[]);
   useEffect(()=>{const iv=setInterval(()=>{setShF(false);setTimeout(()=>{setShI(i=>(i+1)%SHLOKAS.length);setShF(true)},700)},6e3);return()=>clearInterval(iv)},[]);
+
+  // Preload Yama + character voices when entering pickcount
+  useEffect(()=>{
+    if(screen!=="pickcount"&&screen!=="yama")return;
+    if(gameVoicesReady||gameVoicesLoading)return;
+    const isLocal=['localhost','127.0.0.1',''].includes(window.location.hostname);
+    if(isLocal)return;
+    setGameVoicesLoading(true);setGameVoicesPct(0);
+    const{promise,progress}=AudioCache.preloadGameVoices(chosenLang);
+    const iv=setInterval(()=>setGameVoicesPct(progress()),400);
+    promise.then(()=>{clearInterval(iv);setGameVoicesPct(100);setGameVoicesReady(true);setGameVoicesLoading(false)})
+      .catch(()=>{clearInterval(iv);setGameVoicesLoading(false)});
+    return()=>clearInterval(iv);
+  },[screen,gameVoicesReady,gameVoicesLoading,chosenLang]);
 
   // Yama intro screen — speak with full audio processing then transition
   useEffect(()=>{
@@ -1028,6 +1037,13 @@ export default function MokshaPatam(){
         <div style={{fontSize:32,marginBottom:12}}>🔱</div>
         <h2 style={{fontSize:"clamp(20px,4vw,32px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"0 0 8px"}}>How Many Seekers?</h2>
         <p style={{fontSize:13,opacity:.4,marginBottom:12,letterSpacing:3}}>Each soul walks a different path</p>
+        {gameVoicesLoading&&<div style={{marginBottom:16,animation:"pulse 2s ease infinite"}}>
+          <div style={{fontSize:11,color:"#d0b870",letterSpacing:3,marginBottom:6}}>🔮 Summoning seekers... {gameVoicesPct}%</div>
+          <div style={{width:200,height:4,background:"rgba(200,160,60,.15)",borderRadius:2,margin:"0 auto",overflow:"hidden"}}>
+            <div style={{height:"100%",width:`${gameVoicesPct}%`,background:"linear-gradient(90deg,#f0d050,#c0a030)",borderRadius:2,transition:"width .4s"}}/>
+          </div>
+        </div>}
+        {!gameVoicesLoading&&gameVoicesReady&&<div style={{fontSize:10,color:"#80c080",opacity:.5,marginBottom:12,letterSpacing:2}}>✓ All voices ready</div>}
         <div style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap"}}>
           <button className="gb gp" onClick={()=>{
             setNP(2);setIsCPU([false,true]);setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);
@@ -1104,7 +1120,7 @@ export default function MokshaPatam(){
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(clamp(140px,30vw,200px),1fr))",gap:10,marginBottom:20}}>
             {CHARS.map((ch,i)=>{const used=usedChars.includes(i);const sel=tempChar===i;
-              return(<div key={i} onClick={()=>{if(!used){setTempChar(i);if(!muted){VoiceEngine.stop();const sf=STATIC_VOICES[ch.id];if(sf)VoiceEngine.playStatic(sf[chosenLang==='hi'?'hi':'en']);else VoiceEngine.speak(chosenLang==='hi'?ch.voiceHi:ch.voiceEn,chosenLang)}}}} style={{background:sel?"rgba(200,160,60,.12)":"rgba(20,16,10,.5)",border:`1px solid ${sel?"rgba(240,200,80,.6)":used?"rgba(100,80,50,.15)":"rgba(200,160,60,.2)"}`,padding:14,borderRadius:4,cursor:used?"not-allowed":"pointer",opacity:used?.3:1,transition:"all .3s"}}>
+              return(<div key={i} onClick={()=>{if(!used){setTempChar(i);if(!muted){VoiceEngine.stop();VoiceEngine.speak(chosenLang==='hi'?ch.voiceHi:ch.voiceEn,chosenLang)}}}} style={{background:sel?"rgba(200,160,60,.12)":"rgba(20,16,10,.5)",border:`1px solid ${sel?"rgba(240,200,80,.6)":used?"rgba(100,80,50,.15)":"rgba(200,160,60,.2)"}`,padding:14,borderRadius:4,cursor:used?"not-allowed":"pointer",opacity:used?.3:1,transition:"all .3s"}}>
                 <div style={{fontSize:28,marginBottom:6}}>{ch.icon}</div>
                 <div style={{fontSize:13,fontWeight:700,color:ch.color}}>{ch.name}</div>
                 <div style={{fontSize:11,fontFamily:"'Noto Serif Devanagari',serif",color:"#f0d050",opacity:.6,marginBottom:4}}>{ch.skt}</div>
@@ -1115,7 +1131,7 @@ export default function MokshaPatam(){
             <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
               <span style={{fontSize:28}}>{CHARS[tempChar].icon}</span>
               <div><div style={{fontSize:16,fontWeight:700,color:CHARS[tempChar].color}}>{CHARS[tempChar].name}</div><div style={{fontSize:11,fontFamily:"'Noto Serif Devanagari',serif",color:"#f0d050",opacity:.6}}>{CHARS[tempChar].skt}</div></div>
-              <button onClick={()=>{if(!muted){VoiceEngine.stop();const sf=STATIC_VOICES[CHARS[tempChar].id];if(sf)VoiceEngine.playStatic(sf[chosenLang==='hi'?'hi':'en']);else VoiceEngine.speak(chosenLang==='hi'?CHARS[tempChar].voiceHi:CHARS[tempChar].voiceEn,chosenLang)}}} style={{marginLeft:"auto",background:"transparent",border:"1px solid rgba(200,160,60,.25)",color:"#c0b080",padding:"3px 10px",fontSize:10,cursor:"pointer",borderRadius:3,opacity:.6}}>🔊</button>
+              <button onClick={()=>{if(!muted)VoiceEngine.speak(chosenLang==='hi'?CHARS[tempChar].voiceHi:CHARS[tempChar].voiceEn,chosenLang)}} style={{marginLeft:"auto",background:"transparent",border:"1px solid rgba(200,160,60,.25)",color:"#c0b080",padding:"3px 10px",fontSize:10,cursor:"pointer",borderRadius:3,opacity:.6}}>🔊</button>
             </div>
             <p style={{fontSize:12,lineHeight:1.9,color:"#c0b080",margin:0}}>{CHARS[tempChar].lore}</p>
           </div>}
