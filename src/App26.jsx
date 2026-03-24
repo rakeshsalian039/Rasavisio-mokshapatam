@@ -132,7 +132,7 @@ const CHARS=[
 const STORY_PAGES=[
   {title:"A Forgotten Secret",icon:"🕉",
   en:"Listen carefully. What I am about to tell you, has been hidden for five thousand years. Before the Mahabharata was written down. Before the first temples were carved into stone. Before even the oldest Vedas were chanted aloud by human lips. There existed, a game. But not a game of entertainment. No. This was a game, of the soul. Created by unknown sages, rishis so ancient, that even the gods, have forgotten their names. They called it, Moksha Patam. The Board, of Liberation. It was whispered, in sacred circles, that whoever truly understood this game, would understand the deepest secret of life, of death, and of everything, that lies beyond. For thousands of years, kings played it in marble palaces. Sages played it in forest ashrams, by firelight. It was passed from guru to disciple, in hushed tones, as if the board itself were alive. And then, one dark day, foreigners came to this land. They saw the board. They stole it. They stripped away every sacred name. Every Sanskrit verse. Every drop of meaning. And they renamed it. Snakes and Ladders. A children's game. The soul of the game, was murdered. Erased from history. Forgotten. Until, this very moment. Tonight, you play the original. The game your ancestors truly played. The game, the gods, forgot.",
-  hi:"ध्यान से सुनो। जो मैं बताने जा रही हूँ, वो पांच हज़ार सालों से छिपाया गया है। महाभारत लिखे जाने से पहले। पहले मंदिरों को पत्थर में तराशे जाने से पहले। इंसानी होंठों से सबसे पुराने वेदों के उच्चारण से भी पहले। एक खेल था। लेकिन मनोरंजन का खेल नहीं। नहीं। ये आत्मा का खेल था। अज्ञात ऋषियों द्वारा रचा गया, इतने प्राचीन, कि देवताओं को भी उनके नाम याद नहीं। उन्होंने इसे कहा, मोक्षपटम। मुक्ति का पट। पवित्र मंडलियों में फुसफुसाया जाता था, कि जो इस खेल को सच में समझ ले, वो जीवन का, मृत्यु का, और उसके पार जो कुछ भी है, उसका सबसे गहरा रहस्य जान जाएगा। हज़ारों सालों तक, राजाओं ने इसे संगमरमर के महलों में खेला। ऋषियों ने इसे वन के आश्रमों में, अग्नि की रोशनी में खेला। गुरु से शिष्य तक, दबी आवाज़ में, जैसे पट ख़ुद जीवित हो। और फिर, एक अंधेरे दिन, विदेशी इस धरती पर आए। उन्होंने पट देखा। चुरा लिया। हर पवित्र नाम छीन लिया। हर संस्कृत श्लोक। अर्थ की हर बूँद। और नाम रख दिया। सांप सीढ़ी। बच्चों का खेल। खेल की आत्मा की हत्या कर दी गई। इतिहास से मिटा दिया गया। भुला दिया गया। इस, एक क्षण तक। आज रात, तुम असली खेल खेलोगे। वो खेल जो तुम्हारे पूर्वजों ने खेला था। वो खेल, जो देवता, भूल गए।",
+  hi:"ध्यान से सुनो। जो मैं बताने जा रहा हूँ, वो पांच हज़ार सालों से छिपाया गया है। महाभारत लिखे जाने से पहले। पहले मंदिरों को पत्थर में तराशे जाने से पहले। इंसानी होंठों से सबसे पुराने वेदों के उच्चारण से भी पहले। एक खेल था। लेकिन मनोरंजन का खेल नहीं। नहीं। ये आत्मा का खेल था। अज्ञात ऋषियों द्वारा रचा गया, इतने प्राचीन, कि देवताओं को भी उनके नाम याद नहीं। उन्होंने इसे कहा, मोक्षपटम। मुक्ति का पट। पवित्र मंडलियों में फुसफुसाया जाता था, कि जो इस खेल को सच में समझ ले, वो जीवन का, मृत्यु का, और उसके पार जो कुछ भी है, उसका सबसे गहरा रहस्य जान जाएगा। हज़ारों सालों तक, राजाओं ने इसे संगमरमर के महलों में खेला। ऋषियों ने इसे वन के आश्रमों में, अग्नि की रोशनी में खेला। गुरु से शिष्य तक, दबी आवाज़ में, जैसे पट ख़ुद जीवित हो। और फिर, एक अंधेरे दिन, विदेशी इस धरती पर आए। उन्होंने पट देखा। चुरा लिया। हर पवित्र नाम छीन लिया। हर संस्कृत श्लोक। अर्थ की हर बूँद। और नाम रख दिया। सांप सीढ़ी। बच्चों का खेल। खेल की आत्मा की हत्या कर दी गई। इतिहास से मिटा दिया गया। भुला दिया गया। इस, एक क्षण तक। आज रात, तुम असली खेल खेलोगे। वो खेल जो तुम्हारे पूर्वजों ने खेला था। वो खेल, जो देवता, भूल गए।",
   body:"Before the Mahābhārata was written down...\nbefore the temples were carved in stone...\n\nThere existed a game. A game of the soul.\n\nThey called it मोक्षपटम् — Moksha Patam.\nThe Board of Liberation.\n\nPassed from गुरु to शिष्य in whispered secrecy.\n\nThen foreigners came. They renamed it 'Snakes and Ladders.'\n\nThe soul of the game was murdered.\nUntil this very moment."},
   {title:"The Sacred Board",icon:"📜",
   en:"Now, look at the board before you. It is not a board. It is a map. A map, of the entire universe. A map, of your soul's journey through existence. One hundred squares. Three realms. And one, single, destination. The first realm, Squares 1 through 33, is Bhuloka. The Earthly Realm. This is where you are born. This is where chaos reigns. Snakes coil in every shadow. Ladders shimmer like mirages. Fortune rises and crashes with every single step. Most souls, are trapped here. Forever. Cycling endlessly through birth, and death, and birth again. Never escaping. The second realm, Squares 34 through 66, is Antarloka. The Inner Realm. Here, the noise of the world fades to silence. But do not be deceived by the quiet. The serpents here are more cunning. They do not bite your flesh. They poison, your mind. Doubt. Confusion. The slow erosion of faith. The third realm, Squares 67 through 99, is Svargaloka. The Celestial Realm. You can feel liberation from here. You can almost, taste it. But beware. The serpents who dwell in the heavens, are the most terrifying of all. A single fall here, does not cost you a few squares. It destroys, lifetimes, of spiritual progress. And there, at the summit, Square 100. Moksha. Liberation. The end of all suffering. But reaching Moksha, is only half the battle. Arriving, with a pure soul, that is the true challenge.",
@@ -140,7 +140,7 @@ const STORY_PAGES=[
   body:"The board is not a board.\nIt is a map — of the entire universe.\n\n१०० squares · Three realms · One destination\n\n꧁ भूलोक · BHULOKA ꧂\nSquares 1–33 — The Earthly Realm\nChaos reigns. Most souls trapped here forever.\n\n꧁ अन्तर्लोक · ANTARLOKA ꧂\nSquares 34–66 — The Inner Realm\nSerpents poison your mind, not your flesh.\n\n꧁ स्वर्गलोक · SVARGALOKA ꧂\nSquares 67–99 — The Celestial Realm\nOne fall destroys lifetimes of progress.\n\n꧁ मोक्ष · MOKSHA ꧂\nSquare 100 — Liberation.\nArriving with a pure soul — that is the true challenge."},
   {title:"The Serpents Within",icon:"𓆙",
   en:"Now, hear me well, because what I am about to describe, will haunt you. They are not, just snakes. They are living nightmares. Ten colossal Nagas, ancient as time itself, coiled around this board since the beginning of creation. Each one, a manifestation of the darkest force, inside every human soul. The sages gave them names. And those names, should make your blood run cold. Krodh. Wrath. The same fire that consumed Duryodhana's mind and burned the Kuru dynasty to ash. When Krodh strikes, you feel the venom of rage dissolving everything you've built. Lobh. Greed. The insatiable hunger that made Shakuni gamble away an entire kingdom. Its jaws swallow your progress whole. Moh. Delusion. The blindness that kept Dhritarashtra from seeing his own sons destroy the world. This serpent, wraps around your eyes. Matsarya. Envy, that green poison that ate Duryodhana alive when he saw the glory of Indraprastha. Kaam. Desire. The burning lust that destroyed Keechaka in a single night. Mad. Pride. The ten-headed arrogance that toppled golden Lanka and brought mighty Ravana to his knees. Bhay. Fear. The same terror that froze Arjuna's hands before the greatest war in history. Dvesh. Hatred. The ancient feud between Drona and Drupada that echoed through generations of blood. Aalasya. Sloth. The great sleep of Kumbhakarna, who slumbered while dharma crumbled around him. And then, the deadliest of them all. Ahankaar. Ego. The serpent king. The one who whispers, I am above all others. The ego that challenged even Lord Rama himself. When a serpent catches you, it does not simply move you backward. It wraps its coils around your soul. It drags you, screaming, into the depths. And it stains you, with Paap. Sin karma. That mark, does not wash away easily. The higher you climb, the more violently you fall. And there is only one protection in this entire game. The celestial shield of Shukra, the planet Venus. But even that divine protection, can only save you, once. After that, you face the serpents, alone.",
-  hi:"अब, ध्यान से सुनो, क्योंकि जो मैं बताने वाली हूँ, वो तुम्हें सपनों में भी सताएगा। ये, सिर्फ सांप नहीं हैं। ये जीवित दुःस्वप्न हैं। दस विशाल नाग, समय जितने प्राचीन, सृष्टि के आरम्भ से इस पट पर कुंडली मारे बैठे हैं। हर एक, हर इंसान की आत्मा के अंदर की सबसे काली शक्ति का रूप। ऋषियों ने इन्हें नाम दिए। और वो नाम, तुम्हारा खून जमा देने चाहिए। क्रोध। वो आग जिसने दुर्योधन का मन जलाया और कुरु वंश को राख कर दिया। जब क्रोध हमला करता है, क्रोध का विष तुम्हारी हर उपलब्धि को गला देता है। लोभ। वो अतृप्त भूख जिसने शकुनि से पूरा राज्य जुए में हरवा दिया। इसके जबड़े तुम्हारी प्रगति को साबुत निगल जाते हैं। मोह। वो अंधापन जिसने धृतराष्ट्र को अपने ही पुत्रों को संसार का विनाश करते देखने से रोका। ये सांप, तुम्हारी आँखों पर लिपट जाता है। मात्सर्य। ईर्ष्या, वो हरा ज़हर जिसने दुर्योधन को इंद्रप्रस्थ की महिमा देखकर अंदर से खा लिया। काम। वासना। वो जलती आग जिसने कीचक को एक ही रात में नष्ट कर दिया। मद। घमंड। वो दस सिरों वाला अहंकार जिसने सोने की लंका को धराशायी किया और महान रावण को घुटनों पर ला दिया। भय। वही आतंक जिसने इतिहास के सबसे महान युद्ध से पहले अर्जुन के हाथ जमा दिए। द्वेष। नफ़रत। द्रोण और द्रुपद की वो प्राचीन दुश्मनी जो खून की पीढ़ियों तक गूंजती रही। आलस्य। कुम्भकर्ण की वो महानिद्रा, जो सोता रहा जबकि उसके चारों ओर धर्म टूट रहा था। और फिर, सबसे घातक। अहंकार। नागराज। वो जो फुसफुसाता है, मैं सबसे ऊपर हूँ। वो अहंकार जिसने स्वयं भगवान राम को भी चुनौती दी। जब कोई सांप तुम्हें पकड़ता है, तो सिर्फ पीछे नहीं ले जाता। वो अपने कुंडल तुम्हारी आत्मा पर कसता है। तुम्हें, चीखते हुए, गहराइयों में खींचता है। और तुम पर दाग लगाता है, पाप का। वो दाग, आसानी से नहीं धुलता। जितना ऊपर चढ़ो, उतनी हिंसक होगी गिरावट। और इस पूरे खेल में सिर्फ एक सुरक्षा है। शुक्र ग्रह का दिव्य कवच। लेकिन वो दिव्य सुरक्षा भी, सिर्फ एक बार, बचा सकती है। उसके बाद, तुम सांपों का सामना, अकेले करोगे।",
+  hi:"अब, ध्यान से सुनो, क्योंकि जो मैं बताने वाला हूँ, वो तुम्हें सपनों में भी सताएगा। ये, सिर्फ सांप नहीं हैं। ये जीवित दुःस्वप्न हैं। दस विशाल नाग, समय जितने प्राचीन, सृष्टि के आरम्भ से इस पट पर कुंडली मारे बैठे हैं। हर एक, हर इंसान की आत्मा के अंदर की सबसे काली शक्ति का रूप। ऋषियों ने इन्हें नाम दिए। और वो नाम, तुम्हारा खून जमा देने चाहिए। क्रोध। वो आग जिसने दुर्योधन का मन जलाया और कुरु वंश को राख कर दिया। जब क्रोध हमला करता है, क्रोध का विष तुम्हारी हर उपलब्धि को गला देता है। लोभ। वो अतृप्त भूख जिसने शकुनि से पूरा राज्य जुए में हरवा दिया। इसके जबड़े तुम्हारी प्रगति को साबुत निगल जाते हैं। मोह। वो अंधापन जिसने धृतराष्ट्र को अपने ही पुत्रों को संसार का विनाश करते देखने से रोका। ये सांप, तुम्हारी आँखों पर लिपट जाता है। मात्सर्य। ईर्ष्या, वो हरा ज़हर जिसने दुर्योधन को इंद्रप्रस्थ की महिमा देखकर अंदर से खा लिया। काम। वासना। वो जलती आग जिसने कीचक को एक ही रात में नष्ट कर दिया। मद। घमंड। वो दस सिरों वाला अहंकार जिसने सोने की लंका को धराशायी किया और महान रावण को घुटनों पर ला दिया। भय। वही आतंक जिसने इतिहास के सबसे महान युद्ध से पहले अर्जुन के हाथ जमा दिए। द्वेष। नफ़रत। द्रोण और द्रुपद की वो प्राचीन दुश्मनी जो खून की पीढ़ियों तक गूंजती रही। आलस्य। कुम्भकर्ण की वो महानिद्रा, जो सोता रहा जबकि उसके चारों ओर धर्म टूट रहा था। और फिर, सबसे घातक। अहंकार। नागराज। वो जो फुसफुसाता है, मैं सबसे ऊपर हूँ। वो अहंकार जिसने स्वयं भगवान राम को भी चुनौती दी। जब कोई सांप तुम्हें पकड़ता है, तो सिर्फ पीछे नहीं ले जाता। वो अपने कुंडल तुम्हारी आत्मा पर कसता है। तुम्हें, चीखते हुए, गहराइयों में खींचता है। और तुम पर दाग लगाता है, पाप का। वो दाग, आसानी से नहीं धुलता। जितना ऊपर चढ़ो, उतनी हिंसक होगी गिरावट। और इस पूरे खेल में सिर्फ एक सुरक्षा है। शुक्र ग्रह का दिव्य कवच। लेकिन वो दिव्य सुरक्षा भी, सिर्फ एक बार, बचा सकती है। उसके बाद, तुम सांपों का सामना, अकेले करोगे।",
   body:"They are not just snakes.\nThey are living nightmares — ten colossal नाग Nāgas.\n\n𓆙 क्रोध Krodh — Wrath\n    The fire that burned the Kuru dynasty to ash\n𓆙 लोभ Lobh — Greed\n    The hunger that swallowed Shakuni's kingdom\n𓆙 मोह Moh — Delusion\n    The blindness that veiled Dhritarashtra's eyes\n𓆙 मात्सर्य Mātsarya — Envy\n    The green poison that consumed Duryodhana\n𓆙 काम Kām — Desire\n    The flame that destroyed Keechaka in one night\n𓆙 मद Mad — Pride\n    The arrogance that toppled golden Lankā\n𓆙 भय Bhay — Fear\n    The terror that froze Arjuna before war\n𓆙 द्वेष Dvesh — Hatred\n    The feud that echoed through generations\n𓆙 आलस्य Ālasya — Sloth\n    The sleep of Kumbhakarna while dharma crumbled\n𓆙 अहंकार Ahankār — Ego\n    The serpent king. The deadliest of all.\n\nWhen bitten → dragged into the depths + 2 पाप Pāp.\nOnly शुक्र Shukra shields you — once."},
   {title:"The Path to Moksha",icon:"ॐ",
   en:"And now, the final truth. There are only two ways, to escape the wheel of Samsara. Two narrow paths, through an ocean of suffering. The First Path. Reach, Square 100, with an exact roll of the dice. Not one square more. Not one square less. But, even if you reach Moksha, the gates will not open for a tainted soul. Your Punya, your accumulated virtue, must equal, or exceed, your Paap, your sin. If you arrive at the threshold of liberation, carrying the weight of your failures, you will be cast back. Hurled down, to Square 67. To suffer again. To purify through pain. To crawl, once more, through the celestial realm, past the deadliest serpents, knowing that one wrong step sends you even further down. The Second Path. Far rarer. Far more beautiful. Far more impossible. If, at any moment during your journey, you accumulate 20 Punya, fifteen acts of pure virtue, you transcend the board entirely. You do not need Square 100. You do not need an exact roll. The board itself, dissolves beneath you, and your soul rises, into pure light. Instant Moksha. This is the ancient truth that the sages encoded into this game. That a truly pure soul, can break free from the cycle of existence, at any moment. From any square. Most seekers, will never achieve either path. They will wander this board for eternity, rising and falling, climbing and being devoured, forever caught between virtue and vice. But perhaps, you, will be different. Dharma, awaits. The dice, are ready. The serpents, can already smell your fear. Take a breath. And step, onto the board.",
@@ -197,7 +197,7 @@ const AudioCache = {
 
   _key(text) { return text.slice(0, 80); },
 
-  async fetchTTS(text, lang) {
+  async fetchTTS(text, lang, voiceOverride, instructionOverride) {
     const key = this._key(text);
     if (this.cache[key]) return this.cache[key];
     if (this.loading[key]) return this.loading[key];
@@ -208,10 +208,10 @@ const AudioCache = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         text,
-        voice: isHi ? 'nova' : 'ash',
-        instructions: isHi
+        voice: voiceOverride || 'ash',
+        instructions: instructionOverride || (isHi
           ? 'You are an ancient Indian storyteller narrating in Hindi. Speak slowly, mysteriously, with deep emotion. Pause dramatically between sentences.'
-          : 'You are an ancient Indian sage narrating a sacred epic in English. Speak slowly, with deep gravitas and reverence. Pause dramatically between sentences.'
+          : 'You are an ancient Indian sage narrating a sacred epic in English. Speak slowly, with deep gravitas and reverence. Pause dramatically between sentences.')
       }),
     }).then(r => {
       if (!r.ok) throw new Error('TTS failed');
@@ -241,6 +241,26 @@ const AudioCache = {
     const progress = () => Math.round((done / total) * 100);
     return {
       promise: Promise.all(texts.map(t => this.fetchTTS(t.text, t.lang).then(() => { done++; }))),
+      progress, total,
+    };
+  },
+
+  // Preload Yama intro + all character voices for instant playback
+  preloadGameVoices(lang) {
+    const yamaEn='So, you dare to challenge me? I am Yama. The God of Death. I ride the great buffalo through the realm of the dead. Every soul that walks this board eventually comes to me. You think you can outwit Death? I have watched a million souls fall. Brave warriors. Wise sages. They all fell. And I devoured their karma. Play your little game, mortal. I will be watching every single move. And when your karma falters, I will be there. Now tell me, little soul. Who are you?';
+    const yamaHi='तो, तुम मुझसे खेलना चाहते हो? मैं यमराज हूँ। मृत्यु का देवता। मैं महान भैंसे पर सवार होकर मृतकों के लोक से गुज़रता हूँ। हर आत्मा जो इस पट पर चलती है, अंत में मेरे पास आती है। मैंने लाखों आत्माओं को गिरते देखा है। वीर योद्धा। ज्ञानी ऋषि। सब गिरे। और मैंने उनका कर्म निगल लिया। खेलो अपना छोटा सा खेल, नश्वर प्राणी। मैं देख रहा हूँ। हर एक कदम। अब बताओ, छोटी सी आत्मा। तुम कौन हो?';
+    const yamaVoice='onyx';
+    const yamaInstructions='Speak like Thanos — an impossibly deep, heavy, rumbling bass voice that vibrates through the chest. Extremely slow and deliberate. Each word lands like a boulder. Long pauses between sentences. Absolute calm confidence of someone who has already won. No emotion, no anger — just cold, inevitable, cosmic authority. The voice of someone who has existed for billions of years and knows exactly how this ends. Whisper certain words for emphasis. This is not a villain — this is a force of nature speaking.';
+    const texts = [];
+    // Yama gets onyx voice with scary instructions
+    texts.push({ text: lang === 'hi' ? yamaHi : yamaEn, lang, voice: yamaVoice, instructions: yamaInstructions });
+    // Characters get normal ash voice
+    CHARS.forEach(c => texts.push({ text: lang === 'hi' ? c.voiceHi : c.voiceEn, lang }));
+    let done = 0;
+    const total = texts.length;
+    const progress = () => Math.round((done / total) * 100);
+    return {
+      promise: Promise.all(texts.map(t => this.fetchTTS(t.text, t.lang, t.voice, t.instructions).then(() => { done++; }))),
       progress, total,
     };
   },
@@ -286,13 +306,13 @@ const VoiceEngine = {
   },
 
   async speak(text, lang) {
+    // Force stop any existing voice first — prevents overlap
     this.stop();
     if (!text) return;
 
     const isLocal = ['localhost','127.0.0.1',''].includes(window.location.hostname);
 
     if (!isLocal) {
-      // Check cache FIRST — instant playback
       const cached = AudioCache.get(text);
       if (cached) {
         const audio = new Audio(cached);
@@ -300,7 +320,7 @@ const VoiceEngine = {
         this.audio = audio;
         this.speaking = true;
         audio.onended = () => { this.speaking = false; };
-        audio.play();
+        await audio.play().catch(()=>{});
         return;
       }
 
@@ -330,7 +350,14 @@ const VoiceEngine = {
   }
 };
 
-/* Instagram badge */
+/* Yama Image — put yama.png in /public folder */
+function YamaIcon({size=80}){
+  return <div style={{width:size,height:size*1.3,display:"flex",alignItems:"center",justifyContent:"center"}}>
+    <img src="/yama.png" alt="Yama - God of Death" style={{width:"100%",height:"100%",objectFit:"contain",filter:"drop-shadow(0 0 25px rgba(200,40,40,.5)) drop-shadow(0 0 50px rgba(160,40,40,.3))",borderRadius:8}}/>
+  </div>;
+}
+
+
 function InstaBadge(){
   return(
     <a href="https://www.instagram.com/india.rasavisio/" target="_blank" rel="noopener noreferrer"
@@ -392,6 +419,10 @@ const CSS=`
 @keyframes dharmaIn{0%{opacity:0;transform:scale(.3)}60%{transform:scale(1.05)}100%{opacity:1;transform:scale(1)}}
 @keyframes turnFlash{0%{opacity:0;transform:scale(.5)}20%{opacity:1;transform:scale(1.1)}80%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.8)}}
 @keyframes activeGlow{0%{box-shadow:0 0 8px var(--pc),0 0 16px var(--pc)}50%{box-shadow:0 0 16px var(--pc),0 0 32px var(--pc),0 0 48px var(--pc)}100%{box-shadow:0 0 8px var(--pc),0 0 16px var(--pc)}}
+@keyframes yamaBreath{0%{text-shadow:0 0 20px #a04040,0 0 40px #a04040}50%{text-shadow:0 0 40px #e04040,0 0 80px #a04040,0 0 120px #60202060}100%{text-shadow:0 0 20px #a04040,0 0 40px #a04040}}
+@keyframes yamaReveal{0%{opacity:0;transform:scale(2);filter:blur(20px)}100%{opacity:1;transform:scale(1);filter:blur(0)}}
+@keyframes yamaTextReveal{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes waveBar{0%,100%{height:8px}50%{height:28px}}
 .gb{background:transparent;border:1px solid rgba(200,160,60,.3);color:#e8c850;padding:12px 32px;font-size:14px;font-family:'Cinzel',serif;cursor:pointer;transition:all .4s;letter-spacing:3px;border-radius:2px}
 .gb:hover{background:rgba(200,160,60,.08);border-color:rgba(240,200,80,.6)}
 .gp{background:linear-gradient(180deg,rgba(200,160,60,.2),rgba(200,160,60,.08));border-color:rgba(200,160,60,.5)}
@@ -434,7 +465,11 @@ export default function MokshaPatam(){
   const[eventPopup,setEventPopup]=useState(null);
   const[turnBanner,setTurnBanner]=useState(null);
   const[isCPU,setIsCPU]=useState([]);
-  const[usedDharma,setUsedDharma]=useState([]); // tracks which players are CPU
+  const[usedDharma,setUsedDharma]=useState([]);
+  const[gameVoicesLoading,setGameVoicesLoading]=useState(false);
+  const[gameVoicesPct,setGameVoicesPct]=useState(0);
+  const[gameVoicesReady,setGameVoicesReady]=useState(false);
+  const[yamaPhase,setYamaPhase]=useState(0); // 0=intro speaking, 1=who are you?, 2=go to setup // tracks which players are CPU
 
   const sfx=useSound();
   const ambient=useAmbient();
@@ -450,22 +485,65 @@ export default function MokshaPatam(){
 
   const eventCallback=useRef(null);
   const showEvent = useCallback((popup, onDismiss) => {
+    // ALWAYS stop any previous voice first to prevent overlapping
+    VoiceEngine.stop();
+    try{window.speechSynthesis.cancel()}catch(e){}
     setEventPopup(popup);
     eventCallback.current=onDismiss||null;
     if(!muted&&popup.subtitle){
       ambient.duck();
-      VoiceEngine.speak(popup.subtitle,chosenLang);
+      // Small delay to ensure previous audio is fully stopped
+      setTimeout(()=>VoiceEngine.speak(popup.subtitle,chosenLang),150);
     }
   }, [muted,chosenLang,ambient]);
   const dismissEvent = useCallback(() => {
     VoiceEngine.stop();
+    try{window.speechSynthesis.cancel()}catch(e){}
     ambient.unduck();
     setEventPopup(null);
-    if(eventCallback.current){const cb=eventCallback.current;eventCallback.current=null;setTimeout(cb,100);}
+    if(eventCallback.current){const cb=eventCallback.current;eventCallback.current=null;setTimeout(cb,200);}
   }, [ambient]);
 
   useEffect(()=>{try{window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices()}catch(e){}},[]);
   useEffect(()=>{const iv=setInterval(()=>{setShF(false);setTimeout(()=>{setShI(i=>(i+1)%SHLOKAS.length);setShF(true)},700)},6e3);return()=>clearInterval(iv)},[]);
+
+  // Preload Yama + character voices when entering pickcount
+  useEffect(()=>{
+    if(screen!=="pickcount"&&screen!=="yama")return;
+    if(gameVoicesReady||gameVoicesLoading)return;
+    const isLocal=['localhost','127.0.0.1',''].includes(window.location.hostname);
+    if(isLocal)return;
+    setGameVoicesLoading(true);setGameVoicesPct(0);
+    const{promise,progress}=AudioCache.preloadGameVoices(chosenLang);
+    const iv=setInterval(()=>setGameVoicesPct(progress()),400);
+    promise.then(()=>{clearInterval(iv);setGameVoicesPct(100);setGameVoicesReady(true);setGameVoicesLoading(false)})
+      .catch(()=>{clearInterval(iv);setGameVoicesLoading(false)});
+    return()=>clearInterval(iv);
+  },[screen,gameVoicesReady,gameVoicesLoading,chosenLang]);
+
+  // Yama intro screen — speak then transition to phase 1
+  useEffect(()=>{
+    if(screen!=="yama")return;
+    setYamaPhase(0);
+    const yamaEn='So, you dare to challenge me? I am Yama. The God of Death. I ride the great buffalo through the realm of the dead. Every soul that walks this board, eventually, comes to me. You think you can outwit Death? Play your little game, mortal. I will be watching every single move. And when your karma falters, I will be there. Now tell me, little soul. Who are you?';
+    const yamaHi='तो, तुम मुझसे खेलना चाहते हो? मैं यमराज हूँ। मृत्यु का देवता। हर आत्मा जो इस पट पर चलती है, अंत में मेरे पास आती है। तुम्हें लगता है तुम मृत्यु को हरा सकते हो? खेलो अपना छोटा सा खेल। मैं देख रहा हूँ। हर एक कदम। अब बताओ, छोटी सी आत्मा। तुम कौन हो?';
+    const yamaText=chosenLang==='hi'?yamaHi:yamaEn;
+    if(!muted){
+      const isLocal=['localhost','127.0.0.1',''].includes(window.location.hostname);
+      setTimeout(()=>{
+        if(!isLocal){
+          // Try cached onyx voice first, fetch with Thanos instructions if not cached
+          const yamaInstruct='Speak like Thanos — impossibly deep, heavy, rumbling bass. Extremely slow. Each word lands like a boulder. Long pauses. Cold, inevitable, cosmic authority. No emotion — just a force of nature.';
+          AudioCache.fetchTTS(yamaText,chosenLang,'onyx',yamaInstruct).then(url=>{
+            if(url){VoiceEngine.stop();const a=new Audio(url);a.volume=1.0;VoiceEngine.audio=a;VoiceEngine.speaking=true;a.onended=()=>{VoiceEngine.speaking=false};a.play().catch(()=>{})}
+            else VoiceEngine.speak(yamaText,chosenLang);
+          });
+        }else{VoiceEngine.speak(yamaText,chosenLang)}
+      },1500);
+    }
+    const timer=setTimeout(()=>setYamaPhase(1),muted?4000:25000);
+    return()=>{clearTimeout(timer);VoiceEngine.stop()};
+  },[screen,muted,chosenLang]);
 
   // Speak story page on change
   useEffect(()=>{
@@ -495,7 +573,7 @@ export default function MokshaPatam(){
     if(isCPU[1]&&np.length===1){
       const cpuIdx=CHARS.findIndex((_,i)=>!uc.includes(i));
       if(cpuIdx>=0){
-        np.push({name:"Yama",char:{...CHARS[cpuIdx],icon:"☠️",name:"God of Death",skt:"यम",color:"#a04040"},charIdx:cpuIdx,cpu:true});
+        np.push({name:"Yama",char:{...CHARS[cpuIdx],icon:"💀",name:"God of Death",skt:"यम",color:"#a04040"},charIdx:cpuIdx,cpu:true});
         uc.push(cpuIdx);
       }
     }
@@ -508,6 +586,7 @@ export default function MokshaPatam(){
   const doRoll=useCallback(()=>{
     if(dil||win||busy||players.length===0)return;
     if(skipA[cur]){const ns=[...skipA];ns[cur]=false;setSkipA(ns);setMsg(`${players[cur].name}'s turn is skipped.`);setCur(c=>(c+1)%nP);return}
+    VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){}
     setBusy(true);play("dice");
     const r=Math.floor(Math.random()*6)+1,gi=Math.floor(Math.random()*9),g=GRAHA[gi];
     setRv(r);setGv(g);
@@ -818,16 +897,18 @@ export default function MokshaPatam(){
       <div style={{animation:"slideUp .8s ease",textAlign:"center"}}>
         <div style={{fontSize:32,marginBottom:12}}>🔱</div>
         <h2 style={{fontSize:"clamp(20px,4vw,32px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"0 0 8px"}}>How Many Seekers?</h2>
-        <p style={{fontSize:13,opacity:.4,marginBottom:24,letterSpacing:3}}>Each soul walks a different path</p>
+        <p style={{fontSize:13,opacity:.4,marginBottom:12,letterSpacing:3}}>Each soul walks a different path</p>
+        {gameVoicesLoading&&<div style={{marginBottom:16,animation:"pulse 2s ease infinite"}}>
+          <div style={{fontSize:11,color:"#d0b870",letterSpacing:3,marginBottom:6}}>🔮 Summoning seekers... {gameVoicesPct}%</div>
+          <div style={{width:200,height:4,background:"rgba(200,160,60,.15)",borderRadius:2,margin:"0 auto",overflow:"hidden"}}>
+            <div style={{height:"100%",width:`${gameVoicesPct}%`,background:"linear-gradient(90deg,#f0d050,#c0a030)",borderRadius:2,transition:"width .4s"}}/>
+          </div>
+        </div>}
+        {!gameVoicesLoading&&gameVoicesReady&&<div style={{fontSize:10,color:"#80c080",opacity:.5,marginBottom:12,letterSpacing:2}}>✓ All voices ready</div>}
         <div style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap"}}>
           <button className="gb gp" onClick={()=>{
-            setNP(2);setIsCPU([false,true]);setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("setup");
-            if(!muted){
-              const yamaVoice=chosenLang==='hi'
-                ?'तुम मुझसे खेलना चाहते हो? मैं यमराज हूँ। मृत्यु का देवता। हर आत्मा जो इस पट पर चलती है, अंत में मेरे पास आती है। तुम अलग नहीं हो। खेलो। मैं इंतज़ार करूँगा।'
-                :'So, you dare to challenge me? I am Yama. The God of Death. Every soul that walks this board eventually comes to me. You are no different. I have been waiting since the beginning of time. Play your little game. I will be watching every move. And when your karma falters, I will be there.';
-              setTimeout(()=>VoiceEngine.speak(yamaVoice,chosenLang),500);
-            }
+            setNP(2);setIsCPU([false,true]);setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);
+            setScreen("yama");
           }} style={{padding:"18px 36px",fontSize:16}}>
             <div style={{fontSize:22,marginBottom:4}}>☠️</div>1 vs Yama
           </button>
@@ -837,6 +918,55 @@ export default function MokshaPatam(){
       </div>
     </div>
   );
+
+  // ═══ YAMA INTRO ═══
+  if(screen==="yama"){
+    // Phase 0: Yama speaks intro
+    // Phase 1: "Who dares challenge me?" - go to setup
+    const yamaIntroEn='So, you dare to challenge me? I am Yama. The God of Death. I ride the great buffalo through the realm of the dead. Every soul that walks this board, eventually, comes to me. I have been waiting since the beginning of time. You think you can outwit Death? You think your little virtues will save you? I have watched a million souls fall. Brave warriors. Wise sages. Holy saints. They all fell. And I devoured their karma. Play your little game, mortal. I will be watching. Every. Single. Move. And when your karma falters, even by a whisper, I will be there. Waiting. Now tell me, little soul. Who are you?';
+    const yamaIntroHi='तो, तुम मुझसे खेलना चाहते हो? मैं यमराज हूँ। मृत्यु का देवता। मैं महान भैंसे पर सवार होकर मृतकों के लोक से गुज़रता हूँ। हर आत्मा जो इस पट पर चलती है, अंत में मेरे पास आती है। मैं सृष्टि के आरम्भ से प्रतीक्षा कर रहा हूँ। तुम्हें लगता है तुम मृत्यु को हरा सकते हो? तुम्हें लगता है तुम्हारे छोटे-छोटे पुण्य तुम्हें बचा लेंगे? मैंने लाखों आत्माओं को गिरते देखा है। वीर योद्धा। ज्ञानी ऋषि। पवित्र संत। सब गिरे। और मैंने उनका कर्म निगल लिया। खेलो अपना छोटा सा खेल, नश्वर प्राणी। मैं देख रहा हूँ। हर एक कदम। और जब तुम्हारा कर्म डगमगाएगा, एक फुसफुसाहट भर भी, मैं वहीं रहूँगा। इंतज़ार करता हुआ। अब बताओ, छोटी सी आत्मा। तुम कौन हो?';
+
+    return(
+      <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20,minHeight:"100vh",background:"radial-gradient(ellipse at center,#1a0808 0%,#0c0505 40%,#050202 100%)"}}>
+        {globalOverlays}
+        <div style={{position:"fixed",inset:0,background:"radial-gradient(ellipse at center,rgba(160,40,40,.08),transparent 60%)",pointerEvents:"none"}}/>
+        
+        {yamaPhase===0&&<div style={{textAlign:"center",animation:"yamaReveal 2s ease forwards",display:"flex",flexDirection:"column",alignItems:"center"}}>
+          <div style={{animation:"yamaBreath 3s ease infinite",marginBottom:16,display:"flex",justifyContent:"center"}}><YamaIcon size={200}/></div>
+          <div style={{fontSize:"clamp(28px,6vw,48px)",fontFamily:"'Yatra One',serif",color:"#a04040",letterSpacing:4,animation:"yamaTextReveal 1.5s ease .5s both"}}>यमराज</div>
+          <div style={{fontSize:"clamp(14px,3vw,22px)",fontFamily:"'Cinzel Decorative',serif",color:"#804040",letterSpacing:8,marginTop:4,animation:"yamaTextReveal 1.5s ease 1s both"}}>YAMA</div>
+          <div style={{fontSize:"clamp(10px,2vw,14px)",color:"#604040",letterSpacing:4,marginTop:4,fontStyle:"italic",animation:"yamaTextReveal 1.5s ease 1.5s both"}}>God of Death · Lord of Dharma · The Inescapable</div>
+          <div style={{width:60,height:1,background:"linear-gradient(90deg,transparent,#a0404060,transparent)",margin:"20px auto",animation:"yamaTextReveal 1s ease 2s both"}}/>
+          <div style={{maxWidth:500,fontSize:"clamp(11px,1.5vw,14px)",color:"#906060",lineHeight:2.2,fontStyle:"italic",margin:"0 auto",animation:"yamaTextReveal 1.5s ease 2.5s both",padding:"0 20px"}}>
+            {chosenLang==='hi'
+              ?"सुनो... यमराज बोल रहे हैं..."
+              :"Listen... Yama is speaking..."}
+          </div>
+          <div style={{display:"flex",justifyContent:"center",gap:3,marginTop:20,alignItems:"center",height:36,animation:"yamaTextReveal 1s ease 3s both"}}>
+            {[0,1,2,3,4,5,6,5,4,3,2,1,0].map((d,i)=><div key={i} style={{width:3,background:`linear-gradient(180deg,#e04040,#601010)`,borderRadius:2,animation:`waveBar ${0.4+d*0.12}s ease ${i*0.06}s infinite alternate`,height:8,opacity:0.4+d*0.1}}/>)}
+          </div>
+          <div style={{fontSize:10,color:"#604040",marginTop:8,letterSpacing:3,animation:"pulse 2s ease infinite"}}>
+            {chosenLang==='hi'?"🔊 यमराज की आवाज़ सुनो":"🔊 YAMA IS SPEAKING"}
+          </div>
+        </div>}
+
+        {yamaPhase===1&&<div style={{textAlign:"center",animation:"dharmaIn .6s ease forwards",display:"flex",flexDirection:"column",alignItems:"center"}}>
+          <div style={{marginBottom:12,animation:"yamaBreath 2s ease infinite",display:"flex",justifyContent:"center"}}><YamaIcon size={150}/></div>
+          <div style={{fontSize:"clamp(20px,5vw,36px)",fontFamily:"'Yatra One',serif",color:"#c04040",letterSpacing:3,marginBottom:8}}>
+            {chosenLang==='hi'?"तुम कौन हो?":"Who dares challenge me?"}
+          </div>
+          <div style={{fontSize:"clamp(11px,1.5vw,14px)",color:"#806060",marginBottom:28,fontStyle:"italic",letterSpacing:2}}>
+            {chosenLang==='hi'?"अपनी पहचान बताओ, नश्वर प्राणी":"Identify yourself, mortal"}
+          </div>
+          <button className="gb gp" onClick={()=>setScreen("setup")} style={{padding:"14px 40px",fontSize:16,letterSpacing:4,background:"rgba(160,64,64,.15)",border:"2px solid rgba(160,64,64,.4)",color:"#e08080"}}>
+            {chosenLang==='hi'?"अपना योद्धा चुनो ▸":"CHOOSE YOUR SEEKER ▸"}
+          </button>
+        </div>}
+
+        <div style={{position:"fixed",bottom:20,textAlign:"center"}}><InstaBadge/></div>
+      </div>
+    );
+  }
 
   // ═══ SETUP ═══
   if(screen==="setup"){
@@ -851,7 +981,7 @@ export default function MokshaPatam(){
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(clamp(140px,30vw,200px),1fr))",gap:10,marginBottom:20}}>
             {CHARS.map((ch,i)=>{const used=usedChars.includes(i);const sel=tempChar===i;
-              return(<div key={i} onClick={()=>{if(!used){setTempChar(i);if(!muted){VoiceEngine.stop();setTimeout(()=>VoiceEngine.speak(chosenLang==='hi'?ch.voiceHi:ch.voiceEn,chosenLang),200)}}}} style={{background:sel?"rgba(200,160,60,.12)":"rgba(20,16,10,.5)",border:`1px solid ${sel?"rgba(240,200,80,.6)":used?"rgba(100,80,50,.15)":"rgba(200,160,60,.2)"}`,padding:14,borderRadius:4,cursor:used?"not-allowed":"pointer",opacity:used?.3:1,transition:"all .3s"}}>
+              return(<div key={i} onClick={()=>{if(!used){setTempChar(i);if(!muted){VoiceEngine.stop();VoiceEngine.speak(chosenLang==='hi'?ch.voiceHi:ch.voiceEn,chosenLang)}}}} style={{background:sel?"rgba(200,160,60,.12)":"rgba(20,16,10,.5)",border:`1px solid ${sel?"rgba(240,200,80,.6)":used?"rgba(100,80,50,.15)":"rgba(200,160,60,.2)"}`,padding:14,borderRadius:4,cursor:used?"not-allowed":"pointer",opacity:used?.3:1,transition:"all .3s"}}>
                 <div style={{fontSize:28,marginBottom:6}}>{ch.icon}</div>
                 <div style={{fontSize:13,fontWeight:700,color:ch.color}}>{ch.name}</div>
                 <div style={{fontSize:11,fontFamily:"'Noto Serif Devanagari',serif",color:"#f0d050",opacity:.6,marginBottom:4}}>{ch.skt}</div>

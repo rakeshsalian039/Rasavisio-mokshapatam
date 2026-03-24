@@ -345,8 +345,164 @@ const VoiceEngine = {
 
   stop() {
     if (this.audio) { try { this.audio.pause(); this.audio.currentTime = 0; } catch (e) {} this.audio = null; }
+    if (this._yamaCtx) { try { this._yamaCtx.close(); } catch(e){} this._yamaCtx = null; }
+    if (this._yamaSource) { try { this._yamaSource.stop(); } catch(e){} this._yamaSource = null; }
+    if (this._yamaSource2) { try { this._yamaSource2.stop(); } catch(e){} this._yamaSource2 = null; }
     try { window.speechSynthesis.cancel(); } catch (e) {}
     this.speaking = false;
+  },
+
+  // ═══ YAMA VOICE — Full audio processing for Thanos-like sound ═══
+  async speakYama(text, lang) {
+    this.stop();
+    if (!text) return;
+
+    const isLocal = ['localhost','127.0.0.1',''].includes(window.location.hostname);
+    let audioUrl = null;
+
+    if (!isLocal) {
+      // Try cache first
+      audioUrl = AudioCache.get(text);
+      if (!audioUrl) {
+        const yamaInstruct='Speak like Thanos — impossibly deep, heavy, rumbling bass. Extremely slow. Each word like a boulder. Long pauses. Cold, inevitable, cosmic authority.';
+        audioUrl = await AudioCache.fetchTTS(text, lang, 'onyx', yamaInstruct);
+      }
+    }
+
+    if (!audioUrl) { this._browserSpeak(text, lang); return; }
+
+    try {
+      // Fetch audio buffer
+      const resp = await fetch(audioUrl);
+      const arrayBuf = await resp.arrayBuffer();
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this._yamaCtx = ctx;
+      const buffer = await ctx.decodeAudioData(arrayBuf);
+
+      // ═══ LAYER 1: Main voice (pitch 0.8) ═══
+      const source1 = ctx.createBufferSource();
+      source1.buffer = buffer;
+      source1.playbackRate.value = 0.82; // Pitch down
+      this._yamaSource = source1;
+
+      // ═══ LAYER 2: Deep echo (pitch 0.65, low volume) ═══
+      const source2 = ctx.createBufferSource();
+      source2.buffer = buffer;
+      source2.playbackRate.value = 0.65; // Much deeper
+      this._yamaSource2 = source2;
+
+      const layer2Gain = ctx.createGain();
+      layer2Gain.gain.value = 0.35; // Quieter shadow layer
+
+      // ═══ SUB-BASS BOOST (60-120 Hz, +6dB) ═══
+      const bassBoost = ctx.createBiquadFilter();
+      bassBoost.type = 'lowshelf';
+      bassBoost.frequency.value = 120;
+      bassBoost.gain.value = 8; // +8dB bass boost
+
+      // ═══ EQ: Cut highs above 5kHz ═══
+      const highCut = ctx.createBiquadFilter();
+      highCut.type = 'lowpass';
+      highCut.frequency.value = 5000;
+      highCut.Q.value = 0.7;
+
+      // ═══ EQ: Boost clarity 1-2kHz ═══
+      const midBoost = ctx.createBiquadFilter();
+      midBoost.type = 'peaking';
+      midBoost.frequency.value = 1500;
+      midBoost.gain.value = 3;
+      midBoost.Q.value = 1;
+
+      // ═══ DISTORTION (subtle tube saturation) ═══
+      const distortion = ctx.createWaveShaper();
+      const curve = new Float32Array(256);
+      for (let i = 0; i < 256; i++) {
+        const x = (i * 2) / 256 - 1;
+        curve[i] = (Math.PI + 10) * x / (Math.PI + 10 * Math.abs(x)); // Soft clip
+      }
+      distortion.curve = curve;
+      distortion.oversample = '4x';
+
+      const distGain = ctx.createGain();
+      distGain.gain.value = 0.9; // Mix dry/wet
+
+      // ═══ DELAY (300ms, 15% feedback) ═══
+      const delay = ctx.createDelay(1.0);
+      delay.delayTime.value = 0.3;
+      const delayFeedback = ctx.createGain();
+      delayFeedback.gain.value = 0.15;
+      const delayMix = ctx.createGain();
+      delayMix.gain.value = 0.25;
+
+      delay.connect(delayFeedback);
+      delayFeedback.connect(delay);
+      delay.connect(delayMix);
+
+      // ═══ REVERB (dark hall, 2.5s decay) ═══
+      const reverbLen = 2.5 * ctx.sampleRate;
+      const reverbBuf = ctx.createBuffer(2, reverbLen, ctx.sampleRate);
+      for (let ch = 0; ch < 2; ch++) {
+        const data = reverbBuf.getChannelData(ch);
+        for (let i = 0; i < reverbLen; i++) {
+          // Dark reverb — more low freq energy
+          data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / reverbLen, 2.5);
+        }
+      }
+      const convolver = ctx.createConvolver();
+      convolver.buffer = reverbBuf;
+      const reverbMix = ctx.createGain();
+      reverbMix.gain.value = 0.25; // 25% wet
+
+      // ═══ COMPRESSION (tighten lows) ═══
+      const compressor = ctx.createDynamicsCompressor();
+      compressor.threshold.value = -20;
+      compressor.knee.value = 10;
+      compressor.ratio.value = 4;
+      compressor.attack.value = 0.005;
+      compressor.release.value = 0.1;
+
+      // ═══ MASTER GAIN ═══
+      const masterGain = ctx.createGain();
+      masterGain.gain.value = 1.2;
+
+      // ═══ ROUTING ═══
+      // Layer 1: source1 → bassBoost → highCut → midBoost → distortion → compressor
+      source1.connect(bassBoost);
+      // Layer 2: source2 → layer2Gain → bassBoost
+      source2.connect(layer2Gain);
+      layer2Gain.connect(bassBoost);
+
+      bassBoost.connect(highCut);
+      highCut.connect(midBoost);
+      midBoost.connect(distortion);
+      distortion.connect(compressor);
+
+      // Compressor → master + delay + reverb
+      compressor.connect(masterGain);
+      compressor.connect(delay);
+      compressor.connect(convolver);
+      delayMix.connect(masterGain);
+      convolver.connect(reverbMix);
+      reverbMix.connect(masterGain);
+
+      masterGain.connect(ctx.destination);
+
+      // ═══ PLAY ═══
+      this.speaking = true;
+      source1.onended = () => { this.speaking = false; try{ctx.close()}catch(e){} this._yamaCtx=null; };
+      source1.start(0);
+      source2.start(0);
+
+    } catch(e) {
+      console.warn('Yama audio processing failed, fallback:', e);
+      // Fallback to normal playback
+      const audio = new Audio(audioUrl);
+      audio.volume = 1.0;
+      this.audio = audio;
+      this.speaking = true;
+      audio.onended = () => { this.speaking = false; };
+      audio.play().catch(()=>{});
+    }
   }
 };
 
@@ -521,7 +677,7 @@ export default function MokshaPatam(){
     return()=>clearInterval(iv);
   },[screen,gameVoicesReady,gameVoicesLoading,chosenLang]);
 
-  // Yama intro screen — speak then transition to phase 1
+  // Yama intro screen — speak with full audio processing then transition
   useEffect(()=>{
     if(screen!=="yama")return;
     setYamaPhase(0);
@@ -529,19 +685,9 @@ export default function MokshaPatam(){
     const yamaHi='तो, तुम मुझसे खेलना चाहते हो? मैं यमराज हूँ। मृत्यु का देवता। हर आत्मा जो इस पट पर चलती है, अंत में मेरे पास आती है। तुम्हें लगता है तुम मृत्यु को हरा सकते हो? खेलो अपना छोटा सा खेल। मैं देख रहा हूँ। हर एक कदम। अब बताओ, छोटी सी आत्मा। तुम कौन हो?';
     const yamaText=chosenLang==='hi'?yamaHi:yamaEn;
     if(!muted){
-      const isLocal=['localhost','127.0.0.1',''].includes(window.location.hostname);
-      setTimeout(()=>{
-        if(!isLocal){
-          // Try cached onyx voice first, fetch with Thanos instructions if not cached
-          const yamaInstruct='Speak like Thanos — impossibly deep, heavy, rumbling bass. Extremely slow. Each word lands like a boulder. Long pauses. Cold, inevitable, cosmic authority. No emotion — just a force of nature.';
-          AudioCache.fetchTTS(yamaText,chosenLang,'onyx',yamaInstruct).then(url=>{
-            if(url){VoiceEngine.stop();const a=new Audio(url);a.volume=1.0;VoiceEngine.audio=a;VoiceEngine.speaking=true;a.onended=()=>{VoiceEngine.speaking=false};a.play().catch(()=>{})}
-            else VoiceEngine.speak(yamaText,chosenLang);
-          });
-        }else{VoiceEngine.speak(yamaText,chosenLang)}
-      },1500);
+      setTimeout(()=>VoiceEngine.speakYama(yamaText,chosenLang),1500);
     }
-    const timer=setTimeout(()=>setYamaPhase(1),muted?4000:25000);
+    const timer=setTimeout(()=>setYamaPhase(1),muted?4000:28000);
     return()=>{clearTimeout(timer);VoiceEngine.stop()};
   },[screen,muted,chosenLang]);
 
