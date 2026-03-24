@@ -392,11 +392,11 @@ const VoiceEngine = {
       // ═══ LAYER 2: Deep shadow (pitch 0.65, quiet) ═══
       const source2 = ctx.createBufferSource();
       source2.buffer = buffer;
-      source2.playbackRate.value = 0.55;
+      source2.playbackRate.value = 0.65;
       this._yamaSource2 = source2;
 
       const layer2Gain = ctx.createGain();
-      layer2Gain.gain.value = 0.12;
+      layer2Gain.gain.value = 0.35;
 
       // ═══ SUB-BASS BOOST ═══
       const bassBoost = ctx.createBiquadFilter();
