@@ -350,82 +350,61 @@ const VoiceEngine = {
   }
 };
 
-/* Instagram badge */
+/* Yama Icon — Death God riding his buffalo */
 function YamaIcon({size=80}){
-  return <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  return <svg width={size} height={size} viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="yaura" cx="50%" cy="50%"><stop offset="0%" stopColor="#a0404040"/><stop offset="100%" stopColor="transparent"/></radialGradient>
+      <radialGradient id="ybody" cx="50%" cy="30%"><stop offset="0%" stopColor="#3a1515"/><stop offset="100%" stopColor="#1a0808"/></radialGradient>
+    </defs>
+    {/* Dark aura */}
+    <circle cx="60" cy="60" r="55" fill="url(#yaura)"><animate attributeName="r" values="52;58;52" dur="3s" repeatCount="indefinite"/></circle>
+    {/* Flames behind Yama */}
+    <path d="M30 45 Q35 20 40 35 Q42 15 48 30 Q50 10 55 28 Q58 8 62 25 Q65 12 70 30 Q75 18 78 38 Q82 25 85 45" fill="#e0404030" stroke="#e0404015" strokeWidth="1"><animate attributeName="d" values="M30 45 Q35 20 40 35 Q42 15 48 30 Q50 10 55 28 Q58 8 62 25 Q65 12 70 30 Q75 18 78 38 Q82 25 85 45;M30 48 Q35 25 40 38 Q42 18 48 33 Q50 13 55 25 Q58 5 62 22 Q65 10 70 28 Q75 15 78 35 Q82 22 85 42;M30 45 Q35 20 40 35 Q42 15 48 30 Q50 10 55 28 Q58 8 62 25 Q65 12 70 30 Q75 18 78 38 Q82 25 85 45" dur="2s" repeatCount="indefinite"/></path>
     {/* Buffalo body */}
-    <ellipse cx="50" cy="70" rx="28" ry="16" fill="#2a1515" stroke="#a04040" strokeWidth="1.5"/>
+    <ellipse cx="55" cy="82" rx="30" ry="17" fill="#1a0a0a" stroke="#60303080" strokeWidth="1.5"/>
     {/* Buffalo legs */}
-    <line x1="30" y1="80" x2="28" y2="96" stroke="#3a2020" strokeWidth="3" strokeLinecap="round"/>
-    <line x1="42" y1="82" x2="40" y2="96" stroke="#3a2020" strokeWidth="3" strokeLinecap="round"/>
-    <line x1="58" y1="82" x2="60" y2="96" stroke="#3a2020" strokeWidth="3" strokeLinecap="round"/>
-    <line x1="70" y1="80" x2="72" y2="96" stroke="#3a2020" strokeWidth="3" strokeLinecap="round"/>
+    <line x1="32" y1="92" x2="28" y2="112" stroke="#2a1515" strokeWidth="4" strokeLinecap="round"/>
+    <line x1="45" y1="95" x2="42" y2="112" stroke="#2a1515" strokeWidth="4" strokeLinecap="round"/>
+    <line x1="65" y1="95" x2="68" y2="112" stroke="#2a1515" strokeWidth="4" strokeLinecap="round"/>
+    <line x1="78" y1="92" x2="82" y2="112" stroke="#2a1515" strokeWidth="4" strokeLinecap="round"/>
+    {/* Buffalo tail */}
+    <path d="M85 78 Q95 72 98 80" stroke="#2a1515" strokeWidth="2" fill="none"/>
     {/* Buffalo head */}
-    <ellipse cx="22" cy="64" rx="10" ry="8" fill="#2a1515" stroke="#a04040" strokeWidth="1"/>
-    {/* Horns */}
-    <path d="M16 58 Q10 48 8 42" stroke="#c0a060" strokeWidth="2" strokeLinecap="round" fill="none"/>
-    <path d="M20 56 Q14 46 16 40" stroke="#c0a060" strokeWidth="2" strokeLinecap="round" fill="none"/>
-    {/* Buffalo eye - red glowing */}
-    <circle cx="18" cy="63" r="2" fill="#e04040">
-      <animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite"/>
-    </circle>
-    {/* Yama body sitting */}
-    <ellipse cx="50" cy="52" rx="12" ry="16" fill="#1a0808" stroke="#a04040" strokeWidth="1"/>
+    <ellipse cx="24" cy="76" rx="12" ry="10" fill="#1a0a0a" stroke="#60303080" strokeWidth="1"/>
+    {/* Buffalo massive horns */}
+    <path d="M18 70 Q8 52 4 42 Q2 38 6 36" stroke="#c0a060" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+    <path d="M22 68 Q12 50 10 40 Q8 36 14 34" stroke="#c0a060" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+    {/* Buffalo nostril smoke */}
+    <circle cx="16" cy="80" r="2" fill="#e0404040"><animate attributeName="r" values="1;3;1" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.6;0;0.6" dur="2s" repeatCount="indefinite"/></circle>
+    {/* Buffalo eye - blood red */}
+    <circle cx="19" cy="74" r="2.5" fill="#ff2020"><animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/></circle>
+    {/* Yama torso sitting on buffalo */}
+    <path d="M40 62 Q50 45 60 48 Q70 50 72 65 L68 78 Q60 80 50 80 Q42 80 38 75 Z" fill="url(#ybody)" stroke="#80303080" strokeWidth="1"/>
+    {/* Dark robes flowing */}
+    <path d="M38 75 Q30 85 28 78" stroke="#1a080880" strokeWidth="2" fill="none"/>
+    <path d="M72 72 Q80 82 82 75" stroke="#1a080880" strokeWidth="2" fill="none"/>
     {/* Yama head */}
-    <circle cx="50" cy="34" r="10" fill="#4a2020" stroke="#c04040" strokeWidth="1.5"/>
-    {/* Crown */}
-    <path d="M40 30 L44 20 L48 28 L50 18 L52 28 L56 20 L60 30" stroke="#f0d050" strokeWidth="1.5" fill="none"/>
-    {/* Eyes - glowing red */}
-    <circle cx="46" cy="33" r="2" fill="#ff3030">
-      <animate attributeName="r" values="2;2.5;2" dur="1.5s" repeatCount="indefinite"/>
-    </circle>
-    <circle cx="54" cy="33" r="2" fill="#ff3030">
-      <animate attributeName="r" values="2;2.5;2" dur="1.5s" repeatCount="indefinite"/>
-    </circle>
-    {/* Mouth */}
-    <path d="M46 38 Q50 41 54 38" stroke="#c04040" strokeWidth="1" fill="none"/>
-    {/* Yama's Danda (staff) */}
-    <line x1="68" y1="20" x2="74" y2="85" stroke="#c0a060" strokeWidth="2.5" strokeLinecap="round"/>
-    {/* Pasha (noose) at top of staff */}
-    <circle cx="66" cy="18" r="5" stroke="#e08040" strokeWidth="1.5" fill="none"/>
-    {/* Aura glow */}
-    <circle cx="50" cy="50" r="48" stroke="#a0404030" strokeWidth="1" fill="none">
-      <animate attributeName="r" values="46;50;46" dur="3s" repeatCount="indefinite"/>
-      <animate attributeName="opacity" values="0.3;0.6;0.3" dur="3s" repeatCount="indefinite"/>
-    </circle>
+    <circle cx="55" cy="40" r="12" fill="#3a1818" stroke="#c04040" strokeWidth="1.5"/>
+    {/* Crown of death */}
+    <path d="M43 34 L46 22 L50 30 L55 18 L60 30 L64 22 L67 34" stroke="#f0c030" strokeWidth="2" fill="#f0c03020"/>
+    {/* Eyes - blazing red, glowing */}
+    <ellipse cx="50" cy="39" rx="3" ry="2.5" fill="#ff1010"><animate attributeName="fill" values="#ff1010;#ff5050;#ff1010" dur="1s" repeatCount="indefinite"/></ellipse>
+    <ellipse cx="60" cy="39" rx="3" ry="2.5" fill="#ff1010"><animate attributeName="fill" values="#ff1010;#ff5050;#ff1010" dur="1s" repeatCount="indefinite"/></ellipse>
+    {/* Angry eyebrows */}
+    <path d="M46 35 L52 37" stroke="#c04040" strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M64 35 L58 37" stroke="#c04040" strokeWidth="1.5" strokeLinecap="round"/>
+    {/* Fierce mouth */}
+    <path d="M48 45 L50 47 L52 44 L54 47 L56 44 L58 47 L60 45" stroke="#ff6060" strokeWidth="1" fill="none"/>
+    {/* Yama's Danda (staff of death) */}
+    <line x1="80" y1="25" x2="88" y2="100" stroke="#c0a060" strokeWidth="3" strokeLinecap="round"/>
+    {/* Pasha (death noose) */}
+    <ellipse cx="78" cy="22" rx="6" ry="6" stroke="#e08040" strokeWidth="2" fill="#e0804010"/>
+    {/* Third eye */}
+    <circle cx="55" cy="32" r="2.5" fill="#ff4040"><animate attributeName="r" values="2;3;2" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/></circle>
   </svg>
 }
 
-/* Yama Icon — Skull with buffalo horns */
-function YamaIcon({size=80}){
-  return(<svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <defs><radialGradient id="yg" cx="50%" cy="40%"><stop offset="0%" stopColor="#e04040"/><stop offset="100%" stopColor="#401010"/></radialGradient></defs>
-    {/* Buffalo horns */}
-    <path d="M15 45 Q5 20 20 12 Q30 18 35 35" stroke="#a04040" strokeWidth="3" fill="none" strokeLinecap="round"/>
-    <path d="M85 45 Q95 20 80 12 Q70 18 65 35" stroke="#a04040" strokeWidth="3" fill="none" strokeLinecap="round"/>
-    {/* Skull */}
-    <ellipse cx="50" cy="48" rx="22" ry="25" fill="url(#yg)" opacity=".9"/>
-    {/* Eye sockets */}
-    <ellipse cx="41" cy="42" rx="6" ry="7" fill="#0c0505"/>
-    <ellipse cx="59" cy="42" rx="6" ry="7" fill="#0c0505"/>
-    {/* Glowing red eyes */}
-    <circle cx="41" cy="43" r="2.5" fill="#ff2020" opacity=".9"><animate attributeName="opacity" values=".5;1;.5" dur="2s" repeatCount="indefinite"/></circle>
-    <circle cx="59" cy="43" r="2.5" fill="#ff2020" opacity=".9"><animate attributeName="opacity" values=".5;1;.5" dur="2s" repeatCount="indefinite"/></circle>
-    {/* Nose */}
-    <path d="M47 52 L50 56 L53 52" stroke="#601010" strokeWidth="1.5" fill="none"/>
-    {/* Teeth */}
-    <path d="M38 60 L40 67 L43 60 L46 68 L50 60 L54 68 L57 60 L60 67 L62 60" stroke="#c08080" strokeWidth="1.2" fill="none"/>
-    {/* Third eye mark */}
-    <circle cx="50" cy="32" r="2" fill="#ff4040" opacity=".6"><animate attributeName="r" values="1.5;2.5;1.5" dur="3s" repeatCount="indefinite"/></circle>
-    {/* Crown flame */}
-    <path d="M40 25 Q45 15 50 22 Q55 15 60 25" fill="#e04040" opacity=".3"><animate attributeName="opacity" values=".2;.5;.2" dur="2s" repeatCount="indefinite"/></path>
-    {/* Noose (Yama's weapon - pasha) */}
-    <ellipse cx="78" cy="70" rx="8" ry="10" stroke="#a04040" strokeWidth="1.5" fill="none" strokeDasharray="3 2"/>
-    <line x1="78" y1="60" x2="65" y2="48" stroke="#a04040" strokeWidth="1" opacity=".5"/>
-    {/* Text */}
-    <text x="50" y="90" textAnchor="middle" fill="#a04040" fontSize="8" fontWeight="bold" fontFamily="serif">YAMA</text>
-  </svg>);
-}
 
 function InstaBadge(){
   return(
@@ -990,8 +969,8 @@ export default function MokshaPatam(){
         {globalOverlays}
         <div style={{position:"fixed",inset:0,background:"radial-gradient(ellipse at center,rgba(160,40,40,.08),transparent 60%)",pointerEvents:"none"}}/>
         
-        {yamaPhase===0&&<div style={{textAlign:"center",animation:"yamaReveal 2s ease forwards"}}>
-          <div style={{animation:"yamaBreath 3s ease infinite",marginBottom:16}}><YamaIcon size={160}/></div>
+        {yamaPhase===0&&<div style={{textAlign:"center",animation:"yamaReveal 2s ease forwards",display:"flex",flexDirection:"column",alignItems:"center"}}>
+          <div style={{animation:"yamaBreath 3s ease infinite",marginBottom:16,display:"flex",justifyContent:"center"}}><YamaIcon size={160}/></div>
           <div style={{fontSize:"clamp(28px,6vw,48px)",fontFamily:"'Yatra One',serif",color:"#a04040",letterSpacing:4,animation:"yamaTextReveal 1.5s ease .5s both"}}>यमराज</div>
           <div style={{fontSize:"clamp(14px,3vw,22px)",fontFamily:"'Cinzel Decorative',serif",color:"#804040",letterSpacing:8,marginTop:4,animation:"yamaTextReveal 1.5s ease 1s both"}}>YAMA</div>
           <div style={{fontSize:"clamp(10px,2vw,14px)",color:"#604040",letterSpacing:4,marginTop:4,fontStyle:"italic",animation:"yamaTextReveal 1.5s ease 1.5s both"}}>God of Death · Lord of Dharma · The Inescapable</div>
@@ -1009,8 +988,8 @@ export default function MokshaPatam(){
           </div>
         </div>}
 
-        {yamaPhase===1&&<div style={{textAlign:"center",animation:"dharmaIn .6s ease forwards"}}>
-          <div style={{marginBottom:12,animation:"yamaBreath 2s ease infinite"}}><YamaIcon size={120}/></div>
+        {yamaPhase===1&&<div style={{textAlign:"center",animation:"dharmaIn .6s ease forwards",display:"flex",flexDirection:"column",alignItems:"center"}}>
+          <div style={{marginBottom:12,animation:"yamaBreath 2s ease infinite",display:"flex",justifyContent:"center"}}><YamaIcon size={120}/></div>
           <div style={{fontSize:"clamp(20px,5vw,36px)",fontFamily:"'Yatra One',serif",color:"#c04040",letterSpacing:3,marginBottom:8}}>
             {chosenLang==='hi'?"तुम कौन हो?":"Who dares challenge me?"}
           </div>
