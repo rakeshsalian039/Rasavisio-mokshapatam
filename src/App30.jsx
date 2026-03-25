@@ -1083,82 +1083,22 @@ function useAuth(){
 // ═══ GAME DATABASE SERVICE ═══
 const GameDB={
   async saveGame(userId,d){
-    if(!supabase||!userId){console.log("GameDB: No supabase or userId");return null}
-    console.log("GameDB: Saving game for",userId,d);
+    if(!supabase||!userId)return null;
     try{
-      // 1. Insert game history
-      const{data:gameData,error:gameErr}=await supabase.from("game_history").insert({
-        user_id:userId,
-        duration_seconds:d.duration||0,
-        total_turns:d.turns||0,
-        character_name:d.charName||"Seeker",
-        character_icon:d.charIcon||"🔱",
-        opponent_type:d.opponent||"yama",
-        result:d.result||"quit",
-        final_square:d.square||1,
-        final_punya:d.punya||0,
-        final_papa:d.papa||0,
-        snakes_hit:d.snakes||0,
-        ladders_climbed:d.ladders||0,
-        dharma_cards_faced:d.dharma||0,
-        riddles_correct:d.riddlesC||0,
-        riddles_wrong:d.riddlesW||0,
-        highest_square:d.highest||1,
-        ashtanga_reached:d.ashtanga||false,
-        moksha_rejected:d.rejected||0
-      }).select();
-      if(gameErr){console.error("GameDB: game_history insert failed:",gameErr.message);
-        // If RLS error, try without user_id check
-        if(gameErr.message.includes("policy")){console.error("GameDB: RLS policy blocking insert. Run this SQL in Supabase:\nCREATE POLICY \"Users insert history\" ON game_history FOR INSERT WITH CHECK (true);")}
-      }else{console.log("GameDB: game_history saved",gameData)}
-
-      // 2. Update profile stats via RPC (most reliable)
+      await supabase.from("game_history").insert({user_id:userId,duration_seconds:d.duration||0,total_turns:d.turns||0,character_name:d.charName||"Seeker",character_icon:d.charIcon||"🔱",opponent_type:d.opponent||"yama",result:d.result||"quit",final_square:d.square||1,final_punya:d.punya||0,final_papa:d.papa||0,snakes_hit:d.snakes||0,ladders_climbed:d.ladders||0,dharma_cards_faced:d.dharma||0,riddles_correct:d.riddlesC||0,riddles_wrong:d.riddlesW||0,highest_square:d.highest||1,ashtanga_reached:d.ashtanga||false,moksha_rejected:d.rejected||0});
       const isWin=d.result==="moksha_win"||d.result==="karma_win";
-      const{error:rpcErr}=await supabase.rpc("update_profile_stats",{
-        p_user_id:userId,
-        p_punya:d.punya||0,
-        p_papa:d.papa||0,
-        p_is_win:isWin,
-        p_is_moksha:d.result==="moksha_win",
-        p_is_karma:d.result==="karma_win",
-        p_highest:d.highest||1,
-        p_snakes:d.snakes||0,
-        p_ladders:d.ladders||0,
-        p_riddles_c:d.riddlesC||0,
-        p_riddles_w:d.riddlesW||0,
-        p_character:d.charName||"Seeker"
-      });
-      if(rpcErr){
-        console.error("GameDB: RPC update_profile_stats failed:",rpcErr.message);
-        // Fallback: direct update with simple increment
-        console.log("GameDB: Trying direct profile update...");
-        // First get current values
-        const{data:current}=await supabase.from("profiles").select("*").eq("id",userId).single();
-        if(current){
-          const{error:upErr}=await supabase.from("profiles").update({
-            total_games:(current.total_games||0)+1,
-            total_wins:(current.total_wins||0)+(isWin?1:0),
-            total_moksha_wins:(current.total_moksha_wins||0)+(d.result==="moksha_win"?1:0),
-            total_karma_wins:(current.total_karma_wins||0)+(d.result==="karma_win"?1:0),
-            total_punya_earned:(current.total_punya_earned||0)+(d.punya||0),
-            total_papa_earned:(current.total_papa_earned||0)+(d.papa||0),
-            highest_square_reached:Math.max(current.highest_square_reached||1,d.highest||1),
-            total_snakes_hit:(current.total_snakes_hit||0)+(d.snakes||0),
-            total_ladders_climbed:(current.total_ladders_climbed||0)+(d.ladders||0),
-            total_riddles_correct:(current.total_riddles_correct||0)+(d.riddlesC||0),
-            total_riddles_wrong:(current.total_riddles_wrong||0)+(d.riddlesW||0),
-            favorite_character:d.charName||current.favorite_character,
-            last_played_at:new Date().toISOString()
-          }).eq("id",userId);
-          if(upErr)console.error("GameDB: Direct update also failed:",upErr.message);
-          else console.log("GameDB: Profile updated via direct method");
-        }
-      }else{console.log("GameDB: Profile updated via RPC")}
-      return gameData;
-    }catch(e){console.error("GameDB: Unexpected error:",e);return null}
+      await supabase.from("profiles").update({
+        total_games:supabase.sql?undefined:undefined, // fallback below
+        total_punya_earned:(await supabase.from("profiles").select("total_punya_earned").eq("id",userId).single()).data?.total_punya_earned+(d.punya||0),
+        total_papa_earned:(await supabase.from("profiles").select("total_papa_earned").eq("id",userId).single()).data?.total_papa_earned+(d.papa||0),
+        last_played_at:new Date().toISOString()
+      }).eq("id",userId);
+      // Use RPC if available
+      await supabase.rpc("update_profile_stats",{p_user_id:userId,p_punya:d.punya||0,p_papa:d.papa||0,p_is_win:isWin,p_is_moksha:d.result==="moksha_win",p_is_karma:d.result==="karma_win",p_highest:d.highest||1,p_snakes:d.snakes||0,p_ladders:d.ladders||0,p_riddles_c:d.riddlesC||0,p_riddles_w:d.riddlesW||0,p_character:d.charName||"Seeker"}).catch(()=>{});
+    }catch(e){console.error("Save error:",e)}
   },
-  async getHistory(userId,limit=20){if(!supabase||!userId)return[];const{data,error}=await supabase.from("game_history").select("*").eq("user_id",userId).order("played_at",{ascending:false}).limit(limit);if(error)console.error("GameDB: getHistory error:",error.message);return data||[]},
-  async getLeaderboard(limit=50){if(!supabase)return[];const{data,error}=await supabase.from("leaderboard").select("*").limit(limit);if(error)console.error("GameDB: getLeaderboard error:",error.message);return data||[]},
+  async getHistory(userId,limit=20){if(!supabase||!userId)return[];const{data}=await supabase.from("game_history").select("*").eq("user_id",userId).order("played_at",{ascending:false}).limit(limit);return data||[]},
+  async getLeaderboard(limit=50){if(!supabase)return[];const{data}=await supabase.from("leaderboard").select("*").limit(limit);return data||[]},
 };
 
 // ═══ GOOGLE SVG ICON ═══
