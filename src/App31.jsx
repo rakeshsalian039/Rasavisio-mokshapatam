@@ -7,8 +7,6 @@ import { createClient } from '@supabase/supabase-js';
 const sbUrl = process.env.REACT_APP_SUPABASE_URL || '';
 const sbKey = process.env.REACT_APP_SUPABASE_ANON_KEY || '';
 const supabase = (sbUrl && sbKey) ? createClient(sbUrl, sbKey) : null;
-// Debug: log supabase status on load
-console.log("Supabase init:",supabase?"✓ Connected to "+sbUrl:"✗ NOT configured (missing env vars)");
 
 const SNAKES={16:{to:4,skt:"क्रोध",en:"WRATH",tale:"As Duryodhana's rage consumed the Kuru dynasty..."},23:{to:7,skt:"लोभ",en:"GREED",tale:"Like Shakuni who gambled away an empire..."},33:{to:12,skt:"मोह",en:"DELUSION",tale:"Dhritarashtra's blind love veiled all judgment..."},38:{to:21,skt:"मात्सर्य",en:"ENVY",tale:"Duryodhana burned with jealousy at Indraprastha..."},47:{to:29,skt:"काम",en:"DESIRE",tale:"Keechaka's lust brought his annihilation..."},56:{to:41,skt:"मद",en:"PRIDE",tale:"Ravana's arrogance toppled golden Lanka..."},62:{to:44,skt:"भय",en:"TERROR",tale:"Arjuna paralysed before the great war..."},74:{to:51,skt:"द्वेष",en:"HATRED",tale:"Drona and Drupada's hatred echoed ages..."},85:{to:59,skt:"आलस्य",en:"SLOTH",tale:"Kumbhakarna slept while dharma crumbled..."},95:{to:68,skt:"अहंकार",en:"EGO",tale:"Parashurama's ego challenged even Rama..."}};
 const LADDERS={3:{to:18,skt:"दया",en:"COMPASSION",tale:"Yudhishthira who wept for his enemies..."},9:{to:31,skt:"दान",en:"GENEROSITY",tale:"Karna gave his armour without hesitation..."},22:{to:42,skt:"सत्य",en:"TRUTH",tale:"Harishchandra sacrificed all for truth..."},28:{to:52,skt:"सेवा",en:"SERVICE",tale:"Hanuman whose devotion moved mountains..."},37:{to:58,skt:"तपस्",en:"AUSTERITY",tale:"Vishwamitra whose tapas shook Indra..."},44:{to:65,skt:"श्रद्धा",en:"FAITH",tale:"Shabari waited a lifetime for Rama..."},53:{to:72,skt:"विद्या",en:"WISDOM",tale:"Vidura whose counsel was dharma itself..."},61:{to:80,skt:"विवेक",en:"DISCERNMENT",tale:"Bhishma on his bed of arrows..."},71:{to:89,skt:"भक्ति",en:"DEVOTION",tale:"Prahlada whose devotion survived fire..."},82:{to:97,skt:"वैराग्य",en:"DETACHMENT",tale:"Siddhartha leaving the palace..."}};
@@ -1086,59 +1084,81 @@ function useAuth(){
 const GameDB={
   async saveGame(userId,d){
     if(!supabase||!userId){console.log("GameDB: No supabase or userId");return null}
-    console.log("GameDB: Step 1 - Saving game for",userId);
+    console.log("GameDB: Saving game for",userId,d);
+    try{
+      // 1. Insert game history
+      const{data:gameData,error:gameErr}=await supabase.from("game_history").insert({
+        user_id:userId,
+        duration_seconds:d.duration||0,
+        total_turns:d.turns||0,
+        character_name:d.charName||"Seeker",
+        character_icon:d.charIcon||"🔱",
+        opponent_type:d.opponent||"yama",
+        result:d.result||"quit",
+        final_square:d.square||1,
+        final_punya:d.punya||0,
+        final_papa:d.papa||0,
+        snakes_hit:d.snakes||0,
+        ladders_climbed:d.ladders||0,
+        dharma_cards_faced:d.dharma||0,
+        riddles_correct:d.riddlesC||0,
+        riddles_wrong:d.riddlesW||0,
+        highest_square:d.highest||1,
+        ashtanga_reached:d.ashtanga||false,
+        moksha_rejected:d.rejected||0
+      }).select();
+      if(gameErr){console.error("GameDB: game_history insert failed:",gameErr.message);
+        // If RLS error, try without user_id check
+        if(gameErr.message.includes("policy")){console.error("GameDB: RLS policy blocking insert. Run this SQL in Supabase:\nCREATE POLICY \"Users insert history\" ON game_history FOR INSERT WITH CHECK (true);")}
+      }else{console.log("GameDB: game_history saved",gameData)}
 
-    // Check if profile exists first
-    const{data:profileCheck,error:profileCheckErr}=await supabase.from("profiles").select("id").eq("id",userId).single();
-    console.log("GameDB: Step 2 - Profile exists?",profileCheck?"YES":"NO",profileCheckErr?.message||"");
-
-    // If no profile, create one
-    if(!profileCheck){
-      console.log("GameDB: Step 2b - Creating missing profile...");
-      const{error:createErr}=await supabase.from("profiles").insert({id:userId,display_name:"Seeker",email:"",provider:"google"});
-      console.log("GameDB: Profile create:",createErr?"FAILED "+createErr.message:"OK");
-    }
-
-    // Insert game history
-    console.log("GameDB: Step 3 - Inserting game_history...");
-    const{data:gameData,error:gameErr}=await supabase.from("game_history").insert({
-      user_id:userId,duration_seconds:d.duration||0,total_turns:d.turns||0,
-      character_name:d.charName||"Seeker",character_icon:d.charIcon||"🔱",
-      opponent_type:d.opponent||"yama",result:d.result||"quit",
-      final_square:d.square||1,final_punya:d.punya||0,final_papa:d.papa||0,
-      snakes_hit:d.snakes||0,ladders_climbed:d.ladders||0,
-      riddles_correct:d.riddlesC||0,riddles_wrong:d.riddlesW||0,
-      highest_square:d.highest||1,ashtanga_reached:d.ashtanga||false
-    }).select();
-    console.log("GameDB: Step 4 -",gameErr?"ERROR: "+gameErr.message:"SUCCESS",gameData);
-
-    // Update profile
-    console.log("GameDB: Step 5 - Updating profile...");
-    const isWin=d.result==="moksha_win"||d.result==="karma_win";
-    const{data:cur}=await supabase.from("profiles").select("*").eq("id",userId).single();
-    if(cur){
-      const{error:upErr}=await supabase.from("profiles").update({
-        total_games:(cur.total_games||0)+1,
-        total_wins:(cur.total_wins||0)+(isWin?1:0),
-        total_moksha_wins:(cur.total_moksha_wins||0)+(d.result==="moksha_win"?1:0),
-        total_karma_wins:(cur.total_karma_wins||0)+(d.result==="karma_win"?1:0),
-        total_punya_earned:(cur.total_punya_earned||0)+(d.punya||0),
-        total_papa_earned:(cur.total_papa_earned||0)+(d.papa||0),
-        highest_square_reached:Math.max(cur.highest_square_reached||1,d.highest||1),
-        total_snakes_hit:(cur.total_snakes_hit||0)+(d.snakes||0),
-        total_ladders_climbed:(cur.total_ladders_climbed||0)+(d.ladders||0),
-        total_riddles_correct:(cur.total_riddles_correct||0)+(d.riddlesC||0),
-        total_riddles_wrong:(cur.total_riddles_wrong||0)+(d.riddlesW||0),
-        favorite_character:d.charName||cur.favorite_character,
-        last_played_at:new Date().toISOString()
-      }).eq("id",userId);
-      console.log("GameDB: Step 6 -",upErr?"ERROR: "+upErr.message:"PROFILE UPDATED ✓");
-    }
-    console.log("GameDB: ✓ ALL DONE");
-    return gameData;
+      // 2. Update profile stats via RPC (most reliable)
+      const isWin=d.result==="moksha_win"||d.result==="karma_win";
+      const{error:rpcErr}=await supabase.rpc("update_profile_stats",{
+        p_user_id:userId,
+        p_punya:d.punya||0,
+        p_papa:d.papa||0,
+        p_is_win:isWin,
+        p_is_moksha:d.result==="moksha_win",
+        p_is_karma:d.result==="karma_win",
+        p_highest:d.highest||1,
+        p_snakes:d.snakes||0,
+        p_ladders:d.ladders||0,
+        p_riddles_c:d.riddlesC||0,
+        p_riddles_w:d.riddlesW||0,
+        p_character:d.charName||"Seeker"
+      });
+      if(rpcErr){
+        console.error("GameDB: RPC update_profile_stats failed:",rpcErr.message);
+        // Fallback: direct update with simple increment
+        console.log("GameDB: Trying direct profile update...");
+        // First get current values
+        const{data:current}=await supabase.from("profiles").select("*").eq("id",userId).single();
+        if(current){
+          const{error:upErr}=await supabase.from("profiles").update({
+            total_games:(current.total_games||0)+1,
+            total_wins:(current.total_wins||0)+(isWin?1:0),
+            total_moksha_wins:(current.total_moksha_wins||0)+(d.result==="moksha_win"?1:0),
+            total_karma_wins:(current.total_karma_wins||0)+(d.result==="karma_win"?1:0),
+            total_punya_earned:(current.total_punya_earned||0)+(d.punya||0),
+            total_papa_earned:(current.total_papa_earned||0)+(d.papa||0),
+            highest_square_reached:Math.max(current.highest_square_reached||1,d.highest||1),
+            total_snakes_hit:(current.total_snakes_hit||0)+(d.snakes||0),
+            total_ladders_climbed:(current.total_ladders_climbed||0)+(d.ladders||0),
+            total_riddles_correct:(current.total_riddles_correct||0)+(d.riddlesC||0),
+            total_riddles_wrong:(current.total_riddles_wrong||0)+(d.riddlesW||0),
+            favorite_character:d.charName||current.favorite_character,
+            last_played_at:new Date().toISOString()
+          }).eq("id",userId);
+          if(upErr)console.error("GameDB: Direct update also failed:",upErr.message);
+          else console.log("GameDB: Profile updated via direct method");
+        }
+      }else{console.log("GameDB: Profile updated via RPC")}
+      return gameData;
+    }catch(e){console.error("GameDB: Unexpected error:",e);return null}
   },
-  async getHistory(userId,limit=20){if(!supabase||!userId)return[];const{data,error}=await supabase.from("game_history").select("*").eq("user_id",userId).order("played_at",{ascending:false}).limit(limit);if(error)console.error("getHistory:",error.message);return data||[]},
-  async getLeaderboard(limit=50){if(!supabase)return[];const{data,error}=await supabase.from("leaderboard").select("*").limit(limit);if(error)console.error("getLeaderboard:",error.message);return data||[]},
+  async getHistory(userId,limit=20){if(!supabase||!userId)return[];const{data,error}=await supabase.from("game_history").select("*").eq("user_id",userId).order("played_at",{ascending:false}).limit(limit);if(error)console.error("GameDB: getHistory error:",error.message);return data||[]},
+  async getLeaderboard(limit=50){if(!supabase)return[];const{data,error}=await supabase.from("leaderboard").select("*").limit(limit);if(error)console.error("GameDB: getLeaderboard error:",error.message);return data||[]},
 };
 
 // ═══ GOOGLE SVG ICON ═══
