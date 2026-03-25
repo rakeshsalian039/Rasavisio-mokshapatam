@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 
 const SNAKES={16:{to:4,skt:"क्रोध",en:"WRATH",tale:"As Duryodhana's rage consumed the Kuru dynasty..."},23:{to:7,skt:"लोभ",en:"GREED",tale:"Like Shakuni who gambled away an empire..."},33:{to:12,skt:"मोह",en:"DELUSION",tale:"Dhritarashtra's blind love veiled all judgment..."},38:{to:21,skt:"मात्सर्य",en:"ENVY",tale:"Duryodhana burned with jealousy at Indraprastha..."},47:{to:29,skt:"काम",en:"DESIRE",tale:"Keechaka's lust brought his annihilation..."},56:{to:41,skt:"मद",en:"PRIDE",tale:"Ravana's arrogance toppled golden Lanka..."},62:{to:44,skt:"भय",en:"TERROR",tale:"Arjuna paralysed before the great war..."},74:{to:51,skt:"द्वेष",en:"HATRED",tale:"Drona and Drupada's hatred echoed ages..."},85:{to:59,skt:"आलस्य",en:"SLOTH",tale:"Kumbhakarna slept while dharma crumbled..."},95:{to:68,skt:"अहंकार",en:"EGO",tale:"Parashurama's ego challenged even Rama..."}};
 const LADDERS={3:{to:18,skt:"दया",en:"COMPASSION",tale:"Yudhishthira who wept for his enemies..."},9:{to:31,skt:"दान",en:"GENEROSITY",tale:"Karna gave his armour without hesitation..."},22:{to:42,skt:"सत्य",en:"TRUTH",tale:"Harishchandra sacrificed all for truth..."},28:{to:52,skt:"सेवा",en:"SERVICE",tale:"Hanuman whose devotion moved mountains..."},37:{to:58,skt:"तपस्",en:"AUSTERITY",tale:"Vishwamitra whose tapas shook Indra..."},44:{to:65,skt:"श्रद्धा",en:"FAITH",tale:"Shabari waited a lifetime for Rama..."},53:{to:72,skt:"विद्या",en:"WISDOM",tale:"Vidura whose counsel was dharma itself..."},61:{to:80,skt:"विवेक",en:"DISCERNMENT",tale:"Bhishma on his bed of arrows..."},71:{to:89,skt:"भक्ति",en:"DEVOTION",tale:"Prahlada whose devotion survived fire..."},82:{to:97,skt:"वैराग्य",en:"DETACHMENT",tale:"Siddhartha leaving the palace..."}};
-const DLM_SQ=[5,10,14,19,25,30,35,43,48,55,60,64,69,73,78,83,88,92];
+const DLM_SQ=[5,10,14,19,25,30,35,43,48,55,60,64,69,73,78,83,88,92,94,97,99];
 const SHLOKAS=[{s:"कर्मण्येवाधिकारस्ते मा फलेषु कदाचन",r:"भगवद्गीता २.४७"},{s:"यदा यदा हि धर्मस्य ग्लानिर्भवति भारत",r:"भगवद्गीता ४.७"},{s:"असतो मा सद्गमय तमसो मा ज्योतिर्गमय",r:"बृहदारण्यक उपनिषद्"},{s:"नैनं छिन्दन्ति शस्त्राणि नैनं दहति पावकः",r:"भगवद्गीता २.२३"},{s:"सर्वधर्मान्परित्यज्य मामेकं शरणं व्रज",r:"भगवद्गीता १८.६६"},{s:"अहिंसा परमो धर्मः",r:"महाभारत"}];
 const DILEMMAS=[
   {t:"यक्ष-प्रश्न",en:"The Yaksha's Riddle",
@@ -106,7 +106,7 @@ const GRAHA=[
   {n:"शुक्र",en:"Shukra — Venus",icon:"♀",desc:"Shukra, guru of the Asuras, possessed the secret of Sanjeevani — the power to resurrect the dead. He grants you a celestial Shield. The next serpent that strikes you will find its venom neutralized. This Shield works once — use it wisely.",color:"#d0a0c0",fx:"venus"},
   {n:"शनि",en:"Shani — Saturn",icon:"♄",desc:"Shani Dev, the fearsome lord of karma and justice, turns his gaze upon you. His stare alone toppled kingdoms. You are pushed BACK 3 squares and gain +1 Papa. Even the gods feared Shani's slow, grinding justice. No one escapes Saturn's lessons.",color:"#8080a0",fx:"saturn"},
   {n:"राहु",en:"Rahu — The Shadow",icon:"☊",desc:"Rahu, the shadow planet, is the severed head of the demon Svarbhanu who drank the nectar of immortality. He creates eclipses by swallowing the Sun. Rahu steals +1 Punya from the leading seeker and gives it to the trailing seeker. Chaos. Inversion. The first shall be last.",color:"#6050a0",fx:"rahu"},
-  {n:"केतु",en:"Ketu — The Tail",icon:"☋",desc:"Ketu is Rahu's headless body — the planet of detachment and moksha. All seekers lose their Shield (if any). Ketu strips away all protection, all attachments. But in loss, there is liberation. The seeker closest to Square 100 gains +1 Punya — for Ketu rewards those who are ready to let go.",color:"#a06060",fx:"ketu"},
+  {n:"केतु",en:"Ketu — The Tail",icon:"☋",desc:"Ketu is Rahu's headless body — the planet of detachment and moksha. All seekers lose their Shield (if any). Ketu strips away all protection, all attachments. But in loss, there is liberation. The seeker closest to Square 108 gains +1 Punya — for Ketu rewards those who are ready to let go.",color:"#a06060",fx:"ketu"},
 ];
 const CHARS=[
   {id:"warrior",name:"Kshatriya Warrior",skt:"क्षत्रिय",icon:"⚔",color:"#e04830",lore:"Once a commander at Kurukshetra alongside Bhishma. Haunted by bloodshed, you seek Moksha to cleanse the karma of a thousand battles.",trait:"Courage",
@@ -143,13 +143,262 @@ const STORY_PAGES=[
   hi:"अब, ध्यान से सुनो, क्योंकि जो मैं बताने वाला हूँ, वो तुम्हें सपनों में भी सताएगा। ये, सिर्फ सांप नहीं हैं। ये जीवित दुःस्वप्न हैं। दस विशाल नाग, समय जितने प्राचीन, सृष्टि के आरम्भ से इस पट पर कुंडली मारे बैठे हैं। हर एक, हर इंसान की आत्मा के अंदर की सबसे काली शक्ति का रूप। ऋषियों ने इन्हें नाम दिए। और वो नाम, तुम्हारा खून जमा देने चाहिए। क्रोध। वो आग जिसने दुर्योधन का मन जलाया और कुरु वंश को राख कर दिया। जब क्रोध हमला करता है, क्रोध का विष तुम्हारी हर उपलब्धि को गला देता है। लोभ। वो अतृप्त भूख जिसने शकुनि से पूरा राज्य जुए में हरवा दिया। इसके जबड़े तुम्हारी प्रगति को साबुत निगल जाते हैं। मोह। वो अंधापन जिसने धृतराष्ट्र को अपने ही पुत्रों को संसार का विनाश करते देखने से रोका। ये सांप, तुम्हारी आँखों पर लिपट जाता है। मात्सर्य। ईर्ष्या, वो हरा ज़हर जिसने दुर्योधन को इंद्रप्रस्थ की महिमा देखकर अंदर से खा लिया। काम। वासना। वो जलती आग जिसने कीचक को एक ही रात में नष्ट कर दिया। मद। घमंड। वो दस सिरों वाला अहंकार जिसने सोने की लंका को धराशायी किया और महान रावण को घुटनों पर ला दिया। भय। वही आतंक जिसने इतिहास के सबसे महान युद्ध से पहले अर्जुन के हाथ जमा दिए। द्वेष। नफ़रत। द्रोण और द्रुपद की वो प्राचीन दुश्मनी जो खून की पीढ़ियों तक गूंजती रही। आलस्य। कुम्भकर्ण की वो महानिद्रा, जो सोता रहा जबकि उसके चारों ओर धर्म टूट रहा था। और फिर, सबसे घातक। अहंकार। नागराज। वो जो फुसफुसाता है, मैं सबसे ऊपर हूँ। वो अहंकार जिसने स्वयं भगवान राम को भी चुनौती दी। जब कोई सांप तुम्हें पकड़ता है, तो सिर्फ पीछे नहीं ले जाता। वो अपने कुंडल तुम्हारी आत्मा पर कसता है। तुम्हें, चीखते हुए, गहराइयों में खींचता है। और तुम पर दाग लगाता है, पाप का। वो दाग, आसानी से नहीं धुलता। जितना ऊपर चढ़ो, उतनी हिंसक होगी गिरावट। और इस पूरे खेल में सिर्फ एक सुरक्षा है। शुक्र ग्रह का दिव्य कवच। लेकिन वो दिव्य सुरक्षा भी, सिर्फ एक बार, बचा सकती है। उसके बाद, तुम सांपों का सामना, अकेले करोगे।",
   body:"They are not just snakes.\nThey are living nightmares — ten colossal नाग Nāgas.\n\n𓆙 क्रोध Krodh — Wrath\n    The fire that burned the Kuru dynasty to ash\n𓆙 लोभ Lobh — Greed\n    The hunger that swallowed Shakuni's kingdom\n𓆙 मोह Moh — Delusion\n    The blindness that veiled Dhritarashtra's eyes\n𓆙 मात्सर्य Mātsarya — Envy\n    The green poison that consumed Duryodhana\n𓆙 काम Kām — Desire\n    The flame that destroyed Keechaka in one night\n𓆙 मद Mad — Pride\n    The arrogance that toppled golden Lankā\n𓆙 भय Bhay — Fear\n    The terror that froze Arjuna before war\n𓆙 द्वेष Dvesh — Hatred\n    The feud that echoed through generations\n𓆙 आलस्य Ālasya — Sloth\n    The sleep of Kumbhakarna while dharma crumbled\n𓆙 अहंकार Ahankār — Ego\n    The serpent king. The deadliest of all.\n\nWhen bitten → dragged into the depths + 2 पाप Pāp.\nOnly शुक्र Shukra shields you — once."},
   {title:"The Path to Moksha",icon:"ॐ",
-  en:"And now, the final truth. There are only two ways, to escape the wheel of Samsara. Two narrow paths, through an ocean of suffering. The First Path. Reach, Square 100, with an exact roll of the dice. Not one square more. Not one square less. But, even if you reach Moksha, the gates will not open for a tainted soul. Your Punya, your accumulated virtue, must equal, or exceed, your Paap, your sin. If you arrive at the threshold of liberation, carrying the weight of your failures, you will be cast back. Hurled down, to Square 67. To suffer again. To purify through pain. To crawl, once more, through the celestial realm, past the deadliest serpents, knowing that one wrong step sends you even further down. The Second Path. Far rarer. Far more beautiful. Far more impossible. If, at any moment during your journey, you accumulate 20 Punya, fifteen acts of pure virtue, you transcend the board entirely. You do not need Square 100. You do not need an exact roll. The board itself, dissolves beneath you, and your soul rises, into pure light. Instant Moksha. This is the ancient truth that the sages encoded into this game. That a truly pure soul, can break free from the cycle of existence, at any moment. From any square. Most seekers, will never achieve either path. They will wander this board for eternity, rising and falling, climbing and being devoured, forever caught between virtue and vice. But perhaps, you, will be different. Dharma, awaits. The dice, are ready. The serpents, can already smell your fear. Take a breath. And step, onto the board.",
+  en:"And now, the final truth. There are only two ways, to escape the wheel of Samsara. Two narrow paths, through an ocean of suffering. The First Path. Reach, Square 100, with an exact roll of the dice. Not one square more. Not one square less. But, even if you reach Moksha, the gates will not open for a tainted soul. Your Punya, your accumulated virtue, must equal, or exceed, your Paap, your sin. If you arrive at the threshold of liberation, carrying the weight of your failures, you will be cast back. Hurled down, to Square 67. To suffer again. To purify through pain. To crawl, once more, through the celestial realm, past the deadliest serpents, knowing that one wrong step sends you even further down. The Second Path. Far rarer. Far more beautiful. Far more impossible. If, at any moment during your journey, you accumulate 30 Punya, fifteen acts of pure virtue, you transcend the board entirely. You do not need Square 100. You do not need an exact roll. The board itself, dissolves beneath you, and your soul rises, into pure light. Instant Moksha. This is the ancient truth that the sages encoded into this game. That a truly pure soul, can break free from the cycle of existence, at any moment. From any square. Most seekers, will never achieve either path. They will wander this board for eternity, rising and falling, climbing and being devoured, forever caught between virtue and vice. But perhaps, you, will be different. Dharma, awaits. The dice, are ready. The serpents, can already smell your fear. Take a breath. And step, onto the board.",
   hi:"और अब, अंतिम सत्य। संसार के चक्र से बचने के सिर्फ दो रास्ते हैं। दुख के सागर से गुज़रते दो संकरे रास्ते। पहला रास्ता। खाना 100 पर पहुंचो, पासे के बिल्कुल सटीक अंक से। एक खाना ज़्यादा नहीं। एक खाना कम नहीं। लेकिन, अगर मोक्ष तक पहुंच भी गए, तो दूषित आत्मा के लिए द्वार नहीं खुलेंगे। तुम्हारा पुण्य, तुम्हारी संचित पवित्रता, तुम्हारे पाप से बराबर, या ज़्यादा होनी चाहिए। अगर मुक्ति की देहलीज़ पर पहुंचे, अपनी असफलताओं का बोझ लेकर, तो वापस फेंक दिए जाओगे। नीचे, खाना 67 पर। फिर से कष्ट भोगने। दर्द से शुद्ध होने। एक बार फिर, दिव्य लोक से रेंगते हुए गुज़रने, सबसे घातक सांपों के बीच से, ये जानते हुए कि एक ग़लत कदम तुम्हें और भी गहरे गिरा देगा। दूसरा रास्ता। बहुत दुर्लभ। बहुत सुंदर। बहुत असंभव। अगर, यात्रा के किसी भी क्षण, तुम 15 पुण्य इकट्ठा कर लो, शुद्ध पवित्रता के पंद्रह कर्म, तो तुम पट से पूरी तरह ऊपर उठ जाते हो। खाना 100 की ज़रूरत नहीं। सटीक पासे की ज़रूरत नहीं। पट ख़ुद, तुम्हारे नीचे से विलीन हो जाता है, और तुम्हारी आत्मा उठती है, शुद्ध प्रकाश में। तुरंत मोक्ष। यही वो प्राचीन सत्य है जो ऋषियों ने इस खेल में छिपाया। कि सच्ची शुद्ध आत्मा, अस्तित्व के चक्र से मुक्त हो सकती है, किसी भी क्षण। किसी भी खाने से। ज़्यादातर साधक, कभी कोई रास्ता नहीं पा सकेंगे। वो इस पट पर अनंतकाल भटकते रहेंगे, उठते और गिरते, चढ़ते और निगले जाते, हमेशा पुण्य और पाप के बीच फंसे। लेकिन शायद, तुम, अलग हो। धर्म, इंतज़ार कर रहा है। पासे, तैयार हैं। सांप, तुम्हारे डर की गंध पहले से सूंघ रहे हैं। एक सांस लो। और कदम रखो, पट पर।",
   body:"Two paths to escape the wheel of संसार Saṃsāra.\n\n꧁ प्रथम मार्ग · THE FIRST PATH ꧂\nReach Square 100 with an exact roll.\nपुण्य Punya must ≥ पाप Pāp.\nIf impure → cast back to Square 67.\n\n꧁ द्वितीय मार्ग · THE SECOND PATH ꧂\nAccumulate 15 पुण्य Punya at any moment.\nThe board dissolves. Instant मोक्ष Moksha.\n\nMost seekers will never achieve either.\n\nधर्म Dharma awaits.\nThe नवग्रह Navagraha are watching.\nThe serpents can smell your fear.\n\nStep onto the board."},
 ];
 
-function sqP(n){const r=Math.floor((n-1)/10);return{r:9-r,c:r%2===0?(n-1)%10:9-((n-1)%10)}}
-function rlm(n){return n<=33?"bhuloka":n<=66?"antarloka":"svargaloka"}
+function sqP(n){
+  if(n>100){
+    // Sacred crown row: squares 101-108 are in a special row above the board
+    // Positioned across 8 columns centered in the 10-col grid
+    const ci=n-101; // 0-7
+    return{r:-1,c:ci+1}; // row -1 = above board, columns 1-8 (centered)
+  }
+  const r=Math.floor((n-1)/10);return{r:9-r,c:r%2===0?(n-1)%10:9-((n-1)%10)}
+}
+function rlm(n){return n<=33?"bhuloka":n<=66?"antarloka":n<=100?"svargaloka":"moksha_path"}
+
+// The 8-fold Sacred Path (Ashtanga Marga) — squares 101-108
+const SACRED_PATH=[
+  {num:101,skt:"यम",en:"Yama",desc:"Self-restraint",icon:"🪷"},
+  {num:102,skt:"नियम",en:"Niyama",desc:"Discipline",icon:"🔥"},
+  {num:103,skt:"आसन",en:"Asana",desc:"Steadiness",icon:"🧘"},
+  {num:104,skt:"प्राणायाम",en:"Pranayama",desc:"Life-force",icon:"💨"},
+  {num:105,skt:"प्रत्याहार",en:"Pratyahara",desc:"Withdrawal",icon:"👁"},
+  {num:106,skt:"धारणा",en:"Dharana",desc:"Concentration",icon:"🎯"},
+  {num:107,skt:"ध्यान",en:"Dhyana",desc:"Meditation",icon:"✨"},
+  {num:108,skt:"मोक्ष",en:"MOKSHA",desc:"Liberation",icon:"ॐ"},
+];
+
+// ═══ ASHTANGA RIDDLES — 5-6 per step, tricky but solvable ═══
+// correct=0 means first option is right, correct=1 means second
+const ASHTANGA_RIDDLES={
+  101:[
+    {q:"A king asked a sage: 'I conquered every kingdom. What remains?' The sage smiled: 'The kingdom that defeated every emperor since dawn of time — it lives inside you.' What kingdom?",a:["The uncontrolled mind — even Alexander couldn't conquer it","The human heart — it beats without anyone's permission"],correct:0},
+    {q:"Yudhishthira was asked: 'What is the most surprising thing in the world?' His answer became the most quoted Mahabharata verse. What did he say?",a:["People die daily, yet the living believe they are immortal — this is the greatest wonder","The sun rises daily yet nobody stops to be grateful"],correct:0},
+    {q:"Gandhi never fought back when beaten by soldiers. He practiced a Yoga Sutra principle that changed world politics. What?",a:["Ahimsa — non-violence requires MORE courage than fighting back","Satya — truth spoken loudly makes violence unnecessary"],correct:0},
+    {q:"Buddha left a palace with 40,000 dancing girls and unlimited power. Asked how he could walk away, he said something revealing the core of Yama...",a:["I didn't walk FROM everything — I walked TOWARD everything. A palace is a prison when you're enslaved by it","Desire is a fire that burns brighter the more fuel you give it"],correct:0},
+    {q:"A scorpion was drowning. A monk saved it, got stung. Saved it again, stung again. A passerby asked why. The monk's answer is the deepest Yama...",a:["It's the scorpion's nature to sting. It's my nature to save. Why abandon MY nature because he follows his?","Pain is temporary but the karma of not helping lasts forever"],correct:0},
+    {q:"After basic needs are met, more possessions cause MORE anxiety — the 'hedonic treadmill.' Which Yama predicted this 3000 years ago?",a:["Aparigraha — non-possessiveness. We adapt to each new thing and want more, endlessly","Asteya — non-stealing, because wanting what others have is mental theft"],correct:0},
+    {q:"A man steals bread to feed his starving child. Has he violated Asteya? The Mahabharata's surprising answer...",a:["No — when survival conflicts with rules, compassion overrides ritual morality","Yes — stealing is stealing, karma doesn't forgive regardless of reason"],correct:0},
+    {q:"The marshmallow experiment: kids who waited 15 min for 2 marshmallows instead of eating 1 now were tracked 40 years. Results?",a:["Waiters had higher SAT scores, better careers, lower addiction — restraint predicts life success","Waiters had more anxiety from constant delayed gratification"],correct:0},
+    {q:"In the Chandogya Upanishad, a student asks 'What is Brahman?' The teacher stays silent. Asks again. Silence. The answer IS the silence because...",a:["The highest truth cannot be spoken — only experienced through restraint of speech","The teacher was testing patience before revealing secret mantras"],correct:0},
+    {q:"Viktor Frankl survived Nazi camps and discovered the last human freedom that can NEVER be taken away...",a:["The freedom to choose your response to any situation — THIS is Yama in its purest form","The freedom to hope for rescue — which kept prisoners alive"],correct:0},
+    {q:"Arjuna refused to fight at Kurukshetra because killing family felt wrong. Krishna said this was NOT Ahimsa but...",a:["Cowardice disguised as virtue — true Ahimsa is doing your duty even when it hurts","Correct instinct that needed refinement through meditation first"],correct:0},
+    {q:"Neuroscience shows resisting temptation uses the same brain area as physical effort — the prefrontal cortex literally gets 'tired.' This explains why...",a:["Willpower is finite and must be trained like a muscle — exactly what Yama practices do","Monks who practice extreme restraint are slowly damaging their brains"],correct:0},
+    {q:"A Zen master was falsely accused of fathering a child. He simply said 'Is that so?' and raised it. Years later truth emerged. He returned the child saying 'Is that so?' This is...",a:["Supreme non-reaction — not defending ego IS the highest restraint","Indifference to justice — which contradicts the Yama of Satya"],correct:0},
+    {q:"The tongue controls what enters (food) and exits (speech). Ancient yogis said mastering the tongue alone is enough for liberation because...",a:["Control what you consume and speak → you've mastered 90% of Yama","The tongue is connected to the heart chakra and controls all energy"],correct:0},
+    {q:"Nelson Mandela spent 27 years in prison. When released, he invited his PRISON GUARD to his inauguration. This is...",a:["Kshama (forgiveness) — the highest Ahimsa, requiring more strength than revenge","Stockholm syndrome — bonding with captors over decades"],correct:0},
+    {q:"A snake charmer doesn't remove the snake's fangs — he learns to handle it skillfully. This metaphor teaches...",a:["Don't destroy desires — learn to handle them. Suppression creates explosion, skill creates mastery","Desires are dangerous creatures that must be controlled through fear"],correct:0},
+    {q:"Modern addiction science: every craving, if NOT acted upon, peaks at 20 minutes then fades. Ancient yogis called this...",a:["Titiksha — enduring discomfort without reacting, knowing it always passes","Vairagya — complete dispassion that makes cravings impossible"],correct:0},
+    {q:"Why did Gandhi walk 388 km to pick up a handful of salt from the sea?",a:["The simplest act of defiance, done with Ahimsa and Satya, can break an empire","To prove Indian salt was superior to British salt"],correct:0},
+    {q:"A student asked Ramakrishna: 'How do I control desire?' He held a bird: 'Hold tight, it suffocates. Hold loose, it flies.' The lesson?",a:["Don't suppress desires — observe them with gentle awareness until they lose power naturally","Hold desire at exactly 50% — partial indulgence is the middle path"],correct:0},
+    {q:"The Gita says: 'For one who has conquered the mind, the mind is the best friend. For one who has failed, it is the greatest enemy.' Yama is...",a:["Befriending your own mind — not fighting it. The practice is friendship, not war","Destroying the mind's desires through extreme austerity"],correct:0},
+    {q:"The word 'discipline' comes from Latin 'discipulus' meaning 'student.' Self-discipline's ORIGINAL meaning was NOT punishment but...",a:["Being a student of yourself — observing your patterns with curiosity, not judgment","Obeying strict rules set by a master without questioning"],correct:0},
+    {q:"Epictetus, a Roman slave-turned-philosopher: 'It's not what happens to you, but how you react.' This is identical to...",a:["Pratipaksha Bhavana — cultivating the opposite thought when disturbed (Yoga Sutra 2.33)","Karma — accepting everything as past-life results without trying to change it"],correct:0},
+    {q:"An eagle sees a rabbit from 3 km away — but only because it IGNORES everything else in its visual field. The yogic parallel...",a:["True restraint isn't giving up things — it's choosing what to focus on","Eagles have eye muscles yogis develop through Trataka meditation"],correct:0},
+    {q:"In the Ramayana, Hanuman forgot his own powers until reminded. Why? Because...",a:["True power comes with humility — his self-restraint made him forget ego, and with ego gone, unlimited power returned","A sage's curse had sealed his memory until devotion broke it"],correct:0},
+    {q:"Tapas means both 'heat' and 'austerity.' Modern biology confirms deliberate stress (cold showers, fasting) triggers...",a:["Hormesis — small stress doses make cells stronger, exactly mirroring the yogic concept","Cortisol floods that damage the body over time"],correct:0},
+    {q:"A river flows around rocks, not through them. Water is softest yet carves the Grand Canyon. This teaches...",a:["Non-resistance is ultimate power — Ahimsa isn't passive, it's strategically yielding","Persistence beats everything — keep pushing no matter what"],correct:0},
+    {q:"The Jain concept of Anekantavada says truth has infinite faces. Two people can disagree and BOTH be right. This connects to...",a:["Satya — truth isn't about being right, it's about not being false. Humility IS truthfulness","Ahimsa — seeing multiple truths prevents the violence of forced agreement"],correct:0},
+    {q:"Japan's forest bathing (Shinrin-yoku) reduces cortisol 16%. The Vedic equivalent practiced for millennia...",a:["Vanaprastha — the forest-dwelling life stage where nature itself teaches restraint","Tapasya — meditating in forests until transcending hunger and cold"],correct:0},
+    {q:"A monk owned only a blanket. A thief stole it. The monk chased him to give his pillow too, saying...",a:["I wish I could give you the moonlight — you need beauty more than I need warmth","Take everything, but please don't carry the habit of stealing into your next life"],correct:0},
+    {q:"The eagle can fly highest of all birds. But it achieves this not by flapping harder — it finds thermals and RESTS while rising. This is...",a:["Effortless Yama — the highest restraint feels like freedom, not restriction. You ride natural forces instead of fighting","A physics lesson about aerodynamics unrelated to spiritual practice"],correct:0},
+  ],
+  102:[
+    {q:"Toyota used 'Kaizen' to become the world's greatest car company. This mirrors the Niyama of Tapas. What is Kaizen?",a:["Improving by just 1% every day — tiny discipline that compounds into extraordinary results over years","Working 16 hours daily with no breaks until perfection"],correct:0},
+    {q:"Vivekananda could memorize encyclopedia pages in one reading. His secret wasn't talent — it was pure Niyama...",a:["Brahmacharya — channeling ALL vital energy into mental focus through years of strict discipline","A photographic memory enhanced by meditation supplements"],correct:0},
+    {q:"Scientists scanned Buddhist monks with 10,000+ meditation hours. Their brains showed something that stunned neuroscience...",a:["Physically changed — thicker cortex, more grey matter, gamma waves 30x stronger than average","Ability to enter death-like state with zero brain activity"],correct:0},
+    {q:"Ramanujan produced 3,900 math results with almost no training. He said goddess Namagiri wrote equations in his dreams. This is...",a:["Ishvara Pranidhana — total surrender to the divine, the final Niyama","Mathematical genius that transcends spiritual explanation"],correct:0},
+    {q:"Patanjali Sutra 1.12: 'Abhyasa vairagyabhyam tat nirodhah.' This single verse contains ALL of Niyama...",a:["Mastery through persistent practice AND detachment from results — do the work without obsessing over outcomes","Mastery through suffering — the harder the path, the greater the reward"],correct:0},
+    {q:"James Clear's 'Atomic Habits': Cue → Craving → Response → Reward. The yogic equivalent practiced 3000 years earlier...",a:["Sankalpa — sacred intention that rewires the subconscious through daily repetition","Mantra chanting — repeating sounds 108 times to reprogram neural pathways"],correct:0},
+    {q:"A Japanese master was asked: 'How many techniques do you know?' He said: 'Only one. But I've practiced it 10,000 times.' This mirrors...",a:["Abhyasa — persistent practice where mastery is depth, not breadth","Bushido — the samurai code valuing perfection over variety"],correct:0},
+    {q:"Modern research: it takes 66 days (not 21) to form a habit. The ancient yogic prescription was...",a:["40 days of unbroken Sadhana — remarkably close to the scientific finding","108 days — matching the 108 mala beads"],correct:0},
+    {q:"Einstein worked as a patent clerk while developing Relativity. He never complained. This is...",a:["Santosha — contentment with current circumstances while working toward higher goals","Pure genius that would have emerged regardless"],correct:0},
+    {q:"The Sanskrit word 'Guru' literally means...",a:["'Gu' = darkness, 'Ru' = remover. One who removes darkness — not one who adds knowledge","'Great one' — a title of respect for learned teachers"],correct:0},
+    {q:"A violinist: 'How do you play so beautifully?' 'I practiced BADLY for 10,000 hours.' This teaches...",a:["Tapas includes enduring being bad at something — discipline means doing it BEFORE you're good","Anyone can master anything with enough hours regardless of talent"],correct:0},
+    {q:"Nikola Tesla could 'build' machines in his mind and test them before creating them physically. In yoga, this is...",a:["Dharana combined with Tapas — sustained focused imagination is a creative superpower","Siddhi — supernatural power from years of meditation"],correct:0},
+    {q:"Research: writing goals down makes you 42% more likely to achieve them. The Vedic equivalent...",a:["Sankalpa — sacred vow spoken at dawn that programs the subconscious","Mantra writing — writing 'Om' 1,008 times to purify the mind"],correct:0},
+    {q:"A farmer plants a seed and waits 3 months. He doesn't dig it up to check. This patience is...",a:["Shraddha — faith + discipline. Niyama means doing the work even when you can't see results","Tapas — the heat of waiting burns away impatience"],correct:0},
+    {q:"Bill Gates reads 50 books/year. Buffett reads 5 hours daily. The Vedic term for continuous learning is...",a:["Svadhyaya — self-study, now expanded to mean lifelong learning from all sources","Abhyasa — disciplined repetition building compound knowledge"],correct:0},
+    {q:"A mother wakes at 5 AM daily for 18 years to make her child's lunch. No thanks. No notice. This is the purest...",a:["Tapas AND Ishvara Pranidhana — selfless discipline without expectation of reward","Karma Yoga — working without attachment to results"],correct:0},
+    {q:"Marcus Aurelius: 'The impediment to action advances action. What stands in the way becomes the way.' In Niyama...",a:["Obstacles ARE the practice — every difficulty is Tapas burning away weakness","Seek obstacles deliberately to accelerate spiritual growth"],correct:0},
+    {q:"The practice of Mauna (24-hour silence weekly) is now recommended by neurologists because...",a:["The brain regenerates neural pathways during silence — constant noise prevents self-repair","Silent meditation releases DMT from the pineal gland"],correct:0},
+    {q:"The Gita (6.17): 'Yoga is not for one who eats too much or too little, sleeps too much or too little.' This teaches...",a:["Discipline is BALANCE, not extremism — the middle path IS the Niyama","Only moderate people can practice yoga"],correct:0},
+    {q:"Why do monks shave their heads?",a:["External simplicity removes decision fatigue — freeing mental energy for practice","Hair absorbs spiritual energy meant for the crown chakra"],correct:0},
+    {q:"A craftsman makes the same pot 10,000 times. The 10,000th looks simple but contains wisdom of 9,999 failures. The Japanese call this...",a:["Wabi-sabi — beauty in imperfection through discipline. Each failure teaches what success cannot","Kaizen — the 10,000th pot is 1% better than the 9,999th"],correct:0},
+    {q:"Traditional Indian wrestling (Kushti) requires 4 AM training, simple food, celibacy, and serving the guru. This system is...",a:["All five Niyamas in practice — Shaucha, Santosha, Tapas, Svadhyaya, Ishvara Pranidhana","An outdated method replaced by sports science"],correct:0},
+    {q:"'Discipline equals freedom' (Navy SEAL Jocko Willink). MORE structure creates MORE freedom because...",a:["Automated daily choices through discipline free mental energy for creativity — exactly what Niyama does","Military and yogic discipline are fundamentally different"],correct:0},
+    {q:"A seed contains an entire tree. The tree doesn't need to be 'added' — it needs conditions to emerge. Niyama creates...",a:["Conditions for inherent potential to emerge — discipline doesn't create greatness, it reveals it","Pressure forcing growth, like a plant through concrete"],correct:0},
+    {q:"Svadhyaya originally meant chanting Vedic texts ALOUD, not silently. Why oral tradition was considered superior...",a:["Sanskrit syllable vibrations affect the nervous system — the sound IS the teaching","Paper hadn't been invented so oral was the only option"],correct:0},
+    {q:"The Shaolin monks train carrying water up 1,000 steps for 10 years before learning one fighting move. Why?",a:["Tapas must be built in mundane tasks before applied to extraordinary ones — the fire of discipline is forged in boredom","Physical conditioning matters more than technique in combat"],correct:0},
+    {q:"Swami Sivananda wrote 300 books, treated thousands, did 6 hours of yoga daily. His paradoxical secret...",a:["Ishvara Pranidhana — surrendering results to God eliminated anxiety, enabling work without burnout","Sleeping only 3 hours through yogic breathing"],correct:0},
+    {q:"The Korean concept 'Nunchi' — reading the room and adapting — mirrors which Niyama?",a:["Svadhyaya — deep self-study including awareness of how you affect others and they affect you","Ishvara Pranidhana — letting divine guidance direct social behavior"],correct:0},
+    {q:"The word 'practice' (Abhyasa) shares its root with 'seat' (Asana). This is because...",a:["True practice requires sitting with discomfort — willingness to stay when you want to run IS the practice","Both come from root 'as' meaning 'to be present'"],correct:0},
+    {q:"The Japanese Misogi: one incredibly hard thing per year pushing your limits. This mirrors...",a:["Tapas — voluntary hardship expanding your capacity, burning away mental weakness","Extreme sports addiction disguised as spirituality"],correct:0},
+  ],
+  103:[
+    {q:"Ram Bahadur Bomjon sat motionless without food or water, filmed by Discovery Channel. How long?",a:["10 months continuously — challenging everything medical science believed about human survival","72 hours in a hibernation-like metabolic state"],correct:0},
+    {q:"A 2,500-year-old tree withstands hurricanes that destroy buildings. It perfectly explains 'Sthira Sukham Asanam' because...",a:["Firm roots but flexible branches — rigid things break, steady-yet-yielding survive. THIS is Asana","Bark harder than steel — pure rigidity is ultimate stability"],correct:0},
+    {q:"NASA: astronauts doing yoga in space maintain 40% better bone density. This confirms...",a:["Asana affects bones, organs, and nervous system at the cellular level — not just muscles","Yoga creates an energy field protecting against radiation"],correct:0},
+    {q:"Hatha Yoga Pradipika says 8.4 million asanas exist — one per species. Only 2 are essential. Which?",a:["Siddhasana and Padmasana — designed for prolonged meditation without pain","Shavasana and Tadasana — representing death and life"],correct:0},
+    {q:"Patanjali never described a single posture. His ENTIRE instruction on Asana was...",a:["'Sthira sukham asanam' — steady and comfortable. Three words. That's it.","'Practice 84 postures daily at dawn for liberation'"],correct:0},
+    {q:"Why is Shavasana (corpse pose) the MOST difficult asana according to masters?",a:["Complete stillness of body AND mind simultaneously is harder than any physical contortion","It requires holding breath for 5+ minutes while relaxing every muscle"],correct:0},
+    {q:"A glass of muddy water clears when you stop stirring. You don't remove the mud. This teaches...",a:["Stillness IS purification — you don't need to 'fix' anything, just stop agitating","Meditation cleans the mind like a filter cleans water"],correct:0},
+    {q:"Tai Chi practitioners at 80 have better balance than athletes at 20. Research shows...",a:["Slow steady movement rewires the cerebellum faster than fast movement — steadiness trains the brain MORE than intensity","Chinese herbs alongside practice boost neuroplasticity"],correct:0},
+    {q:"Krishna's posture during the entire Gita revelation to Arjuna was...",a:["Standing perfectly still in a chariot between two armies — stillness amidst chaos IS the teaching","Seated in Padmasana hovering above the battlefield"],correct:0},
+    {q:"A violin string too loose = no sound. Too tight = snaps. Perfect note = exact tension. This is...",a:["Buddha's Middle Way AND Patanjali's Asana — steadiness between effort and ease, never extremes","A physics principle unrelated to yoga"],correct:0},
+    {q:"Studies: standing tall 2 min increases testosterone 20%, decreases cortisol 25%. Yogis knew this because...",a:["Asana was never about exercise — it uses body position to change brain chemistry and consciousness","Ancient yogis measured hormones through pulse diagnosis"],correct:0},
+    {q:"Pyramids stood 4,500 years. Secret: wide base, narrow top. Identical to...",a:["Yogic teaching that spiritual height requires broad foundation — Asana IS the physical foundation","Sacred geometry channeling cosmic energy through pyramid shapes"],correct:0},
+    {q:"Why do ALL meditation traditions worldwide arrive at the same cross-legged posture?",a:["Triangular base, locked knees, straight spine — biomechanically optimal for prolonged stillness","Cultural transmission through the Silk Road spread Indian postures"],correct:0},
+    {q:"A sniper holds still 72 hours for one shot. The key isn't physical strength but...",a:["Mental acceptance of discomfort — when the mind stops resisting, the body stops fidgeting. Asana's deepest teaching","Specialized breathing reducing heartbeat to 30 BPM"],correct:0},
+    {q:"Flamingos sleep on ONE leg for hours. This seems harder but is easier because...",a:["The leg locks mechanically using ZERO muscle effort — nature's perfect Asana uses structure, not strength","A special tendon acts as a cable lock"],correct:0},
+    {q:"Chess grandmasters burn 6,000 calories/day during tournaments while SITTING STILL. This proves...",a:["Mental steadiness requires as much energy as physical exercise — the brain uses 20% of body energy when focused","Chess should be classified alongside marathon running"],correct:0},
+    {q:"In Ashtanga Yoga, the SAME sequence repeats daily for years. Critics say boring. Practitioners say...",a:["When sequence is memorized, mind is freed — body moves on autopilot while consciousness deepens. Repetition IS the gateway","Each repetition burns past-life karma"],correct:0},
+    {q:"The Great Wall of China was built with sticky rice + limestone. Rigid concrete cracks in earthquakes. This teaches...",a:["Flexibility within structure outlasts rigidity — a strong yet supple body lasts longer than merely strong","Ancient Chinese engineering was superior to modern methods"],correct:0},
+    {q:"When you balance on one leg, your brain makes 100+ micro-adjustments per second below awareness. Yogis call this...",a:["Sahaja — the natural effortless state where balance maintains itself without 'trying.' True Asana feels like this","Kundalini activating balance centers"],correct:0},
+    {q:"Trees in windy areas develop thicker trunks and deeper roots. Scientists call this 'stress inoculation.' In yoga...",a:["Challenging asanas IS the wind — discomfort builds the resilience 'trunk' supporting everything above","Wind represents negative energy yogis must avoid"],correct:0},
+    {q:"'Comfortable' in Sthira Sukham doesn't mean easy. Sukha literally means...",a:["'Good space' (su=good, kha=space) — aligned posture creates good space for energy. Comfort is alignment, not softness","Happiness — the posture should make you feel joyful"],correct:0},
+    {q:"A traditional Indian woman carries water on her head for miles without spilling. This requires...",a:["Perfect integration of Asana, Dharana, and Pranayama — three working as one","Years of neck-strengthening exercises"],correct:0},
+    {q:"Your body replaces every atom in 7-10 years. Yet you remain 'you.' Asana's deepest teaching...",a:["The body is constantly moving at atomic level — stillness is illusion. True Asana finds steadiness within permanent change","Asana postures help replace cells more efficiently"],correct:0},
+    {q:"Water takes the shape of any container yet remains water. This is ideal Asana because...",a:["Adaptability without losing essence — steady practice makes you MORE flexible in life, not rigid","Water has no form, like enlightened beings have no fixed personality"],correct:0},
+    {q:"Japanese Seiza (kneeling) was mandatory for samurai. Why warriors chose uncomfortable posture for daily life...",a:["Straight spine, alert mind, can stand to fight instantly — steadiness serving both peace and action","Self-punishment building mental toughness"],correct:0},
+    {q:"The average adult sits 10+ hours with back pain. A yogi sits 10+ hours pain-free. The difference...",a:["Active sitting with engaged core + aligned spine vs passive slumping — same duration, opposite effects","Yogis have genetically different spines from evolution"],correct:0},
+    {q:"The Sanskrit 'Yoga' comes from 'yuj' meaning to yoke/unite. But unite WHAT with WHAT?",a:["Individual consciousness with universal consciousness — the body's steadiness creates the bridge","Body with mind — postures connect two halves of human experience"],correct:0},
+    {q:"Reclining Buddha statues show him on his RIGHT side specifically because...",a:["Heart above stomach, aids digestion, neutral spine — ancient anatomical knowledge in art","The soul exits through the right side at death"],correct:0},
+    {q:"The phrase 'standing your ground' means firmness of conviction. In Asana this manifests as...",a:["Pada Bandha — rooting the feet so firmly the entire body becomes an extension of the earth's stability","Mula Bandha — locking the root chakra to prevent energy leakage"],correct:0},
+    {q:"An architect said: 'A building must be alive enough to sway in wind, dead enough to not collapse.' This paradox IS...",a:["Sthira Sukham — the eternal balance between firmness and softness that defines both great buildings and great asanas","Modern engineering copying ancient temple construction techniques"],correct:0},
+  ],
+  104:[
+    {q:"Wim Hof climbed Everest in shorts using breathing alone. His technique is remarkably similar to...",a:["Tummo breathing from Tibetan yoga — proving ancient Pranayama claims about controlling biology","Holotropic breathwork from modern psychology"],correct:0},
+    {q:"Animals with slower breathing (elephants, tortoises) live dramatically longer. The yogic claim this supports...",a:["Breath rate is linked to lifespan — fewer breaths/minute = longer life","Larger animals store more prana from birth"],correct:0},
+    {q:"Pranayama means 'Prana + Ayama.' Most translate it as 'breath control.' The CORRECT translation...",a:["Expansion of life-force — Ayama means extend, not control. Goal is EXPANDING vital energy","Restraint of death — holding back death through breath"],correct:0},
+    {q:"Stanford: 5 min of a yogic breathing technique reduced PTSD in veterans by 44%. The technique...",a:["Sudarshan Kriya — rhythmic breathing resetting the autonomic nervous system","Bhastrika — bellows breath forcing oxygen into traumatized cells"],correct:0},
+    {q:"The longest nerve (Vagus) connects brain to heart, lungs, gut. Breathing stimulates it. Yogis called this nerve...",a:["Sushumna Nadi — they mapped the nervous system 3,000 years before Western anatomy","Kundalini — serpent energy awakened through nerve stimulation"],correct:0},
+    {q:"When you sigh: double inhale + long exhale. Neuroscientist Huberman found this is the fastest way to...",a:["Calm the nervous system — identical to ancient Viloma Pranayama","Increase brain oxygen for better decisions"],correct:0},
+    {q:"Breathing through LEFT nostril activates parasympathetic (rest). RIGHT activates sympathetic (alert). Yogis discovered this...",a:["2,000+ years before neuroscience confirmed lateralized nasal breathing affects brain hemispheres","Through trial and error in Himalayan retreats"],correct:0},
+    {q:"Box breathing (4-4-4-4) is used by Navy SEALs before combat. The yogic original...",a:["Sama Vritti Pranayama — equal ratio breathing. Special Forces rediscovered a 3,000-year-old technique","Simplified Kapalabhati adapted for Western practitioners"],correct:0},
+    {q:"The diaphragm works both voluntarily AND involuntarily. Why is this significant for Pranayama?",a:["Breath is the ONLY bridge between conscious and unconscious systems — controlling it gives access to both","The diaphragm is the seat of the soul in Vedic anatomy"],correct:0},
+    {q:"Babies naturally belly-breathe. Adults chest-breathe. Why the change?",a:["Chronic stress and social conditioning train us out of natural breathing — Pranayama is RE-learning what we knew at birth","Chest muscles strengthen while diaphragm weakens with age"],correct:0},
+    {q:"Singing, chanting, humming extend the exhale and stimulate the Vagus nerve. This explains why...",a:["Every religion independently developed chanting — OM, Gregorian chants, Sufi Zikr work through the same breath mechanism","Singing makes people happy through social bonding, not breath"],correct:0},
+    {q:"Nose breathing filters, warms, humidifies air. A 2020 Stanford study showed mouth breathers develop...",a:["Higher blood pressure, worse sleep, more anxiety, facial changes — confirming why yogis insist on nose breathing","Larger lung capacity from wider airflow opening"],correct:0},
+    {q:"Deep sleep: 4-6 breaths/min. Advanced meditators achieve this WHILE AWAKE. This means...",a:["The body enters repair state usually only in sleep — meditation gives sleep benefits while conscious","The brain can't tell difference between sleep and meditation"],correct:0},
+    {q:"In panic attacks, the problem is NOT too little oxygen but too MUCH (hyperventilation). The yogic cure...",a:["Extending the exhale — breathing OUT longer than IN activates calming nervous system instantly","Holding breath as long as possible to 'reset' breathing"],correct:0},
+    {q:"'Inspiration' means both inhaling AND receiving a creative idea. Not coincidence because...",a:["Ancient languages recognized breath-consciousness link — prana means BOTH breath and life-force","English borrowed from Latin which borrowed from Sanskrit"],correct:0},
+    {q:"Heart Rate Variability (HRV) is the #1 longevity predictor. Pranayama affects HRV by...",a:["Dramatically increasing it — coherent breathing trains the heart to be more resilient","Decreasing it, making heartbeat perfectly constant"],correct:0},
+    {q:"Why alternate nostrils (Nadi Shodhana)? Nostrils naturally alternate dominance every...",a:["90-120 minutes — called the nasal cycle. Nadi Shodhana artificially triggers this, balancing brain hemispheres","24 hours — one nostril for day, other for night"],correct:0},
+    {q:"The CO2 tolerance test: hold breath after normal exhale. Healthy = 25-40 sec. Most manage 15-20. This indicates...",a:["Chronic over-breathing — most breathe 2-3x necessary, causing anxiety. Pranayama corrects this","Poor cardiovascular fitness needing more exercise"],correct:0},
+    {q:"Freediver Budimir Šobat held his breath 24 min 37 sec. Yogic texts claim pranayama masters could stop breathing for...",a:["Days — 'Kevala Kumbhaka' where the body requires almost no oxygen","Hours — by reducing metabolic rate through nostril patterns"],correct:0},
+    {q:"A candle at arm's length shouldn't flicker during a yogi's exhale. This tests...",a:["Breath control so refined that exhalation is steady and laminar, not turbulent — true mastery","Lung capacity — only advanced practitioners have large enough lungs"],correct:0},
+    {q:"The 'second wind' in running happens because the body switches to efficient aerobic metabolism. Yogis trigger this through...",a:["Kapalabhati and Bhastrika — rapid breathing that flushes the system, forcing earlier metabolic switch","Visualization of prana flowing through legs"],correct:0},
+    {q:"During labor, women learn specific breathing patterns. These are simplified versions of...",a:["Pranayama — Ferdinand Lamaze studied yoga in the 1950s and adapted it","Ancient European midwifery traditions"],correct:0},
+    {q:"Dr. Andrew Weil's 4-7-8 technique (inhale 4, hold 7, exhale 8) credits...",a:["Pranayama — specifically Yoga Sutras' teaching on extended exhale ratios","His own clinical research at Harvard"],correct:0},
+    {q:"Swami Rama at Menninger Clinic (1970) demonstrated voluntary control over...",a:["Heartbeat (stopping 17 sec), body temperature, specific brain waves — all through Pranayama","Only breathing rate, which impressed but didn't prove supernatural claims"],correct:0},
+    {q:"The world record for continuous OM chanting is 75 hours. Chanters reported no fatigue because...",a:["OM at 136.1 Hz entrains alpha waves and vagus nerve sustains the body — the chant becomes life-force","Mass hysteria and group suggestion override physical limits"],correct:0},
+    {q:"Why do we yawn? Most recent scientific theory: brain cooling. Yogic explanation...",a:["The body instinctively draws in more prana when energy is low — a pranayamic reflex","Yawning releases stored karma through the mouth"],correct:0},
+    {q:"Apnea divers report peace and mystical experiences at extreme depths. Medically 'nitrogen narcosis.' Yogis say...",a:["Deep breath retention naturally produces altered consciousness — divers accidentally enter Pranayama meditation","Underwater pressure opens the third eye at 30 meters"],correct:0},
+    {q:"Christian 'breath prayer' ('Lord Jesus Christ, have mercy') timed to breathing is functionally identical to...",a:["So-Ham meditation — 'So' on inhale, 'Ham' on exhale, synchronizing mantra with breath","Kapalabhati — rhythmic breath emptying all thoughts"],correct:0},
+    {q:"In Ayurveda, a doctor's first diagnostic tool is observing breathing. Shallow chest breathing indicates...",a:["Vata imbalance — anxiety, overthinking. Treatment? Specific Pranayama before any medicine","Excess Pitta — overheating and respiratory inflammation"],correct:0},
+    {q:"A single deep breath changes blood pH within seconds. This is why controlled breathing can stop...",a:["Panic attacks, pain perception, even allergic reactions — breath chemistry affects every cell","Only emotional states — physical conditions need physical medicine"],correct:0},
+  ],
+  105:[
+    {q:"The Matrix red pill/blue pill was confirmed by the Wachowskis to be inspired by...",a:["Maya — our senses create false reality. Pratyahara is unplugging from the illusion","Karma — past-life choices determine reality, Neo broke the cycle"],correct:0},
+    {q:"50% of subjects missed a GORILLA walking through a basketball game (inattentional blindness). This proves...",a:["We don't see reality — we see what mind expects. Senses are filters, not truth-revealers","The brain processes only 40 bits/sec while 11 million hit the retina"],correct:0},
+    {q:"Tibetan monks raised finger temperature 17°F in freezing conditions (Harvard verified). This proves...",a:["Consciousness can override biology — withdrawn senses give mind direct control over 'automatic' functions","Monks have thicker skin from cold exposure"],correct:0},
+    {q:"Avg person consumes 34 GB of information daily — 5x more than 1986. Yogis called this overstimulation...",a:["Vikshepa — mind scatters like a monkey jumping branches, unable to rest on any thought","Tamas — heavy lethargy from too much input drowning the mind"],correct:0},
+    {q:"Katha Upanishad: soul=passenger, intelligence=charioteer, mind=reins, senses=horses. If charioteer sleeps...",a:["Horses run wild, drag chariot off a cliff — without awareness, senses lead to destruction","Passenger must take reins directly, bypassing the mind"],correct:0},
+    {q:"Silence retreats (10 days, no talking/phones/reading) participants develop...",a:["Thicker auditory cortex and improved pattern recognition — brain rebuilds when freed from constant input","Hearing so acute they detect whispers 50 meters away"],correct:0},
+    {q:"A blindfolded person's other senses sharpen within minutes. This 'cross-modal plasticity' means...",a:["Brain reallocates resources from unused senses — withdrawing ONE sense enhances others","The body evolves in real-time to survive"],correct:0},
+    {q:"Steve Jobs wore the same outfit daily. His reason mirrors Pratyahara...",a:["Every decision depletes mental energy — reducing sensory choices frees mind for what matters","He had no fashion sense"],correct:0},
+    {q:"Dopamine fasting — avoiding pleasure for 24 hours — resets the brain's reward system. Yogis practiced this as...",a:["Upavasa — fasting from ALL sensory pleasures, giving the nervous system time to recalibrate","Extreme Tapas — suffering that burns away karma"],correct:0},
+    {q:"An art expert detects fakes in seconds through 'gut feeling.' This intuition comes from...",a:["Years of sensory refinement — Pratyahara isn't killing senses, it's SHARPENING them to perceive what others miss","Supernatural sixth sense from decades of study"],correct:0},
+    {q:"Children raised in nature score higher on creativity than city kids because...",a:["Natural 'soft fascination' allows the mind to rest and create. Cities create exhausting 'hard fascination'","Nature has more oxygen enhancing brain creativity"],correct:0},
+    {q:"Noise-canceling headphones create ANTI-noise (inverted waves). Perfect Pratyahara metaphor because...",a:["You don't fight input — you generate equal inner stillness that cancels it. Withdrawal is balance, not blockage","Technology replicated what yogis took decades to achieve"],correct:0},
+    {q:"Your phone sends 80 notifications/day = 29,000/year of involuntary attention grabs. The yogic antidote...",a:["Pratyahara — training to CHOOSE which stimuli to respond to, rather than reacting to all","Complete digital detox, returning to pre-technology life"],correct:0},
+    {q:"In martial arts, 'Mushin' (no-mind) = responding to attacks without thinking. This requires WITHDRAWING from...",a:["The analytical mind — stop thinking about the fight and the body responds faster than thought","Fear — which slows reaction 300 milliseconds"],correct:0},
+    {q:"A wine sommelier identifies 1,000+ wines blindfolded. Their FIRST training step was...",a:["Ignoring all senses EXCEPT smell/taste — focused withdrawal of irrelevant senses sharpens relevant ones","Drinking enormous quantities daily to build sensory memory"],correct:0},
+    {q:"The astronaut 'Overview Effect' — awe seeing Earth from space — happens because...",a:["All familiar sensory anchors removed simultaneously, forcing wider perspective. This IS forced Pratyahara","Zero gravity affects inner ear creating euphoria"],correct:0},
+    {q:"Your nose adapts to smells in 20 min — you stop smelling your own home. Called...",a:["Olfactory adaptation — brain withdraws attention from constant stimuli automatically. Pratyahara does this DELIBERATELY","Nose blindness — a condition affecting 15% of people"],correct:0},
+    {q:"Why do meditation traditions recommend CLOSING EYES first?",a:["Vision uses 30% of brain processing — closing eyes instantly frees 30% of neural resources","Eyes emit electromagnetic energy disturbing the aura"],correct:0},
+    {q:"Grandmaster chess: heart rate DROPS during intense games. Beginners' rate spikes. This shows...",a:["Mastery includes mastery over reactions — expert has withdrawn from stress that enslaves beginners","Grandmasters have genetically lower heart rates"],correct:0},
+    {q:"Japanese tea ceremony: every movement deliberate, each sense engaged ONE at a time. This is...",a:["Active Pratyahara — focusing each sense individually achieves stillness through control, not suppression","An art form unrelated to yoga"],correct:0},
+    {q:"Social media 1+ hour daily = 66% higher depression. The yogic explanation...",a:["Constant comparison through eyes creates Vikshepa (scattering) and Dvesha (aversion to own life)","Screens emit negative electromagnetic frequencies"],correct:0},
+    {q:"Beethoven composed greatest symphonies while COMPLETELY deaf. Pratyahara explains...",a:["When external hearing withdrew, inner musical hearing became infinitely refined — music was always inside","Deafness forced brain rewiring, creating new composing pathways"],correct:0},
+    {q:"The Ganzfeld effect: staring at uniform white causes hallucinations within minutes because...",a:["Brain INVENTS input when deprived — proving most of what we 'see' is brain-generated, not real","White surfaces reflect spiritual energy opening the third eye"],correct:0},
+    {q:"Ancient gurukuls (forest schools): students lived 12+ years away from cities. PRIMARY reason...",a:["Removing sensory distractions — controlled environment for Pratyahara, learning in nature's quiet","Cities had diseases, forest air was medicinal"],correct:0},
+    {q:"Default Mode Network activates when NOT focused externally — daydreaming, self-reflection, creativity. Pratyahara...",a:["Deliberately activates DMN by withdrawing external focus — accessing deepest creative functions on demand","Suppresses DMN to achieve pure emptiness"],correct:0},
+    {q:"A photographer sees compositions others miss. A chef tastes what others can't. This comes from...",a:["Selective Pratyahara — withdrawing from everything EXCEPT their craft's senses, which sharpen exponentially","Natural talent that cannot be learned"],correct:0},
+    {q:"'Samsara' (world) literally means...",a:["'Wandering endlessly' — senses pull consciousness from object to object forever. Pratyahara stops the wandering","'Beautiful garden' — the world is divine creation to enjoy"],correct:0},
+    {q:"Finnish 'Sisu' — inner resilience in extreme adversity — is closest to which Pratyahara aspect?",a:["Withdrawing from emotional reaction to pain — not numbing, but choosing not to be swept away","Fighting through pain by sheer willpower"],correct:0},
+    {q:"'Turn a blind eye' means deliberately ignoring something. In Pratyahara, this skill is...",a:["Essential — CHOOSING what you perceive is highest sensory mastery, selection not suppression","Spiritual cowardice — a true yogi sees everything without flinching"],correct:0},
+    {q:"Ancient Indian kings disguised themselves among commoners ('Chanakya's Mirror'). Purpose...",a:["Withdrawing from senses of power — removing crown to see reality undistorted by privilege","Gathering intelligence on potential rebels"],correct:0},
+  ],
+  106:[
+    {q:"Drona asked each prince 'What do you see?' Only Arjuna's answer proved he was the greatest archer...",a:["Only the bird's eye — entire universe shrank to a single point. Perfect Dharana","The bird's heart — penetrating beyond surface to life-force"],correct:0},
+    {q:"Flow state (Csikszentmihalyi, 1975) = Patanjali 2,500 years earlier. Both agree the key condition...",a:["Challenge must match skill — too easy=boredom, too hard=anxiety. Balance produces Dharana/Flow","Complete isolation from external stimuli"],correct:0},
+    {q:"Einstein: Relativity came from thought experiments, not harder thinking. In yogic terms, Einstein practiced...",a:["Dharana with visualization — holding a scenario so intensely that new truths emerge","Dhyana — letting mind wander until patterns emerge"],correct:0},
+    {q:"Multitasking reduces IQ by 15 points — more than marijuana (Stanford). This confirms...",a:["Dharana's teaching: a mind holding many things holds nothing. Scattered mind is weaker regardless of IQ","Modern technology is incompatible with human consciousness"],correct:0},
+    {q:"Chess grandmasters use the same brain regions as monks in deep Dharana. What lights up?",a:["Pattern recognition + long-term memory — experts RECOGNIZE instantly, not calculate more","Prefrontal cortex working 10x faster"],correct:0},
+    {q:"A laser and light bulb use same energy. Laser cuts steel. The difference...",a:["Coherence — all waves aligned. Dharana aligns ALL mental energy, creating 'laser mind'","Lasers use different light that doesn't exist in nature"],correct:0},
+    {q:"Human attention span 2023: 8.25 sec — less than a goldfish (9 sec). Yogis would say...",a:["Not longer attention but DEEPER — Dharana isn't duration, it's quality on a single point","Humanity is devolving to animal-level consciousness"],correct:0},
+    {q:"Mozart heard entire symphonies in his head 'in a single glance' — every instrument simultaneously. This is...",a:["Dharana so deep it becomes Dhyana — concentration collapsing time, making wholes appear as single experiences","Musical genius unrelated to meditation"],correct:0},
+    {q:"Trataka (candle gazing): stare until tears flow. Why tears?",a:["Tears cleanse eyes AND mind — not blinking trains the mental act of not wavering. Discomfort IS the teacher","Candle heat dries eyes, tears are protective"],correct:0},
+    {q:"A samurai's final test: master swings sword at neck, stopping millimeters away. Must NOT flinch. This tests...",a:["Absolute Dharana — concentration so complete that survival instinct is overridden. Mind controls body","Bravery and loyalty, proving readiness to die"],correct:0},
+    {q:"Cal Newport's 'Deep Work': distraction-free focus is the most valuable 21st century skill. He described...",a:["Dharana — a 2,500-year-old practice that is now a competitive advantage in the modern economy","A new framework beyond anything ancient wisdom offered"],correct:0},
+    {q:"A cat watching a mouse hole doesn't think about food, danger, or sleep. ENTIRE being on one point. This is...",a:["Natural Dharana — animals achieve instinctively what humans must train. Our thinking mind is an OBSTACLE to focus","Predatory instinct unrelated to meditation"],correct:0},
+    {q:"A child building blocks is more concentrated than most adult meditators. Why?",a:["Children haven't developed the 'inner critic' interrupting focus — they're in natural Dharana before society trains it out","Children have shorter neural pathways so signals travel faster"],correct:0},
+    {q:"'Where attention goes, energy flows.' The original Sanskrit from the Upanishads...",a:["'Yad bhavam tad bhavati' — you become what you focus on. Dharana shapes reality by directing consciousness","'Karma follows thought' — intentions create future lives"],correct:0},
+    {q:"Speed readers process 1,000+ words/min by ELIMINATING...",a:["Subvocalization — 'hearing' words internally. Withdrawing auditory sense accelerates visual. Pratyahara serving Dharana","Eye movement — training perfectly straight lines"],correct:0},
+    {q:"Michael Jordan's coach taught Zen meditation. Jordan described peak state as 'game slowing down.' This happens because...",a:["In deep Dharana, the focused mind processes faster, making external events appear slower — measurable neuroscience","Adrenaline speeds body while world stays normal"],correct:0},
+    {q:"Your subconscious processes 11 million bits/sec. Conscious mind handles 50 bits. Dharana is...",a:["Training the 50-bit mind to direct the 11-million-bit subconscious — tiny rider steering enormous elephant","Expanding conscious processing to match subconscious"],correct:0},
+    {q:"A surgeon's 12-hour operation: no hunger, no fatigue, no time awareness. This is...",a:["Spontaneous Dharana — high stakes naturally produce single-pointed focus. Practice = doing this at WILL","Adrenaline masking physical needs"],correct:0},
+    {q:"Why tip of the nose specifically for Dharana meditation?",a:["Always visible, never moves, focusing on it slows breathing — a built-in concentration tool you carry everywhere","The nose tip is prana's exit point, concentrating there traps life-force"],correct:0},
+    {q:"'If you chase two rabbits, you catch neither.' But Dharana's deeper teaching says...",a:["Don't chase the rabbit — become so still it comes to you. True focus is magnetic attraction, not pursuit","The rabbit is enlightenment and must be chased relentlessly"],correct:0},
+    {q:"Elon Musk's 'first principles thinking' — breaking to fundamental truths — is identical to...",a:["Dharana applied to analysis — focusing so deeply you penetrate past assumptions to core truth","A modern business technique unrelated to meditation"],correct:0},
+    {q:"Practicing one difficult passage 100 times > playing whole piece 10 times. Because...",a:["Dharana on difficulty creates myelin around specific pathways — focused repetition builds brain infrastructure","Passage becomes memorized regardless of focus quality"],correct:0},
+    {q:"Hubble sees galaxies 13 billion light-years away by pointing at one patch of sky for 11 DAYS. This IS...",a:["Technological Dharana — the universe reveals secrets only to those looking at one point long enough","An engineering achievement unrelated to philosophy"],correct:0},
+    {q:"Why do ALL religions use rosary/mala/tasbih beads for prayer?",a:["Giving restless hands a task withdraws that sense, freeing mind to focus — Dharana tool disguised as religious object","Beads help count prayers to ensure correct number"],correct:0},
+    {q:"A master calligrapher paints one stroke. The paper records truth about the mind because...",a:["Whether mind wavered even one millisecond — brush reveals every fluctuation. Perfect calligraphy = perfect Dharana","Emotional state — happy strokes differ from sad strokes"],correct:0},
+    {q:"Brain = 2% body weight but uses 20% energy. When Dharana is achieved, brain energy...",a:["DECREASES — focused minds use less energy than scattered. Mental noise is expensive. Clarity is efficient","Increases as more networks are recruited for focus"],correct:0},
+    {q:"'Pay attention' uses 'pay' because...",a:["Attention is LIMITED — you literally 'spend' it. Dharana = learning where to invest your most precious currency","From Latin 'pacare' (pacify) — giving attention calms mind"],correct:0},
+    {q:"A spider sits center of web. Any vibration anywhere is felt. This is deepest Dharana because...",a:["From ONE fixed point, you become aware of EVERYTHING — stillness at center creates sensitivity to periphery","Spider = soul trapped in web of Maya"],correct:0},
+    {q:"Japanese Ikebana (flower arranging): placing one flower for up to an hour. Meditation because...",a:["The flower IS the Dharana object — sustained contemplation trains concentration and aesthetic awareness simultaneously","Japanese culture values patience above all"],correct:0},
+    {q:"A magnifying glass focuses diffuse sunlight into fire. Remove focus = harmless light. This demonstrates...",a:["SAME mental energy everyone has becomes transformative when concentrated — Dharana doesn't add power, it focuses it","Solar energy contains hidden fire only appearing with glass"],correct:0},
+  ],
+  107:[
+    {q:"Ramana Maharshi at 16 asked 'Who am I?' until the self dissolved. What remained?",a:["Pure awareness without a person — he never identified with body or mind again. Deepest Dhyana","Vision of Shiva transmitting enlightenment through grace"],correct:0},
+    {q:"Neuroscientist Sam Harris: 'The self is an illusion — provably.' Brain scanning...",a:["Confirms — no single 'self' center. The feeling of being 'someone' is constructed fresh each moment","Disproves — default mode network IS a permanent self"],correct:0},
+    {q:"Zen koan: 'What was your face before your parents were born?' Designed to...",a:["Break the logical mind — when thinking exhausts on the impossible, pure awareness remains","Test scripture memorization and dedication to study"],correct:0},
+    {q:"Matthieu Ricard's gamma waves = highest ever recorded. The actual discovery...",a:["Happiness/compassion are SKILLS trainable through neuroplasticity — meditation rewires brain structure","A new neurotransmitter called 'dhyana-amine'"],correct:0},
+    {q:"'Yoga chitta vritti nirodha' — Sutra 1.2, perhaps the most important sentence in Indian philosophy...",a:["Yoga = stilling mind-fluctuations. When thought-waves settle, you see the lake bottom. THIS is Dhyana","Union of individual with cosmic soul — drop merging with ocean"],correct:0},
+    {q:"The word 'Zen' traces: Sanskrit → Chinese → Japanese...",a:["Dhyana → Chan → Zen — one concept across three civilizations over 1,500 years","Separate Japanese tradition merely influenced by Buddhism"],correct:0},
+    {q:"12 consecutive Dharana units (each ~one breath) without interruption becomes...",a:["One Dhyana — and 12 Dhyanas = one Samadhi. Not different practices but deepening stages","One complete session after which practitioner should rest"],correct:0},
+    {q:"Dharana vs Dhyana is like...",a:["Dripping water vs continuous stream — same substance but Dhyana flows without breaks","Student vs teacher — Dharana learns, Dhyana teaches"],correct:0},
+    {q:"Shiva is called Adi Yogi because...",a:["First to teach meditation to 7 sages (Saptarishis) at Kailash — origin of all yoga","Created universe through 1,000 years of unbroken meditation"],correct:0},
+    {q:"Brain waves in deep Dhyana shift from...",a:["Beta (active thinking) → alpha (calm) → theta (deep meditation) — measurable, reproducible","Active to completely inactive — brain shuts down"],correct:0},
+    {q:"Dhyana mudra: hands in lap, thumbs touching forming a circle. The circle represents...",a:["Completeness of consciousness — a closed energy circuit. Emptiness INSIDE the circle is the goal: shunyata","Full moon — ideal time for deepest meditation"],correct:0},
+    {q:"Rumi: 'Silence is the language of God. Everything else is a poor translation.' This is Dhyana because...",a:["Space BETWEEN thoughts is where truth lives — silence isn't absence, it's presence words cannot carry","Rumi was Sufi, separate from Hindu Dhyana"],correct:0},
+    {q:"Monks in deep meditation produce same brain chemicals as psychedelics — specifically...",a:["DMT and endogenous opioids — the brain has a built-in 'pharmacy' meditation activates without substances","Serotonin only — explaining peace but not visions"],correct:0},
+    {q:"Frankl: 'Between stimulus and response is a space. In that space is freedom.' He described...",a:["Exact Dhyana experience — finding the gap between thoughts where choice exists, instead of autopilot","Importance of counting to 10 before reacting"],correct:0},
+    {q:"Mandukya Upanishad: consciousness has 4 states — waking, dreaming, deep sleep, and...",a:["Turiya — the 'fourth' existing DURING the others. The witness aware of itself. Dhyana accesses Turiya","Death — final state where consciousness merges with Brahman"],correct:0},
+    {q:"Beginner's brain MRI: chaotic (city rush hour). Advanced meditator looks like...",a:["A symphony orchestra — regions active but perfectly synchronized in coherent harmony","A blank screen — minimal activity indicating stillness"],correct:0},
+    {q:"Dalai Lama asked 'What surprises you about humanity?' He said: 'Man sacrifices health for money, then money for health.' Reveals failure of...",a:["Dhyana — without meditation, humans live reactively, never pausing to question the cycle","Economic planning — better financial literacy would prevent this"],correct:0},
+    {q:"Tolle's 'Power of Now' (5M copies) core teaching = which Yoga Sutra?",a:["1.1 'Atha yoga anushasanam' — NOW begins yoga. Emphasis on NOW is the entire teaching","2.46 'Sthira sukham asanam' — comfort in present through posture"],correct:0},
+    {q:"Asked 'Are you God?' Buddha: 'No.' 'Angel?' 'No.' 'Saint?' 'No.' Then what? He answered...",a:["'I am awake.' Buddha = 'awakened one.' Dhyana doesn't make you special — it wakes you to what you ARE","'Nothing and everything simultaneously — transcending all categories'"],correct:0},
+    {q:"WHY do all traditions worldwide independently say 'Watch your breath'?",a:["Breath is the ONLY automatic process also controllable voluntarily — the only doorway between conscious and unconscious mind","Breathing produces the most noticeable sensation while sitting"],correct:0},
+    {q:"Zen student: 'What is meditation?' Master: 'When I eat, I eat. When I walk, I walk.' Student: 'Everyone does that.' Master replied...",a:["'No. When they eat, they think about walking. When they walk, they think about eating.' Full presence IS Dhyana","'I do it without thoughts, that's the difference'"],correct:0},
+    {q:"Yogis meditated in CREMATION GROUNDS. This disturbing choice was deliberate because...",a:["Confronting death dissolves ego's greatest fear — once you've sat with burning corpses, nothing disturbs meditation","Cremation grounds have special spiritual energy from departing souls"],correct:0},
+    {q:"Placebo effect: belief alone heals the body. Yogis say this demonstrates...",a:["Mind's power over matter — focused intention during Dhyana can restructure physical reality","Brain's pharmacy releasing chemicals from expectation"],correct:0},
+    {q:"Astronaut Edgar Mitchell experienced Samadhi-like consciousness from space. He founded Institute of Noetic Sciences to study...",a:["Whether consciousness extends beyond the brain — meditation accesses the same 'cosmic consciousness'","Whether zero gravity affects spiritual experiences"],correct:0},
+    {q:"A candle in a WINDLESS room = classic Dhyana image. Why windless?",a:["Flame = consciousness, naturally pointing upward (liberation) when not disturbed by 'winds' of thought","Candle = Agni, wind = Vayu — gods must not compete"],correct:0},
+    {q:"Heart Sutra: 'Form is emptiness, emptiness is form.' Understood only through...",a:["Direct Dhyana experience — intellect fails here. You must SEE that material and void are the same","Advanced Buddhist philosophical study"],correct:0},
+    {q:"8 weeks meditation physically SHRINKS amygdala (fear) while GROWING prefrontal cortex (wisdom). This proves...",a:["Dhyana is neurosurgery performed by mind on itself — you literally reshape brain architecture through practice","Meditation is medical treatment doctors should prescribe"],correct:0},
+    {q:"'Dhyana' (Sanskrit) and 'Dianoia' (Greek for thought) share the same Indo-European root. This suggests...",a:["Greeks and Indians recognized thinking and meditating are SAME faculty at different depths — thought refined = meditation","Greek philosophy was directly influenced by Indian yogis on Silk Road"],correct:0},
+    {q:"Thich Nhat Hanh: 'Feelings come and go like clouds. Conscious breathing is my anchor.' This is...",a:["Dhyana in everyday life — no cave needed. Breath is always available as anchor to present awareness","Simplified meditation for beginners who can't sit long"],correct:0},
+    {q:"The most profound Dhyana insight, according to virtually every tradition, is...",a:["You are not your thoughts — a silent witness BEHIND all thinking has been there since birth and remains after death","The universe is illusion, only Brahman is real"],correct:0},
+  ],
+};
 
 /* ═══ AMBIENT MUSIC ENGINE ═══ */
 function useAmbient(){
@@ -274,9 +523,31 @@ const AudioCache = {
   count() { return Object.keys(this.cache).length; },
 };
 
+/* ═══ STATIC VOICE FILES — zero API cost ═══ */
+const STATIC_VOICES = {
+  yama: { en: '/yama-en.mp3', hi: '/yama-hi.mp3' },
+  warrior: { en: '/char-warrior-en.mp3', hi: '/char-warrior-hi.mp3' },
+  sage: { en: '/char-sage-en.mp3', hi: '/char-sage-hi.mp3' },
+  healer: { en: '/char-healer-en.mp3', hi: '/char-healer-hi.mp3' },
+  dancer: { en: '/char-dancer-en.mp3', hi: '/char-dancer-hi.mp3' },
+  merchant: { en: '/char-merchant-en.mp3', hi: '/char-merchant-hi.mp3' },
+  ascetic: { en: '/char-ascetic-en.mp3', hi: '/char-ascetic-hi.mp3' },
+};
+
 const VoiceEngine = {
   audio: null,
   speaking: false,
+
+  // Play a static MP3 file — instant, zero API cost
+  playStatic(url) {
+    this.stop();
+    const audio = new Audio(url);
+    audio.volume = 1.0;
+    this.audio = audio;
+    this.speaking = true;
+    audio.onended = () => { this.speaking = false; };
+    audio.play().catch(()=>{});
+  },
 
   _pickBestVoice(voices, lang) {
     if (lang === 'hi') {
@@ -345,8 +616,296 @@ const VoiceEngine = {
 
   stop() {
     if (this.audio) { try { this.audio.pause(); this.audio.currentTime = 0; } catch (e) {} this.audio = null; }
+    if (this._yamaCtx) { try { this._yamaCtx.close(); } catch(e){} this._yamaCtx = null; }
+    if (this._yamaSource) { try { this._yamaSource.stop(); } catch(e){} this._yamaSource = null; }
+    if (this._yamaSource2) { try { this._yamaSource2.stop(); } catch(e){} this._yamaSource2 = null; }
     try { window.speechSynthesis.cancel(); } catch (e) {}
     this.speaking = false;
+  },
+
+  // ═══ YAMA VOICE — Full audio processing for Thanos-like sound ═══
+  async speakYama(text, lang) {
+    this.stop();
+    if (!text) return;
+
+    // Use static MP3 file — zero API cost
+    const staticUrl = STATIC_VOICES.yama[lang==='hi'?'hi':'en'];
+
+    try {
+      const resp = await fetch(staticUrl);
+      const blob = await resp.blob();
+      const arrayBuf = await blob.arrayBuffer();
+
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if (ctx.state === 'suspended') await ctx.resume();
+      this._yamaCtx = ctx;
+
+      const buffer = await ctx.decodeAudioData(arrayBuf);
+
+      // ═══ LAYER 1: Main voice (pitch 0.82) ═══
+      const source1 = ctx.createBufferSource();
+      source1.buffer = buffer;
+      source1.playbackRate.value = 0.82;
+      this._yamaSource = source1;
+
+      // ═══ LAYER 2: Deep shadow (pitch 0.65, quiet) ═══
+      const source2 = ctx.createBufferSource();
+      source2.buffer = buffer;
+      source2.playbackRate.value = 0.55;
+      this._yamaSource2 = source2;
+
+      const layer2Gain = ctx.createGain();
+      layer2Gain.gain.value = 0.12;
+
+      // ═══ SUB-BASS BOOST ═══
+      const bassBoost = ctx.createBiquadFilter();
+      bassBoost.type = 'lowshelf';
+      bassBoost.frequency.value = 120;
+      bassBoost.gain.value = 8;
+
+      // ═══ HIGH CUT ═══
+      const highCut = ctx.createBiquadFilter();
+      highCut.type = 'lowpass';
+      highCut.frequency.value = 5000;
+
+      // ═══ MID CLARITY ═══
+      const midBoost = ctx.createBiquadFilter();
+      midBoost.type = 'peaking';
+      midBoost.frequency.value = 1500;
+      midBoost.gain.value = 3;
+      midBoost.Q.value = 1;
+
+      // ═══ DISTORTION ═══
+      const distortion = ctx.createWaveShaper();
+      const curve = new Float32Array(256);
+      for (let i = 0; i < 256; i++) {
+        const x = (i * 2) / 256 - 1;
+        curve[i] = (Math.PI + 10) * x / (Math.PI + 10 * Math.abs(x));
+      }
+      distortion.curve = curve;
+      distortion.oversample = '4x';
+
+      // ═══ DELAY ═══
+      const delay = ctx.createDelay(1.0);
+      delay.delayTime.value = 0.3;
+      const delayFb = ctx.createGain();
+      delayFb.gain.value = 0.15;
+      const delayMix = ctx.createGain();
+      delayMix.gain.value = 0.25;
+      delay.connect(delayFb);
+      delayFb.connect(delay);
+      delay.connect(delayMix);
+
+      // ═══ REVERB ═══
+      const rvLen = 2.5 * ctx.sampleRate;
+      const rvBuf = ctx.createBuffer(2, rvLen, ctx.sampleRate);
+      for (let ch = 0; ch < 2; ch++) {
+        const d = rvBuf.getChannelData(ch);
+        for (let i = 0; i < rvLen; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / rvLen, 2.5);
+      }
+      const conv = ctx.createConvolver();
+      conv.buffer = rvBuf;
+      const rvMix = ctx.createGain();
+      rvMix.gain.value = 0.25;
+
+      // ═══ COMPRESSOR ═══
+      const comp = ctx.createDynamicsCompressor();
+      comp.threshold.value = -20;
+      comp.ratio.value = 4;
+      comp.attack.value = 0.005;
+      comp.release.value = 0.1;
+
+      // ═══ MASTER ═══
+      const master = ctx.createGain();
+      master.gain.value = 1.3;
+
+      // ═══ ROUTING ═══
+      source1.connect(bassBoost);
+      source2.connect(layer2Gain);
+      layer2Gain.connect(bassBoost);
+      bassBoost.connect(highCut);
+      highCut.connect(midBoost);
+      midBoost.connect(distortion);
+      distortion.connect(comp);
+      comp.connect(master);
+      comp.connect(delay);
+      comp.connect(conv);
+      delayMix.connect(master);
+      conv.connect(rvMix);
+      rvMix.connect(master);
+      master.connect(ctx.destination);
+
+      this.speaking = true;
+      source1.onended = () => { this.speaking = false; try{ctx.close()}catch(e){} this._yamaCtx=null; };
+      source1.start(0);
+      source2.start(0);
+      return; // Success!
+    } catch(e) {
+      console.warn('Yama Web Audio failed:', e.message);
+    }
+
+    // Fallback: play static file without processing
+    try {
+      this.playStatic(staticUrl);
+    } catch(e) {
+      this._browserSpeak(text, lang);
+    }
+  },
+
+  // ═══ NARRATOR VOICE — Vedic temple processing for story onboarding ═══
+  async speakNarrator(text, lang) {
+    this.stop();
+    if (!text) return;
+
+    const isLocal = ['localhost','127.0.0.1',''].includes(window.location.hostname);
+    let audioUrl = null;
+
+    if (!isLocal) {
+      audioUrl = AudioCache.get(text);
+      if (!audioUrl) {
+        try { audioUrl = await AudioCache.fetchTTS(text, lang); } catch(e){}
+      }
+    }
+    if (!audioUrl) { this._browserSpeak(text, lang); return; }
+
+    try {
+      const resp = await fetch(audioUrl);
+      const blob = await resp.blob();
+      const arrayBuf = await blob.arrayBuffer();
+
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if (ctx.state === 'suspended') await ctx.resume();
+      this._yamaCtx = ctx; // reuse cleanup ref
+
+      const buffer = await ctx.decodeAudioData(arrayBuf);
+
+      // ═══ NARRATOR SOURCE (pitch 0.88 — slow gravitas) ═══
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      source.playbackRate.value = 0.92;
+      this._yamaSource = source;
+
+      // ═══ BASS WARMTH (120Hz, +4dB) ═══
+      const bass = ctx.createBiquadFilter();
+      bass.type = 'lowshelf';
+      bass.frequency.value = 120;
+      bass.gain.value = 4;
+
+      // ═══ MID CLARITY (2kHz, +3dB) ═══
+      const mid = ctx.createBiquadFilter();
+      mid.type = 'peaking';
+      mid.frequency.value = 2000;
+      mid.gain.value = 3;
+      mid.Q.value = 1;
+
+      // ═══ HIGH CUT (gentle warmth) ═══
+      const highCut = ctx.createBiquadFilter();
+      highCut.type = 'lowpass';
+      highCut.frequency.value = 7000;
+
+      // ═══ DELAY (250ms, 15% feedback — words linger) ═══
+      const delay = ctx.createDelay(1.0);
+      delay.delayTime.value = 0.25;
+      const delayFb = ctx.createGain();
+      delayFb.gain.value = 0.15;
+      const delayMix = ctx.createGain();
+      delayMix.gain.value = 0.18;
+      delay.connect(delayFb);
+      delayFb.connect(delay);
+      delay.connect(delayMix);
+
+      // ═══ TEMPLE REVERB (hall, 2s decay, 20% mix) ═══
+      const rvLen = 2.0 * ctx.sampleRate;
+      const rvBuf = ctx.createBuffer(2, rvLen, ctx.sampleRate);
+      for (let ch = 0; ch < 2; ch++) {
+        const d = rvBuf.getChannelData(ch);
+        for (let i = 0; i < rvLen; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / rvLen, 2.0);
+      }
+      const conv = ctx.createConvolver();
+      conv.buffer = rvBuf;
+      const rvMix = ctx.createGain();
+      rvMix.gain.value = 0.20;
+
+      // ═══ OM DRONE (tanpura-like background hum) ═══
+      // Layer 3 oscillators: fundamental + fifth + octave for rich drone
+      const droneGain = ctx.createGain();
+      droneGain.gain.value = 0.04; // Very subtle — felt not heard
+
+      const droneBass = ctx.createBiquadFilter();
+      droneBass.type = 'lowpass';
+      droneBass.frequency.value = 200; // Keep only low frequencies
+
+      // Sa (fundamental) — ~130 Hz (C3)
+      const osc1 = ctx.createOscillator();
+      osc1.type = 'sine';
+      osc1.frequency.value = 130.81;
+
+      // Pa (perfect fifth) — ~196 Hz (G3)
+      const osc2 = ctx.createOscillator();
+      osc2.type = 'sine';
+      osc2.frequency.value = 196.00;
+      const osc2Gain = ctx.createGain();
+      osc2Gain.gain.value = 0.6;
+
+      // Low Sa (octave below) — ~65 Hz
+      const osc3 = ctx.createOscillator();
+      osc3.type = 'sine';
+      osc3.frequency.value = 65.41;
+      const osc3Gain = ctx.createGain();
+      osc3Gain.gain.value = 0.8;
+
+      osc1.connect(droneBass);
+      osc2.connect(osc2Gain);
+      osc2Gain.connect(droneBass);
+      osc3.connect(osc3Gain);
+      osc3Gain.connect(droneBass);
+      droneBass.connect(droneGain);
+
+      // ═══ MASTER ═══
+      const master = ctx.createGain();
+      master.gain.value = 1.1;
+
+      // ═══ ROUTING ═══
+      source.connect(bass);
+      bass.connect(mid);
+      mid.connect(highCut);
+      highCut.connect(master);
+      highCut.connect(delay);
+      highCut.connect(conv);
+      delayMix.connect(master);
+      conv.connect(rvMix);
+      rvMix.connect(master);
+      droneGain.connect(master);
+      master.connect(ctx.destination);
+
+      // ═══ PLAY ═══
+      this.speaking = true;
+      source.onended = () => {
+        this.speaking = false;
+        // Fade out drone gracefully
+        droneGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.5);
+        setTimeout(()=>{try{osc1.stop();osc2.stop();osc3.stop();ctx.close()}catch(e){}this._yamaCtx=null},2000);
+      };
+      source.start(0);
+      osc1.start(0);
+      osc2.start(0);
+      osc3.start(0);
+      return;
+    } catch(e) {
+      console.warn('Narrator processing failed:', e.message);
+    }
+
+    // Fallback: play without effects
+    try {
+      const audio = new Audio(audioUrl);
+      audio.volume = 1.0;
+      this.audio = audio;
+      this.speaking = true;
+      audio.onended = () => { this.speaking = false; };
+      await audio.play().catch(()=>{});
+    } catch(e) {
+      this._browserSpeak(text, lang);
+    }
   }
 };
 
@@ -382,22 +941,75 @@ function useSound(){
     else if(type==="dilemma"){o.type="sine";o.frequency.setValueAtTime(120,t);o.frequency.exponentialRampToValueAtTime(80,t+.8);g.gain.setValueAtTime(.1,t);g.gain.exponentialRampToValueAtTime(.001,t+1);o.start(t);o.stop(t+1)}
     else if(type==="victory"){o.type="sine";o.frequency.setValueAtTime(523,t);g.gain.setValueAtTime(.08,t);g.gain.exponentialRampToValueAtTime(.001,t+.8);o.start(t);o.stop(t+.8)}
     else if(type==="move"){o.type="sine";o.frequency.setValueAtTime(350,t);g.gain.setValueAtTime(.03,t);g.gain.exponentialRampToValueAtTime(.001,t+.08);o.start(t);o.stop(t+.08)}
+    else if(type==="yamaLaugh"){
+      // Deep menacing laugh — descending notes
+      o.type="sawtooth";g.gain.setValueAtTime(.06,t);
+      o.frequency.setValueAtTime(180,t);o.frequency.setValueAtTime(160,t+.15);o.frequency.setValueAtTime(140,t+.3);o.frequency.setValueAtTime(120,t+.45);o.frequency.setValueAtTime(100,t+.6);
+      g.gain.exponentialRampToValueAtTime(.001,t+.8);o.start(t);o.stop(t+.8);
+      // Second laugh oscillator
+      const o2=c.createOscillator(),g2=c.createGain();o2.connect(g2);g2.connect(c.destination);
+      o2.type="triangle";g2.gain.setValueAtTime(.04,t+.1);
+      o2.frequency.setValueAtTime(90,t+.1);o2.frequency.setValueAtTime(75,t+.3);o2.frequency.setValueAtTime(60,t+.5);
+      g2.gain.exponentialRampToValueAtTime(.001,t+.7);o2.start(t+.1);o2.stop(t+.7);
+    }
+    else if(type==="chime"){
+      // Soft angelic chime — ascending harmonics
+      o.type="sine";g.gain.setValueAtTime(.05,t);
+      o.frequency.setValueAtTime(523,t);o.frequency.setValueAtTime(659,t+.15);o.frequency.setValueAtTime(784,t+.3);
+      g.gain.exponentialRampToValueAtTime(.001,t+.6);o.start(t);o.stop(t+.6);
+      const o2=c.createOscillator(),g2=c.createGain();o2.connect(g2);g2.connect(c.destination);
+      o2.type="sine";g2.gain.setValueAtTime(.03,t+.05);
+      o2.frequency.setValueAtTime(1047,t+.05);o2.frequency.setValueAtTime(1319,t+.2);
+      g2.gain.exponentialRampToValueAtTime(.001,t+.5);o2.start(t+.05);o2.stop(t+.5);
+    }
     }catch(e){}
   },[gc]);
 }
 
 function Naga({x1,y1,x2,y2,id}){
-  const dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy),nx=-dy/len,amp=len*.14;
-  let body=`M ${x1} ${y1}`;for(let i=1;i<=7;i++){const t=i/7,s=i%2===0?1:-1;body+=` Q ${x1+dx*((i-.5)/7)+nx*amp*s*(1-t*.3)} ${y1+dy*((i-.5)/7)+(dx/len)*amp*s*(1-t*.3)} ${x1+dx*t} ${y1+dy*t}`}
-  const hx=x1,hy=y1,hue=["#6a2010","#502815","#3a1a0a"][id%3];
-  return(<g>
-    <path d={body} fill="none" stroke="rgba(0,0,0,.3)" strokeWidth="4" strokeLinecap="round"/><path d={body} fill="none" stroke={hue} strokeWidth="3" strokeLinecap="round" opacity=".7"/><path d={body} fill="none" stroke="rgba(255,180,80,.12)" strokeWidth="2" strokeDasharray="1.2,2" strokeLinecap="round"/>
-    <path d={`M ${hx-4.5} ${hy+1} C ${hx-5} ${hy-2} ${hx-3} ${hy-4.5} ${hx} ${hy-5} C ${hx+3} ${hy-4.5} ${hx+5} ${hy-2} ${hx+4.5} ${hy+1} C ${hx+3} ${hy+2} ${hx+1.5} ${hy+2.5} ${hx} ${hy+2.5} C ${hx-1.5} ${hy+2.5} ${hx-3} ${hy+2} ${hx-4.5} ${hy+1} Z`} fill={hue} stroke="rgba(200,100,40,.4)" strokeWidth=".3" opacity=".85"/>
-    <ellipse cx={hx} cy={hy-2.8} rx=".7" ry=".6" fill="rgba(255,60,20,.5)"><animate attributeName="fill-opacity" values=".5;.8;.5" dur="2s" repeatCount="indefinite"/></ellipse>
-    <ellipse cx={hx-1.2} cy={hy-.4} rx=".7" ry=".55" fill="#0a0000" stroke="rgba(255,120,30,.8)" strokeWidth=".25"/><ellipse cx={hx+1.2} cy={hy-.4} rx=".7" ry=".55" fill="#0a0000" stroke="rgba(255,120,30,.8)" strokeWidth=".25"/>
-    <ellipse cx={hx-1.2} cy={hy-.4} rx=".12" ry=".5" fill="rgba(255,160,30,.9)"/><ellipse cx={hx+1.2} cy={hy-.4} rx=".12" ry=".5" fill="rgba(255,160,30,.9)"/>
-    <path d={`M ${hx-.7} ${hy+1} L ${hx-1} ${hy+3.5} L ${hx-.3} ${hy+1.5} Z`} fill="rgba(255,250,230,.8)"/><path d={`M ${hx+.7} ${hy+1} L ${hx+1} ${hy+3.5} L ${hx+.3} ${hy+1.5} Z`} fill="rgba(255,250,230,.8)"/>
-    <circle cx={x2} cy={y2} r=".9" fill="rgba(80,30,10,.25)"/>
+  const dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy),nx=-dy/len,amp=len*.16;
+  const hue=["#4a3020","#3a2818","#503828","#3a2015","#453020"][id%5];
+  const glow=["rgba(180,60,30,.12)","rgba(160,50,20,.1)","rgba(140,40,10,.12)"][id%3];
+  // Sinuous body
+  let body=`M ${x1} ${y1}`;
+  for(let i=1;i<=8;i++){const t=i/8,s=i%2===0?1:-1;const taper=1-t*.4;
+    body+=` Q ${x1+dx*((i-.5)/8)+nx*amp*s*taper} ${y1+dy*((i-.5)/8)+(dx/len)*amp*s*taper} ${x1+dx*t} ${y1+dy*t}`}
+  const hx=x1,hy=y1;
+  // Hood spread
+  const hoodL=`M ${hx-2} ${hy} Q ${hx-4} ${hy-3} ${hx-3.5} ${hy-5} Q ${hx-2} ${hy-6.5} ${hx} ${hy-6}`;
+  const hoodR=`M ${hx+2} ${hy} Q ${hx+4} ${hy-3} ${hx+3.5} ${hy-5} Q ${hx+2} ${hy-6.5} ${hx} ${hy-6}`;
+  return(<g opacity=".5">
+    {/* Body glow */}
+    <path d={body} fill="none" stroke={glow} strokeWidth="5" strokeLinecap="round" opacity=".4"/>
+    {/* Body shadow */}
+    <path d={body} fill="none" stroke="rgba(0,0,0,.5)" strokeWidth="4.5" strokeLinecap="round"/>
+    {/* Body main */}
+    <path d={body} fill="none" stroke={hue} strokeWidth="3.5" strokeLinecap="round"/>
+    {/* Scale pattern */}
+    <path d={body} fill="none" stroke="rgba(255,200,100,.08)" strokeWidth="2.5" strokeDasharray="1,2.5" strokeLinecap="round"/>
+    {/* Belly highlight */}
+    <path d={body} fill="none" stroke="rgba(255,220,150,.1)" strokeWidth="1.5" strokeLinecap="round"/>
+    {/* Hood */}
+    <path d={hoodL} fill={hue} stroke="rgba(200,80,30,.6)" strokeWidth=".4" opacity=".85"/>
+    <path d={hoodR} fill={hue} stroke="rgba(200,80,30,.6)" strokeWidth=".4" opacity=".85"/>
+    {/* Hood pattern (V shape) */}
+    <path d={`M ${hx-2} ${hy-4} L ${hx} ${hy-2} L ${hx+2} ${hy-4}`} fill="none" stroke="rgba(255,200,80,.25)" strokeWidth=".4"/>
+    {/* Head */}
+    <ellipse cx={hx} cy={hy-1} rx="1.8" ry="1.5" fill={hue} stroke="rgba(200,100,40,.5)" strokeWidth=".3"/>
+    {/* Eyes — slit pupils */}
+    <ellipse cx={hx-.7} cy={hy-1.3} rx=".6" ry=".5" fill="#0a0000" stroke="rgba(255,120,30,.8)" strokeWidth=".2"/>
+    <ellipse cx={hx+.7} cy={hy-1.3} rx=".6" ry=".5" fill="#0a0000" stroke="rgba(255,120,30,.8)" strokeWidth=".2"/>
+    <ellipse cx={hx-.7} cy={hy-1.3} rx=".1" ry=".45" fill="rgba(255,180,30,.9)"/>
+    <ellipse cx={hx+.7} cy={hy-1.3} rx=".1" ry=".45" fill="rgba(255,180,30,.9)"/>
+    {/* Eye glow */}
+    <circle cx={hx-.7} cy={hy-1.3} r=".8" fill="rgba(255,60,20,.1)"><animate attributeName="r" values=".6;1;.6" dur="2s" repeatCount="indefinite"/></circle>
+    <circle cx={hx+.7} cy={hy-1.3} r=".8" fill="rgba(255,60,20,.1)"><animate attributeName="r" values=".6;1;.6" dur="2s" repeatCount="indefinite"/></circle>
+    {/* Forked tongue */}
+    <path d={`M ${hx} ${hy+.3} L ${hx} ${hy+1.8} L ${hx-.4} ${hy+2.5} M ${hx} ${hy+1.8} L ${hx+.4} ${hy+2.5}`} fill="none" stroke="#ff6060" strokeWidth=".25" strokeLinecap="round">
+      <animate attributeName="opacity" values="0;1;1;0" dur="3s" repeatCount="indefinite"/>
+    </path>
+    {/* Tail tip */}
+    <circle cx={x2} cy={y2} r="1" fill={hue} opacity=".4"/>
   </g>);
 }
 function Ldr({x1,y1,x2,y2}){
@@ -419,6 +1031,7 @@ const CSS=`
 @keyframes dharmaIn{0%{opacity:0;transform:scale(.3)}60%{transform:scale(1.05)}100%{opacity:1;transform:scale(1)}}
 @keyframes turnFlash{0%{opacity:0;transform:scale(.5)}20%{opacity:1;transform:scale(1.1)}80%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.8)}}
 @keyframes activeGlow{0%{box-shadow:0 0 8px var(--pc),0 0 16px var(--pc)}50%{box-shadow:0 0 16px var(--pc),0 0 32px var(--pc),0 0 48px var(--pc)}100%{box-shadow:0 0 8px var(--pc),0 0 16px var(--pc)}}
+@keyframes sacredGlow{0%,100%{box-shadow:0 0 4px rgba(240,200,80,.05)}50%{box-shadow:0 0 12px rgba(240,200,80,.12),0 0 24px rgba(240,200,80,.06)}}
 @keyframes yamaBreath{0%{text-shadow:0 0 20px #a04040,0 0 40px #a04040}50%{text-shadow:0 0 40px #e04040,0 0 80px #a04040,0 0 120px #60202060}100%{text-shadow:0 0 20px #a04040,0 0 40px #a04040}}
 @keyframes yamaReveal{0%{opacity:0;transform:scale(2);filter:blur(20px)}100%{opacity:1;transform:scale(1);filter:blur(0)}}
 @keyframes yamaTextReveal{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
@@ -458,6 +1071,7 @@ export default function MokshaPatam(){
   const[muted,setMuted]=useState(false);
   const[showInfo,setShowInfo]=useState(false);
   const[showGuide,setShowGuide]=useState(false);
+  const[showRiddles,setShowRiddles]=useState(false);
   const[chosenLang,setChosenLang]=useState("en");
   const[preloading,setPreloading]=useState(false);
   const[preloadPct,setPreloadPct]=useState(0);
@@ -507,41 +1121,17 @@ export default function MokshaPatam(){
   useEffect(()=>{try{window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices()}catch(e){}},[]);
   useEffect(()=>{const iv=setInterval(()=>{setShF(false);setTimeout(()=>{setShI(i=>(i+1)%SHLOKAS.length);setShF(true)},700)},6e3);return()=>clearInterval(iv)},[]);
 
-  // Preload Yama + character voices when entering pickcount
-  useEffect(()=>{
-    if(screen!=="pickcount"&&screen!=="yama")return;
-    if(gameVoicesReady||gameVoicesLoading)return;
-    const isLocal=['localhost','127.0.0.1',''].includes(window.location.hostname);
-    if(isLocal)return;
-    setGameVoicesLoading(true);setGameVoicesPct(0);
-    const{promise,progress}=AudioCache.preloadGameVoices(chosenLang);
-    const iv=setInterval(()=>setGameVoicesPct(progress()),400);
-    promise.then(()=>{clearInterval(iv);setGameVoicesPct(100);setGameVoicesReady(true);setGameVoicesLoading(false)})
-      .catch(()=>{clearInterval(iv);setGameVoicesLoading(false)});
-    return()=>clearInterval(iv);
-  },[screen,gameVoicesReady,gameVoicesLoading,chosenLang]);
-
-  // Yama intro screen — speak then transition to phase 1
+  // Yama intro screen — speak with full audio processing then transition
   useEffect(()=>{
     if(screen!=="yama")return;
     setYamaPhase(0);
-    const yamaEn='So, you dare to challenge me? I am Yama. The God of Death. I ride the great buffalo through the realm of the dead. Every soul that walks this board, eventually, comes to me. You think you can outwit Death? Play your little game, mortal. I will be watching every single move. And when your karma falters, I will be there. Now tell me, little soul. Who are you?';
-    const yamaHi='तो, तुम मुझसे खेलना चाहते हो? मैं यमराज हूँ। मृत्यु का देवता। हर आत्मा जो इस पट पर चलती है, अंत में मेरे पास आती है। तुम्हें लगता है तुम मृत्यु को हरा सकते हो? खेलो अपना छोटा सा खेल। मैं देख रहा हूँ। हर एक कदम। अब बताओ, छोटी सी आत्मा। तुम कौन हो?';
+    const yamaEn='So, you dare to challenge me? I am Yama. The God of Death. I ride the great buffalo through the realm of the dead. Every soul that walks this board eventually comes to me. You think you can outwit Death? I have watched a million souls fall. Brave warriors. Wise sages. They all fell. And I devoured their karma. Play your little game, mortal. I will be watching every single move. And when your karma falters, I will be there. Now tell me, little soul. Who are you?';
+    const yamaHi='तो, तुम मुझसे खेलना चाहते हो? मैं यमराज हूँ। मृत्यु का देवता। मैं महान भैंसे पर सवार होकर मृतकों के लोक से गुज़रता हूँ। हर आत्मा जो इस पट पर चलती है, अंत में मेरे पास आती है। मैंने लाखों आत्माओं को गिरते देखा है। वीर योद्धा। ज्ञानी ऋषि। सब गिरे। और मैंने उनका कर्म निगल लिया। खेलो अपना छोटा सा खेल, नश्वर प्राणी। मैं देख रहा हूँ। हर एक कदम। अब बताओ, छोटी सी आत्मा। तुम कौन हो?';
     const yamaText=chosenLang==='hi'?yamaHi:yamaEn;
     if(!muted){
-      const isLocal=['localhost','127.0.0.1',''].includes(window.location.hostname);
-      setTimeout(()=>{
-        if(!isLocal){
-          // Try cached onyx voice first, fetch with Thanos instructions if not cached
-          const yamaInstruct='Speak like Thanos — impossibly deep, heavy, rumbling bass. Extremely slow. Each word lands like a boulder. Long pauses. Cold, inevitable, cosmic authority. No emotion — just a force of nature.';
-          AudioCache.fetchTTS(yamaText,chosenLang,'onyx',yamaInstruct).then(url=>{
-            if(url){VoiceEngine.stop();const a=new Audio(url);a.volume=1.0;VoiceEngine.audio=a;VoiceEngine.speaking=true;a.onended=()=>{VoiceEngine.speaking=false};a.play().catch(()=>{})}
-            else VoiceEngine.speak(yamaText,chosenLang);
-          });
-        }else{VoiceEngine.speak(yamaText,chosenLang)}
-      },1500);
+      setTimeout(()=>VoiceEngine.speakYama(yamaText,chosenLang),1500);
     }
-    const timer=setTimeout(()=>setYamaPhase(1),muted?4000:25000);
+    const timer=setTimeout(()=>setYamaPhase(1),muted?4000:28000);
     return()=>{clearTimeout(timer);VoiceEngine.stop()};
   },[screen,muted,chosenLang]);
 
@@ -550,7 +1140,7 @@ export default function MokshaPatam(){
     if(screen==="story"&&!muted){
       VoiceEngine.stop();
       // Small delay so browser is ready
-      setTimeout(()=>{if(!muted)VoiceEngine.speak(STORY_PAGES[storyPage][chosenLang],chosenLang)},300);
+      setTimeout(()=>{if(!muted)VoiceEngine.speakNarrator(STORY_PAGES[storyPage][chosenLang],chosenLang)},300);
     }
     return()=>VoiceEngine.stop();
   },[screen,storyPage,muted]);
@@ -581,7 +1171,7 @@ export default function MokshaPatam(){
     if(np.length>=nP)setTimeout(()=>startGame(np),100);
   };
 
-  const nearest=(positions,ci,count)=>{let m=Infinity,idx=-1;for(let i=0;i<count;i++){if(i!==ci){const d=Math.abs(positions[i]-positions[ci]);if(d>0&&d<m){m=d;idx=i}}}return idx};
+  const nearest=(positions,ci,count)=>{let m=Infinity,idx=-1;for(let i=0;i<count;i++){if(i!==ci&&positions[i]<101){const d=Math.abs(positions[i]-positions[ci]);if(d>0&&d<m){m=d;idx=i}}}return idx};
 
   const doRoll=useCallback(()=>{
     if(dil||win||busy||players.length===0)return;
@@ -597,39 +1187,56 @@ export default function MokshaPatam(){
     const oldP=pos[cur];let newP=oldP+tot;
     const extras=[];const nPunya=[...punya];const nPapa=[...papa];const nShield=[...shieldA];const nPos=[...pos];const nSkip=[...skipA];
     let grahaStory="";
-    if(g.fx==="sun"){tot+=2;newP=oldP+tot;extras.push("+2 extra steps");
+    const onSacredPath=oldP>=101;
+    if(onSacredPath){
+      grahaStory=`${pName}, the Navagraha have no power on the Sacred Path. Only your dharma matters here.`;
+      setGv(null); // Don't show graha die result
+    }
+    if(!onSacredPath&&g.fx==="sun"){tot+=2;newP=oldP+tot;extras.push("+2 extra steps");
       grahaStory=`${pName}, you rolled Surya, the Sun! The king of planets blazes your path. You get 2 EXTRA STEPS — move ${tot} squares instead of ${r}.`}
-    if(g.fx==="moon"){nPunya[cur]+=1;extras.push("+1 Punya");
+    if(!onSacredPath&&g.fx==="moon"){nPunya[cur]+=1;extras.push("+1 Punya");
       grahaStory=`${pName}, you rolled Chandra, the Moon! Lunar grace purifies your soul. You receive +1 PUNYA. Your karma grows lighter.`}
-    if(g.fx==="jupiter"){for(let i=0;i<nP;i++)nPunya[i]+=1;extras.push("ALL +1 Punya");
-      grahaStory=`${pName}, you rolled Brihaspati, Jupiter! The divine guru blesses the ENTIRE BOARD. Every seeker receives +1 PUNYA — even your rivals benefit from wisdom.`}
-    if(g.fx==="venus"){nShield[cur]=true;extras.push("Shield granted");
+    if(!onSacredPath&&g.fx==="jupiter"){for(let i=0;i<nP;i++){if(nPos[i]<101)nPunya[i]+=1};extras.push("ALL +1 Punya (below sacred path)");
+      grahaStory=`${pName}, you rolled Brihaspati, Jupiter! The divine guru blesses seekers on the board. +1 PUNYA for all below the sacred path.`}
+    if(!onSacredPath&&g.fx==="venus"){nShield[cur]=true;extras.push("Shield granted");
       grahaStory=`${pName}, you rolled Shukra, Venus! The guru of Asuras grants you a CELESTIAL SHIELD. The next serpent that bites you will find its venom neutralized. This shield works only ONCE.`}
-    if(g.fx==="mars"){const ni=nearest(pos,cur,nP);if(ni>=0){nPos[ni]=Math.max(1,nPos[ni]-3);nPapa[cur]+=1;
+    if(!onSacredPath&&g.fx==="mars"){const ni=nearest(pos,cur,nP);if(ni>=0&&nPos[ni]<101){nPos[ni]=Math.max(1,nPos[ni]-3);nPapa[cur]+=1;
       extras.push(`${players[ni]?.name} -3`);
       grahaStory=`${pName}, you rolled Mangal, Mars! The warrior planet fills you with rage. ${players[ni]?.name} is PUSHED BACK 3 squares! But violence has a karmic price — you gain +1 PAPA.`}
-      else{grahaStory=`${pName}, you rolled Mangal, Mars! But there's no one nearby to strike. The warrior energy fades.`}}
-    if(g.fx==="mercury"){const ni=nearest(pos,cur,nP);
-      if(ni>=0){const yourOldPos=oldP;const theirPos=nPos[ni];nPos[ni]=yourOldPos;newP=theirPos+tot;
+      else{grahaStory=`${pName}, you rolled Mangal, Mars! But there's no valid target. ${ni>=0&&nPos[ni]>=101?players[ni]?.name+" is on the Sacred Path — untouchable.":"The warrior energy fades."}`}}
+    if(!onSacredPath&&g.fx==="mercury"){const ni=nearest(pos,cur,nP);
+      if(ni>=0&&nPos[ni]<101){const yourOldPos=oldP;const theirPos=nPos[ni];nPos[ni]=yourOldPos;newP=theirPos+tot;
         extras.push(`Swapped with ${players[ni]?.name}`);
         grahaStory=`${pName}, you rolled Budh, Mercury! The trickster planet reverses fortune. You SWAP PLACES with ${players[ni]?.name}! You were at square ${yourOldPos} — now you jump to their square ${theirPos}, then move ${tot} forward.`}
-      else{grahaStory=`${pName}, you rolled Budh, Mercury! But there's no one nearby to swap with.`}}
-    if(g.fx==="saturn"){newP=Math.max(1,oldP-3)+tot;nPapa[cur]+=1;extras.push("Back 3, +1 Papa");
+      else{grahaStory=`${pName}, you rolled Budh, Mercury! But there's no one to swap with.${ni>=0&&nPos[ni]>=101?" Seekers on the Sacred Path cannot be swapped.":""}`}}
+    if(!onSacredPath&&g.fx==="saturn"){newP=Math.max(1,oldP-3)+tot;nPapa[cur]+=1;extras.push("Back 3, +1 Papa");
       grahaStory=`${pName}, you rolled Shani, Saturn! The lord of karma turns his fearsome gaze upon you. You are PUSHED BACK 3 squares and gain +1 PAPA. No one escapes Shani's justice.`}
-    if(g.fx==="rahu"){let maxI=0,minI=0;
-      for(let i=0;i<nP;i++){if(nPos[i]>nPos[maxI])maxI=i;if(nPos[i]<nPos[minI])minI=i}
-      if(maxI!==minI&&nPunya[maxI]>0){nPunya[maxI]-=1;nPunya[minI]+=1;
+    if(!onSacredPath&&g.fx==="rahu"){let maxI=-1,minI=-1;
+      for(let i=0;i<nP;i++){if(nPos[i]<101){if(maxI<0||nPos[i]>nPos[maxI])maxI=i;if(minI<0||nPos[i]<nPos[minI])minI=i}}
+      if(maxI>=0&&minI>=0&&maxI!==minI&&nPunya[maxI]>0){nPunya[maxI]-=1;nPunya[minI]+=1;
         extras.push(`${players[maxI]?.name}→${players[minI]?.name}`);
-        grahaStory=`${pName}, you rolled Rahu, the Shadow! The demon who swallows the sun STEALS 1 Punya from ${players[maxI]?.name} (the leader) and gives it to ${players[minI]?.name} (trailing behind). The first shall be last!`}
-      else{extras.push("No effect");grahaStory=`${pName}, you rolled Rahu, the Shadow! But Rahu finds no karma to steal this time.`}}
-    if(g.fx==="ketu"){for(let i=0;i<nP;i++)nShield[i]=false;
-      let closest=0;for(let i=0;i<nP;i++){if(nPos[i]>nPos[closest])closest=i}
-      nPunya[closest]+=1;extras.push(`${players[closest]?.name} +1 Punya`);
-      grahaStory=`${pName}, you rolled Ketu, the Tail! The planet of detachment strips ALL SHIELDS from every seeker. But ${players[closest]?.name}, closest to Moksha, receives +1 Punya — Ketu rewards those ready to let go.`}
+        grahaStory=`${pName}, you rolled Rahu, the Shadow! STEALS 1 Punya from ${players[maxI]?.name} and gives to ${players[minI]?.name}!`}
+      else{extras.push("No effect");grahaStory=`${pName}, you rolled Rahu, the Shadow! But Rahu finds no karma to steal.`}}
+    if(!onSacredPath&&g.fx==="ketu"){for(let i=0;i<nP;i++){if(nPos[i]<101)nShield[i]=false}
+      let closest=-1;for(let i=0;i<nP;i++){if(nPos[i]<101&&(closest<0||nPos[i]>nPos[closest]))closest=i}
+      if(closest>=0){nPunya[closest]+=1;extras.push(`${players[closest]?.name} +1 Punya`);
+      grahaStory=`${pName}, you rolled Ketu, the Tail! Strips shields from seekers below the Sacred Path. ${players[closest]?.name} gains +1 Punya.`}
+      else{grahaStory=`${pName}, you rolled Ketu, the Tail! All seekers are on the Sacred Path — Ketu has no effect.`}}
 
     // ═══ STEP 1: Show graha popup, wait for user dismiss ═══
     const startMovement=()=>{
-      if(newP>100){setMsg(`Overshot Moksha. ${extras.join(" · ")}`);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);setSkipA(nSkip);setBusy(false);setCur(c=>(c+1)%nP);return}
+      // ═══ ASHTANGA STEPWISE: On sacred path, move exactly 1 step per turn ═══
+      if(oldP>=101&&oldP<107){newP=oldP+1;extras.push("Sacred Path: 1 step")}
+      else if(oldP===107){
+        // At the final gate — need EXACT roll of 1
+        if(r===1){newP=108;extras.push("ॐ Exact 1! Moksha gate opens!")}
+        else{newP=107;extras.push(`Rolled ${r} — need exact 1 for Moksha`);
+          setMsg(`${pName} rolled ${r} at the final gate. Only a roll of 1 opens Moksha!`);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);setSkipA(nSkip);setBusy(false);setCur(c=>(c+1)%nP);
+          showEvent({icon:"🚪",title:"The Gate of Moksha",subtitle:`${pName}, you stand at the final gate — ध्यान Dhyana, Square 107. You rolled ${r}. But Moksha demands EXACT 1. Only absolute surrender opens this gate. Roll again next turn.`,color:"#f0d050"});
+          return}
+      }
+      else if(newP>100&&oldP<=100){newP=101;extras.push("Entered Sacred Path!")}
+      if(newP>108){setMsg(`Overshot Moksha. ${extras.join(" · ")}`);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);setSkipA(nSkip);setBusy(false);setCur(c=>(c+1)%nP);return}
       if(newP<1)newP=1;
       let step=0;const steps=Math.abs(newP-oldP);const dir=newP>oldP?1:-1;
       if(steps===0){setBusy(false);setCur(c=>(c+1)%nP);setMsg(extras.join(" · ")||"No movement.");setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);return}
@@ -640,24 +1247,24 @@ export default function MokshaPatam(){
           clearInterval(iv);
           let p=newP,eMsg="";
           // ═══ STEP 3: Check landing — show popup, wait for dismiss ═══
-          const finishTurn=()=>{
+          const finishTurn=(skipDharmaCheck)=>{
             nPos[cur]=p;setPos([...nPos]);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setSkipA(nSkip);
             setMsg([eMsg,...extras].filter(Boolean).join(" · ")||`Moved to ${p}.`);
             setHist(h=>[...h.slice(-12),`${pName}→${p}`]);
-            if(nPunya[cur]>=20&&!win){setWin(cur);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory");
-              showEvent({icon:"ॐ",title:"KARMA VICTORY!",subtitle:`${pName} has accumulated 20 Punya! The board dissolves. Instant Moksha!`,color:"#f0d050"});
+            if(nPunya[cur]>=30&&!win){setWin(cur);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory");
+              showEvent({icon:"ॐ",title:"KARMA VICTORY!",subtitle:`${pName} has accumulated 30 Punya! The board dissolves. Instant Moksha!`,color:"#f0d050"});
             }
-            if(!DLM_SQ.includes(p))setCur(c=>(c+1)%nP);
+            if(skipDharmaCheck||(!DLM_SQ.includes(p)&&!(p>100&&p<108)))setCur(c=>(c+1)%nP);
             setBusy(false);
           };
 
           if(SNAKES[p]){const sn=SNAKES[p];if(nShield[cur]){nShield[cur]=false;eMsg=`𓆙 ${sn.skt} — Shield!`;play("ladder");
-            showEvent({icon:"🛡",title:`Shield Saved ${pName}!`,subtitle:`The serpent ${sn.skt} (${sn.en}) struck — but Shukra's shield absorbed the venom! Shield is now gone.`,color:"#d0a0c0"},finishTurn);
-          }else{const o=p;p=sn.to;eMsg=`𓆙 ${o}→${p}`;nPapa[cur]+=2;play("snake");
-            showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} caught you! ${sn.tale} Dragged from ${o} to ${p}. +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`},finishTurn);
+            showEvent({icon:"🛡",title:`Shield Saved ${pName}!`,subtitle:`The serpent ${sn.skt} (${sn.en}) struck — but Shukra's shield absorbed the venom! Shield is now gone.`,color:"#d0a0c0"},()=>finishTurn(true));
+          }else{const o=p;p=sn.to;eMsg=`𓆙 ${o}→${p}`;nPapa[cur]+=2;play("snake");play("yamaLaugh");
+            showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} caught you! ${sn.tale} Dragged from ${o} to ${p}. +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`},()=>finishTurn(true));
           }}
           else if(LADDERS[p]){const ld=LADDERS[p];const o=p;p=ld.to;eMsg=`🪔 ${o}→${p}`;nPunya[cur]+=1;play("ladder");
-            showEvent({icon:"🪔",title:`${ld.skt} — ${ld.en}`,subtitle:`${pName}, the virtue of ${ld.en} lifts you! ${ld.tale} Rise from ${o} to ${p}. +1 PUNYA.`,color:"#f0d050",extra:`${o} → ${p}`},finishTurn);
+            showEvent({icon:"🪔",title:`${ld.skt} — ${ld.en}`,subtitle:`${pName}, the virtue of ${ld.en} lifts you! ${ld.tale} Rise from ${o} to ${p}. +1 PUNYA.`,color:"#f0d050",extra:`${o} → ${p}`},()=>finishTurn(true));
           }
           else if(DLM_SQ.includes(p)){
             // No-repeat dharma: pick from unused pool, reset if all used
@@ -671,9 +1278,39 @@ export default function MokshaPatam(){
               setDil({...d,pi:cur});finishTurn();
             });
           }
-          else if(p===100){if(nPunya[cur]>=nPapa[cur]){setWin(cur);eMsg=`ॐ MOKSHA!`;play("victory");
-            showEvent({icon:"ॐ",title:"मोक्ष प्राप्त — MOKSHA!",subtitle:`${pName} reached 100 with Punya (${nPunya[cur]}) ≥ Papa (${nPapa[cur]}). Liberation! The cycle of Samsara ends.`,color:"#f0d050"},finishTurn);
-          }else{p=67;eMsg="Impure → 67";play("snake");
+          else if(p>100&&p<108){
+            const sq=SACRED_PATH[p-101];
+            const stepNum=p-100;
+            const isFirstStep=p===101;
+            const introText=isFirstStep
+              ?`${pName}, you have ENTERED THE ASHTANGA MARGA — the 8-fold sacred path of Patanjali! From here, you move only ONE STEP per turn. Each step tests your soul. There are no dice shortcuts. Only dharma. Step ${stepNum} of 7: ${sq.en} (${sq.desc}).`
+              :p===107
+              ?`${pName}, you have reached the FINAL STEP — ध्यान Dhyana, Meditation. After this test, you must roll EXACT 1 to enter Moksha. Only absolute surrender opens the final gate. Step 7 of 7.`
+              :`${pName}, Step ${stepNum} of 7 on the Sacred Path: ${sq.skt} — ${sq.en} (${sq.desc}). A test of your soul awaits.`;
+            eMsg=`${sq.icon} ${sq.skt} — Step ${stepNum}/7`;play("dilemma");
+            showEvent({icon:sq.icon,title:`अष्टांग मार्ग · Step ${stepNum}`,subtitle:introText,color:"#f0d050"},()=>{
+              // Pick random riddle for this step
+              const pool=ASHTANGA_RIDDLES[p]||ASHTANGA_RIDDLES[101];
+              const riddle=pool[Math.floor(Math.random()*pool.length)];
+              // Shuffle options so correct isn't always first
+              const shuffle=Math.random()<0.5;
+              const opts=shuffle?[riddle.a[1],riddle.a[0]]:[riddle.a[0],riddle.a[1]];
+              const correctIdx=shuffle?(1-riddle.correct):riddle.correct;
+              // Build dharma-like dilemma with same-color options
+              setDil({
+                t:sq.skt,en:`Riddle of ${sq.en}`,
+                txt:riddle.q,
+                c:[
+                  {l:`${opts[0]}`,k:correctIdx===0?"punya":"papa",fx:correctIdx===0?{punya:2}:{papa:1}},
+                  {l:`${opts[1]}`,k:correctIdx===1?"punya":"papa",fx:correctIdx===1?{punya:2}:{papa:1}},
+                ],
+                pi:cur,ashtanga:true
+              });finishTurn();
+            });
+          }
+          else if(p===108){if(nPunya[cur]>=nPapa[cur]){setWin(cur);eMsg=`ॐ MOKSHA!`;play("victory");
+            showEvent({icon:"ॐ",title:"मोक्ष प्राप्त — MOKSHA!",subtitle:`${pName} reached Square 108 — Moksha! Punya (${nPunya[cur]}) ≥ Papa (${nPapa[cur]}). Liberation! The cycle of Samsara ends.`,color:"#f0d050"},finishTurn);
+          }else{p=67;eMsg="Impure → 67";play("snake");play("yamaLaugh");
             showEvent({icon:"⚠",title:"Gates of Moksha REJECT You!",subtitle:`${pName}, your soul is impure! Punya (${nPunya[cur]}) < Papa (${nPapa[cur]}). Cast back to 67.`,color:"#e06030"},finishTurn);
           }}
           else{finishTurn()}
@@ -682,21 +1319,55 @@ export default function MokshaPatam(){
     };
 
     // Show graha popup — user dismisses, then movement begins
-    showEvent({icon:g.icon,title:`${g.n} · ${g.en}`,subtitle:grahaStory,color:g.color,type:"graha"},startMovement);
+    // On sacred path: skip graha popup entirely
+    if(onSacredPath){startMovement()}
+    else{showEvent({icon:g.icon,title:`${g.n} · ${g.en}`,subtitle:grahaStory,color:g.color,type:"graha"},startMovement)}
   },[cur,nP,dil,win,busy,punya,papa,pos,shieldA,skipA,play,players,showEvent,chosenLang,muted]);
 
   const solvD=(ci)=>{
     if(!dil)return;const ch=dil.c[ci],fx=ch.fx||{};
     const np=[...punya],npa=[...papa],nsk=[...skipA],npos=[...pos],nsh=[...shieldA];
+    const pName=players[dil.pi]?.name||"Seeker";
+
+    if(dil.ashtanga){
+      // ═══ ASHTANGA RIDDLE RESULT ═══
+      if(ch.k==="punya"){
+        // CORRECT — give punya, advance normally (already moved to this square)
+        np[dil.pi]+=(fx.punya||2);
+        setPunya(np);setPapa(npa);setSkipA(nsk);setPos(npos);setShieldA(nsh);
+        play("chime");
+        setMsg(`✓ Correct! ${pName} gains +${fx.punya||2} Punya`);
+        // Speak congratulations
+        if(!muted)VoiceEngine.speak(`Well done ${pName}! You have answered correctly. Your soul grows purer.`,chosenLang);
+      }else{
+        // WRONG — add papa, move BACK but stay on sacred path if possible
+        npa[dil.pi]+=(fx.papa||1);
+        const curPos=npos[dil.pi];
+        const backTo=Math.max(1,curPos-1); // go back 1 step on sacred path (retry next turn)
+        npos[dil.pi]=backTo;
+        setPunya(np);setPapa(npa);setSkipA(nsk);setPos(npos);setShieldA(nsh);
+        play("yamaLaugh");
+        setMsg(`✗ Wrong! ${pName} falls back to square ${backTo}. +${fx.papa||1} Papa`);
+      }
+      if(np[dil.pi]>=30&&!win){setWin(dil.pi);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory")}
+      setDil(null);setCur(c=>(c+1)%nP);
+      return;
+    }
+
+    // ═══ NORMAL DHARMA ═══
     if(fx.punya)np[dil.pi]+=(fx.punya);if(fx.papa)npa[dil.pi]+=(fx.papa);if(fx.skip)nsk[dil.pi]=true;
-    if(fx.move)npos[dil.pi]=Math.max(1,Math.min(100,npos[dil.pi]+(fx.move)));
+    if(fx.move){
+      let newDPos=npos[dil.pi]+(fx.move);
+      if(npos[dil.pi]<=100&&newDPos>100)newDPos=101;
+      npos[dil.pi]=Math.max(1,Math.min(108,newDPos));
+    }
     if(fx.loseShield)nsh[dil.pi]=false;
     if(fx.giveShield)nsh[dil.pi]=true;
     setPunya(np);setPapa(npa);setSkipA(nsk);setPos(npos);setShieldA(nsh);
     const parts=[];if(fx.punya)parts.push(`+${fx.punya} Punya`);if(fx.papa)parts.push(`+${fx.papa} Papa`);if(fx.move)parts.push(fx.move>0?`advance ${fx.move}`:`back ${Math.abs(fx.move)}`);if(fx.skip)parts.push("skip next");if(fx.loseShield)parts.push("lost Shield");if(fx.giveShield)parts.push("gained Shield");
     setMsg(parts.join(", ")||"Balanced.");
-    if(ch.k==="punya")play("ladder");else if(ch.k==="papa")play("snake");
-    if(np[dil.pi]>=20&&!win){setWin(dil.pi);setMsg(`ॐ KARMA VICTORY! ${players[dil.pi]?.name} transcends!`);play("victory")}
+    if(ch.k==="punya")play("chime");else if(ch.k==="papa")play("yamaLaugh");
+    if(np[dil.pi]>=30&&!win){setWin(dil.pi);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory")}
     setDil(null);setCur(c=>(c+1)%nP);
   };
 
@@ -783,20 +1454,41 @@ export default function MokshaPatam(){
           <button className="gb" onClick={()=>setShowGuide(false)} style={{padding:"6px 16px",fontSize:12}}>✕ Close</button>
         </div>
         {[
-          {t:"🎯 Goal",d:"Reach Square 100 (Moksha) with your Punya (virtue) equal to or greater than your Papa (sin). Alternatively, collect 20 Punya at any point for an instant Karma Victory — the board dissolves and your soul transcends!"},
-          {t:"🎲 Your Turn",d:"Each turn you roll TWO dice simultaneously: the Karma Die (1-6, determines how many squares you move) and the Graha Die (one of 9 Navagraha planets, each with a cosmic effect). A popup will explain exactly what happened — read it carefully before dismissing."},
-          {t:"☀ The 9 Navagraha",d:"Surya = +2 steps. Chandra = +1 Punya. Mangal = push rival back 3 (+1 Papa to you). Budh = swap positions. Brihaspati = ALL +1 Punya. Shukra = Shield. Shani = back 3 +1 Papa. Rahu = steal Punya from leader. Ketu = strip all Shields."},
+          {t:"🎯 Goal",d:"Reach Square 108 (Moksha) through the Sacred 8-fold Path with Punya ≥ Papa. Or collect 30 Punya for instant Karma Victory."},
+          {t:"🎲 Your Turn",d:"Roll TWO dice: Karma Die (1-6 movement) + Graha Die (9 planet effects). Popups explain what happened."},
+          {t:"☀ The 9 Navagraha",d:"Surya = +2 steps. Chandra = +1 Punya. Mangal = push rival back 3. Budh = swap. Brihaspati = ALL +1 Punya. Shukra = Shield. Shani = back 3 +1 Papa. Rahu = steal from leader. Ketu = strip shields. Navagraha have NO power on the Sacred Path."},
           {t:"𓆙 Serpents (Red)",d:"10 Nāga serpents named after vices. Landing = dragged DOWN + 2 Papa."},
           {t:"🪔 Virtues (Gold)",d:"10 divine ladders of virtue. Landing = lifted UP + 1 Punya."},
-          {t:"⚖ Dharma (Purple)",d:"Moral dilemmas from Mahābhārata & real life. 🙏 Virtue = Punya but costs position. 💀 Temptation = advance fast but gain Papa."},
-          {t:"🛡 Shield",d:"Shukra grants a one-time shield blocking the next serpent. Lost after use or when Ketu appears."},
-          {t:"ॐ Moksha (Sq 100)",d:"Land exactly on 100. If Punya ≥ Papa → WIN. If Papa > Punya → back to 67."},
-          {t:"⚡ Karma Victory",d:"Accumulate 20 Punya from any square = instant Moksha. The rarer, beautiful path."},
-          {t:"☠️ Playing vs Yama",d:"Solo mode against the God of Death. Yama favours 💀 Papa 60% of the time. Can you stay purer than Death?"},
+          {t:"⚖ Dharma (Purple)",d:"21 moral dilemmas from Mahābhārata & real life. Choose wisely — no repeat in same game."},
+          {t:"🛡 Shield",d:"Shukra grants a one-time shield blocking the next serpent."},
+          {t:"🕉 Why 108?",d:"108 is sacred in Vedic tradition: 108 Upanishads, 108 beads on a mala, the distance between Sun & Earth = 108× Sun's diameter, 108 energy lines converge at the heart chakra. In this game, 100 squares test your karma — the final 8 test your soul."},
+          {t:"🪷 Ashtanga Marga (Squares 101-108)",d:"The Sacred 8-fold Path of Patanjali. After square 100, you enter the crown. You move ONLY 1 step per turn (dice roll ignored). Each step asks a RIDDLE about that path's teaching. Correct = +2 Punya. Wrong = Papa + sent backwards. At square 107, you must roll EXACT 1 to reach 108 (Moksha). Navagraha cannot affect you here. No one can swap/push you. You are beyond the material world."},
+          {t:"⚡ Karma Victory (30 Punya)",d:"Accumulate 30 Punya from any square = instant Moksha."},
+          {t:"🔯 Sacred Geometry on the Board",d:"The geometric patterns represent ancient Vedic vibrations. Bhuloka: Square grid = material stability, the earthly foundation. Antarloka: Hexagonal patterns = the Star of David / Shatkona, union of Shiva (upward △) and Shakti (downward ▽). Svargaloka: Circular mandalas = cosmic unity, the celestial sphere. The Sri Yantra triangles in the Ashtanga crown represent the 9 interlocking triangles of creation."},
+          {t:"☠️ Playing vs Yama",d:"Solo mode vs the God of Death. Yama favours Papa 60%. Can you stay purer than Death?"},
         ].map((s,i)=><div key={i} style={{background:"rgba(20,16,10,.5)",border:"1px solid rgba(200,160,60,.1)",padding:14,borderRadius:4,marginBottom:10}}>
           <div style={{fontSize:14,fontWeight:700,color:"#f0d050",marginBottom:6}}>{s.t}</div>
           <p style={{fontSize:12,color:"#c0b080",lineHeight:1.8,margin:0}}>{s.d}</p>
         </div>)}
+      </div>
+    </div>}
+    {showRiddles&&<div key="riddles-panel" style={{position:"fixed",inset:0,background:"rgba(6,5,3,.95)",zIndex:300,overflowY:"auto",padding:"clamp(12px,3vw,24px)",animation:"fadeIn .3s ease"}}>
+      <div style={{maxWidth:700,margin:"0 auto"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+          <h2 style={{fontSize:"clamp(18px,4vw,28px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:0}}>🪷 Ashtanga Riddles</h2>
+          <button className="gb" onClick={()=>setShowRiddles(false)} style={{padding:"6px 16px",fontSize:12}}>✕ Close</button>
+        </div>
+        {Object.entries(ASHTANGA_RIDDLES).map(([step,riddles])=>{
+          const sq=SACRED_PATH[+step-101];
+          return(<div key={step}>
+            <h3 style={{fontSize:14,color:"#f0d050",letterSpacing:3,borderBottom:"1px solid rgba(200,160,60,.15)",paddingBottom:6,margin:"16px 0 10px"}}>{sq?.icon} {sq?.skt} · {sq?.en} (Sq {step})</h3>
+            {riddles.map((r,i)=><div key={i} style={{background:"rgba(20,16,10,.4)",border:"1px solid rgba(200,160,60,.08)",padding:10,borderRadius:4,marginBottom:6}}>
+              <div style={{fontSize:12,color:"#e8c850",fontWeight:700,marginBottom:4}}>Q: {r.q}</div>
+              <div style={{fontSize:11,color:"#80c080"}}>✓ {r.a[r.correct]}</div>
+              <div style={{fontSize:11,color:"#c08080"}}>✗ {r.a[1-r.correct]}</div>
+            </div>)}
+          </div>)
+        })}
       </div>
     </div>}
   </>;
@@ -863,7 +1555,7 @@ export default function MokshaPatam(){
             <h2 style={{fontSize:"clamp(22px,5vw,36px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:0}}>{pg.title}</h2>
             <div style={{display:"flex",justifyContent:"center",gap:12,marginTop:8,alignItems:"center",flexWrap:"wrap"}}>
               <div style={{fontSize:10,opacity:.3,letterSpacing:5}}>{storyPage+1} OF {STORY_PAGES.length}</div>
-              <button onClick={()=>{if(!muted)VoiceEngine.speak(pg[chosenLang],chosenLang);else VoiceEngine.stop()}} style={{background:"transparent",border:"1px solid rgba(200,160,60,.25)",color:"#c0b080",padding:"3px 10px",fontSize:10,cursor:"pointer",borderRadius:3,opacity:.6}}>
+              <button onClick={()=>{if(!muted)VoiceEngine.speakNarrator(pg[chosenLang],chosenLang);else VoiceEngine.stop()}} style={{background:"transparent",border:"1px solid rgba(200,160,60,.25)",color:"#c0b080",padding:"3px 10px",fontSize:10,cursor:"pointer",borderRadius:3,opacity:.6}}>
                 🔊 Narrate
               </button>
               <button onClick={toggleMute} style={{background:"transparent",border:"1px solid rgba(200,160,60,.25)",color:"#c0b080",padding:"3px 10px",fontSize:11,cursor:"pointer",borderRadius:3,opacity:.6}}>
@@ -898,13 +1590,6 @@ export default function MokshaPatam(){
         <div style={{fontSize:32,marginBottom:12}}>🔱</div>
         <h2 style={{fontSize:"clamp(20px,4vw,32px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"0 0 8px"}}>How Many Seekers?</h2>
         <p style={{fontSize:13,opacity:.4,marginBottom:12,letterSpacing:3}}>Each soul walks a different path</p>
-        {gameVoicesLoading&&<div style={{marginBottom:16,animation:"pulse 2s ease infinite"}}>
-          <div style={{fontSize:11,color:"#d0b870",letterSpacing:3,marginBottom:6}}>🔮 Summoning seekers... {gameVoicesPct}%</div>
-          <div style={{width:200,height:4,background:"rgba(200,160,60,.15)",borderRadius:2,margin:"0 auto",overflow:"hidden"}}>
-            <div style={{height:"100%",width:`${gameVoicesPct}%`,background:"linear-gradient(90deg,#f0d050,#c0a030)",borderRadius:2,transition:"width .4s"}}/>
-          </div>
-        </div>}
-        {!gameVoicesLoading&&gameVoicesReady&&<div style={{fontSize:10,color:"#80c080",opacity:.5,marginBottom:12,letterSpacing:2}}>✓ All voices ready</div>}
         <div style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap"}}>
           <button className="gb gp" onClick={()=>{
             setNP(2);setIsCPU([false,true]);setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);
@@ -981,7 +1666,7 @@ export default function MokshaPatam(){
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(clamp(140px,30vw,200px),1fr))",gap:10,marginBottom:20}}>
             {CHARS.map((ch,i)=>{const used=usedChars.includes(i);const sel=tempChar===i;
-              return(<div key={i} onClick={()=>{if(!used){setTempChar(i);if(!muted){VoiceEngine.stop();VoiceEngine.speak(chosenLang==='hi'?ch.voiceHi:ch.voiceEn,chosenLang)}}}} style={{background:sel?"rgba(200,160,60,.12)":"rgba(20,16,10,.5)",border:`1px solid ${sel?"rgba(240,200,80,.6)":used?"rgba(100,80,50,.15)":"rgba(200,160,60,.2)"}`,padding:14,borderRadius:4,cursor:used?"not-allowed":"pointer",opacity:used?.3:1,transition:"all .3s"}}>
+              return(<div key={i} onClick={()=>{if(!used){setTempChar(i);if(!muted){VoiceEngine.stop();const sf=STATIC_VOICES[ch.id];if(sf)VoiceEngine.playStatic(sf[chosenLang==='hi'?'hi':'en']);else VoiceEngine.speak(chosenLang==='hi'?ch.voiceHi:ch.voiceEn,chosenLang)}}}} style={{background:sel?"rgba(200,160,60,.12)":"rgba(20,16,10,.5)",border:`1px solid ${sel?"rgba(240,200,80,.6)":used?"rgba(100,80,50,.15)":"rgba(200,160,60,.2)"}`,padding:14,borderRadius:4,cursor:used?"not-allowed":"pointer",opacity:used?.3:1,transition:"all .3s"}}>
                 <div style={{fontSize:28,marginBottom:6}}>{ch.icon}</div>
                 <div style={{fontSize:13,fontWeight:700,color:ch.color}}>{ch.name}</div>
                 <div style={{fontSize:11,fontFamily:"'Noto Serif Devanagari',serif",color:"#f0d050",opacity:.6,marginBottom:4}}>{ch.skt}</div>
@@ -992,7 +1677,7 @@ export default function MokshaPatam(){
             <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
               <span style={{fontSize:28}}>{CHARS[tempChar].icon}</span>
               <div><div style={{fontSize:16,fontWeight:700,color:CHARS[tempChar].color}}>{CHARS[tempChar].name}</div><div style={{fontSize:11,fontFamily:"'Noto Serif Devanagari',serif",color:"#f0d050",opacity:.6}}>{CHARS[tempChar].skt}</div></div>
-              <button onClick={()=>{if(!muted)VoiceEngine.speak(chosenLang==='hi'?CHARS[tempChar].voiceHi:CHARS[tempChar].voiceEn,chosenLang)}} style={{marginLeft:"auto",background:"transparent",border:"1px solid rgba(200,160,60,.25)",color:"#c0b080",padding:"3px 10px",fontSize:10,cursor:"pointer",borderRadius:3,opacity:.6}}>🔊</button>
+              <button onClick={()=>{if(!muted){VoiceEngine.stop();const sf=STATIC_VOICES[CHARS[tempChar].id];if(sf)VoiceEngine.playStatic(sf[chosenLang==='hi'?'hi':'en']);else VoiceEngine.speak(chosenLang==='hi'?CHARS[tempChar].voiceHi:CHARS[tempChar].voiceEn,chosenLang)}}} style={{marginLeft:"auto",background:"transparent",border:"1px solid rgba(200,160,60,.25)",color:"#c0b080",padding:"3px 10px",fontSize:10,cursor:"pointer",borderRadius:3,opacity:.6}}>🔊</button>
             </div>
             <p style={{fontSize:12,lineHeight:1.9,color:"#c0b080",margin:0}}>{CHARS[tempChar].lore}</p>
           </div>}
@@ -1019,7 +1704,7 @@ export default function MokshaPatam(){
   // ═══ GAME ═══
   if(screen!=="game"||players.length===0)return null;
   const cp=players[cur]||players[0];
-  const hd=hov?(SNAKES[hov]?{type:"𓆙 NĀGA",label:`${SNAKES[hov].skt} — ${SNAKES[hov].en}`,desc:SNAKES[hov].tale,to:`Falls to ${SNAKES[hov].to}`,cl:"#e08040"}:LADDERS[hov]?{type:"🪔 VIRTUE",label:`${LADDERS[hov].skt} — ${LADDERS[hov].en}`,desc:LADDERS[hov].tale,to:`Rises to ${LADDERS[hov].to}`,cl:"#f0d050"}:DLM_SQ.includes(hov)?{type:"⚖ DHARMA",label:"Moral crossroads",desc:"A dilemma from the Mahābhārata.",cl:"#d0b870"}:hov===100?{type:"ॐ MOKSHA",label:"Liberation",desc:"Punya must ≥ Papa.",cl:"#f0d050"}:null):null;
+  const hd=hov?(SNAKES[hov]?{type:"𓆙 NĀGA",label:`${SNAKES[hov].skt} — ${SNAKES[hov].en}`,desc:SNAKES[hov].tale,to:`Falls to ${SNAKES[hov].to}`,cl:"#e08040"}:LADDERS[hov]?{type:"🪔 VIRTUE",label:`${LADDERS[hov].skt} — ${LADDERS[hov].en}`,desc:LADDERS[hov].tale,to:`Rises to ${LADDERS[hov].to}`,cl:"#f0d050"}:DLM_SQ.includes(hov)?{type:"⚖ DHARMA",label:"Moral crossroads",desc:"A dilemma from the Mahābhārata.",cl:"#d0b870"}:hov===108?{type:"ॐ MOKSHA",label:"Square 108 — Liberation",desc:"The 108th square. Punya must ≥ Papa. The sacred number of the cosmos.",cl:"#f0d050"}:hov>100?{type:`${SACRED_PATH[hov-101]?.icon} ${SACRED_PATH[hov-101]?.en}`,label:`${SACRED_PATH[hov-101]?.skt} — ${SACRED_PATH[hov-101]?.desc}`,desc:"The Ashtanga Marga — 8-fold path of Patanjali. Only the purest souls walk here.",cl:"#f0d050"}:null):null;
 
   return(
     <div style={{...PG,padding:"10px 8px",display:"flex",flexDirection:"column",alignItems:"center"}}>
@@ -1042,31 +1727,113 @@ export default function MokshaPatam(){
       </div>}
       <div style={{textAlign:"center",marginBottom:4,width:"100%"}}>
         <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:10}}>
-          <div style={{fontSize:"clamp(18px,3.5vw,28px)",fontFamily:"'Yatra One',serif",letterSpacing:3,color:"#f0d050"}}>मोक्षपटम्</div>
+          <div onClick={()=>setShowRiddles(true)} style={{fontSize:"clamp(18px,3.5vw,28px)",fontFamily:"'Yatra One',serif",letterSpacing:3,color:"#f0d050",cursor:"pointer"}}>मोक्षपटम्</div>
           <button onClick={toggleMute} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"2px 8px",fontSize:12,cursor:"pointer",borderRadius:3}}>{muted?"🔇":"🔊"}</button>
         </div>
         <div style={{display:"flex",justifyContent:"center",gap:10,marginTop:6,flexWrap:"wrap"}}>
           <button onClick={()=>setShowGuide(true)} style={{background:"rgba(200,160,60,.08)",border:"1px solid rgba(200,160,60,.25)",color:"#e8c850",padding:"5px 14px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2}}>📜 How to Play</button>
           <button onClick={()=>setShowInfo(true)} style={{background:"rgba(200,160,60,.08)",border:"1px solid rgba(200,160,60,.25)",color:"#e8c850",padding:"5px 14px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2}}>📖 Encyclopaedia</button>
         </div>
-        <div style={{fontSize:8,letterSpacing:5,opacity:.3,color:"#c0b080",marginTop:4}}>{rlm(pos[cur]||1)==="bhuloka"?"भूलोक EARTHLY":rlm(pos[cur]||1)==="antarloka"?"अन्तर्लोक INNER":"स्वर्गलोक CELESTIAL"}</div>
+        <div style={{fontSize:8,letterSpacing:5,opacity:.3,color:"#c0b080",marginTop:4}}>{rlm(pos[cur]||1)==="bhuloka"?"भूलोक EARTHLY":rlm(pos[cur]||1)==="antarloka"?"अन्तर्लोक INNER":rlm(pos[cur]||1)==="moksha_path"?"अष्टांग मार्ग SACRED PATH":"स्वर्गलोक CELESTIAL"}</div>
         <div style={{marginTop:4}}><InstaBadge/></div>
       </div>
       <div style={{background:"linear-gradient(90deg,transparent,rgba(30,24,14,.6),transparent)",borderTop:"1px solid rgba(200,160,60,.2)",borderBottom:"1px solid rgba(200,160,60,.2)",padding:"8px 14px",marginBottom:8,textAlign:"center",fontSize:"clamp(10px,1.4vw,12px)",maxWidth:780,width:"100%",fontStyle:"italic",lineHeight:1.7,color:"#c0b080"}}>{msg}</div>
       <div style={{display:"flex",gap:14,flexWrap:"wrap",justifyContent:"center",width:"100%",maxWidth:1140}}>
         {/* BOARD */}
         <div style={{flex:"1 1 340px",maxWidth:720,minWidth:300}}>
-          <div style={{position:"relative",border:"2px solid rgba(200,160,60,.3)",background:"radial-gradient(ellipse at 30% 30%,rgba(60,45,20,.2),transparent 50%),radial-gradient(ellipse at 70% 70%,rgba(60,45,20,.15),transparent 50%),#1e1810",boxShadow:"0 0 60px rgba(0,0,0,.5),inset 0 0 40px rgba(0,0,0,.3)",borderRadius:2}}>
-            <div style={{position:"absolute",inset:4,border:"1px solid rgba(200,160,60,.1)",pointerEvents:"none",zIndex:10}}/>
-            {[{top:"1%",t:"स्वर्गलोक CELESTIAL"},{top:"34.5%",t:"अन्तर्लोक INNER"},{top:"67.5%",t:"भूलोक EARTHLY"}].map((r,i)=><div key={i} style={{position:"absolute",top:r.top,left:"50%",transform:"translateX(-50%)",fontSize:"clamp(6px,1vw,9px)",letterSpacing:4,opacity:.22,color:"#f0d050",zIndex:10,pointerEvents:"none",whiteSpace:"nowrap"}}>{r.t}</div>)}
-            <div style={{position:"absolute",top:"33.3%",left:"2%",right:"2%",height:1,background:"linear-gradient(90deg,transparent,rgba(200,160,60,.18),transparent)",pointerEvents:"none",zIndex:10}}/>
-            <div style={{position:"absolute",top:"66.6%",left:"2%",right:"2%",height:1,background:"linear-gradient(90deg,transparent,rgba(200,160,60,.18),transparent)",pointerEvents:"none",zIndex:10}}/>
-            <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{position:"absolute",inset:0,width:"100%",height:"100%",pointerEvents:"none",zIndex:5}}>
-              {conns.map((cn,i)=>{const x1=cn.f.c*10+5,y1=cn.f.r*10+5,x2=cn.t.c*10+5,y2=cn.t.r*10+5;return cn.type==="s"?<Naga key={i} x1={x1} y1={y1} x2={x2} y2={y2} id={cn.id}/>:<Ldr key={i} x1={x1} y1={y1} x2={x2} y2={y2}/>})}
-            </svg>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(10,1fr)",position:"relative",zIndex:6}}>
+          <div style={{border:"2px solid rgba(200,160,60,.3)",background:"radial-gradient(ellipse at 30% 30%,rgba(60,45,20,.2),transparent 50%),radial-gradient(ellipse at 70% 70%,rgba(60,45,20,.15),transparent 50%),#1e1810",boxShadow:"0 0 60px rgba(0,0,0,.5),inset 0 0 40px rgba(0,0,0,.3)",borderRadius:2,overflow:"hidden"}}>
+            {/* ═══ SACRED CROWN — Ashtanga Marga (101-108) ═══ */}
+            <div style={{position:"relative",background:"linear-gradient(180deg,rgba(240,200,80,.08),rgba(20,16,10,.3))",borderBottom:"2px solid rgba(240,200,80,.25)",padding:"6px 4px 4px",overflow:"hidden"}}>
+              {/* Geometric Hindu pattern overlay */}
+              <svg style={{position:"absolute",inset:0,width:"100%",height:"100%",pointerEvents:"none",opacity:.06}} viewBox="0 0 200 50" preserveAspectRatio="none">
+                {/* Sri Yantra inspired triangles */}
+                {[0,25,50,75,100,125,150,175].map(x=><g key={x}><polygon points={`${x+12.5},5 ${x+25},45 ${x},45`} fill="none" stroke="#f0d050" strokeWidth=".5"/><polygon points={`${x+12.5},45 ${x+25},5 ${x},5`} fill="none" stroke="#f0d050" strokeWidth=".5"/><circle cx={x+12.5} cy={25} r="8" fill="none" stroke="#f0d050" strokeWidth=".3"/></g>)}
+              </svg>
+              <div style={{fontSize:"clamp(6px,1vw,9px)",textAlign:"center",letterSpacing:5,color:"#f0d050",opacity:.5,marginBottom:4,fontFamily:"'Cinzel',serif",textShadow:"0 0 10px rgba(240,200,80,.3)"}}>꧁ अष्टांग मार्ग · ASHTANGA MARGA · The 8-Fold Sacred Path ꧂</div>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(8,1fr)",gap:2}}>
+                {SACRED_PATH.map((sq)=>{
+                  const ph=[];for(let i=0;i<nP;i++){if((pos[i]||1)===sq.num)ph.push(i)}
+                  const isMoksha=sq.num===108;
+                  const stepIdx=sq.num-101;
+                  return(<div key={sq.num} onMouseEnter={()=>setHov(sq.num)} onMouseLeave={()=>setHov(null)} style={{aspectRatio:"1",background:isMoksha?"radial-gradient(circle,rgba(240,200,80,.2),rgba(240,200,80,.04))":"radial-gradient(circle,rgba(240,200,80,.06),transparent)",border:`1px solid ${hov===sq.num?"rgba(240,200,80,.7)":isMoksha?"rgba(240,200,80,.4)":"rgba(240,200,80,.12)"}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .3s",borderRadius:isMoksha?4:2,animation:isMoksha?"mp 3s ease infinite":"sacredGlow 4s ease infinite",animationDelay:`${stepIdx*0.3}s`,boxShadow:isMoksha?"0 0 20px rgba(240,200,80,.15)":"none"}}>
+                    <span style={{position:"absolute",top:1,left:2,fontSize:"clamp(6px,1vw,9px)",color:"rgba(240,210,130,.5)",fontWeight:700}}>{sq.num}</span>
+                    {/* Custom SVG icon for each step */}
+                    <svg width="clamp(20px,3.5vw,32px)" height="clamp(20px,3.5vw,32px)" viewBox="0 0 24 24" fill="none" style={{marginBottom:2}}>
+                      {stepIdx===0&&<>{/* Yama - Self-restraint: lotus bud (closed) */}
+                        <path d="M12 18 L12 10" stroke="#f0d050" strokeWidth="1.2"/>
+                        <path d="M8 10 Q10 4 12 6 Q14 4 16 10 Q14 7 12 8 Q10 7 8 10Z" fill="#f0d050" opacity=".7"/>
+                      </>}
+                      {stepIdx===1&&<>{/* Niyama - Discipline: flame */}
+                        <path d="M12 4 Q16 10 14 14 Q13 16 12 18 Q11 16 10 14 Q8 10 12 4Z" fill="#f0d050" opacity=".7"/>
+                        <path d="M12 8 Q14 12 13 15 Q12 16 12 18 Q12 16 11 15 Q10 12 12 8Z" fill="#ffa040" opacity=".6"/>
+                      </>}
+                      {stepIdx===2&&<>{/* Asana - Steadiness: meditating figure */}
+                        <circle cx="12" cy="7" r="2.5" stroke="#f0d050" strokeWidth="1" fill="none"/>
+                        <path d="M12 10 L12 16 M8 20 L12 16 L16 20 M7 14 L12 12 L17 14" stroke="#f0d050" strokeWidth="1" strokeLinecap="round"/>
+                      </>}
+                      {stepIdx===3&&<>{/* Pranayama - Life-force: wind spiral */}
+                        <path d="M6 12 Q8 8 12 8 Q16 8 16 12 Q16 15 12 14 Q9 13 10 16" fill="none" stroke="#f0d050" strokeWidth="1.2" strokeLinecap="round"/>
+                        <path d="M8 16 Q10 19 14 18 Q17 17 17 14" fill="none" stroke="#f0d050" strokeWidth=".8" strokeLinecap="round" opacity=".5"/>
+                      </>}
+                      {stepIdx===4&&<>{/* Pratyahara - Withdrawal: eye closing */}
+                        <ellipse cx="12" cy="12" rx="7" ry="4" stroke="#f0d050" strokeWidth="1" fill="none"/>
+                        <circle cx="12" cy="12" r="2" fill="#f0d050" opacity=".5"/>
+                        <line x1="5" y1="8" x2="19" y2="16" stroke="#f0d050" strokeWidth=".8" opacity=".6"/>
+                      </>}
+                      {stepIdx===5&&<>{/* Dharana - Concentration: yantra/triangle */}
+                        <polygon points="12,4 20,19 4,19" fill="none" stroke="#f0d050" strokeWidth="1"/>
+                        <polygon points="12,19 20,6 4,6" fill="none" stroke="#f0d050" strokeWidth=".7" opacity=".5"/>
+                        <circle cx="12" cy="12" r="2" fill="#f0d050" opacity=".4"/>
+                      </>}
+                      {stepIdx===6&&<>{/* Dhyana - Meditation: third eye */}
+                        <circle cx="12" cy="12" r="6" stroke="#f0d050" strokeWidth=".8" fill="none"/>
+                        <circle cx="12" cy="12" r="3" stroke="#f0d050" strokeWidth=".6" fill="none" opacity=".6"/>
+                        <circle cx="12" cy="12" r="1.5" fill="#f0d050" opacity=".7"><animate attributeName="r" values="1;2;1" dur="3s" repeatCount="indefinite"/></circle>
+                      </>}
+                      {stepIdx===7&&<>{/* Moksha - Liberation: OM symbol simplified */}
+                        <text x="12" y="17" textAnchor="middle" fill="#f0d050" fontSize="16" fontFamily="serif" fontWeight="bold">ॐ</text>
+                      </>}
+                    </svg>
+                    <span style={{fontSize:isMoksha?"clamp(8px,1.3vw,13px)":"clamp(7px,1.1vw,11px)",color:isMoksha?"#f0d050":"#e8c850",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 0 16px rgba(240,200,80,.2)"}}>{sq.skt}</span>
+                    <span style={{fontSize:"clamp(5px,.8vw,8px)",color:"#c0a050",letterSpacing:1,lineHeight:1.1,fontFamily:"'Cinzel',serif",fontWeight:700,textShadow:"0 0 6px #000"}}>{sq.en}</span>
+                    {ph.length>0&&<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",gap:2,zIndex:15,pointerEvents:"none"}}>
+                      {ph.map(pi=>{const c=players[pi]?.char;const isActive=pi===cur;const pc=c?.color||"#fff";return <div key={pi} style={{display:"flex",flexDirection:"column",alignItems:"center",transform:isActive?"scale(1.3)":"scale(0.9)",zIndex:isActive?20:15}}>
+                        <div style={{width:"clamp(18px,2.8vw,26px)",height:"clamp(18px,2.8vw,26px)",borderRadius:"50%",background:`radial-gradient(circle at 35% 30%,${pc},${pc}40 70%,#0c0a07)`,border:`2px solid ${pc}`,boxShadow:`0 0 ${isActive?12:4}px ${pc}${isActive?"99":"30"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"clamp(10px,1.6vw,15px)",lineHeight:1,animation:isActive?"activeGlow 1.5s ease infinite":"none","--pc":pc}}>{c?.icon}</div>
+                      </div>})}
+                    </div>}
+                  </div>);
+                })}
+              </div>
+            </div>
+            {/* ═══ MAIN 10×10 BOARD — with SVG overlay aligned ═══ */}
+            <div style={{position:"relative"}}>
+              <div style={{position:"absolute",inset:4,border:"1px solid rgba(200,160,60,.1)",pointerEvents:"none",zIndex:10}}/>
+              {[{top:"1%",t:"स्वर्गलोक CELESTIAL"},{top:"34.5%",t:"अन्तर्लोक INNER"},{top:"67.5%",t:"भूलोक EARTHLY"}].map((r,i)=><div key={i} style={{position:"absolute",top:r.top,left:"50%",transform:"translateX(-50%)",fontSize:"clamp(6px,1vw,9px)",letterSpacing:4,opacity:.22,color:"#f0d050",zIndex:10,pointerEvents:"none",whiteSpace:"nowrap"}}>{r.t}</div>)}
+              {/* Sacred Geometry Overlays */}
+              <svg style={{position:"absolute",inset:0,width:"100%",height:"100%",pointerEvents:"none",zIndex:1,opacity:.12}} viewBox="0 0 100 100" preserveAspectRatio="none">
+                {/* Bhuloka (bottom third 67-100%): Square grid = material stability */}
+                {[70,75,80,85,90,95].map(y=><line key={`bh${y}`} x1="5" y1={y} x2="95" y2={y} stroke="#c0a060" strokeWidth=".4"/>)}
+                {[10,20,30,40,50,60,70,80,90].map(x=><line key={`bv${x}`} x1={x} y1="67" x2={x} y2="100" stroke="#c0a060" strokeWidth=".4"/>)}
+                {/* Antarloka (middle third 33-67%): Hexagrams / Shatkona */}
+                {[38,48,58].map(y=><g key={`a${y}`}>
+                  <polygon points={`50,${y-6} 58,${y+4} 42,${y+4}`} fill="none" stroke="#c0a060" strokeWidth=".5"/>
+                  <polygon points={`50,${y+6} 42,${y-4} 58,${y-4}`} fill="none" stroke="#c0a060" strokeWidth=".5"/>
+                </g>)}
+                {/* Svargaloka (top third 0-33%): Circles / Mandalas */}
+                {[8,16,24].map(y=><g key={`s${y}`}>
+                  <circle cx="50" cy={y} r="12" fill="none" stroke="#c0a060" strokeWidth=".4"/>
+                  <circle cx="50" cy={y} r="7" fill="none" stroke="#c0a060" strokeWidth=".3"/>
+                  <circle cx="50" cy={y} r="2" fill="none" stroke="#c0a060" strokeWidth=".3"/>
+                </g>)}
+              </svg>
+              <div style={{position:"absolute",top:"33.3%",left:"2%",right:"2%",height:1,background:"linear-gradient(90deg,transparent,rgba(200,160,60,.18),transparent)",pointerEvents:"none",zIndex:10}}/>
+              <div style={{position:"absolute",top:"66.6%",left:"2%",right:"2%",height:1,background:"linear-gradient(90deg,transparent,rgba(200,160,60,.18),transparent)",pointerEvents:"none",zIndex:10}}/>
+              <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{position:"absolute",inset:0,width:"100%",height:"100%",pointerEvents:"none",zIndex:5}}>
+                {conns.map((cn,i)=>{const x1=cn.f.c*10+5,y1=cn.f.r*10+5,x2=cn.t.c*10+5,y2=cn.t.r*10+5;return cn.type==="s"?<Naga key={i} x1={x1} y1={y1} x2={x2} y2={y2} id={cn.id}/>:<Ldr key={i} x1={x1} y1={y1} x2={x2} y2={y2}/>})}
+              </svg>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(10,1fr)",position:"relative",zIndex:6}}>
               {board.map(({num})=>{
-                const sn=SNAKES[num],ld=LADDERS[num],dl=DLM_SQ.includes(num),mk=num===100;
+                const sn=SNAKES[num],ld=LADDERS[num],dl=DLM_SQ.includes(num),mk=num===108;
                 const ph=[];for(let i=0;i<nP;i++){if((pos[i]||1)===num)ph.push(i)}
                 let bg="transparent",bdr="rgba(200,160,60,.08)";
                 if(mk){bg="radial-gradient(circle,rgba(240,200,80,.2),transparent)";bdr="rgba(240,200,80,.5)"}
@@ -1076,8 +1843,8 @@ export default function MokshaPatam(){
                 return(<div key={num} onMouseEnter={()=>setHov(num)} onMouseLeave={()=>setHov(null)} style={{aspectRatio:"1",background:bg,border:`0.5px solid ${hov===num?"rgba(240,200,80,.6)":bdr}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .2s"}}>
                   <span style={{position:"absolute",top:1,left:2,fontSize:"clamp(7px,1.2vw,11px)",color:"rgba(240,210,130,.5)",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:700}}>{num}</span>
                   {mk&&<span style={{fontSize:"clamp(14px,2.5vw,22px)",animation:"mp 3s ease infinite",color:"#f0d050"}}>ॐ</span>}
-                  {sn&&<><span style={{fontSize:"clamp(8px,1.6vw,14px)",lineHeight:1}}>𓆙</span><span style={{fontSize:"clamp(6px,1vw,9px)",color:"#ffc050",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1,textShadow:"0 0 8px #000,0 1px 3px #000"}}>{sn.skt}</span><span style={{fontSize:"clamp(4px,.7vw,7px)",color:"#ffa840",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1,textShadow:"0 0 6px #000"}}>{sn.en}</span></>}
-                  {ld&&<><span style={{fontSize:"clamp(7px,1.4vw,12px)",lineHeight:1}}>🪔</span><span style={{fontSize:"clamp(6px,1vw,9px)",color:"#ffe070",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1,textShadow:"0 0 8px #000"}}>{ld.skt}</span><span style={{fontSize:"clamp(4px,.7vw,7px)",color:"#f0d060",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1,textShadow:"0 0 6px #000"}}>{ld.en}</span></>}
+                  {sn&&<><span style={{fontSize:"clamp(10px,2vw,16px)",lineHeight:1}}>𓆙</span><span style={{fontSize:"clamp(7px,1.2vw,11px)",color:"#ffb040",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 1px 4px #000,0 0 12px rgba(180,60,20,.5)"}}>{sn.skt}</span><span style={{fontSize:"clamp(5px,.9vw,8px)",color:"#ffa040",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1.1,textShadow:"0 0 6px #000,0 0 10px rgba(180,60,20,.4)"}}>{sn.en}</span></>}
+                  {ld&&<><span style={{fontSize:"clamp(9px,1.8vw,14px)",lineHeight:1}}>🪔</span><span style={{fontSize:"clamp(7px,1.2vw,11px)",color:"#ffe070",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 0 12px rgba(200,160,60,.4)"}}>{ld.skt}</span><span style={{fontSize:"clamp(5px,.9vw,8px)",color:"#f0d060",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1.1,textShadow:"0 0 6px #000"}}>{ld.en}</span></>}
                   {dl&&<><span style={{fontSize:"clamp(8px,1.5vw,13px)",lineHeight:1}}>⚖</span><span style={{fontSize:"clamp(5px,.8vw,7px)",color:"#c8a0f0",fontFamily:"'Cinzel',serif",fontWeight:900,textShadow:"0 0 8px #000",letterSpacing:1}}>DHARMA</span></>}
                   {ph.length>0&&<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",gap:2,zIndex:15,pointerEvents:"none"}}>
                     {ph.map(pi=>{const c=players[pi]?.char;const isMoving=pi===cur&&busy;const isActive=pi===cur;const pc=c?.color||"#fff";return <div key={pi} style={{display:"flex",flexDirection:"column",alignItems:"center",transition:"all .3s ease",transform:isMoving?"scale(1.6) translateY(-6px)":isActive?"scale(1.25)":"scale(0.9)",zIndex:isActive?20:15}}>
@@ -1089,9 +1856,10 @@ export default function MokshaPatam(){
                 </div>);
               })}
             </div>
+            </div>{/* close position:relative wrapper */}
           </div>
           <div style={{display:"flex",justifyContent:"center",gap:"clamp(10px,2.5vw,20px)",marginTop:6,fontSize:"clamp(8px,1.1vw,10px)",opacity:.45,color:"#c0b080",flexWrap:"wrap"}}>
-            <span style={{color:"#e08040"}}>𓆙 Nāga</span><span style={{color:"#f0d050"}}>🪔 Virtue</span><span style={{color:"#c8a0f0"}}>⚖ Dharma</span><span style={{color:"#f0d050"}}>ॐ Moksha</span>
+            <span style={{color:"#e08040"}}>𓆙 Nāga</span><span style={{color:"#f0d050"}}>🪔 Virtue</span><span style={{color:"#c8a0f0"}}>⚖ Dharma</span><span style={{color:"#f0d050"}}>🪷 Sacred Path</span><span style={{color:"#f0d050"}}>ॐ Moksha 108</span>
           </div>
         </div>
         {/* PANEL */}
@@ -1149,15 +1917,24 @@ export default function MokshaPatam(){
               </div>
               <div style={{fontSize:"clamp(12px,1.5vw,14px)",color:"#e0d0a0",lineHeight:2,marginBottom:20,fontStyle:"italic",padding:"0 4px",maxHeight:200,overflowY:"auto"}}>{dil.txt}</div>
               <div style={{display:"flex",flexDirection:"column",gap:10}}>
-                {dil.c.map((ch,ci)=><button key={ci} onClick={()=>solvD(ci)} style={{display:"block",width:"100%",background:ch.k==="punya"?"rgba(200,160,60,.1)":"rgba(180,50,20,.1)",border:`2px solid ${ch.k==="punya"?"rgba(220,180,80,.4)":"rgba(200,60,30,.4)"}`,color:ch.k==="punya"?"#f0d050":"#e08040",padding:"14px 16px",fontSize:"clamp(12px,1.4vw,14px)",fontFamily:"'Cinzel',serif",cursor:"pointer",textAlign:"left",lineHeight:1.7,borderRadius:6,transition:"all .2s",letterSpacing:1}}>
-                  {ch.l}
-                </button>)}
+                {dil.c.map((ch,ci)=>{
+                  const isAshtanga=!!dil.ashtanga;
+                  const btnBg=isAshtanga?"rgba(200,160,60,.08)":ch.k==="punya"?"rgba(200,160,60,.1)":"rgba(180,50,20,.1)";
+                  const btnBorder=isAshtanga?"rgba(200,160,60,.3)":ch.k==="punya"?"rgba(220,180,80,.4)":"rgba(200,60,30,.4)";
+                  const btnColor=isAshtanga?"#e0c860":ch.k==="punya"?"#f0d050":"#e08040";
+                  return <button key={ci} onClick={()=>solvD(ci)} style={{display:"block",width:"100%",background:btnBg,border:`2px solid ${btnBorder}`,color:btnColor,padding:"14px 16px",fontSize:"clamp(12px,1.4vw,14px)",fontFamily:"'Cinzel',serif",cursor:"pointer",textAlign:"left",lineHeight:1.7,borderRadius:6,transition:"all .2s",letterSpacing:1}}>
+                    {ch.l}
+                  </button>})}
               </div>
               <div style={{textAlign:"center",marginTop:14,fontSize:9,opacity:.25,letterSpacing:2}}>CHOOSE YOUR PATH WISELY</div>
             </div>
           </div>}
           <div style={{background:"linear-gradient(180deg,#1e1810,#14100a)",border:"1px solid rgba(200,160,60,.2)",padding:12,borderRadius:4}}>
-            <div style={{fontSize:9,letterSpacing:4,opacity:.5,marginBottom:10,color:"#f0d050",fontWeight:700,textAlign:"center"}}>⚔ KARMA SCOREBOARD ⚔</div>
+            <div onClick={(e)=>{
+              // ═══ HIDDEN DEBUG: Triple-click to jump to square 100 ═══
+              // To disable: remove this onClick handler
+              if(e.detail===3){const np=[...pos];np[cur]=100;setPos(np);setMsg("DEBUG: Jumped to 100")}
+            }} style={{fontSize:9,letterSpacing:4,opacity:.5,marginBottom:10,color:"#f0d050",fontWeight:700,textAlign:"center",cursor:"default"}}>⚔ KARMA SCOREBOARD ⚔</div>
             {players.map((pl,i)=>{const isActive=cur===i;const pn=punya[i]||0;const pp=papa[i]||0;const total=Math.max(pn+pp,1);const pc=pl.char.color;
               return(<div key={i} style={{background:isActive?`${pc}12`:"transparent",borderLeft:`4px solid ${isActive?pc:"transparent"}`,border:`1px solid ${isActive?pc+"50":"rgba(200,160,60,.08)"}`,borderLeftWidth:4,borderLeftColor:isActive?pc:"rgba(200,160,60,.08)",borderRadius:4,padding:"10px 12px",marginBottom:i<nP-1?8:0,transition:"all .3s",boxShadow:isActive?`inset 0 0 20px ${pc}10, 0 0 12px ${pc}15`:"none"}}>
                 <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
