@@ -1101,7 +1101,7 @@ const GameDB={
 
     // Insert game history
     console.log("GameDB: Step 3 - Inserting game_history...");
-    const{data:gameData,error:gameErr}=await supabase.from("game_history").insert({
+    const{error:gameErr}=await supabase.from("game_history").insert({
       user_id:userId,duration_seconds:d.duration||0,total_turns:d.turns||0,
       character_name:d.charName||"Seeker",character_icon:d.charIcon||"🔱",
       opponent_type:d.opponent||"yama",result:d.result||"quit",
@@ -1109,8 +1109,8 @@ const GameDB={
       snakes_hit:d.snakes||0,ladders_climbed:d.ladders||0,
       riddles_correct:d.riddlesC||0,riddles_wrong:d.riddlesW||0,
       highest_square:d.highest||1,ashtanga_reached:d.ashtanga||false
-    }).select();
-    console.log("GameDB: Step 4 -",gameErr?"ERROR: "+gameErr.message:"SUCCESS",gameData);
+    });
+    console.log("GameDB: Step 4 -",gameErr?"ERROR: "+gameErr.message:"SUCCESS");
 
     // Update profile
     console.log("GameDB: Step 5 - Updating profile...");
@@ -1135,7 +1135,7 @@ const GameDB={
       console.log("GameDB: Step 6 -",upErr?"ERROR: "+upErr.message:"PROFILE UPDATED ✓");
     }
     console.log("GameDB: ✓ ALL DONE");
-    return gameData;
+    return true;
   },
   async getHistory(userId,limit=20){if(!supabase||!userId)return[];const{data,error}=await supabase.from("game_history").select("*").eq("user_id",userId).order("played_at",{ascending:false}).limit(limit);if(error)console.error("getHistory:",error.message);return data||[]},
   async getLeaderboard(limit=50){if(!supabase)return[];const{data,error}=await supabase.from("leaderboard").select("*").limit(limit);if(error)console.error("getLeaderboard:",error.message);return data||[]},

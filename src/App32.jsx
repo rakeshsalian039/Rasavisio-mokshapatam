@@ -7,6 +7,8 @@ import { createClient } from '@supabase/supabase-js';
 const sbUrl = process.env.REACT_APP_SUPABASE_URL || '';
 const sbKey = process.env.REACT_APP_SUPABASE_ANON_KEY || '';
 const supabase = (sbUrl && sbKey) ? createClient(sbUrl, sbKey) : null;
+// Debug: log supabase status on load
+console.log("Supabase init:",supabase?"✓ Connected to "+sbUrl:"✗ NOT configured (missing env vars)");
 
 const SNAKES={16:{to:4,skt:"क्रोध",en:"WRATH",tale:"As Duryodhana's rage consumed the Kuru dynasty..."},23:{to:7,skt:"लोभ",en:"GREED",tale:"Like Shakuni who gambled away an empire..."},33:{to:12,skt:"मोह",en:"DELUSION",tale:"Dhritarashtra's blind love veiled all judgment..."},38:{to:21,skt:"मात्सर्य",en:"ENVY",tale:"Duryodhana burned with jealousy at Indraprastha..."},47:{to:29,skt:"काम",en:"DESIRE",tale:"Keechaka's lust brought his annihilation..."},56:{to:41,skt:"मद",en:"PRIDE",tale:"Ravana's arrogance toppled golden Lanka..."},62:{to:44,skt:"भय",en:"TERROR",tale:"Arjuna paralysed before the great war..."},74:{to:51,skt:"द्वेष",en:"HATRED",tale:"Drona and Drupada's hatred echoed ages..."},85:{to:59,skt:"आलस्य",en:"SLOTH",tale:"Kumbhakarna slept while dharma crumbled..."},95:{to:68,skt:"अहंकार",en:"EGO",tale:"Parashurama's ego challenged even Rama..."}};
 const LADDERS={3:{to:18,skt:"दया",en:"COMPASSION",tale:"Yudhishthira who wept for his enemies..."},9:{to:31,skt:"दान",en:"GENEROSITY",tale:"Karna gave his armour without hesitation..."},22:{to:42,skt:"सत्य",en:"TRUTH",tale:"Harishchandra sacrificed all for truth..."},28:{to:52,skt:"सेवा",en:"SERVICE",tale:"Hanuman whose devotion moved mountains..."},37:{to:58,skt:"तपस्",en:"AUSTERITY",tale:"Vishwamitra whose tapas shook Indra..."},44:{to:65,skt:"श्रद्धा",en:"FAITH",tale:"Shabari waited a lifetime for Rama..."},53:{to:72,skt:"विद्या",en:"WISDOM",tale:"Vidura whose counsel was dharma itself..."},61:{to:80,skt:"विवेक",en:"DISCERNMENT",tale:"Bhishma on his bed of arrows..."},71:{to:89,skt:"भक्ति",en:"DEVOTION",tale:"Prahlada whose devotion survived fire..."},82:{to:97,skt:"वैराग्य",en:"DETACHMENT",tale:"Siddhartha leaving the palace..."}};
@@ -950,24 +952,32 @@ function useSound(){
     else if(type==="victory"){o.type="sine";o.frequency.setValueAtTime(523,t);g.gain.setValueAtTime(.08,t);g.gain.exponentialRampToValueAtTime(.001,t+.8);o.start(t);o.stop(t+.8)}
     else if(type==="move"){o.type="sine";o.frequency.setValueAtTime(350,t);g.gain.setValueAtTime(.03,t);g.gain.exponentialRampToValueAtTime(.001,t+.08);o.start(t);o.stop(t+.08)}
     else if(type==="yamaLaugh"){
-      // Deep menacing laugh — descending notes
-      o.type="sawtooth";g.gain.setValueAtTime(.06,t);
-      o.frequency.setValueAtTime(180,t);o.frequency.setValueAtTime(160,t+.15);o.frequency.setValueAtTime(140,t+.3);o.frequency.setValueAtTime(120,t+.45);o.frequency.setValueAtTime(100,t+.6);
-      g.gain.exponentialRampToValueAtTime(.001,t+.8);o.start(t);o.stop(t+.8);
-      // Second laugh oscillator
+      // Deep menacing laugh — 3 descending laugh pulses, LOUD
+      o.type="sawtooth";
+      g.gain.setValueAtTime(.18,t);
+      // Pulse 1
+      o.frequency.setValueAtTime(200,t);o.frequency.setValueAtTime(140,t+.2);
+      g.gain.setValueAtTime(.18,t);g.gain.setValueAtTime(.02,t+.25);
+      // Pulse 2
+      g.gain.setValueAtTime(.15,t+.35);o.frequency.setValueAtTime(180,t+.35);o.frequency.setValueAtTime(120,t+.55);
+      g.gain.setValueAtTime(.02,t+.6);
+      // Pulse 3
+      g.gain.setValueAtTime(.12,t+.7);o.frequency.setValueAtTime(160,t+.7);o.frequency.setValueAtTime(90,t+1);
+      g.gain.exponentialRampToValueAtTime(.001,t+1.3);o.start(t);o.stop(t+1.4);
+      // Sub-bass rumble under laugh
       const o2=c.createOscillator(),g2=c.createGain();o2.connect(g2);g2.connect(c.destination);
-      o2.type="triangle";g2.gain.setValueAtTime(.04,t+.1);
-      o2.frequency.setValueAtTime(90,t+.1);o2.frequency.setValueAtTime(75,t+.3);o2.frequency.setValueAtTime(60,t+.5);
-      g2.gain.exponentialRampToValueAtTime(.001,t+.7);o2.start(t+.1);o2.stop(t+.7);
+      o2.type="triangle";g2.gain.setValueAtTime(.1,t);
+      o2.frequency.setValueAtTime(70,t);o2.frequency.setValueAtTime(50,t+.7);o2.frequency.setValueAtTime(35,t+1.2);
+      g2.gain.exponentialRampToValueAtTime(.001,t+1.3);o2.start(t);o2.stop(t+1.4);
     }
     else if(type==="chime"){
-      // Soft angelic chime — ascending harmonics
-      o.type="sine";g.gain.setValueAtTime(.05,t);
-      o.frequency.setValueAtTime(523,t);o.frequency.setValueAtTime(659,t+.15);o.frequency.setValueAtTime(784,t+.3);
-      g.gain.exponentialRampToValueAtTime(.001,t+.6);o.start(t);o.stop(t+.6);
+      // Soft angelic chime — ascending harmonics, louder
+      o.type="sine";g.gain.setValueAtTime(.12,t);
+      o.frequency.setValueAtTime(523,t);o.frequency.setValueAtTime(659,t+.2);o.frequency.setValueAtTime(784,t+.4);o.frequency.setValueAtTime(1047,t+.6);
+      g.gain.exponentialRampToValueAtTime(.001,t+1);o.start(t);o.stop(t+1);
       const o2=c.createOscillator(),g2=c.createGain();o2.connect(g2);g2.connect(c.destination);
-      o2.type="sine";g2.gain.setValueAtTime(.03,t+.05);
-      o2.frequency.setValueAtTime(1047,t+.05);o2.frequency.setValueAtTime(1319,t+.2);
+      o2.type="sine";g2.gain.setValueAtTime(.08,t+.1);
+      o2.frequency.setValueAtTime(1047,t+.1);o2.frequency.setValueAtTime(1319,t+.3);o2.frequency.setValueAtTime(1568,t+.5);
       g2.gain.exponentialRampToValueAtTime(.001,t+.5);o2.start(t+.05);o2.stop(t+.5);
     }
     }catch(e){}
@@ -1075,22 +1085,60 @@ function useAuth(){
 // ═══ GAME DATABASE SERVICE ═══
 const GameDB={
   async saveGame(userId,d){
-    if(!supabase||!userId)return null;
-    try{
-      await supabase.from("game_history").insert({user_id:userId,duration_seconds:d.duration||0,total_turns:d.turns||0,character_name:d.charName||"Seeker",character_icon:d.charIcon||"🔱",opponent_type:d.opponent||"yama",result:d.result||"quit",final_square:d.square||1,final_punya:d.punya||0,final_papa:d.papa||0,snakes_hit:d.snakes||0,ladders_climbed:d.ladders||0,dharma_cards_faced:d.dharma||0,riddles_correct:d.riddlesC||0,riddles_wrong:d.riddlesW||0,highest_square:d.highest||1,ashtanga_reached:d.ashtanga||false,moksha_rejected:d.rejected||0});
-      const isWin=d.result==="moksha_win"||d.result==="karma_win";
-      await supabase.from("profiles").update({
-        total_games:supabase.sql?undefined:undefined, // fallback below
-        total_punya_earned:(await supabase.from("profiles").select("total_punya_earned").eq("id",userId).single()).data?.total_punya_earned+(d.punya||0),
-        total_papa_earned:(await supabase.from("profiles").select("total_papa_earned").eq("id",userId).single()).data?.total_papa_earned+(d.papa||0),
+    if(!supabase||!userId){console.log("GameDB: No supabase or userId");return null}
+    console.log("GameDB: Step 1 - Saving game for",userId);
+
+    // Check if profile exists first
+    const{data:profileCheck,error:profileCheckErr}=await supabase.from("profiles").select("id").eq("id",userId).single();
+    console.log("GameDB: Step 2 - Profile exists?",profileCheck?"YES":"NO",profileCheckErr?.message||"");
+
+    // If no profile, create one
+    if(!profileCheck){
+      console.log("GameDB: Step 2b - Creating missing profile...");
+      const{error:createErr}=await supabase.from("profiles").insert({id:userId,display_name:"Seeker",email:"",provider:"google"});
+      console.log("GameDB: Profile create:",createErr?"FAILED "+createErr.message:"OK");
+    }
+
+    // Insert game history
+    console.log("GameDB: Step 3 - Inserting game_history...");
+    const{data:gameData,error:gameErr}=await supabase.from("game_history").insert({
+      user_id:userId,duration_seconds:d.duration||0,total_turns:d.turns||0,
+      character_name:d.charName||"Seeker",character_icon:d.charIcon||"🔱",
+      opponent_type:d.opponent||"yama",result:d.result||"quit",
+      final_square:d.square||1,final_punya:d.punya||0,final_papa:d.papa||0,
+      snakes_hit:d.snakes||0,ladders_climbed:d.ladders||0,
+      riddles_correct:d.riddlesC||0,riddles_wrong:d.riddlesW||0,
+      highest_square:d.highest||1,ashtanga_reached:d.ashtanga||false
+    }).select();
+    console.log("GameDB: Step 4 -",gameErr?"ERROR: "+gameErr.message:"SUCCESS",gameData);
+
+    // Update profile
+    console.log("GameDB: Step 5 - Updating profile...");
+    const isWin=d.result==="moksha_win"||d.result==="karma_win";
+    const{data:cur}=await supabase.from("profiles").select("*").eq("id",userId).single();
+    if(cur){
+      const{error:upErr}=await supabase.from("profiles").update({
+        total_games:(cur.total_games||0)+1,
+        total_wins:(cur.total_wins||0)+(isWin?1:0),
+        total_moksha_wins:(cur.total_moksha_wins||0)+(d.result==="moksha_win"?1:0),
+        total_karma_wins:(cur.total_karma_wins||0)+(d.result==="karma_win"?1:0),
+        total_punya_earned:(cur.total_punya_earned||0)+(d.punya||0),
+        total_papa_earned:(cur.total_papa_earned||0)+(d.papa||0),
+        highest_square_reached:Math.max(cur.highest_square_reached||1,d.highest||1),
+        total_snakes_hit:(cur.total_snakes_hit||0)+(d.snakes||0),
+        total_ladders_climbed:(cur.total_ladders_climbed||0)+(d.ladders||0),
+        total_riddles_correct:(cur.total_riddles_correct||0)+(d.riddlesC||0),
+        total_riddles_wrong:(cur.total_riddles_wrong||0)+(d.riddlesW||0),
+        favorite_character:d.charName||cur.favorite_character,
         last_played_at:new Date().toISOString()
       }).eq("id",userId);
-      // Use RPC if available
-      await supabase.rpc("update_profile_stats",{p_user_id:userId,p_punya:d.punya||0,p_papa:d.papa||0,p_is_win:isWin,p_is_moksha:d.result==="moksha_win",p_is_karma:d.result==="karma_win",p_highest:d.highest||1,p_snakes:d.snakes||0,p_ladders:d.ladders||0,p_riddles_c:d.riddlesC||0,p_riddles_w:d.riddlesW||0,p_character:d.charName||"Seeker"}).catch(()=>{});
-    }catch(e){console.error("Save error:",e)}
+      console.log("GameDB: Step 6 -",upErr?"ERROR: "+upErr.message:"PROFILE UPDATED ✓");
+    }
+    console.log("GameDB: ✓ ALL DONE");
+    return gameData;
   },
-  async getHistory(userId,limit=20){if(!supabase||!userId)return[];const{data}=await supabase.from("game_history").select("*").eq("user_id",userId).order("played_at",{ascending:false}).limit(limit);return data||[]},
-  async getLeaderboard(limit=50){if(!supabase)return[];const{data}=await supabase.from("leaderboard").select("*").limit(limit);return data||[]},
+  async getHistory(userId,limit=20){if(!supabase||!userId)return[];const{data,error}=await supabase.from("game_history").select("*").eq("user_id",userId).order("played_at",{ascending:false}).limit(limit);if(error)console.error("getHistory:",error.message);return data||[]},
+  async getLeaderboard(limit=50){if(!supabase)return[];const{data,error}=await supabase.from("leaderboard").select("*").limit(limit);if(error)console.error("getLeaderboard:",error.message);return data||[]},
 };
 
 // ═══ GOOGLE SVG ICON ═══
@@ -1100,6 +1148,7 @@ function AppleIcon(){return <svg width="18" height="18" viewBox="0 0 24 24" fill
 export default function MokshaPatam108(){
   const auth=useAuth();
   const[showProfile,setShowProfile]=useState(false);
+  const[devMode,setDevMode]=useState(false);
   const[profileTab,setProfileTab]=useState("overview");
   const[gameHistory,setGameHistory]=useState([]);
   const[leaderboard,setLeaderboard]=useState([]);
@@ -1161,24 +1210,31 @@ export default function MokshaPatam108(){
   },[ambient]);
 
   const eventCallback=useRef(null);
+  const voiceTimerRef=useRef(null);
   const showEvent = useCallback((popup, onDismiss) => {
-    // ALWAYS stop any previous voice first to prevent overlapping
+    // Kill ANY pending or playing voice
+    if(voiceTimerRef.current){clearTimeout(voiceTimerRef.current);voiceTimerRef.current=null}
     VoiceEngine.stop();
     try{window.speechSynthesis.cancel()}catch(e){}
     setEventPopup(popup);
     eventCallback.current=onDismiss||null;
     if(!muted&&popup.subtitle){
       ambient.duck();
-      // Small delay to ensure previous audio is fully stopped
-      setTimeout(()=>VoiceEngine.speak(popup.subtitle,chosenLang),150);
+      voiceTimerRef.current=setTimeout(()=>{voiceTimerRef.current=null;VoiceEngine.speak(popup.subtitle,chosenLang)},200);
     }
   }, [muted,chosenLang,ambient]);
   const dismissEvent = useCallback(() => {
+    // Cancel any pending voice timeout + stop any playing voice
+    if(voiceTimerRef.current){clearTimeout(voiceTimerRef.current);voiceTimerRef.current=null}
     VoiceEngine.stop();
     try{window.speechSynthesis.cancel()}catch(e){}
-    ambient.unduck();
     setEventPopup(null);
-    if(eventCallback.current){const cb=eventCallback.current;eventCallback.current=null;setTimeout(cb,200);}
+    if(eventCallback.current){
+      const cb=eventCallback.current;eventCallback.current=null;
+      setTimeout(()=>{cb()},300);
+    }else{
+      ambient.unduck();
+    }
   }, [ambient]);
 
   useEffect(()=>{try{window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices()}catch(e){}},[]);
@@ -1396,24 +1452,36 @@ export default function MokshaPatam108(){
     if(dil.ashtanga){
       // ═══ ASHTANGA RIDDLE RESULT ═══
       if(ch.k==="punya"){
-        // CORRECT — give punya, advance normally (already moved to this square)
         np[dil.pi]+=(fx.punya||2);
         setPunya(np);setPapa(npa);setSkipA(nsk);setPos(npos);setShieldA(nsh);
-        play("chime");gameStats.current.riddlesC++;
         setMsg(`✓ Correct! ${pName} gains +${fx.punya||2} Punya`);
-        // Speak congratulations
-        if(!muted)VoiceEngine.speak(`Well done ${pName}! You have answered correctly. Your soul grows purer.`,chosenLang);
+        gameStats.current.riddlesC++;
+        // Play chime + speak appreciation with delay so voice isn't killed
+        play("chime");
+        if(!muted){
+          ambient.duck();
+          setTimeout(()=>VoiceEngine.speak(`Well done ${pName}! You answered correctly. Your soul grows purer.`,chosenLang),300);
+          setTimeout(()=>ambient.unduck(),4000);
+        }
       }else{
-        // WRONG — add papa, move BACK but stay on sacred path if possible
         npa[dil.pi]+=(fx.papa||1);
         const curPos=npos[dil.pi];
-        const backTo=Math.max(1,curPos-1); // go back 1 step on sacred path (retry next turn)
+        const backTo=Math.max(1,curPos-1);
         npos[dil.pi]=backTo;
         setPunya(np);setPapa(npa);setSkipA(nsk);setPos(npos);setShieldA(nsh);
-        play("yamaLaugh");
         setMsg(`✗ Wrong! ${pName} falls back to square ${backTo}. +${fx.papa||1} Papa`);
+        gameStats.current.riddlesW++;
+        // Play Yama laugh with delay
+        play("yamaLaugh");
+        if(!muted){
+          ambient.duck();
+          setTimeout(()=>VoiceEngine.speak(`Wrong answer! Yama laughs at your ignorance. Back to square ${backTo}.`,chosenLang),300);
+          setTimeout(()=>ambient.unduck(),4000);
+        }
       }
       if(np[dil.pi]>=30&&!win){setWin(dil.pi);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory")}
+      // Clear dil FIRST so useEffect cleanup doesn't kill the voice we just started
+      const dilRef=dil;
       setDil(null);setCur(c=>(c+1)%nP);
       return;
     }
@@ -1434,6 +1502,27 @@ export default function MokshaPatam108(){
     if(np[dil.pi]>=30&&!win){setWin(dil.pi);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory")}
     setDil(null);setCur(c=>(c+1)%nP);
   };
+
+  // ═══ AUTO-SAVE GAME ON WIN ═══
+  useEffect(()=>{
+    if(win===null||!auth.user||!players[win])return;
+    const gs=gameStats.current;
+    const isKarma=punya[win]>=30;
+    const isMoksha=pos[win]>=108&&punya[win]>=papa[win];
+    GameDB.saveGame(auth.user.id,{
+      duration:Math.floor((Date.now()-(gs.startTime||Date.now()))/1000),
+      turns:gs.turns||0,
+      charName:players[win]?.char?.name||"Seeker",
+      charIcon:players[win]?.char?.icon||"🔱",
+      opponent:players.some(p=>p.cpu)?"yama":"multiplayer",
+      result:isKarma?"karma_win":"moksha_win",
+      square:pos[win]||108,
+      punya:punya[win]||0,papa:papa[win]||0,
+      snakes:gs.snakes||0,ladders:gs.ladders||0,
+      dharma:gs.dharma||0,riddlesC:gs.riddlesC||0,riddlesW:gs.riddlesW||0,
+      highest:gs.highest||1,ashtanga:gs.ashtanga||false,rejected:gs.rejected||0
+    }).then(()=>{auth.refresh();console.log("Game saved!")}).catch(e=>console.error("Save failed:",e));
+  },[win]);
 
   // ═══ TURN ANNOUNCEMENT + CPU AUTO-PLAY ═══
   useEffect(()=>{
@@ -1465,9 +1554,18 @@ export default function MokshaPatam108(){
   // ═══ DHARMA VOICE — read aloud when card appears (skip CPU) ═══
   useEffect(()=>{
     if(!dil||muted||players[dil.pi]?.cpu)return;
-    const voiceText=`Dharma Dilemma. ${dil.en}. ${dil.txt}. Your choices are: ${dil.c.map((c,i)=>c.l).join('. Or. ')}`;
-    VoiceEngine.speak(voiceText,chosenLang);
-    return()=>VoiceEngine.stop();
+    // Stop any lingering audio first, then duck ambient, then speak with delay
+    VoiceEngine.stop();
+    try{window.speechSynthesis.cancel()}catch(e){}
+    ambient.duck();
+    const timer=setTimeout(()=>{
+      const voiceText=dil.ashtanga
+        ?`Riddle of ${dil.en}. ${dil.txt}. Option one: ${dil.c[0].l}. Option two: ${dil.c[1].l}.`
+        :`Dharma Dilemma. ${dil.en}. ${dil.txt}. Your choices are: ${dil.c.map((c,i)=>c.l).join('. Or. ')}`;
+      VoiceEngine.speak(voiceText,chosenLang);
+    },500);
+    // Only clear timer on cleanup, DON'T stop voice - let it finish naturally after card closes
+    return()=>{clearTimeout(timer)};
   },[dil,muted]);
 
   const board=useMemo(()=>{const s=[];for(let r=0;r<10;r++)for(let c=0;c<10;c++){const a=9-r;s.push({num:a*10+(a%2===0?c:9-c)+1})}return s},[]);
@@ -2037,6 +2135,20 @@ export default function MokshaPatam108(){
           <div style={{display:"flex",justifyContent:"center",gap:"clamp(10px,2.5vw,20px)",marginTop:6,fontSize:"clamp(8px,1.1vw,10px)",opacity:.45,color:"#c0b080",flexWrap:"wrap"}}>
             <span style={{color:"#e08040"}}>𓆙 Nāga</span><span style={{color:"#f0d050"}}>🪔 Virtue</span><span style={{color:"#c8a0f0"}}>⚖ Dharma</span><span style={{color:"#f0d050"}}>🪷 Sacred Path</span><span style={{color:"#f0d050"}}>ॐ Moksha 108</span>
           </div>
+          {/* Karma Victory + Punya needed indicator */}
+          <div style={{display:"flex",justifyContent:"center",gap:12,marginTop:4,fontSize:"clamp(8px,1vw,10px)",flexWrap:"wrap",alignItems:"center"}}>
+            <div style={{display:"flex",alignItems:"center",gap:4,padding:"3px 10px",background:"rgba(100,200,100,.06)",border:"1px solid rgba(100,200,100,.12)",borderRadius:12}}>
+              <span style={{color:"#80c080",fontWeight:700}}>⚡ Karma Victory: 30 Punya</span>
+            </div>
+            <div style={{display:"flex",alignItems:"center",gap:4,padding:"3px 10px",background:"rgba(240,200,80,.06)",border:"1px solid rgba(240,200,80,.12)",borderRadius:12}}>
+              <span style={{color:"#f0d050",fontWeight:700}}>ॐ Moksha: Punya ≥ Papa at Sq 108</span>
+            </div>
+            {players[cur]&&<div style={{padding:"3px 10px",background:punya[cur]>=30?"rgba(100,200,100,.1)":punya[cur]>=papa[cur]?"rgba(240,200,80,.08)":"rgba(200,80,60,.08)",border:`1px solid ${punya[cur]>=30?"rgba(100,200,100,.2)":punya[cur]>=papa[cur]?"rgba(240,200,80,.15)":"rgba(200,80,60,.15)"}`,borderRadius:12}}>
+              <span style={{color:punya[cur]>=30?"#80c080":punya[cur]>=papa[cur]?"#f0d050":"#e08060",fontWeight:700}}>
+                {punya[cur]>=30?"⚡ KARMA READY!":`You: ${punya[cur]} Punya / ${papa[cur]} Papa ${punya[cur]>=papa[cur]?"✓ Pure":"✗ Impure"}`}
+              </span>
+            </div>}
+          </div>
         </div>
         {/* PANEL */}
         <div style={{flex:"0 1 310px",display:"flex",flexDirection:"column",gap:8,minWidth:"clamp(250px,40vw,310px)",maxWidth:360}}>
@@ -2078,25 +2190,9 @@ export default function MokshaPatam108(){
               <span style={{color:"#e08060"}}>Papa: {papa[win]}</span>
               <span>Sq: {pos[win]}</span>
             </div>
-            {auth.user&&<div style={{fontSize:10,color:"#80c080",marginBottom:8,opacity:.7}}>✓ Game saved to your profile</div>}
+            {auth.user&&<div style={{fontSize:11,color:"#80c080",marginBottom:8}}>✓ Game saved to your profile</div>}
             <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
-              <button onClick={()=>{
-                // Save game to database
-                if(auth.user){
-                  const gs=gameStats.current;
-                  const isKarma=punya[win]>=30;
-                  GameDB.saveGame(auth.user.id,{
-                    duration:Math.floor((Date.now()-gs.startTime)/1000),turns:gs.turns,
-                    charName:players[win]?.char?.name,charIcon:players[win]?.char?.icon,
-                    opponent:players.some(p=>p.cpu)?"yama":"multiplayer",
-                    result:isKarma?"karma_win":"moksha_win",square:pos[win],
-                    punya:punya[win],papa:papa[win],snakes:gs.snakes,ladders:gs.ladders,
-                    dharma:gs.dharma,riddlesC:gs.riddlesC,riddlesW:gs.riddlesW,
-                    highest:gs.highest,ashtanga:gs.ashtanga,rejected:gs.rejected
-                  }).then(()=>auth.refresh());
-                }
-                setScreen("title");setWin(null);setPlayers([]);ambient.stop()
-              }} className="gb" style={{marginTop:4}}>New Journey</button>
+              <button onClick={()=>{setScreen("title");setWin(null);setPlayers([]);ambient.stop()}} className="gb" style={{marginTop:4}}>New Journey</button>
               {auth.user&&<button onClick={()=>{setShowProfile(true);setProfileTab("history")}} className="gb" style={{marginTop:4,opacity:.7}}>📊 View Stats</button>}
             </div>
           </div>}
@@ -2132,10 +2228,33 @@ export default function MokshaPatam108(){
           </div>}
           <div style={{background:"linear-gradient(180deg,#1e1810,#14100a)",border:"1px solid rgba(200,160,60,.2)",padding:12,borderRadius:4}}>
             <div onClick={(e)=>{
-              // ═══ HIDDEN DEBUG: Triple-click to jump to square 100 ═══
-              // To disable: remove this onClick handler
-              if(e.detail===3){const np=[...pos];np[cur]=100;setPos(np);setMsg("DEBUG: Jumped to 100")}
+              // ═══ HIDDEN DEV PANEL: Triple-click to toggle ═══
+              // To disable before release: search "devMode" and remove all related code
+              if(e.detail===3)setDevMode(d=>!d)
             }} style={{fontSize:9,letterSpacing:4,opacity:.5,marginBottom:10,color:"#f0d050",fontWeight:700,textAlign:"center",cursor:"default"}}>⚔ KARMA SCOREBOARD ⚔</div>
+            {/* ═══ DEV PANEL — Triple-click scoreboard title to show/hide ═══ */}
+            {devMode&&<div style={{background:"rgba(255,0,0,.05)",border:"1px solid rgba(255,60,60,.2)",borderRadius:4,padding:10,marginBottom:10,fontSize:10}}>
+              <div style={{color:"#ff6060",fontWeight:700,letterSpacing:2,marginBottom:8,textAlign:"center"}}>🔧 DEV MODE</div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
+                <button onClick={()=>{const np=[...pos];np[cur]=100;setPos(np);setMsg("DEV: →100")}} style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",color:"#e8c850",padding:"6px",fontSize:10,cursor:"pointer",borderRadius:3}}>Jump to 100</button>
+                <button onClick={()=>{const np=[...pos];np[cur]=101;setPos(np);setMsg("DEV: →101")}} style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",color:"#e8c850",padding:"6px",fontSize:10,cursor:"pointer",borderRadius:3}}>Jump to 101</button>
+                <button onClick={()=>{const np=[...pos];np[cur]=107;setPos(np);setMsg("DEV: →107")}} style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",color:"#e8c850",padding:"6px",fontSize:10,cursor:"pointer",borderRadius:3}}>Jump to 107</button>
+                <button onClick={()=>{const np=[...pos];np[cur]=108;setPos(np);setMsg("DEV: →108")}} style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",color:"#e8c850",padding:"6px",fontSize:10,cursor:"pointer",borderRadius:3}}>Jump to 108</button>
+                <button onClick={()=>{const np=[...punya];np[cur]+=5;setPunya(np);setMsg("DEV: +5 Punya")}} style={{background:"rgba(100,200,100,.1)",border:"1px solid rgba(100,200,100,.2)",color:"#80c080",padding:"6px",fontSize:10,cursor:"pointer",borderRadius:3}}>+5 Punya</button>
+                <button onClick={()=>{const np=[...papa];np[cur]+=5;setPapa(np);setMsg("DEV: +5 Papa")}} style={{background:"rgba(200,80,60,.1)",border:"1px solid rgba(200,80,60,.2)",color:"#e08060",padding:"6px",fontSize:10,cursor:"pointer",borderRadius:3}}>+5 Papa</button>
+                <button onClick={()=>{const np=[...punya];np[cur]=30;setPunya(np);setMsg("DEV: Punya=30 KARMA!")}} style={{background:"rgba(100,200,100,.15)",border:"1px solid rgba(100,200,100,.3)",color:"#80c080",padding:"6px",fontSize:10,cursor:"pointer",borderRadius:3}}>Set 30 Punya</button>
+                <button onClick={()=>{const np=[...punya];np[cur]=0;setPunya(np);const npa=[...papa];npa[cur]=0;setPapa(npa);setMsg("DEV: Reset karma")}} style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",color:"#c0b080",padding:"6px",fontSize:10,cursor:"pointer",borderRadius:3}}>Reset Karma</button>
+                <button onClick={()=>{const ns=[...shieldA];ns[cur]=!ns[cur];setShieldA(ns);setMsg("DEV: Shield "+(ns[cur]?"ON":"OFF"))}} style={{background:"rgba(200,160,200,.1)",border:"1px solid rgba(200,160,200,.2)",color:"#d0a0d0",padding:"6px",fontSize:10,cursor:"pointer",borderRadius:3}}>Toggle Shield</button>
+                <button onClick={()=>{play("yamaLaugh");setMsg("DEV: Yama laughs!")}} style={{background:"rgba(200,60,60,.1)",border:"1px solid rgba(200,60,60,.2)",color:"#e06060",padding:"6px",fontSize:10,cursor:"pointer",borderRadius:3}}>Test Laugh</button>
+                <button onClick={()=>{play("chime");setMsg("DEV: Chime!")}} style={{background:"rgba(200,200,100,.1)",border:"1px solid rgba(200,200,100,.2)",color:"#c0c060",padding:"6px",fontSize:10,cursor:"pointer",borderRadius:3}}>Test Chime</button>
+                <button onClick={()=>{if(!muted)VoiceEngine.speak("Testing voice. Can you hear me?",chosenLang);setMsg("DEV: Voice test")}} style={{background:"rgba(100,150,200,.1)",border:"1px solid rgba(100,150,200,.2)",color:"#80a0c0",padding:"6px",fontSize:10,cursor:"pointer",borderRadius:3}}>Test Voice</button>
+              </div>
+              <div style={{marginTop:8,padding:6,background:"rgba(0,0,0,.2)",borderRadius:3,fontSize:9,color:"#8a7a50",fontFamily:"monospace",lineHeight:1.6}}>
+                P{cur}: Sq{pos[cur]} | Punya:{punya[cur]} Papa:{papa[cur]} | Shield:{shieldA[cur]?"Y":"N"} | Win:{win!==null?win:"—"}<br/>
+                Stats: 🐍{gameStats.current.snakes} 🪔{gameStats.current.ladders} ✓{gameStats.current.riddlesC} ✗{gameStats.current.riddlesW}<br/>
+                Auth: {auth.user?auth.profile?.display_name||auth.user.email:"Not signed in"}
+              </div>
+            </div>}
             {players.map((pl,i)=>{const isActive=cur===i;const pn=punya[i]||0;const pp=papa[i]||0;const total=Math.max(pn+pp,1);const pc=pl.char.color;
               return(<div key={i} style={{background:isActive?`${pc}12`:"transparent",borderLeft:`4px solid ${isActive?pc:"transparent"}`,border:`1px solid ${isActive?pc+"50":"rgba(200,160,60,.08)"}`,borderLeftWidth:4,borderLeftColor:isActive?pc:"rgba(200,160,60,.08)",borderRadius:4,padding:"10px 12px",marginBottom:i<nP-1?8:0,transition:"all .3s",boxShadow:isActive?`inset 0 0 20px ${pc}10, 0 0 12px ${pc}15`:"none"}}>
                 <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
