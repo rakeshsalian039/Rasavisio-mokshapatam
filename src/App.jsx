@@ -1063,11 +1063,13 @@ function useAuth(){
     const{data:{subscription}}=supabase.auth.onAuthStateChange(async(_,session)=>{setUser(session?.user??null);if(session?.user)await loadProfile(session.user.id);else setProfile(null)});
     return()=>subscription.unsubscribe();
   },[]);
-  const signInGoogle=useCallback(async()=>{if(!supabase)return;await supabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.origin}})},[]);
-  const signInApple=useCallback(async()=>{if(!supabase)return;await supabase.auth.signInWithOAuth({provider:"apple",options:{redirectTo:window.location.origin}})},[]);
+  const signInGoogle=useCallback(async()=>{
+    if(!supabase){alert("Supabase not configured. Set REACT_APP_SUPABASE_URL and REACT_APP_SUPABASE_ANON_KEY in Vercel env vars.");return}
+    try{const{error}=await supabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.origin}});if(error){console.error("Google sign-in error:",error);alert("Google sign-in failed: "+error.message)}}catch(e){console.error("Sign-in error:",e);alert("Sign-in error: "+e.message)}
+  },[]);
   const signOut=useCallback(async()=>{if(!supabase)return;await supabase.auth.signOut();setUser(null);setProfile(null)},[]);
   const refresh=useCallback(async()=>{if(user)await loadProfile(user.id)},[user]);
-  return{user,profile,signInGoogle,signInApple,signOut,loading,refresh};
+  return{user,profile,signInGoogle,signOut,loading,refresh};
 }
 
 // ═══ GAME DATABASE SERVICE ═══
@@ -1564,7 +1566,6 @@ export default function MokshaPatam108(){
             <p style={{color:"#8a7a50",fontSize:13,lineHeight:1.8,marginBottom:30,maxWidth:400,margin:"0 auto 30px"}}>Sign in to save your journey across lifetimes. Track Punya and Papa, climb the sacred leaderboard, and carry your karma from game to game.</p>
             <div style={{display:"flex",flexDirection:"column",gap:10,alignItems:"center"}}>
               <button onClick={auth.signInGoogle} style={{display:"flex",alignItems:"center",gap:10,padding:"12px 24px",background:"rgba(255,255,255,.05)",border:"1px solid rgba(200,160,60,.2)",borderRadius:6,cursor:"pointer",color:"#e8c850",fontSize:13,fontFamily:"'Cinzel',serif",letterSpacing:1,width:260,justifyContent:"center"}}><GoogleIcon/>Continue with Google</button>
-              <button onClick={auth.signInApple} style={{display:"flex",alignItems:"center",gap:10,padding:"12px 24px",background:"rgba(255,255,255,.05)",border:"1px solid rgba(200,160,60,.2)",borderRadius:6,cursor:"pointer",color:"#e8c850",fontSize:13,fontFamily:"'Cinzel',serif",letterSpacing:1,width:260,justifyContent:"center"}}><AppleIcon/>Continue with Apple</button>
               <div style={{fontSize:9,opacity:.25,letterSpacing:2,marginTop:6}}>SIGN IN TO SAVE YOUR KARMA</div>
             </div>
             <div style={{marginTop:40,padding:20,background:"rgba(200,160,60,.03)",borderRadius:8,border:"1px solid rgba(200,160,60,.06)",textAlign:"left"}}>
@@ -1635,8 +1636,8 @@ export default function MokshaPatam108(){
           </>})()}
         {/* Footer */}
         <div style={{textAlign:"center",padding:"24px 0 10px",borderTop:"1px solid rgba(200,160,60,.06)",marginTop:24}}>
-          <div style={{fontSize:9,color:"#5a4a30",letterSpacing:2}}>MOKSHA PATAM 108 · मोक्ष पटम् १०८</div>
-          <div style={{fontSize:8,color:"#3a3020",letterSpacing:1,marginTop:4}}>© {new Date().getFullYear()} RasaVisio · All rights reserved</div>
+          <div style={{fontSize:11,color:"#a09060",letterSpacing:2}}>MOKSHA PATAM 108 · मोक्ष पटम् १०८</div>
+          <div style={{fontSize:10,color:"#7a6a40",letterSpacing:1,marginTop:4}}>© {new Date().getFullYear()} RasaVisio · All rights reserved</div>
         </div>
       </div>
     </div>}
@@ -1701,15 +1702,14 @@ export default function MokshaPatam108(){
             <div style={{fontSize:9,opacity:.3,letterSpacing:3}}>SAVE YOUR KARMA</div>
             <div style={{display:"flex",gap:8,flexWrap:"wrap",justifyContent:"center"}}>
               <button onClick={auth.signInGoogle} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 18px",background:"rgba(255,255,255,.04)",border:"1px solid rgba(200,160,60,.15)",borderRadius:6,cursor:"pointer",color:"#c0b080",fontSize:11,fontFamily:"'Cinzel',serif",letterSpacing:1}}><GoogleIcon/>Google</button>
-              <button onClick={auth.signInApple} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 18px",background:"rgba(255,255,255,.04)",border:"1px solid rgba(200,160,60,.15)",borderRadius:6,cursor:"pointer",color:"#c0b080",fontSize:11,fontFamily:"'Cinzel',serif",letterSpacing:1}}><AppleIcon/>Apple</button>
             </div>
           </div>
         )}
       </div>
       {/* ═══ COPYRIGHT FOOTER ═══ */}
       <div style={{position:"fixed",bottom:12,left:0,right:0,textAlign:"center"}}>
-        <div style={{fontSize:8,color:"#3a3020",letterSpacing:2}}>© {new Date().getFullYear()} RasaVisio · All rights reserved</div>
-        <div style={{fontSize:7,color:"#2a2018",letterSpacing:1,marginTop:2}}>Inspired by the ancient game of Moksha Patam · Created in India 🇮🇳</div>
+        <div style={{fontSize:11,color:"#8a7a50",letterSpacing:2}}>© {new Date().getFullYear()} RasaVisio · All rights reserved</div>
+        <div style={{fontSize:10,color:"#6a5a38",letterSpacing:1,marginTop:3}}>Inspired by the ancient game of Moksha Patam · Created in India 🇮🇳</div>
       </div>
     </div>
   );
@@ -1819,7 +1819,7 @@ export default function MokshaPatam108(){
           </button>
         </div>}
 
-        <div style={{position:"fixed",bottom:20,textAlign:"center"}}><InstaBadge/></div>
+        <div style={{position:"fixed",bottom:8,left:0,right:0,textAlign:"center"}}><InstaBadge/><div style={{fontSize:9,color:"#6a5a38",letterSpacing:1,marginTop:3}}>© {new Date().getFullYear()} RasaVisio · Moksha Patam 108 · All rights reserved</div></div>
       </div>
     );
   }
