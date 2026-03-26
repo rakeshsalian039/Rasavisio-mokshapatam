@@ -1814,75 +1814,26 @@ export default function MokshaPatam108(){
           {/* Connecting radial lines — like spokes */}
           {[0,45,90,135,180,225,270,315].map(a=><line key={"sp"+a} x1={400+70*Math.cos(a*Math.PI/180)} y1={400+70*Math.sin(a*Math.PI/180)} x2={400+350*Math.cos(a*Math.PI/180)} y2={400+350*Math.sin(a*Math.PI/180)} stroke="#c0a040" strokeWidth=".15" opacity=".04"/>)}
         </svg>
-        {/* ═══ NAGA ROPE BORDER — thick braided rope surrounding the entire page ═══ */}
-        <svg style={{position:"absolute",inset:0,width:"100%",height:"100%",pointerEvents:"none"}} preserveAspectRatio="none" viewBox="0 0 1000 1000">
-          {/* Outer rope frame — triple strand */}
-          <rect x="30" y="30" width="940" height="940" rx="20" fill="none" stroke="#6a5520" strokeWidth="4" opacity=".12"/>
-          <rect x="38" y="38" width="924" height="924" rx="16" fill="none" stroke="#8a7030" strokeWidth="1.5" opacity=".08"/>
-          <rect x="22" y="22" width="956" height="956" rx="24" fill="none" stroke="#5a4518" strokeWidth="1.5" opacity=".06"/>
-
-          {/* Top rope — undulating thick naga body */}
-          <path d="M80,35 C150,15 250,55 350,30 C450,5 550,55 650,30 C750,5 850,50 920,35" fill="none" stroke="#8a7030" strokeWidth="5" strokeLinecap="round" opacity=".15"/>
-          <path d="M80,35 C150,15 250,55 350,30 C450,5 550,55 650,30 C750,5 850,50 920,35" fill="none" stroke="#a08830" strokeWidth="2" strokeLinecap="round" opacity=".08" strokeDasharray="8 6"/>
-          {/* Bottom rope */}
-          <path d="M80,965 C150,985 250,945 350,970 C450,995 550,945 650,970 C750,995 850,950 920,965" fill="none" stroke="#8a7030" strokeWidth="5" strokeLinecap="round" opacity=".15"/>
-          <path d="M80,965 C150,985 250,945 350,970 C450,995 550,945 650,970 C750,995 850,950 920,965" fill="none" stroke="#a08830" strokeWidth="2" strokeLinecap="round" opacity=".08" strokeDasharray="8 6"/>
-          {/* Left rope */}
-          <path d="M35,80 C15,150 55,250 30,350 C5,450 55,550 30,650 C5,750 50,850 35,920" fill="none" stroke="#8a7030" strokeWidth="5" strokeLinecap="round" opacity=".15"/>
-          <path d="M35,80 C15,150 55,250 30,350 C5,450 55,550 30,650 C5,750 50,850 35,920" fill="none" stroke="#a08830" strokeWidth="2" strokeLinecap="round" opacity=".08" strokeDasharray="8 6"/>
-          {/* Right rope */}
-          <path d="M965,80 C985,150 945,250 970,350 C995,450 945,550 970,650 C995,750 950,850 965,920" fill="none" stroke="#8a7030" strokeWidth="5" strokeLinecap="round" opacity=".15"/>
-          <path d="M965,80 C985,150 945,250 970,350 C995,450 945,550 970,650 C995,750 950,850 965,920" fill="none" stroke="#a08830" strokeWidth="2" strokeLinecap="round" opacity=".08" strokeDasharray="8 6"/>
-
-          {/* Corner knots — thick rope tied into circular loops */}
-          <g opacity=".22">
-            <circle cx="50" cy="50" r="24" fill="none" stroke="#8a7030" strokeWidth="5"/>
-            <circle cx="50" cy="50" r="15" fill="none" stroke="#a08830" strokeWidth="2.5"/>
-            <path d="M30,50 Q50,30 70,50 Q50,70 30,50 Z" fill="none" stroke="#c0a040" strokeWidth="1.5"/>
-            <circle cx="50" cy="50" r="4" fill="#c0a040" opacity=".5"/>
-          </g>
-          <g opacity=".22">
-            <circle cx="950" cy="50" r="24" fill="none" stroke="#8a7030" strokeWidth="5"/>
-            <circle cx="950" cy="50" r="15" fill="none" stroke="#a08830" strokeWidth="2.5"/>
-            <path d="M930,50 Q950,30 970,50 Q950,70 930,50 Z" fill="none" stroke="#c0a040" strokeWidth="1.5"/>
-            <circle cx="950" cy="50" r="4" fill="#c0a040" opacity=".5"/>
-          </g>
-          <g opacity=".22">
-            <circle cx="50" cy="950" r="24" fill="none" stroke="#8a7030" strokeWidth="5"/>
-            <circle cx="50" cy="950" r="15" fill="none" stroke="#a08830" strokeWidth="2.5"/>
-            <path d="M30,950 Q50,930 70,950 Q50,970 30,950 Z" fill="none" stroke="#c0a040" strokeWidth="1.5"/>
-            <circle cx="50" cy="950" r="4" fill="#c0a040" opacity=".5"/>
-          </g>
-          <g opacity=".22">
-            <circle cx="950" cy="950" r="24" fill="none" stroke="#8a7030" strokeWidth="5"/>
-            <circle cx="950" cy="950" r="15" fill="none" stroke="#a08830" strokeWidth="2.5"/>
-            <path d="M930,950 Q950,930 970,950 Q950,970 930,950 Z" fill="none" stroke="#c0a040" strokeWidth="1.5"/>
-            <circle cx="950" cy="950" r="4" fill="#c0a040" opacity=".5"/>
-          </g>
-
-          {/* Mid-edge naga heads — cobra hoods facing outward at midpoints */}
-          <g opacity=".15" transform="translate(500,20)">
-            <path d="M-12,-5 C-15,-12 -8,-18 0,-18 C8,-18 15,-12 12,-5 L8,0 C5,3 -5,3 -8,0 Z" fill="none" stroke="#c0a040" strokeWidth="2"/>
-            <circle cx="-4" cy="-10" r="1.5" fill="#c0a040"/>
-            <circle cx="4" cy="-10" r="1.5" fill="#c0a040"/>
-            <path d="M-2,-4 L0,2 L2,-4" fill="none" stroke="#c0a040" strokeWidth=".8"/>
-          </g>
-          <g opacity=".15" transform="translate(500,980) rotate(180)">
-            <path d="M-12,-5 C-15,-12 -8,-18 0,-18 C8,-18 15,-12 12,-5 L8,0 C5,3 -5,3 -8,0 Z" fill="none" stroke="#c0a040" strokeWidth="2"/>
-            <circle cx="-4" cy="-10" r="1.5" fill="#c0a040"/>
-            <circle cx="4" cy="-10" r="1.5" fill="#c0a040"/>
-            <path d="M-2,-4 L0,2 L2,-4" fill="none" stroke="#c0a040" strokeWidth=".8"/>
-          </g>
-          <g opacity=".15" transform="translate(20,500) rotate(-90)">
-            <path d="M-12,-5 C-15,-12 -8,-18 0,-18 C8,-18 15,-12 12,-5 L8,0 C5,3 -5,3 -8,0 Z" fill="none" stroke="#c0a040" strokeWidth="2"/>
-            <circle cx="-4" cy="-10" r="1.5" fill="#c0a040"/>
-            <circle cx="4" cy="-10" r="1.5" fill="#c0a040"/>
-          </g>
-          <g opacity=".15" transform="translate(980,500) rotate(90)">
-            <path d="M-12,-5 C-15,-12 -8,-18 0,-18 C8,-18 15,-12 12,-5 L8,0 C5,3 -5,3 -8,0 Z" fill="none" stroke="#c0a040" strokeWidth="2"/>
-            <circle cx="-4" cy="-10" r="1.5" fill="#c0a040"/>
-            <circle cx="4" cy="-10" r="1.5" fill="#c0a040"/>
-          </g>
+        {/* Corner naga knots — Hindu temple inspired mandorla/vesica piscis */}
+        <svg style={{position:"absolute",top:16,left:16,width:80,height:80,opacity:.15}} viewBox="0 0 80 80">
+          <path d="M15,40 Q40,5 65,40 Q40,75 15,40 Z" fill="none" stroke="#c0a040" strokeWidth="1.2"/>
+          <path d="M25,40 Q40,15 55,40 Q40,65 25,40 Z" fill="none" stroke="#c0a040" strokeWidth=".7"/>
+          <circle cx="40" cy="40" r="5" fill="none" stroke="#c0a040" strokeWidth=".5" opacity=".5"/>
+          <circle cx="40" cy="40" r="2" fill="#c0a040" opacity=".3"/>
+        </svg>
+        <svg style={{position:"absolute",top:16,right:16,width:80,height:80,opacity:.15,transform:"scaleX(-1)"}} viewBox="0 0 80 80">
+          <path d="M15,40 Q40,5 65,40 Q40,75 15,40 Z" fill="none" stroke="#c0a040" strokeWidth="1.2"/>
+          <path d="M25,40 Q40,15 55,40 Q40,65 25,40 Z" fill="none" stroke="#c0a040" strokeWidth=".7"/>
+          <circle cx="40" cy="40" r="5" fill="none" stroke="#c0a040" strokeWidth=".5" opacity=".5"/>
+          <circle cx="40" cy="40" r="2" fill="#c0a040" opacity=".3"/>
+        </svg>
+        <svg style={{position:"absolute",bottom:50,left:16,width:60,height:60,opacity:.1}} viewBox="0 0 60 60">
+          <path d="M10,30 Q30,2 50,30 Q30,58 10,30 Z" fill="none" stroke="#c0a040" strokeWidth="1"/>
+          <circle cx="30" cy="30" r="3" fill="#c0a040" opacity=".2"/>
+        </svg>
+        <svg style={{position:"absolute",bottom:50,right:16,width:60,height:60,opacity:.1,transform:"scaleX(-1)"}} viewBox="0 0 60 60">
+          <path d="M10,30 Q30,2 50,30 Q30,58 10,30 Z" fill="none" stroke="#c0a040" strokeWidth="1"/>
+          <circle cx="30" cy="30" r="3" fill="#c0a040" opacity=".2"/>
         </svg>
       </div>
 
