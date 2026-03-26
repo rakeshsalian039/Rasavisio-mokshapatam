@@ -1110,73 +1110,80 @@ function useAuth(){
   return{user,profile,signInGoogle,signOut,loading,refresh};
 }
 
-// ═══ GAME DATABASE SERVICE — Direct REST API (bypasses supabase-js client issues) ═══
+// ═══ GAME DATABASE SERVICE ═══
 const GameDB={
-  // Direct fetch to Supabase REST API
-  async _fetch(path,method,body){
-    if(!sbUrl||!sbKey)return{data:null,error:{message:"No supabase config"}};
-    const url=`${sbUrl}/rest/v1/${path}`;
-    const headers={"Content-Type":"application/json","apikey":sbKey,"Authorization":`Bearer ${sbKey}`,"Prefer":method==="POST"?"return=minimal":"",};
-    try{
-      const res=await fetch(url,{method,headers,body:body?JSON.stringify(body):undefined});
-      if(!res.ok){const txt=await res.text();return{data:null,error:{message:`${res.status}: ${txt}`}}}
-      if(method==="GET"){const data=await res.json();return{data,error:null}}
-      return{data:true,error:null};
-    }catch(e){return{data:null,error:{message:e.message}}}
-  },
-  async _get(path){return this._fetch(path,"GET")},
-  async _post(path,body){return this._fetch(path,"POST",body)},
-  async _patch(path,body){
-    if(!sbUrl||!sbKey)return{data:null,error:{message:"No config"}};
-    const url=`${sbUrl}/rest/v1/${path}`;
-    try{
-      const res=await fetch(url,{method:"PATCH",headers:{"Content-Type":"application/json","apikey":sbKey,"Authorization":`Bearer ${sbKey}`,"Prefer":"return=minimal"},body:JSON.stringify(body)});
-      if(!res.ok){const txt=await res.text();return{data:null,error:{message:`${res.status}: ${txt}`}}}
-      return{data:true,error:null};
-    }catch(e){return{data:null,error:{message:e.message}}}
-  },
-
   async saveGame(userId,d){
-    if(!sbUrl||!sbKey||!userId){console.log("GameDB: SKIP - no config or userId");return null}
-    console.log("GameDB: === SAVING via REST ===");
+    if(!supabase||!userId){console.log("GameDB: SKIP - no supabase or userId");return null}
+    console.log("GameDB: === SAVING ===",userId);
+    console.log("GameDB: Data:",JSON.stringify(d));
+
+    // Helper: wrap any supabase call with a 5-second timeout
+    const withTimeout=(promise,label)=>Promise.race([
+      promise,
+      new Promise((_,reject)=>setTimeout(()=>reject(new Error(label+" TIMEOUT after 5s")),5000))
+    ]);
 
     // Step 1: Insert game_history
     try{
       console.log("GameDB: Step 1 - Inserting game_history...");
-      const res=await this._post("game_history",{
-        user_id:userId,duration_seconds:d.duration||0,total_turns:d.turns||0,
-        character_name:d.charName||"Seeker",character_icon:d.charIcon||"🔱",
-        opponent_type:d.opponent||"yama",result:d.result||"quit",
-        final_square:d.square||1,final_punya:d.punya||0,final_papa:d.papa||0,
-        snakes_hit:d.snakes||0,ladders_climbed:d.ladders||0,dharma_cards_faced:0,
-        riddles_correct:d.riddlesC||0,riddles_wrong:d.riddlesW||0,
-        highest_square:d.highest||1,graha_effects:{},
-        ashtanga_reached:d.ashtanga||false,moksha_rejected:d.rejected||0
-      });
-      console.log("GameDB: Step 1",res.error?"ERROR: "+res.error.message:"✓ INSERTED");
+      const res=await withTimeout(
+        supabase.from("game_history").insert({
+          user_id:userId,
+          duration_seconds:d.duration||0,
+          total_turns:d.turns||0,
+          character_name:d.charName||"Seeker",
+          character_icon:d.charIcon||"🔱",
+          opponent_type:d.opponent||"yama",
+          result:d.result||"quit",
+          final_square:d.square||1,
+          final_punya:d.punya||0,
+          final_papa:d.papa||0,
+          snakes_hit:d.snakes||0,
+          ladders_climbed:d.ladders||0,
+          dharma_cards_faced:0,
+          riddles_correct:d.riddlesC||0,
+          riddles_wrong:d.riddlesW||0,
+          highest_square:d.highest||1,
+          graha_effects:{},
+          ashtanga_reached:d.ashtanga||false,
+          moksha_rejected:d.rejected||0
+        }),
+        "game_history insert"
+      );
+      if(res.error)console.error("GameDB: Step 1 ERROR:",res.error.message);
+      else console.log("GameDB: Step 1 ✓ game_history inserted");
     }catch(e){console.error("GameDB: Step 1 FAILED:",e.message)}
 
     // Step 2: Read current profile
     let cur=null;
     try{
       console.log("GameDB: Step 2 - Reading profile...");
-      const res=await this._get(`profiles?id=eq.${userId}&select=*`);
-      if(res.data&&res.data.length>0){cur=res.data[0];console.log("GameDB: Step 2 ✓ Profile found")}
-      else{
-        console.log("GameDB: Step 2b - No profile, creating...");
-        await this._post("profiles",{id:userId,display_name:d.charName||"Seeker",email:"",provider:"google"});
-        const r2=await this._get(`profiles?id=eq.${userId}&select=*`);
-        cur=r2.data?.[0]||null;
-        console.log("GameDB: Step 2b",cur?"✓ Created":"FAILED");
+      const res=await withTimeout(
+        supabase.from("profiles").select("*").eq("id",userId).single(),
+        "profile read"
+      );
+      if(res.error){
+        console.error("GameDB: Step 2 profile read error:",res.error.message);
+        // Profile might not exist - try creating it
+        console.log("GameDB: Step 2b - Creating profile...");
+        await withTimeout(
+          supabase.from("profiles").insert({id:userId,display_name:d.charName||"Seeker",email:"",provider:"google"}),
+          "profile create"
+        );
+        const res2=await withTimeout(supabase.from("profiles").select("*").eq("id",userId).single(),"profile re-read");
+        cur=res2.data;
+      }else{
+        cur=res.data;
       }
+      console.log("GameDB: Step 2 ✓ profile:",cur?"FOUND":"NOT FOUND");
     }catch(e){console.error("GameDB: Step 2 FAILED:",e.message)}
 
-    // Step 3: Update profile
+    // Step 3: Update profile stats
     if(cur){
       try{
-        console.log("GameDB: Step 3 - Updating profile...");
+        console.log("GameDB: Step 3 - Updating profile stats...");
         const isWin=d.result==="moksha_win"||d.result==="karma_win";
-        const res=await this._patch(`profiles?id=eq.${userId}`,{
+        const updateData={
           total_games:(cur.total_games||0)+1,
           total_wins:(cur.total_wins||0)+(isWin?1:0),
           total_moksha_wins:(cur.total_moksha_wins||0)+(d.result==="moksha_win"?1:0),
@@ -1190,25 +1197,24 @@ const GameDB={
           total_riddles_wrong:(cur.total_riddles_wrong||0)+(d.riddlesW||0),
           favorite_character:d.charName||cur.favorite_character,
           last_played_at:new Date().toISOString()
-        });
-        console.log("GameDB: Step 3",res.error?"ERROR: "+res.error.message:"✓ PROFILE UPDATED");
+        };
+        console.log("GameDB: Update payload:",JSON.stringify(updateData));
+        const res=await withTimeout(
+          supabase.from("profiles").update(updateData).eq("id",userId),
+          "profile update"
+        );
+        if(res.error)console.error("GameDB: Step 3 ERROR:",res.error.message);
+        else console.log("GameDB: Step 3 ✓ PROFILE UPDATED");
       }catch(e){console.error("GameDB: Step 3 FAILED:",e.message)}
-    }else{console.error("GameDB: Step 3 SKIPPED - no profile")}
+    }else{
+      console.error("GameDB: Step 3 SKIPPED - no profile found");
+    }
 
     console.log("GameDB: === DONE ===");
     return true;
   },
-  async getHistory(userId,limit=20){
-    if(!sbUrl||!sbKey||!userId)return[];
-    try{const res=await this._get(`game_history?user_id=eq.${userId}&select=*&order=played_at.desc&limit=${limit}`);return res.data||[]}catch(e){return[]}
-  },
-  async getLeaderboard(limit=50){
-    if(!sbUrl||!sbKey)return[];
-    try{
-      const res=await this._get(`profiles?total_games=gt.0&select=id,display_name,avatar_url,total_games,total_wins,total_punya_earned,total_papa_earned,total_moksha_wins,total_karma_wins,total_riddles_correct,longest_streak,last_played_at&order=total_punya_earned.desc&limit=${limit}`);
-      return(res.data||[]).map(p=>({...p,karma_score:(p.total_punya_earned||0)-(p.total_papa_earned||0)}));
-    }catch(e){return[]}
-  },
+  async getHistory(userId,limit=20){if(!supabase||!userId)return[];try{const{data,error}=await supabase.from("game_history").select("*").eq("user_id",userId).order("played_at",{ascending:false}).limit(limit);if(error)console.error("getHistory:",error.message);return data||[]}catch(e){return[]}},
+  async getLeaderboard(limit=50){if(!supabase)return[];try{const{data,error}=await supabase.from("leaderboard").select("*").limit(limit);if(error)console.error("getLeaderboard:",error.message);return data||[]}catch(e){return[]}},
 };
 
 // ═══ GOOGLE SVG ICON ═══
