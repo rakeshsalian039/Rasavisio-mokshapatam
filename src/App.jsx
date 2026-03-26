@@ -1819,6 +1819,7 @@ export default function MokshaPatam108(){
           <polygon points="400,510 325,360 475,360" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".06" style={{animation:"cymaticPulse 10s ease infinite 5s"}}/>
           <polygon points="400,330 355,420 445,420" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".04" style={{animation:"cymaticPulse 12s ease infinite 2s"}}/>
           <polygon points="400,470 355,380 445,380" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".04" style={{animation:"cymaticPulse 12s ease infinite 7s"}}/>
+        </svg>
         {/* ═══ TEMPLE ENDLESS KNOT — Somanathapur/Jain style interlocking bands ═══ */}
         {/* Central medallion knot — thick bands weaving over-under like temple ceilings */}
         <svg style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"min(110vw,110vh)",height:"min(110vw,110vh)",pointerEvents:"none",opacity:1}} viewBox="0 0 500 500">
