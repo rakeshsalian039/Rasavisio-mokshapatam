@@ -1915,9 +1915,6 @@ export default function MokshaPatam108(){
         </svg>
       </div>
 
-          {/* Connecting radial lines — like spokes */}
-          {[0,45,90,135,180,225,270,315].map(a=><line key={"sp"+a} x1={400+70*Math.cos(a*Math.PI/180)} y1={400+70*Math.sin(a*Math.PI/180)} x2={400+350*Math.cos(a*Math.PI/180)} y2={400+350*Math.sin(a*Math.PI/180)} stroke="#c0a040" strokeWidth=".15" opacity=".04"/>)}
-        </svg>
 
       {/* Main content */}
       <div style={{position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center",width:"100%",maxWidth:520}}>
