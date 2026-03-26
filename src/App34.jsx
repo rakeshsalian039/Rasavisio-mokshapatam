@@ -1113,108 +1113,60 @@ function useAuth(){
 // ═══ GAME DATABASE SERVICE ═══
 const GameDB={
   async saveGame(userId,d){
-    if(!supabase||!userId){console.log("GameDB: SKIP - no supabase or userId");return null}
-    console.log("GameDB: === SAVING ===",userId);
-    console.log("GameDB: Data:",JSON.stringify(d));
+    if(!supabase||!userId){console.log("GameDB: No supabase or userId");return null}
+    console.log("GameDB: Step 1 - Saving game for",userId);
 
-    // Helper: wrap any supabase call with a 5-second timeout
-    const withTimeout=(promise,label)=>Promise.race([
-      promise,
-      new Promise((_,reject)=>setTimeout(()=>reject(new Error(label+" TIMEOUT after 5s")),5000))
-    ]);
+    // Check if profile exists first
+    const{data:profileCheck,error:profileCheckErr}=await supabase.from("profiles").select("id").eq("id",userId).single();
+    console.log("GameDB: Step 2 - Profile exists?",profileCheck?"YES":"NO",profileCheckErr?.message||"");
 
-    // Step 1: Insert game_history
-    try{
-      console.log("GameDB: Step 1 - Inserting game_history...");
-      const res=await withTimeout(
-        supabase.from("game_history").insert({
-          user_id:userId,
-          duration_seconds:d.duration||0,
-          total_turns:d.turns||0,
-          character_name:d.charName||"Seeker",
-          character_icon:d.charIcon||"🔱",
-          opponent_type:d.opponent||"yama",
-          result:d.result||"quit",
-          final_square:d.square||1,
-          final_punya:d.punya||0,
-          final_papa:d.papa||0,
-          snakes_hit:d.snakes||0,
-          ladders_climbed:d.ladders||0,
-          dharma_cards_faced:0,
-          riddles_correct:d.riddlesC||0,
-          riddles_wrong:d.riddlesW||0,
-          highest_square:d.highest||1,
-          graha_effects:{},
-          ashtanga_reached:d.ashtanga||false,
-          moksha_rejected:d.rejected||0
-        }),
-        "game_history insert"
-      );
-      if(res.error)console.error("GameDB: Step 1 ERROR:",res.error.message);
-      else console.log("GameDB: Step 1 ✓ game_history inserted");
-    }catch(e){console.error("GameDB: Step 1 FAILED:",e.message)}
-
-    // Step 2: Read current profile
-    let cur=null;
-    try{
-      console.log("GameDB: Step 2 - Reading profile...");
-      const res=await withTimeout(
-        supabase.from("profiles").select("*").eq("id",userId).single(),
-        "profile read"
-      );
-      if(res.error){
-        console.error("GameDB: Step 2 profile read error:",res.error.message);
-        // Profile might not exist - try creating it
-        console.log("GameDB: Step 2b - Creating profile...");
-        await withTimeout(
-          supabase.from("profiles").insert({id:userId,display_name:d.charName||"Seeker",email:"",provider:"google"}),
-          "profile create"
-        );
-        const res2=await withTimeout(supabase.from("profiles").select("*").eq("id",userId).single(),"profile re-read");
-        cur=res2.data;
-      }else{
-        cur=res.data;
-      }
-      console.log("GameDB: Step 2 ✓ profile:",cur?"FOUND":"NOT FOUND");
-    }catch(e){console.error("GameDB: Step 2 FAILED:",e.message)}
-
-    // Step 3: Update profile stats
-    if(cur){
-      try{
-        console.log("GameDB: Step 3 - Updating profile stats...");
-        const isWin=d.result==="moksha_win"||d.result==="karma_win";
-        const updateData={
-          total_games:(cur.total_games||0)+1,
-          total_wins:(cur.total_wins||0)+(isWin?1:0),
-          total_moksha_wins:(cur.total_moksha_wins||0)+(d.result==="moksha_win"?1:0),
-          total_karma_wins:(cur.total_karma_wins||0)+(d.result==="karma_win"?1:0),
-          total_punya_earned:(cur.total_punya_earned||0)+(d.punya||0),
-          total_papa_earned:(cur.total_papa_earned||0)+(d.papa||0),
-          highest_square_reached:Math.max(cur.highest_square_reached||1,d.highest||1),
-          total_snakes_hit:(cur.total_snakes_hit||0)+(d.snakes||0),
-          total_ladders_climbed:(cur.total_ladders_climbed||0)+(d.ladders||0),
-          total_riddles_correct:(cur.total_riddles_correct||0)+(d.riddlesC||0),
-          total_riddles_wrong:(cur.total_riddles_wrong||0)+(d.riddlesW||0),
-          favorite_character:d.charName||cur.favorite_character,
-          last_played_at:new Date().toISOString()
-        };
-        console.log("GameDB: Update payload:",JSON.stringify(updateData));
-        const res=await withTimeout(
-          supabase.from("profiles").update(updateData).eq("id",userId),
-          "profile update"
-        );
-        if(res.error)console.error("GameDB: Step 3 ERROR:",res.error.message);
-        else console.log("GameDB: Step 3 ✓ PROFILE UPDATED");
-      }catch(e){console.error("GameDB: Step 3 FAILED:",e.message)}
-    }else{
-      console.error("GameDB: Step 3 SKIPPED - no profile found");
+    // If no profile, create one
+    if(!profileCheck){
+      console.log("GameDB: Step 2b - Creating missing profile...");
+      const{error:createErr}=await supabase.from("profiles").insert({id:userId,display_name:"Seeker",email:"",provider:"google"});
+      console.log("GameDB: Profile create:",createErr?"FAILED "+createErr.message:"OK");
     }
 
-    console.log("GameDB: === DONE ===");
+    // Insert game history
+    console.log("GameDB: Step 3 - Inserting game_history...");
+    const{error:gameErr}=await supabase.from("game_history").insert({
+      user_id:userId,duration_seconds:d.duration||0,total_turns:d.turns||0,
+      character_name:d.charName||"Seeker",character_icon:d.charIcon||"🔱",
+      opponent_type:d.opponent||"yama",result:d.result||"quit",
+      final_square:d.square||1,final_punya:d.punya||0,final_papa:d.papa||0,
+      snakes_hit:d.snakes||0,ladders_climbed:d.ladders||0,
+      riddles_correct:d.riddlesC||0,riddles_wrong:d.riddlesW||0,
+      highest_square:d.highest||1,ashtanga_reached:d.ashtanga||false
+    });
+    console.log("GameDB: Step 4 -",gameErr?"ERROR: "+gameErr.message:"SUCCESS");
+
+    // Update profile
+    console.log("GameDB: Step 5 - Updating profile...");
+    const isWin=d.result==="moksha_win"||d.result==="karma_win";
+    const{data:cur}=await supabase.from("profiles").select("*").eq("id",userId).single();
+    if(cur){
+      const{error:upErr}=await supabase.from("profiles").update({
+        total_games:(cur.total_games||0)+1,
+        total_wins:(cur.total_wins||0)+(isWin?1:0),
+        total_moksha_wins:(cur.total_moksha_wins||0)+(d.result==="moksha_win"?1:0),
+        total_karma_wins:(cur.total_karma_wins||0)+(d.result==="karma_win"?1:0),
+        total_punya_earned:(cur.total_punya_earned||0)+(d.punya||0),
+        total_papa_earned:(cur.total_papa_earned||0)+(d.papa||0),
+        highest_square_reached:Math.max(cur.highest_square_reached||1,d.highest||1),
+        total_snakes_hit:(cur.total_snakes_hit||0)+(d.snakes||0),
+        total_ladders_climbed:(cur.total_ladders_climbed||0)+(d.ladders||0),
+        total_riddles_correct:(cur.total_riddles_correct||0)+(d.riddlesC||0),
+        total_riddles_wrong:(cur.total_riddles_wrong||0)+(d.riddlesW||0),
+        favorite_character:d.charName||cur.favorite_character,
+        last_played_at:new Date().toISOString()
+      }).eq("id",userId);
+      console.log("GameDB: Step 6 -",upErr?"ERROR: "+upErr.message:"PROFILE UPDATED ✓");
+    }
+    console.log("GameDB: ✓ ALL DONE");
     return true;
   },
-  async getHistory(userId,limit=20){if(!supabase||!userId)return[];try{const{data,error}=await supabase.from("game_history").select("*").eq("user_id",userId).order("played_at",{ascending:false}).limit(limit);if(error)console.error("getHistory:",error.message);return data||[]}catch(e){return[]}},
-  async getLeaderboard(limit=50){if(!supabase)return[];try{const{data,error}=await supabase.from("leaderboard").select("*").limit(limit);if(error)console.error("getLeaderboard:",error.message);return data||[]}catch(e){return[]}},
+  async getHistory(userId,limit=20){if(!supabase||!userId)return[];const{data,error}=await supabase.from("game_history").select("*").eq("user_id",userId).order("played_at",{ascending:false}).limit(limit);if(error)console.error("getHistory:",error.message);return data||[]},
+  async getLeaderboard(limit=50){if(!supabase)return[];const{data,error}=await supabase.from("leaderboard").select("*").limit(limit);if(error)console.error("getLeaderboard:",error.message);return data||[]},
 };
 
 // ═══ GOOGLE SVG ICON ═══
@@ -1374,7 +1326,6 @@ export default function MokshaPatam108(){
     if(skipA[cur]){const ns=[...skipA];ns[cur]=false;setSkipA(ns);setMsg(`${players[cur].name}'s turn is skipped.`);setCur(c=>(c+1)%nP);return}
     VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){}
     setBusy(true);play("dice");
-    gameStats.current.turns=(gameStats.current.turns||0)+1;
     const r=Math.floor(Math.random()*6)+1,gi=Math.floor(Math.random()*9),g=GRAHA[gi];
     setRv(r);setGv(g);
     const pName=players[cur]?.name||"Seeker";
@@ -1446,8 +1397,6 @@ export default function MokshaPatam108(){
           // ═══ STEP 3: Check landing — show popup, wait for dismiss ═══
           const finishTurn=(skipDharmaCheck)=>{
             nPos[cur]=p;setPos([...nPos]);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setSkipA(nSkip);
-            // Track highest square reached
-            if(p>(gameStats.current.highest||1))gameStats.current.highest=p;
             setMsg([eMsg,...extras].filter(Boolean).join(" · ")||`Moved to ${p}.`);
             setHist(h=>[...h.slice(-12),`${pName}→${p}`]);
             if(nPunya[cur]>=30&&!win){setWin(cur);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory");
@@ -1584,36 +1533,23 @@ export default function MokshaPatam108(){
 
   // ═══ AUTO-SAVE GAME ON WIN ═══
   useEffect(()=>{
-    if(win===null)return;
-    if(!auth.user){console.log("Auto-save: No auth user, skipping");return}
-    if(!players[win]){console.log("Auto-save: No player at win index",win);return}
-    // Delay slightly to ensure punya/papa/pos state has settled after the winning move
-    const timer=setTimeout(()=>{
-      console.log("Auto-save: TRIGGERED for player",win,"punya:",punya[win],"papa:",papa[win],"pos:",pos[win]);
-      const gs=gameStats.current;
-      const p=punya[win]||0;
-      const pa=papa[win]||0;
-      const sq=pos[win]||1;
-      const isKarma=p>=30;
-      const isMoksha=sq>=108&&p>=pa;
-      GameDB.saveGame(auth.user.id,{
-        duration:Math.floor((Date.now()-(gs.startTime||Date.now()))/1000),
-        turns:gs.turns||0,
-        charName:players[win]?.char?.name||"Seeker",
-        charIcon:players[win]?.char?.icon||"🔱",
-        opponent:players.some(pl=>pl.cpu)?"yama":"multiplayer",
-        result:isKarma?"karma_win":"moksha_win",
-        square:sq,
-        punya:p,papa:pa,
-        snakes:gs.snakes||0,ladders:gs.ladders||0,
-        dharma:gs.dharma||0,riddlesC:gs.riddlesC||0,riddlesW:gs.riddlesW||0,
-        highest:Math.max(gs.highest||1,sq),ashtanga:gs.ashtanga||(sq>=101),rejected:gs.rejected||0
-      }).then(()=>{
-        console.log("Auto-save: ✓ Complete! Refreshing profile...");
-        auth.refresh();
-      }).catch(e=>console.error("Auto-save: FAILED",e));
-    },500);
-    return()=>clearTimeout(timer);
+    if(win===null||!auth.user||!players[win])return;
+    const gs=gameStats.current;
+    const isKarma=punya[win]>=30;
+    const isMoksha=pos[win]>=108&&punya[win]>=papa[win];
+    GameDB.saveGame(auth.user.id,{
+      duration:Math.floor((Date.now()-(gs.startTime||Date.now()))/1000),
+      turns:gs.turns||0,
+      charName:players[win]?.char?.name||"Seeker",
+      charIcon:players[win]?.char?.icon||"🔱",
+      opponent:players.some(p=>p.cpu)?"yama":"multiplayer",
+      result:isKarma?"karma_win":"moksha_win",
+      square:pos[win]||108,
+      punya:punya[win]||0,papa:papa[win]||0,
+      snakes:gs.snakes||0,ladders:gs.ladders||0,
+      dharma:gs.dharma||0,riddlesC:gs.riddlesC||0,riddlesW:gs.riddlesW||0,
+      highest:gs.highest||1,ashtanga:gs.ashtanga||false,rejected:gs.rejected||0
+    }).then(()=>{auth.refresh();console.log("Game saved!")}).catch(e=>console.error("Save failed:",e));
   },[win]);
 
   // ═══ TURN ANNOUNCEMENT + CPU AUTO-PLAY ═══
