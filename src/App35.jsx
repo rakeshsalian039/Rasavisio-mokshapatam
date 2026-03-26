@@ -1071,26 +1071,7 @@ function useAuth(){
   const[user,setUser]=useState(null);
   const[profile,setProfile]=useState(null);
   const[loading,setLoading]=useState(true);
-  const loadProfile=async(uid)=>{
-    if(!supabase)return;
-    try{
-      const{data}=await supabase.from("profiles").select("*").eq("id",uid).single();
-      if(data){
-        setProfile(data);
-        // Update profile with Google data if name/email missing
-        const meta=supabase.auth?.getUser?.()?.then?.(r=>r.data?.user?.user_metadata);
-        if(meta)meta.then(m=>{
-          if(m&&(!data.display_name||data.display_name==="Seeker"||!data.email)){
-            supabase.from("profiles").update({
-              display_name:m.full_name||m.name||data.display_name,
-              avatar_url:m.avatar_url||m.picture||data.avatar_url,
-              email:m.email||data.email
-            }).eq("id",uid).then(()=>supabase.from("profiles").select("*").eq("id",uid).single().then(r=>{if(r.data)setProfile(r.data)}));
-          }
-        });
-      }
-    }catch(e){console.error("Profile load error:",e)}
-  };
+  const loadProfile=async(uid)=>{if(!supabase)return;try{const{data}=await supabase.from("profiles").select("*").eq("id",uid).single();setProfile(data)}catch(e){console.error("Profile load error:",e)}};
   useEffect(()=>{
     if(!supabase){setLoading(false);return}
     // Timeout: if getSession hangs for 3s, force loading=false
@@ -1707,9 +1688,9 @@ export default function MokshaPatam108(){
           return<>
             {/* Profile Header */}
             <div style={{textAlign:"center",marginBottom:24}}>
-              {(p.avatar_url||auth.user?.user_metadata?.avatar_url)?<img src={p.avatar_url||auth.user?.user_metadata?.avatar_url} alt="" referrerPolicy="no-referrer" style={{width:72,height:72,borderRadius:"50%",border:"2px solid rgba(240,200,80,.3)",boxShadow:"0 0 30px rgba(240,200,80,.1)",marginBottom:12}}/>:<div style={{width:72,height:72,borderRadius:"50%",background:"linear-gradient(135deg,rgba(240,200,80,.2),rgba(200,160,60,.1))",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,color:"#f0d050",border:"2px solid rgba(240,200,80,.2)",margin:"0 auto 12px",fontFamily:"'Yatra One',serif"}}>{(p.display_name||auth.user?.user_metadata?.full_name||"S").charAt(0)}</div>}
-              <h2 style={{fontSize:"clamp(22px,5vw,32px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"0 0 4px"}}>{p.display_name||auth.user?.user_metadata?.full_name||"Seeker"}</h2>
-              <div style={{fontSize:12,color:"#a09060",letterSpacing:1,marginTop:2}}>{p.email||auth.user?.email||""}</div>
+              {p.avatar_url?<img src={p.avatar_url} alt="" referrerPolicy="no-referrer" style={{width:72,height:72,borderRadius:"50%",border:"2px solid rgba(240,200,80,.3)",boxShadow:"0 0 30px rgba(240,200,80,.1)",marginBottom:12}}/>:<div style={{width:72,height:72,borderRadius:"50%",background:"linear-gradient(135deg,rgba(240,200,80,.2),rgba(200,160,60,.1))",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,color:"#f0d050",border:"2px solid rgba(240,200,80,.2)",margin:"0 auto 12px",fontFamily:"'Yatra One',serif"}}>{(p.display_name||"S").charAt(0)}</div>}
+              <h2 style={{fontSize:"clamp(22px,5vw,32px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"0 0 4px"}}>{p.display_name||"Seeker"}</h2>
+              <div style={{fontSize:11,color:"#8a7a50",letterSpacing:3}}>{p.email}</div>
               <div style={{display:"inline-flex",gap:8,alignItems:"center",padding:"4px 16px",marginTop:10,background:ks>=0?"rgba(100,200,100,.08)":"rgba(200,80,60,.08)",border:`1px solid ${ks>=0?"rgba(100,200,100,.15)":"rgba(200,80,60,.15)"}`,borderRadius:20,fontSize:13,color:ks>=0?"#80c080":"#e08060",fontFamily:"'Cinzel',serif"}}>{ks>=0?"☀":"🌑"} Karma: {ks>=0?"+":""}{ks}</div>
             </div>
             {/* Tabs */}
@@ -1777,63 +1758,44 @@ export default function MokshaPatam108(){
       <div style={{position:"fixed",inset:0,pointerEvents:"none",overflow:"hidden"}}>
         <div style={{position:"fixed",inset:0,background:"radial-gradient(ellipse at center,transparent 35%,rgba(8,6,3,.8) 100%)"}}/>
         {/* Cymatics rings — water vibration patterns at different frequencies */}
-        <svg style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"120%",height:"120%",opacity:1}} viewBox="0 0 800 800">
-          {/* Cymatics water vibration rings — multiple frequencies */}
-          <circle cx="400" cy="400" r="60" fill="none" stroke="#c0a040" strokeWidth=".6" opacity=".08" style={{animation:"cymaticPulse 3.5s ease infinite"}}/>
-          <circle cx="400" cy="400" r="100" fill="none" stroke="#c0a040" strokeWidth=".5" opacity=".1" style={{animation:"cymaticPulse 4s ease infinite .3s"}}/>
-          <circle cx="400" cy="400" r="150" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".12" style={{animation:"cymaticPulse 5s ease infinite .6s"}}/>
-          <circle cx="400" cy="400" r="210" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".1" style={{animation:"cymaticPulse 6s ease infinite 1s"}}/>
-          <circle cx="400" cy="400" r="280" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".08" style={{animation:"cymaticPulse 7s ease infinite 1.4s"}}/>
-          <circle cx="400" cy="400" r="360" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".06" style={{animation:"cymaticPulse 8s ease infinite 1.8s"}}/>
-
-          {/* Flower of Life — seed of life circles */}
-          {[0,60,120,180,240,300].map(a=><circle key={"fl"+a} cx={400+60*Math.cos(a*Math.PI/180)} cy={400+60*Math.sin(a*Math.PI/180)} r="60" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".06" style={{animation:`cymaticPulse ${5+a/100}s ease infinite ${a/400}s`}}/>)}
-
-          {/* Hexagonal cymatics nodes — inner ring */}
-          {[0,60,120,180,240,300].map(a=><g key={"n1"+a}><circle cx={400+105*Math.cos(a*Math.PI/180)} cy={400+105*Math.sin(a*Math.PI/180)} r="4" fill="#c0a040" opacity=".12" style={{animation:`cymaticPulse ${3+a/100}s ease infinite ${a/200}s`}}/><line x1={400+95*Math.cos(a*Math.PI/180)} y1={400+95*Math.sin(a*Math.PI/180)} x2={400+115*Math.cos(a*Math.PI/180)} y2={400+115*Math.sin(a*Math.PI/180)} stroke="#c0a040" strokeWidth=".3" opacity=".08"/></g>)}
-
-          {/* Outer ring nodes */}
-          {[0,30,60,90,120,150,180,210,240,270,300,330].map(a=><circle key={"n2"+a} cx={400+220*Math.cos(a*Math.PI/180)} cy={400+220*Math.sin(a*Math.PI/180)} r="2.5" fill="#c0a040" opacity=".08" style={{animation:`cymaticPulse ${4+a/120}s ease infinite ${a/300}s`}}/>)}
-
-          {/* Naga serpent knots — slow rotating infinity patterns */}
-          <g style={{animation:"cymaticRotate 50s linear infinite"}} opacity=".1">
-            <path d="M300,400 C300,340 350,300 400,300 C450,300 500,340 500,400 C500,460 450,500 400,500 C350,500 300,460 300,400 Z" fill="none" stroke="#c0a040" strokeWidth=".7"/>
-            <path d="M320,400 C320,355 355,320 400,320 C445,320 480,355 480,400 C480,445 445,480 400,480 C355,480 320,445 320,400 Z" fill="none" stroke="#c0a040" strokeWidth=".5"/>
+        <svg style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"100%",height:"100%",opacity:.06}} viewBox="0 0 800 800">
+          <circle cx="400" cy="400" r="80" fill="none" stroke="#c0a040" strokeWidth=".5" style={{animation:"cymaticPulse 4s ease infinite"}}/>
+          <circle cx="400" cy="400" r="140" fill="none" stroke="#c0a040" strokeWidth=".3" style={{animation:"cymaticPulse 5s ease infinite .5s"}}/>
+          <circle cx="400" cy="400" r="210" fill="none" stroke="#c0a040" strokeWidth=".3" style={{animation:"cymaticPulse 6s ease infinite 1s"}}/>
+          <circle cx="400" cy="400" r="290" fill="none" stroke="#c0a040" strokeWidth=".2" style={{animation:"cymaticPulse 7s ease infinite 1.5s"}}/>
+          <circle cx="400" cy="400" r="380" fill="none" stroke="#c0a040" strokeWidth=".2" style={{animation:"cymaticPulse 8s ease infinite 2s"}}/>
+          {/* Hexagonal cymatics nodes */}
+          {[0,60,120,180,240,300].map(a=><circle key={a} cx={400+120*Math.cos(a*Math.PI/180)} cy={400+120*Math.sin(a*Math.PI/180)} r="3" fill="#c0a040" opacity=".15" style={{animation:`cymaticPulse ${3+a/100}s ease infinite ${a/200}s`}}/>)}
+          {[0,45,90,135,180,225,270,315].map(a=><circle key={a} cx={400+220*Math.cos(a*Math.PI/180)} cy={400+220*Math.sin(a*Math.PI/180)} r="2" fill="#c0a040" opacity=".1" style={{animation:`cymaticPulse ${4+a/100}s ease infinite ${a/300}s`}}/>)}
+          {/* Naga serpent knots — infinity patterns */}
+          <g style={{animation:"cymaticRotate 60s linear infinite"}}>
+            <path d="M320,400 C320,360 360,340 400,340 C440,340 480,360 480,400 C480,440 440,460 400,460 C360,460 320,440 320,400 Z" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".08"/>
+            <path d="M340,400 C340,370 370,350 400,350 C430,350 460,370 460,400 C460,430 430,450 400,450 C370,450 340,430 340,400 Z" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".06"/>
           </g>
-          <g style={{animation:"cymaticRotate 70s linear infinite reverse"}} opacity=".08">
-            <path d="M230,400 Q315,280 400,400 T570,400" fill="none" stroke="#c0a040" strokeWidth=".5"/>
-            <path d="M230,400 Q315,520 400,400 T570,400" fill="none" stroke="#c0a040" strokeWidth=".5"/>
+          <g style={{animation:"cymaticRotate 90s linear infinite reverse"}}>
+            <path d="M250,400 Q325,300 400,400 T550,400" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".05"/>
+            <path d="M250,400 Q325,500 400,400 T550,400" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".05"/>
           </g>
-
-          {/* Sri Yantra triangles */}
-          <polygon points="400,290 325,440 475,440" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".06" style={{animation:"cymaticPulse 10s ease infinite"}}/>
-          <polygon points="400,510 325,360 475,360" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".06" style={{animation:"cymaticPulse 10s ease infinite 5s"}}/>
-          <polygon points="400,330 355,420 445,420" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".04" style={{animation:"cymaticPulse 12s ease infinite 2s"}}/>
-          <polygon points="400,470 355,380 445,380" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".04" style={{animation:"cymaticPulse 12s ease infinite 7s"}}/>
-
-          {/* Connecting radial lines — like spokes */}
-          {[0,45,90,135,180,225,270,315].map(a=><line key={"sp"+a} x1={400+70*Math.cos(a*Math.PI/180)} y1={400+70*Math.sin(a*Math.PI/180)} x2={400+350*Math.cos(a*Math.PI/180)} y2={400+350*Math.sin(a*Math.PI/180)} stroke="#c0a040" strokeWidth=".15" opacity=".04"/>)}
+          {/* Sri Yantra triangle hints */}
+          <polygon points="400,310 340,430 460,430" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".04" style={{animation:"cymaticPulse 10s ease infinite"}}/>
+          <polygon points="400,490 340,370 460,370" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".04" style={{animation:"cymaticPulse 10s ease infinite 5s"}}/>
         </svg>
-        {/* Corner naga knots — Hindu temple inspired mandorla/vesica piscis */}
-        <svg style={{position:"absolute",top:16,left:16,width:80,height:80,opacity:.15}} viewBox="0 0 80 80">
-          <path d="M15,40 Q40,5 65,40 Q40,75 15,40 Z" fill="none" stroke="#c0a040" strokeWidth="1.2"/>
-          <path d="M25,40 Q40,15 55,40 Q40,65 25,40 Z" fill="none" stroke="#c0a040" strokeWidth=".7"/>
-          <circle cx="40" cy="40" r="5" fill="none" stroke="#c0a040" strokeWidth=".5" opacity=".5"/>
-          <circle cx="40" cy="40" r="2" fill="#c0a040" opacity=".3"/>
+        {/* Corner naga knots — temple inspired */}
+        <svg style={{position:"absolute",top:20,left:20,width:60,height:60,opacity:.08}} viewBox="0 0 60 60">
+          <path d="M10,30 Q30,5 50,30 Q30,55 10,30 Z" fill="none" stroke="#c0a040" strokeWidth="1"/>
+          <path d="M20,30 Q30,15 40,30 Q30,45 20,30 Z" fill="none" stroke="#c0a040" strokeWidth=".5"/>
+          <circle cx="30" cy="30" r="3" fill="#c0a040" opacity=".3"/>
         </svg>
-        <svg style={{position:"absolute",top:16,right:16,width:80,height:80,opacity:.15,transform:"scaleX(-1)"}} viewBox="0 0 80 80">
-          <path d="M15,40 Q40,5 65,40 Q40,75 15,40 Z" fill="none" stroke="#c0a040" strokeWidth="1.2"/>
-          <path d="M25,40 Q40,15 55,40 Q40,65 25,40 Z" fill="none" stroke="#c0a040" strokeWidth=".7"/>
-          <circle cx="40" cy="40" r="5" fill="none" stroke="#c0a040" strokeWidth=".5" opacity=".5"/>
-          <circle cx="40" cy="40" r="2" fill="#c0a040" opacity=".3"/>
+        <svg style={{position:"absolute",top:20,right:20,width:60,height:60,opacity:.08,transform:"scaleX(-1)"}} viewBox="0 0 60 60">
+          <path d="M10,30 Q30,5 50,30 Q30,55 10,30 Z" fill="none" stroke="#c0a040" strokeWidth="1"/>
+          <path d="M20,30 Q30,15 40,30 Q30,45 20,30 Z" fill="none" stroke="#c0a040" strokeWidth=".5"/>
+          <circle cx="30" cy="30" r="3" fill="#c0a040" opacity=".3"/>
         </svg>
-        <svg style={{position:"absolute",bottom:50,left:16,width:60,height:60,opacity:.1}} viewBox="0 0 60 60">
-          <path d="M10,30 Q30,2 50,30 Q30,58 10,30 Z" fill="none" stroke="#c0a040" strokeWidth="1"/>
-          <circle cx="30" cy="30" r="3" fill="#c0a040" opacity=".2"/>
+        <svg style={{position:"absolute",bottom:60,left:20,width:60,height:60,opacity:.06}} viewBox="0 0 60 60">
+          <path d="M10,30 Q30,5 50,30 Q30,55 10,30 Z" fill="none" stroke="#c0a040" strokeWidth="1"/>
         </svg>
-        <svg style={{position:"absolute",bottom:50,right:16,width:60,height:60,opacity:.1,transform:"scaleX(-1)"}} viewBox="0 0 60 60">
-          <path d="M10,30 Q30,2 50,30 Q30,58 10,30 Z" fill="none" stroke="#c0a040" strokeWidth="1"/>
-          <circle cx="30" cy="30" r="3" fill="#c0a040" opacity=".2"/>
+        <svg style={{position:"absolute",bottom:60,right:20,width:60,height:60,opacity:.06,transform:"scaleX(-1)"}} viewBox="0 0 60 60">
+          <path d="M10,30 Q30,5 50,30 Q30,55 10,30 Z" fill="none" stroke="#c0a040" strokeWidth="1"/>
         </svg>
       </div>
 
@@ -1889,7 +1851,7 @@ export default function MokshaPatam108(){
             {/* Signed in badge */}
             <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginBottom:16}}>
               {auth.profile?.avatar_url?<img src={auth.profile.avatar_url} alt="" style={{width:28,height:28,borderRadius:"50%",border:"1.5px solid rgba(240,200,80,.3)"}} referrerPolicy="no-referrer"/>:<div style={{width:28,height:28,borderRadius:"50%",background:"rgba(240,200,80,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,color:"#f0d050"}}>🪷</div>}
-              <span style={{fontSize:12,color:"#c0b080"}}>{auth.profile?.display_name||auth.user?.user_metadata?.full_name||auth.user?.email?.split("@")[0]||"Seeker"}</span>
+              <span style={{fontSize:12,color:"#c0b080"}}>{auth.profile?.display_name||"Seeker"}</span>
               <button onClick={()=>{setShowProfile(true);setProfileTab("overview")}} style={{background:"transparent",border:"1px solid rgba(200,160,60,.12)",color:"#8a7a50",padding:"2px 10px",fontSize:9,cursor:"pointer",borderRadius:12,fontFamily:"'Cinzel',serif",letterSpacing:1}}>Profile</button>
             </div>
 
@@ -2027,9 +1989,6 @@ export default function MokshaPatam108(){
           <div style={{fontSize:10,color:"#604040",marginTop:8,letterSpacing:3,animation:"pulse 2s ease infinite"}}>
             {chosenLang==='hi'?"🔊 यमराज की आवाज़ सुनो":"🔊 YAMA IS SPEAKING"}
           </div>
-          <button onClick={()=>{VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){}setYamaPhase(1)}} style={{marginTop:16,background:"transparent",border:"1px solid rgba(160,64,64,.25)",color:"#806060",padding:"6px 20px",fontSize:10,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:2,opacity:.6,transition:"all .2s",animation:"yamaTextReveal 1s ease 4s both"}}>
-            SKIP ▸
-          </button>
         </div>}
 
         {yamaPhase===1&&<div style={{textAlign:"center",animation:"dharmaIn .6s ease forwards",display:"flex",flexDirection:"column",alignItems:"center"}}>
@@ -2128,7 +2087,7 @@ export default function MokshaPatam108(){
           <button onClick={toggleMute} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"2px 8px",fontSize:12,cursor:"pointer",borderRadius:3}}>{muted?"🔇":"🔊"}</button>
           {auth.user?<button onClick={()=>{setShowProfile(true);setProfileTab("overview")}} style={{display:"flex",alignItems:"center",gap:6,padding:"3px 10px 3px 3px",background:"rgba(240,200,80,.05)",border:"1px solid rgba(200,160,60,.15)",borderRadius:16,cursor:"pointer",color:"#e8c850",fontSize:10,fontFamily:"'Cinzel',serif"}}>
             {auth.profile?.avatar_url?<img src={auth.profile.avatar_url} alt="" style={{width:20,height:20,borderRadius:"50%",border:"1px solid rgba(240,200,80,.2)"}} referrerPolicy="no-referrer"/>:<div style={{width:20,height:20,borderRadius:"50%",background:"rgba(240,200,80,.12)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10}}>🪷</div>}
-            <span>{(auth.profile?.display_name||auth.user?.user_metadata?.full_name||"").split(" ")[0]||"Profile"}</span>
+            <span>{(auth.profile?.display_name||"").split(" ")[0]||"Profile"}</span>
             {auth.profile?.total_games>0&&<span style={{fontSize:8,padding:"1px 5px",background:(auth.profile.total_punya_earned-auth.profile.total_papa_earned)>=0?"rgba(100,200,100,.12)":"rgba(200,80,60,.12)",borderRadius:6,color:(auth.profile.total_punya_earned-auth.profile.total_papa_earned)>=0?"#80c080":"#e08060"}}>{(auth.profile.total_punya_earned-auth.profile.total_papa_earned)>=0?"+":""}{(auth.profile.total_punya_earned||0)-(auth.profile.total_papa_earned||0)}</span>}
           </button>:<button onClick={()=>setShowProfile(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.15)",color:"#8a7a50",padding:"3px 10px",fontSize:10,cursor:"pointer",borderRadius:16,fontFamily:"'Cinzel',serif"}}>Sign In</button>}
         </div>
