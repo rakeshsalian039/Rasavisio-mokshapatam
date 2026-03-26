@@ -1054,6 +1054,16 @@ const CSS=`
 @keyframes yamaReveal{0%{opacity:0;transform:scale(2);filter:blur(20px)}100%{opacity:1;transform:scale(1);filter:blur(0)}}
 @keyframes yamaTextReveal{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
 @keyframes waveBar{0%,100%{height:8px}50%{height:28px}}
+@keyframes cymaticPulse{0%{transform:scale(.95);opacity:.04}50%{transform:scale(1.05);opacity:.12}100%{transform:scale(.95);opacity:.04}}
+@keyframes cymaticRotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes cymaticFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes nagaSlither{0%{d:path('M0,20 Q15,5 30,20 T60,20')}50%{d:path('M0,20 Q15,35 30,20 T60,20')}100%{d:path('M0,20 Q15,5 30,20 T60,20')}}
+@keyframes ringPulse{0%,100%{r:40;opacity:.06}50%{r:48;opacity:.1}}
+@keyframes snakeFlow{0%{stroke-dashoffset:0}100%{stroke-dashoffset:-120}}
+@keyframes snakeFlowReverse{0%{stroke-dashoffset:0}100%{stroke-dashoffset:120}}
+@keyframes knotTie{0%{transform:rotate(0deg) scale(1)}25%{transform:rotate(90deg) scale(1.05)}50%{transform:rotate(180deg) scale(1)}75%{transform:rotate(270deg) scale(.95)}100%{transform:rotate(360deg) scale(1)}}
+@keyframes knotPulse{0%,100%{stroke-width:5;opacity:.2}50%{stroke-width:7;opacity:.3}}
+@keyframes snakeBodyPulse{0%,100%{stroke-width:4}30%{stroke-width:6}60%{stroke-width:3.5}}
 .gb{background:transparent;border:1px solid rgba(200,160,60,.3);color:#e8c850;padding:12px 32px;font-size:14px;font-family:'Cinzel',serif;cursor:pointer;transition:all .4s;letter-spacing:3px;border-radius:2px}
 .gb:hover{background:rgba(200,160,60,.08);border-color:rgba(240,200,80,.6)}
 .gp{background:linear-gradient(180deg,rgba(200,160,60,.2),rgba(200,160,60,.08));border-color:rgba(200,160,60,.5)}
@@ -1066,12 +1076,35 @@ function useAuth(){
   const[user,setUser]=useState(null);
   const[profile,setProfile]=useState(null);
   const[loading,setLoading]=useState(true);
-  const loadProfile=async(uid)=>{if(!supabase)return;const{data}=await supabase.from("profiles").select("*").eq("id",uid).single();setProfile(data)};
+  const loadProfile=async(uid)=>{
+    if(!supabase)return;
+    try{
+      const{data}=await supabase.from("profiles").select("*").eq("id",uid).single();
+      if(data){
+        setProfile(data);
+        // Update profile with Google data if name/email missing
+        const meta=supabase.auth?.getUser?.()?.then?.(r=>r.data?.user?.user_metadata);
+        if(meta)meta.then(m=>{
+          if(m&&(!data.display_name||data.display_name==="Seeker"||!data.email)){
+            supabase.from("profiles").update({
+              display_name:m.full_name||m.name||data.display_name,
+              avatar_url:m.avatar_url||m.picture||data.avatar_url,
+              email:m.email||data.email
+            }).eq("id",uid).then(()=>supabase.from("profiles").select("*").eq("id",uid).single().then(r=>{if(r.data)setProfile(r.data)}));
+          }
+        });
+      }
+    }catch(e){console.error("Profile load error:",e)}
+  };
   useEffect(()=>{
     if(!supabase){setLoading(false);return}
-    supabase.auth.getSession().then(({data:{session}})=>{setUser(session?.user??null);if(session?.user)loadProfile(session.user.id);setLoading(false)});
-    const{data:{subscription}}=supabase.auth.onAuthStateChange(async(_,session)=>{setUser(session?.user??null);if(session?.user)await loadProfile(session.user.id);else setProfile(null)});
-    return()=>subscription.unsubscribe();
+    // Timeout: if getSession hangs for 3s, force loading=false
+    const timeout=setTimeout(()=>{console.warn("Auth: getSession timeout, proceeding without auth");setLoading(false)},3000);
+    supabase.auth.getSession()
+      .then(({data:{session}})=>{clearTimeout(timeout);setUser(session?.user??null);if(session?.user)loadProfile(session.user.id);setLoading(false)})
+      .catch(e=>{clearTimeout(timeout);console.error("Auth getSession error:",e);setLoading(false)});
+    const{data:{subscription}}=supabase.auth.onAuthStateChange(async(_,session)=>{setUser(session?.user??null);if(session?.user)await loadProfile(session.user.id);else setProfile(null);setLoading(false)});
+    return()=>{clearTimeout(timeout);subscription.unsubscribe()};
   },[]);
   const signInGoogle=useCallback(async()=>{
     if(!supabase){alert("Supabase not configured. Set REACT_APP_SUPABASE_URL and REACT_APP_SUPABASE_ANON_KEY in Vercel env vars.");return}
@@ -1101,7 +1134,7 @@ const GameDB={
 
     // Insert game history
     console.log("GameDB: Step 3 - Inserting game_history...");
-    const{data:gameData,error:gameErr}=await supabase.from("game_history").insert({
+    const{error:gameErr}=await supabase.from("game_history").insert({
       user_id:userId,duration_seconds:d.duration||0,total_turns:d.turns||0,
       character_name:d.charName||"Seeker",character_icon:d.charIcon||"🔱",
       opponent_type:d.opponent||"yama",result:d.result||"quit",
@@ -1109,8 +1142,8 @@ const GameDB={
       snakes_hit:d.snakes||0,ladders_climbed:d.ladders||0,
       riddles_correct:d.riddlesC||0,riddles_wrong:d.riddlesW||0,
       highest_square:d.highest||1,ashtanga_reached:d.ashtanga||false
-    }).select();
-    console.log("GameDB: Step 4 -",gameErr?"ERROR: "+gameErr.message:"SUCCESS",gameData);
+    });
+    console.log("GameDB: Step 4 -",gameErr?"ERROR: "+gameErr.message:"SUCCESS");
 
     // Update profile
     console.log("GameDB: Step 5 - Updating profile...");
@@ -1135,7 +1168,7 @@ const GameDB={
       console.log("GameDB: Step 6 -",upErr?"ERROR: "+upErr.message:"PROFILE UPDATED ✓");
     }
     console.log("GameDB: ✓ ALL DONE");
-    return gameData;
+    return true;
   },
   async getHistory(userId,limit=20){if(!supabase||!userId)return[];const{data,error}=await supabase.from("game_history").select("*").eq("user_id",userId).order("played_at",{ascending:false}).limit(limit);if(error)console.error("getHistory:",error.message);return data||[]},
   async getLeaderboard(limit=50){if(!supabase)return[];const{data,error}=await supabase.from("leaderboard").select("*").limit(limit);if(error)console.error("getLeaderboard:",error.message);return data||[]},
@@ -1679,9 +1712,9 @@ export default function MokshaPatam108(){
           return<>
             {/* Profile Header */}
             <div style={{textAlign:"center",marginBottom:24}}>
-              {p.avatar_url?<img src={p.avatar_url} alt="" referrerPolicy="no-referrer" style={{width:72,height:72,borderRadius:"50%",border:"2px solid rgba(240,200,80,.3)",boxShadow:"0 0 30px rgba(240,200,80,.1)",marginBottom:12}}/>:<div style={{width:72,height:72,borderRadius:"50%",background:"linear-gradient(135deg,rgba(240,200,80,.2),rgba(200,160,60,.1))",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,color:"#f0d050",border:"2px solid rgba(240,200,80,.2)",margin:"0 auto 12px",fontFamily:"'Yatra One',serif"}}>{(p.display_name||"S").charAt(0)}</div>}
-              <h2 style={{fontSize:"clamp(22px,5vw,32px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"0 0 4px"}}>{p.display_name||"Seeker"}</h2>
-              <div style={{fontSize:11,color:"#8a7a50",letterSpacing:3}}>{p.email}</div>
+              {(p.avatar_url||auth.user?.user_metadata?.avatar_url)?<img src={p.avatar_url||auth.user?.user_metadata?.avatar_url} alt="" referrerPolicy="no-referrer" style={{width:72,height:72,borderRadius:"50%",border:"2px solid rgba(240,200,80,.3)",boxShadow:"0 0 30px rgba(240,200,80,.1)",marginBottom:12}}/>:<div style={{width:72,height:72,borderRadius:"50%",background:"linear-gradient(135deg,rgba(240,200,80,.2),rgba(200,160,60,.1))",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,color:"#f0d050",border:"2px solid rgba(240,200,80,.2)",margin:"0 auto 12px",fontFamily:"'Yatra One',serif"}}>{(p.display_name||auth.user?.user_metadata?.full_name||"S").charAt(0)}</div>}
+              <h2 style={{fontSize:"clamp(22px,5vw,32px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"0 0 4px"}}>{p.display_name||auth.user?.user_metadata?.full_name||"Seeker"}</h2>
+              <div style={{fontSize:12,color:"#a09060",letterSpacing:1,marginTop:2}}>{p.email||auth.user?.email||""}</div>
               <div style={{display:"inline-flex",gap:8,alignItems:"center",padding:"4px 16px",marginTop:10,background:ks>=0?"rgba(100,200,100,.08)":"rgba(200,80,60,.08)",border:`1px solid ${ks>=0?"rgba(100,200,100,.15)":"rgba(200,80,60,.15)"}`,borderRadius:20,fontSize:13,color:ks>=0?"#80c080":"#e08060",fontFamily:"'Cinzel',serif"}}>{ks>=0?"☀":"🌑"} Karma: {ks>=0?"+":""}{ks}</div>
             </div>
             {/* Tabs */}
@@ -1743,71 +1776,272 @@ export default function MokshaPatam108(){
 
   // ═══ TITLE ═══
   if(screen==="title")return(
-    <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20}}>
+    <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 20px 60px",minHeight:"100vh",overflowY:"auto"}}>
       {globalOverlays}
-      <div style={{position:"fixed",inset:0,background:"radial-gradient(ellipse at center,transparent 35%,rgba(8,6,3,.8) 100%)",pointerEvents:"none"}}/>
-      <div style={{fontSize:52,marginBottom:12,animation:"pulse 3s ease infinite"}}>🔱</div>
-      <h1 style={{fontSize:"clamp(38px,9vw,72px)",fontFamily:"'Yatra One',serif",margin:"0 0 6px",letterSpacing:4,textShadow:"0 2px 10px rgba(0,0,0,.7)",color:"#f0d050",animation:"reveal 1.5s ease"}}>मोक्ष पटम् १०८</h1>
-      <div style={{fontSize:"clamp(14px,3vw,24px)",letterSpacing:12,fontFamily:"'Cinzel Decorative',serif",fontWeight:700,opacity:.55,animation:"reveal 1.5s ease .2s both"}}>MOKSHA PATAM 108</div>
-      <div style={{fontSize:"clamp(8px,1.3vw,11px)",letterSpacing:7,opacity:.25,marginTop:4}}>THE ANCIENT GAME OF KARMA</div>
-      <div style={{width:60,height:1,background:"linear-gradient(90deg,transparent,rgba(240,200,80,.4),transparent)",margin:"22px 0"}}/>
-      <div style={{maxWidth:520,textAlign:"center",opacity:shF?1:0,transition:"all .8s",marginBottom:24}}>
-        <div style={{fontSize:"clamp(14px,2.5vw,19px)",fontFamily:"'Noto Serif Devanagari',serif",lineHeight:2,color:"#f0d050",opacity:.7}}>{shl.s}</div>
-        <div style={{fontSize:10,opacity:.35,fontFamily:"'Noto Serif Devanagari',serif",marginTop:4}}>{shl.r}</div>
+      {/* Sacred geometry background — cymatics water vibration patterns */}
+      <div style={{position:"fixed",inset:0,pointerEvents:"none",overflow:"hidden"}}>
+        <div style={{position:"fixed",inset:0,background:"radial-gradient(ellipse at center,transparent 35%,rgba(8,6,3,.8) 100%)"}}/>
+        {/* Cymatics rings — water vibration patterns at different frequencies */}
+        <svg style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"120%",height:"120%",opacity:1}} viewBox="0 0 800 800">
+          {/* Cymatics water vibration rings — multiple frequencies */}
+          <circle cx="400" cy="400" r="60" fill="none" stroke="#c0a040" strokeWidth=".6" opacity=".08" style={{animation:"cymaticPulse 3.5s ease infinite"}}/>
+          <circle cx="400" cy="400" r="100" fill="none" stroke="#c0a040" strokeWidth=".5" opacity=".1" style={{animation:"cymaticPulse 4s ease infinite .3s"}}/>
+          <circle cx="400" cy="400" r="150" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".12" style={{animation:"cymaticPulse 5s ease infinite .6s"}}/>
+          <circle cx="400" cy="400" r="210" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".1" style={{animation:"cymaticPulse 6s ease infinite 1s"}}/>
+          <circle cx="400" cy="400" r="280" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".08" style={{animation:"cymaticPulse 7s ease infinite 1.4s"}}/>
+          <circle cx="400" cy="400" r="360" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".06" style={{animation:"cymaticPulse 8s ease infinite 1.8s"}}/>
+
+          {/* Flower of Life — seed of life circles */}
+          {[0,60,120,180,240,300].map(a=><circle key={"fl"+a} cx={400+60*Math.cos(a*Math.PI/180)} cy={400+60*Math.sin(a*Math.PI/180)} r="60" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".06" style={{animation:`cymaticPulse ${5+a/100}s ease infinite ${a/400}s`}}/>)}
+
+          {/* Hexagonal cymatics nodes — inner ring */}
+          {[0,60,120,180,240,300].map(a=><g key={"n1"+a}><circle cx={400+105*Math.cos(a*Math.PI/180)} cy={400+105*Math.sin(a*Math.PI/180)} r="4" fill="#c0a040" opacity=".12" style={{animation:`cymaticPulse ${3+a/100}s ease infinite ${a/200}s`}}/><line x1={400+95*Math.cos(a*Math.PI/180)} y1={400+95*Math.sin(a*Math.PI/180)} x2={400+115*Math.cos(a*Math.PI/180)} y2={400+115*Math.sin(a*Math.PI/180)} stroke="#c0a040" strokeWidth=".3" opacity=".08"/></g>)}
+
+          {/* Outer ring nodes */}
+          {[0,30,60,90,120,150,180,210,240,270,300,330].map(a=><circle key={"n2"+a} cx={400+220*Math.cos(a*Math.PI/180)} cy={400+220*Math.sin(a*Math.PI/180)} r="2.5" fill="#c0a040" opacity=".08" style={{animation:`cymaticPulse ${4+a/120}s ease infinite ${a/300}s`}}/>)}
+
+          {/* Naga serpent knots — slow rotating infinity patterns */}
+          <g style={{animation:"cymaticRotate 50s linear infinite"}} opacity=".1">
+            <path d="M300,400 C300,340 350,300 400,300 C450,300 500,340 500,400 C500,460 450,500 400,500 C350,500 300,460 300,400 Z" fill="none" stroke="#c0a040" strokeWidth=".7"/>
+            <path d="M320,400 C320,355 355,320 400,320 C445,320 480,355 480,400 C480,445 445,480 400,480 C355,480 320,445 320,400 Z" fill="none" stroke="#c0a040" strokeWidth=".5"/>
+          </g>
+          <g style={{animation:"cymaticRotate 70s linear infinite reverse"}} opacity=".08">
+            <path d="M230,400 Q315,280 400,400 T570,400" fill="none" stroke="#c0a040" strokeWidth=".5"/>
+            <path d="M230,400 Q315,520 400,400 T570,400" fill="none" stroke="#c0a040" strokeWidth=".5"/>
+          </g>
+
+          {/* Sri Yantra triangles */}
+          <polygon points="400,290 325,440 475,440" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".06" style={{animation:"cymaticPulse 10s ease infinite"}}/>
+          <polygon points="400,510 325,360 475,360" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".06" style={{animation:"cymaticPulse 10s ease infinite 5s"}}/>
+          <polygon points="400,330 355,420 445,420" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".04" style={{animation:"cymaticPulse 12s ease infinite 2s"}}/>
+          <polygon points="400,470 355,380 445,380" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".04" style={{animation:"cymaticPulse 12s ease infinite 7s"}}/>
+
+          {/* Connecting radial lines — like spokes */}
+          {[0,45,90,135,180,225,270,315].map(a=><line key={"sp"+a} x1={400+70*Math.cos(a*Math.PI/180)} y1={400+70*Math.sin(a*Math.PI/180)} x2={400+350*Math.cos(a*Math.PI/180)} y2={400+350*Math.sin(a*Math.PI/180)} stroke="#c0a040" strokeWidth=".15" opacity=".04"/>)}
+        </svg>
+        {/* ═══ ANIMATED NAGA ROPE — living serpent border that slithers and ties knots ═══ */}
+        <svg style={{position:"absolute",inset:0,width:"100%",height:"100%",pointerEvents:"none"}} viewBox="0 0 400 700" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            {/* Rope texture pattern — scale-like dashes */}
+            <pattern id="ropeScale" patternUnits="userSpaceOnUse" width="8" height="8">
+              <path d="M0,4 Q4,0 8,4" fill="none" stroke="#c0a040" strokeWidth=".6" opacity=".3"/>
+            </pattern>
+          </defs>
+
+          {/* ═══ MAIN SERPENT — continuous loop around the entire border ═══ */}
+          {/* This is one continuous path that goes: top→right→bottom→left→back to start */}
+          {/* The snake body: thick golden rope that flows continuously */}
+          <path d={
+            "M50,25 "+
+            "C80,10 120,40 160,22 C200,4 240,40 280,22 C320,4 350,30 370,25 "+
+            "C385,22 390,40 388,60 "+
+            "C392,100 378,140 390,180 C402,220 378,260 390,300 C402,340 378,380 390,420 C402,460 378,500 390,540 C402,580 378,620 388,650 "+
+            "C390,665 385,678 370,675 "+
+            "C350,680 320,650 280,678 C240,696 200,660 160,678 C120,696 80,660 50,675 "+
+            "C35,678 25,665 22,650 "+
+            "C18,620 32,580 20,540 C8,500 32,460 20,420 C8,380 32,340 20,300 C8,260 32,220 20,180 C8,140 32,100 22,60 "+
+            "C25,40 35,22 50,25 Z"
+          } fill="none" stroke="#8a7030" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" opacity=".18"
+            style={{animation:"snakeBodyPulse 4s ease infinite"}}/>
+
+          {/* Second strand — slightly offset for braided rope effect */}
+          <path d={
+            "M50,25 "+
+            "C80,10 120,40 160,22 C200,4 240,40 280,22 C320,4 350,30 370,25 "+
+            "C385,22 390,40 388,60 "+
+            "C392,100 378,140 390,180 C402,220 378,260 390,300 C402,340 378,380 390,420 C402,460 378,500 390,540 C402,580 378,620 388,650 "+
+            "C390,665 385,678 370,675 "+
+            "C350,680 320,650 280,678 C240,696 200,660 160,678 C120,696 80,660 50,675 "+
+            "C35,678 25,665 22,650 "+
+            "C18,620 32,580 20,540 C8,500 32,460 20,420 C8,380 32,340 20,300 C8,260 32,220 20,180 C8,140 32,100 22,60 "+
+            "C25,40 35,22 50,25 Z"
+          } fill="none" stroke="#c0a040" strokeWidth="2" strokeDasharray="12 8" strokeLinecap="round" opacity=".12"
+            style={{animation:"snakeFlow 3s linear infinite"}}/>
+
+          {/* Third strand — flows opposite direction for intertwining effect */}
+          <path d={
+            "M50,25 "+
+            "C80,10 120,40 160,22 C200,4 240,40 280,22 C320,4 350,30 370,25 "+
+            "C385,22 390,40 388,60 "+
+            "C392,100 378,140 390,180 C402,220 378,260 390,300 C402,340 378,380 390,420 C402,460 378,500 390,540 C402,580 378,620 388,650 "+
+            "C390,665 385,678 370,675 "+
+            "C350,680 320,650 280,678 C240,696 200,660 160,678 C120,696 80,660 50,675 "+
+            "C35,678 25,665 22,650 "+
+            "C18,620 32,580 20,540 C8,500 32,460 20,420 C8,380 32,340 20,300 C8,260 32,220 20,180 C8,140 32,100 22,60 "+
+            "C25,40 35,22 50,25 Z"
+          } fill="none" stroke="#a09040" strokeWidth="1.5" strokeDasharray="6 14" strokeLinecap="round" opacity=".1"
+            style={{animation:"snakeFlowReverse 4s linear infinite"}}/>
+
+          {/* ═══ KNOTS — circular loops where the snake ties itself ═══ */}
+          {/* Top-left knot */}
+          <g style={{transformOrigin:"40px 35px",animation:"knotTie 12s ease infinite"}}>
+            <circle cx="40" cy="35" r="14" fill="none" stroke="#8a7030" strokeWidth="4" opacity=".2" style={{animation:"knotPulse 3s ease infinite"}}/>
+            <circle cx="40" cy="35" r="8" fill="none" stroke="#c0a040" strokeWidth="2" opacity=".15"/>
+            <circle cx="40" cy="35" r="3" fill="#c0a040" opacity=".2"/>
+          </g>
+          {/* Top-right knot */}
+          <g style={{transformOrigin:"360px 35px",animation:"knotTie 15s ease infinite reverse"}}>
+            <circle cx="360" cy="35" r="14" fill="none" stroke="#8a7030" strokeWidth="4" opacity=".2" style={{animation:"knotPulse 3.5s ease infinite .5s"}}/>
+            <circle cx="360" cy="35" r="8" fill="none" stroke="#c0a040" strokeWidth="2" opacity=".15"/>
+            <circle cx="360" cy="35" r="3" fill="#c0a040" opacity=".2"/>
+          </g>
+          {/* Bottom-left knot */}
+          <g style={{transformOrigin:"40px 665px",animation:"knotTie 14s ease infinite 2s"}}>
+            <circle cx="40" cy="665" r="14" fill="none" stroke="#8a7030" strokeWidth="4" opacity=".2" style={{animation:"knotPulse 4s ease infinite 1s"}}/>
+            <circle cx="40" cy="665" r="8" fill="none" stroke="#c0a040" strokeWidth="2" opacity=".15"/>
+            <circle cx="40" cy="665" r="3" fill="#c0a040" opacity=".2"/>
+          </g>
+          {/* Bottom-right knot */}
+          <g style={{transformOrigin:"360px 665px",animation:"knotTie 13s ease infinite 3s reverse"}}>
+            <circle cx="360" cy="665" r="14" fill="none" stroke="#8a7030" strokeWidth="4" opacity=".2" style={{animation:"knotPulse 3s ease infinite 1.5s"}}/>
+            <circle cx="360" cy="665" r="8" fill="none" stroke="#c0a040" strokeWidth="2" opacity=".15"/>
+            <circle cx="360" cy="665" r="3" fill="#c0a040" opacity=".2"/>
+          </g>
+
+          {/* ═══ MID-EDGE KNOTS — additional rope loops at midpoints ═══ */}
+          <g style={{transformOrigin:"200px 15px",animation:"knotTie 18s linear infinite"}}>
+            <circle cx="200" cy="15" r="10" fill="none" stroke="#8a7030" strokeWidth="3.5" opacity=".15" style={{animation:"knotPulse 5s ease infinite"}}/>
+            <circle cx="200" cy="15" r="5" fill="none" stroke="#c0a040" strokeWidth="1.5" opacity=".1"/>
+          </g>
+          <g style={{transformOrigin:"200px 685px",animation:"knotTie 16s linear infinite reverse"}}>
+            <circle cx="200" cy="685" r="10" fill="none" stroke="#8a7030" strokeWidth="3.5" opacity=".15" style={{animation:"knotPulse 5s ease infinite 2s"}}/>
+            <circle cx="200" cy="685" r="5" fill="none" stroke="#c0a040" strokeWidth="1.5" opacity=".1"/>
+          </g>
+          <g style={{transformOrigin:"12px 350px",animation:"knotTie 20s linear infinite 1s"}}>
+            <circle cx="12" cy="350" r="10" fill="none" stroke="#8a7030" strokeWidth="3.5" opacity=".15" style={{animation:"knotPulse 4s ease infinite 1s"}}/>
+            <circle cx="12" cy="350" r="5" fill="none" stroke="#c0a040" strokeWidth="1.5" opacity=".1"/>
+          </g>
+          <g style={{transformOrigin:"388px 350px",animation:"knotTie 17s linear infinite 2s reverse"}}>
+            <circle cx="388" cy="350" r="10" fill="none" stroke="#8a7030" strokeWidth="3.5" opacity=".15" style={{animation:"knotPulse 4.5s ease infinite .5s"}}/>
+            <circle cx="388" cy="350" r="5" fill="none" stroke="#c0a040" strokeWidth="1.5" opacity=".1"/>
+          </g>
+
+          {/* ═══ NAGA HEADS — cobra hoods at cardinal points, part of the rope ═══ */}
+          {/* Top center — hood facing up */}
+          <g opacity=".2" transform="translate(200,4)">
+            <path d="M-10,8 C-14,-2 -8,-10 0,-12 C8,-10 14,-2 10,8 L6,12 C3,14 -3,14 -6,12 Z" fill="rgba(140,112,48,.15)" stroke="#c0a040" strokeWidth="1.5"/>
+            <circle cx="-3.5" cy="-3" r="1.2" fill="#e0c060"/>
+            <circle cx="3.5" cy="-3" r="1.2" fill="#e0c060"/>
+            <path d="M-1.5,4 L0,8 L1.5,4" fill="none" stroke="#c0a040" strokeWidth=".8"/>
+          </g>
+          {/* Bottom center — hood facing down */}
+          <g opacity=".2" transform="translate(200,696) scale(1,-1)">
+            <path d="M-10,8 C-14,-2 -8,-10 0,-12 C8,-10 14,-2 10,8 L6,12 C3,14 -3,14 -6,12 Z" fill="rgba(140,112,48,.15)" stroke="#c0a040" strokeWidth="1.5"/>
+            <circle cx="-3.5" cy="-3" r="1.2" fill="#e0c060"/>
+            <circle cx="3.5" cy="-3" r="1.2" fill="#e0c060"/>
+            <path d="M-1.5,4 L0,8 L1.5,4" fill="none" stroke="#c0a040" strokeWidth=".8"/>
+          </g>
+          {/* Left center — hood facing left */}
+          <g opacity=".2" transform="translate(4,350) rotate(-90)">
+            <path d="M-10,8 C-14,-2 -8,-10 0,-12 C8,-10 14,-2 10,8 L6,12 C3,14 -3,14 -6,12 Z" fill="rgba(140,112,48,.15)" stroke="#c0a040" strokeWidth="1.5"/>
+            <circle cx="-3.5" cy="-3" r="1.2" fill="#e0c060"/>
+            <circle cx="3.5" cy="-3" r="1.2" fill="#e0c060"/>
+          </g>
+          {/* Right center — hood facing right */}
+          <g opacity=".2" transform="translate(396,350) rotate(90)">
+            <path d="M-10,8 C-14,-2 -8,-10 0,-12 C8,-10 14,-2 10,8 L6,12 C3,14 -3,14 -6,12 Z" fill="rgba(140,112,48,.15)" stroke="#c0a040" strokeWidth="1.5"/>
+            <circle cx="-3.5" cy="-3" r="1.2" fill="#e0c060"/>
+            <circle cx="3.5" cy="-3" r="1.2" fill="#e0c060"/>
+          </g>
+        </svg>
       </div>
-      <div style={{fontSize:"clamp(10px,1.4vw,13px)",fontStyle:"italic",opacity:.3,marginBottom:28,letterSpacing:2,textAlign:"center"}}>"Rise through virtue. Fall through vice. Seek liberation."</div>
-      <div style={{marginBottom:20,textAlign:"center",animation:"reveal 1.5s ease .3s both"}}>
-        <div style={{fontSize:11,opacity:.4,letterSpacing:4,marginBottom:12}}>CHOOSE NARRATION VOICE</div>
-        <div style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap"}}>
-          <button onClick={()=>{setChosenLang('en');ambient.start()}} style={{width:120,background:chosenLang==='en'?"rgba(200,160,60,.15)":"transparent",border:`1px solid ${chosenLang==='en'?"rgba(240,200,80,.7)":"rgba(200,160,60,.3)"}`,boxShadow:chosenLang==='en'?"0 0 20px rgba(240,200,80,.1)":"none",color:"#e8c850",padding:"14px 0",fontSize:13,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,transition:"all .15s",letterSpacing:2,textAlign:"center"}}>
-            <div style={{fontSize:20,marginBottom:4}}>🇬🇧</div>English
-          </button>
-          <button onClick={()=>{setChosenLang('hi');ambient.start()}} style={{width:120,background:chosenLang==='hi'?"rgba(200,160,60,.15)":"transparent",border:`1px solid ${chosenLang==='hi'?"rgba(240,200,80,.7)":"rgba(200,160,60,.3)"}`,boxShadow:chosenLang==='hi'?"0 0 20px rgba(240,200,80,.1)":"none",color:"#e8c850",padding:"14px 0",fontSize:13,fontFamily:"'Noto Serif Devanagari',serif",cursor:"pointer",borderRadius:3,transition:"all .15s",letterSpacing:2,textAlign:"center"}}>
-            <div style={{fontSize:20,marginBottom:4}}>🇮🇳</div>हिन्दी
-          </button>
+
+      {/* Main content */}
+      <div style={{position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center",width:"100%",maxWidth:520}}>
+        <div style={{fontSize:42,marginBottom:8,animation:"pulse 3s ease infinite"}}>🔱</div>
+        <h1 style={{fontSize:"clamp(32px,8vw,64px)",fontFamily:"'Yatra One',serif",margin:"0 0 4px",letterSpacing:4,textShadow:"0 2px 10px rgba(0,0,0,.7)",color:"#f0d050",animation:"reveal 1.5s ease",textAlign:"center"}}>मोक्ष पटम् १०८</h1>
+        <div style={{fontSize:"clamp(12px,2.5vw,20px)",letterSpacing:10,fontFamily:"'Cinzel Decorative',serif",fontWeight:700,opacity:.5,animation:"reveal 1.5s ease .2s both"}}>MOKSHA PATAM 108</div>
+        <div style={{fontSize:"clamp(7px,1.2vw,10px)",letterSpacing:6,opacity:.2,marginTop:3}}>THE ANCIENT GAME OF KARMA</div>
+
+        {/* Divider with naga knot */}
+        <div style={{position:"relative",width:120,height:16,margin:"16px 0"}}>
+          <div style={{position:"absolute",top:"50%",left:0,right:0,height:1,background:"linear-gradient(90deg,transparent,rgba(240,200,80,.3),transparent)"}}/>
+          <svg style={{position:"absolute",left:"50%",top:"50%",transform:"translate(-50%,-50%)",width:20,height:20,opacity:.4}} viewBox="0 0 20 20">
+            <circle cx="10" cy="10" r="4" fill="none" stroke="#f0d050" strokeWidth=".8"/>
+            <circle cx="10" cy="10" r="1.5" fill="#f0d050" opacity=".5"/>
+          </svg>
         </div>
-      </div>
-      <div style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap",animation:"reveal 1.5s ease .4s both"}}>
-        <button className="gb gp" disabled={preloading} onClick={()=>{
-          ambient.start();
-          const isLocal = ['localhost','127.0.0.1',''].includes(window.location.hostname);
-          if (isLocal) { setScreen("story"); setStoryPage(0); return; }
-          setPreloading(true); setPreloadPct(0);
-          const { promise, progress } = AudioCache.preloadAll(chosenLang);
-          const iv = setInterval(() => setPreloadPct(progress()), 300);
-          promise.then(() => { clearInterval(iv); setPreloadPct(100); setCacheCount(AudioCache.count()); setPreloading(false); setScreen("story"); setStoryPage(0); })
-            .catch(() => { clearInterval(iv); setPreloading(false); setScreen("story"); setStoryPage(0); });
-        }} style={{fontSize:14,padding:"14px 32px",letterSpacing:3}}>
-          {preloading ? `📜 LOADING VOICES... ${preloadPct}%` : "📜 BEGIN WITH STORY"}
-        </button>
-        <button className="gb" onClick={()=>{ambient.start();setScreen("pickcount")}} style={{fontSize:14,padding:"14px 32px",letterSpacing:3,opacity:.6}}>⚡ SKIP TO GAME</button>
-      </div>
-      <div style={{marginTop:10,opacity:.15,fontSize:9}}>Screen text is always English · Voice follows your choice</div>
-      <div style={{display:"flex",gap:10,justifyContent:"center",marginTop:16,flexWrap:"wrap"}}>
-        <button onClick={()=>setShowGuide(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📜 How to Play</button>
-        <button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📖 Encyclopaedia</button>
-      </div>
-      <div style={{marginTop:10}}><InstaBadge/></div>
-      {/* ═══ AUTH: Sign In / Profile ═══ */}
-      <div style={{marginTop:12,animation:"reveal 1.5s ease .5s both"}}>
-        {auth.user?(
-          <button onClick={()=>{setShowProfile(true);setProfileTab("overview")}} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 16px 6px 6px",background:"rgba(240,200,80,.05)",border:"1px solid rgba(200,160,60,.15)",borderRadius:20,cursor:"pointer",color:"#e8c850",fontSize:11,fontFamily:"'Cinzel',serif",margin:"0 auto"}}>
-            {auth.profile?.avatar_url?<img src={auth.profile.avatar_url} alt="" style={{width:24,height:24,borderRadius:"50%",border:"1px solid rgba(240,200,80,.2)"}} referrerPolicy="no-referrer"/>:<div style={{width:24,height:24,borderRadius:"50%",background:"rgba(240,200,80,.12)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12}}>🪷</div>}
-            {auth.profile?.display_name||"View Profile"}
-          </button>
-        ):(
-          <div style={{display:"flex",flexDirection:"column",gap:8,alignItems:"center"}}>
-            <div style={{fontSize:9,opacity:.3,letterSpacing:3}}>SAVE YOUR KARMA</div>
-            <div style={{display:"flex",gap:8,flexWrap:"wrap",justifyContent:"center"}}>
-              <button onClick={auth.signInGoogle} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 18px",background:"rgba(255,255,255,.04)",border:"1px solid rgba(200,160,60,.15)",borderRadius:6,cursor:"pointer",color:"#c0b080",fontSize:11,fontFamily:"'Cinzel',serif",letterSpacing:1}}><GoogleIcon/>Google</button>
+
+        {/* Shloka */}
+        <div style={{textAlign:"center",opacity:shF?1:0,transition:"all .8s",marginBottom:16,minHeight:50}}>
+          <div style={{fontSize:"clamp(12px,2.2vw,16px)",fontFamily:"'Noto Serif Devanagari',serif",lineHeight:2,color:"#f0d050",opacity:.65}}>{shl.s}</div>
+          <div style={{fontSize:9,opacity:.3,fontFamily:"'Noto Serif Devanagari',serif",marginTop:2}}>{shl.r}</div>
+        </div>
+
+        <div style={{fontSize:"clamp(9px,1.2vw,11px)",fontStyle:"italic",opacity:.25,marginBottom:20,letterSpacing:2,textAlign:"center"}}>"Rise through virtue. Fall through vice. Seek liberation."</div>
+
+        {/* ═══ MANDATORY LOGIN GATE ═══ */}
+        {!auth.user && !auth.loading ? (
+          <div style={{width:"100%",animation:"reveal 1.5s ease .3s both"}}>
+            {/* Login card */}
+            <div style={{background:"linear-gradient(180deg,rgba(240,200,80,.04),rgba(240,200,80,.01))",border:"1px solid rgba(200,160,60,.15)",borderRadius:12,padding:"24px 20px",textAlign:"center",position:"relative",overflow:"hidden"}}>
+              {/* Subtle cymatics pattern inside card */}
+              <svg style={{position:"absolute",top:0,left:0,width:"100%",height:"100%",opacity:.03,pointerEvents:"none"}} viewBox="0 0 300 200">
+                <circle cx="150" cy="100" r="60" fill="none" stroke="#c0a040" strokeWidth=".5"/>
+                <circle cx="150" cy="100" r="90" fill="none" stroke="#c0a040" strokeWidth=".3"/>
+              </svg>
+              <div style={{fontSize:11,letterSpacing:4,color:"#8a7a50",marginBottom:14,position:"relative"}}>ENTER THE SACRED BOARD</div>
+              <button onClick={auth.signInGoogle} style={{display:"flex",alignItems:"center",gap:10,padding:"12px 28px",background:"rgba(255,255,255,.06)",border:"1px solid rgba(200,160,60,.25)",borderRadius:8,cursor:"pointer",color:"#e8c850",fontSize:14,fontFamily:"'Cinzel',serif",letterSpacing:2,margin:"0 auto",transition:"all .3s",position:"relative"}}>
+                <GoogleIcon/>Sign in with Google
+              </button>
+              <div style={{fontSize:9,color:"#5a4a30",marginTop:12,lineHeight:1.7}}>
+                Sign in to save your karma across lifetimes<br/>
+                Track Punya, Papa, and climb the sacred leaderboard
+              </div>
             </div>
+          </div>
+        ) : auth.loading ? (
+          <div style={{fontSize:12,color:"#8a7a50",opacity:.5,animation:"pulse 1.5s ease infinite"}}>Connecting to the cosmos...</div>
+        ) : (
+          /* ═══ SIGNED IN — Show game options ═══ */
+          <div style={{width:"100%",animation:"reveal 1s ease"}}>
+            {/* Signed in badge */}
+            <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginBottom:16}}>
+              {auth.profile?.avatar_url?<img src={auth.profile.avatar_url} alt="" style={{width:28,height:28,borderRadius:"50%",border:"1.5px solid rgba(240,200,80,.3)"}} referrerPolicy="no-referrer"/>:<div style={{width:28,height:28,borderRadius:"50%",background:"rgba(240,200,80,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,color:"#f0d050"}}>🪷</div>}
+              <span style={{fontSize:12,color:"#c0b080"}}>{auth.profile?.display_name||auth.user?.user_metadata?.full_name||auth.user?.email?.split("@")[0]||"Seeker"}</span>
+              <button onClick={()=>{setShowProfile(true);setProfileTab("overview")}} style={{background:"transparent",border:"1px solid rgba(200,160,60,.12)",color:"#8a7a50",padding:"2px 10px",fontSize:9,cursor:"pointer",borderRadius:12,fontFamily:"'Cinzel',serif",letterSpacing:1}}>Profile</button>
+            </div>
+
+            {/* Language selector — compact pills */}
+            <div style={{display:"flex",justifyContent:"center",gap:6,marginBottom:16}}>
+              <div style={{fontSize:9,letterSpacing:3,color:"#5a4a30",alignSelf:"center",marginRight:4}}>VOICE</div>
+              <button onClick={()=>{setChosenLang('en');ambient.start()}} style={{padding:"5px 14px",background:chosenLang==='en'?"rgba(240,200,80,.12)":"transparent",border:`1px solid ${chosenLang==='en'?"rgba(240,200,80,.5)":"rgba(200,160,60,.15)"}`,borderRadius:16,color:chosenLang==='en'?"#f0d050":"#8a7a50",fontSize:11,cursor:"pointer",fontFamily:"'Cinzel',serif",letterSpacing:1,transition:"all .2s"}}>EN</button>
+              <button onClick={()=>{setChosenLang('hi');ambient.start()}} style={{padding:"5px 14px",background:chosenLang==='hi'?"rgba(240,200,80,.12)":"transparent",border:`1px solid ${chosenLang==='hi'?"rgba(240,200,80,.5)":"rgba(200,160,60,.15)"}`,borderRadius:16,color:chosenLang==='hi'?"#f0d050":"#8a7a50",fontSize:11,cursor:"pointer",fontFamily:"'Noto Serif Devanagari',serif",letterSpacing:1,transition:"all .2s"}}>हिन्दी</button>
+            </div>
+
+            {/* Action buttons */}
+            <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
+              <button className="gb gp" disabled={preloading} onClick={()=>{
+                ambient.start();
+                const isLocal = ['localhost','127.0.0.1',''].includes(window.location.hostname);
+                if (isLocal) { setScreen("story"); setStoryPage(0); return; }
+                setPreloading(true); setPreloadPct(0);
+                const { promise, progress } = AudioCache.preloadAll(chosenLang);
+                const iv = setInterval(() => setPreloadPct(progress()), 300);
+                promise.then(() => { clearInterval(iv); setPreloadPct(100); setCacheCount(AudioCache.count()); setPreloading(false); setScreen("story"); setStoryPage(0); })
+                  .catch(() => { clearInterval(iv); setPreloading(false); setScreen("story"); setStoryPage(0); });
+              }} style={{fontSize:13,padding:"12px 28px",letterSpacing:2}}>
+                {preloading ? `📜 LOADING... ${preloadPct}%` : "📜 BEGIN STORY"}
+              </button>
+              <button className="gb" onClick={()=>{ambient.start();setScreen("pickcount")}} style={{fontSize:13,padding:"12px 28px",letterSpacing:2,opacity:.5}}>⚡ PLAY</button>
+            </div>
+
+            <div style={{marginTop:8,opacity:.12,fontSize:8,textAlign:"center"}}>Screen text = English · Voice = your choice</div>
+
+            {/* Utilities row */}
+            <div style={{display:"flex",gap:8,justifyContent:"center",marginTop:12,flexWrap:"wrap"}}>
+              <button onClick={()=>setShowGuide(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.1)",color:"#8a7a50",padding:"3px 10px",fontSize:9,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1}}>📜 Rules</button>
+              <button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.1)",color:"#8a7a50",padding:"3px 10px",fontSize:9,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1}}>📖 Encyclopaedia</button>
+            </div>
+            <div style={{marginTop:8,textAlign:"center"}}><InstaBadge/></div>
           </div>
         )}
       </div>
-      {/* ═══ COPYRIGHT FOOTER ═══ */}
-      <div style={{position:"fixed",bottom:12,left:0,right:0,textAlign:"center"}}>
-        <div style={{fontSize:11,color:"#8a7a50",letterSpacing:2}}>© {new Date().getFullYear()} RasaVisio · All rights reserved</div>
-        <div style={{fontSize:10,color:"#6a5a38",letterSpacing:1,marginTop:3}}>Inspired by the ancient game of Moksha Patam · Created in India 🇮🇳</div>
+
+      {/* ═══ COPYRIGHT FOOTER — not fixed, flows at bottom ═══ */}
+      <div style={{marginTop:"auto",paddingTop:24,textAlign:"center",position:"relative",zIndex:1}}>
+        <div style={{fontSize:10,color:"#7a6a40",letterSpacing:2}}>© {new Date().getFullYear()} RasaVisio · All rights reserved</div>
+        <div style={{fontSize:9,color:"#5a4a30",letterSpacing:1,marginTop:3}}>Inspired by the ancient game of Moksha Patam · Created in India 🇮🇳</div>
       </div>
     </div>
   );
@@ -1902,6 +2136,9 @@ export default function MokshaPatam108(){
           <div style={{fontSize:10,color:"#604040",marginTop:8,letterSpacing:3,animation:"pulse 2s ease infinite"}}>
             {chosenLang==='hi'?"🔊 यमराज की आवाज़ सुनो":"🔊 YAMA IS SPEAKING"}
           </div>
+          <button onClick={()=>{VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){}setYamaPhase(1)}} style={{marginTop:16,background:"transparent",border:"1px solid rgba(160,64,64,.25)",color:"#806060",padding:"6px 20px",fontSize:10,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:2,opacity:.6,transition:"all .2s",animation:"yamaTextReveal 1s ease 4s both"}}>
+            SKIP ▸
+          </button>
         </div>}
 
         {yamaPhase===1&&<div style={{textAlign:"center",animation:"dharmaIn .6s ease forwards",display:"flex",flexDirection:"column",alignItems:"center"}}>
@@ -2000,7 +2237,7 @@ export default function MokshaPatam108(){
           <button onClick={toggleMute} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"2px 8px",fontSize:12,cursor:"pointer",borderRadius:3}}>{muted?"🔇":"🔊"}</button>
           {auth.user?<button onClick={()=>{setShowProfile(true);setProfileTab("overview")}} style={{display:"flex",alignItems:"center",gap:6,padding:"3px 10px 3px 3px",background:"rgba(240,200,80,.05)",border:"1px solid rgba(200,160,60,.15)",borderRadius:16,cursor:"pointer",color:"#e8c850",fontSize:10,fontFamily:"'Cinzel',serif"}}>
             {auth.profile?.avatar_url?<img src={auth.profile.avatar_url} alt="" style={{width:20,height:20,borderRadius:"50%",border:"1px solid rgba(240,200,80,.2)"}} referrerPolicy="no-referrer"/>:<div style={{width:20,height:20,borderRadius:"50%",background:"rgba(240,200,80,.12)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10}}>🪷</div>}
-            <span>{(auth.profile?.display_name||"").split(" ")[0]||"Profile"}</span>
+            <span>{(auth.profile?.display_name||auth.user?.user_metadata?.full_name||"").split(" ")[0]||"Profile"}</span>
             {auth.profile?.total_games>0&&<span style={{fontSize:8,padding:"1px 5px",background:(auth.profile.total_punya_earned-auth.profile.total_papa_earned)>=0?"rgba(100,200,100,.12)":"rgba(200,80,60,.12)",borderRadius:6,color:(auth.profile.total_punya_earned-auth.profile.total_papa_earned)>=0?"#80c080":"#e08060"}}>{(auth.profile.total_punya_earned-auth.profile.total_papa_earned)>=0?"+":""}{(auth.profile.total_punya_earned||0)-(auth.profile.total_papa_earned||0)}</span>}
           </button>:<button onClick={()=>setShowProfile(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.15)",color:"#8a7a50",padding:"3px 10px",fontSize:10,cursor:"pointer",borderRadius:16,fontFamily:"'Cinzel',serif"}}>Sign In</button>}
         </div>

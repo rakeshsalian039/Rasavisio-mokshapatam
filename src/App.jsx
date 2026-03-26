@@ -1059,11 +1059,15 @@ const CSS=`
 @keyframes cymaticFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes nagaSlither{0%{d:path('M0,20 Q15,5 30,20 T60,20')}50%{d:path('M0,20 Q15,35 30,20 T60,20')}100%{d:path('M0,20 Q15,5 30,20 T60,20')}}
 @keyframes ringPulse{0%,100%{r:40;opacity:.06}50%{r:48;opacity:.1}}
-@keyframes snakeFlow{0%{stroke-dashoffset:0}100%{stroke-dashoffset:-120}}
-@keyframes snakeFlowReverse{0%{stroke-dashoffset:0}100%{stroke-dashoffset:120}}
-@keyframes knotTie{0%{transform:rotate(0deg) scale(1)}25%{transform:rotate(90deg) scale(1.05)}50%{transform:rotate(180deg) scale(1)}75%{transform:rotate(270deg) scale(.95)}100%{transform:rotate(360deg) scale(1)}}
-@keyframes knotPulse{0%,100%{stroke-width:5;opacity:.2}50%{stroke-width:7;opacity:.3}}
-@keyframes snakeBodyPulse{0%,100%{stroke-width:4}30%{stroke-width:6}60%{stroke-width:3.5}}
+@keyframes snakeFlow{0%{stroke-dashoffset:0}100%{stroke-dashoffset:-80}}
+@keyframes snakeFlowReverse{0%{stroke-dashoffset:0}100%{stroke-dashoffset:80}}
+@keyframes knotTie{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes knotPulse{0%,100%{stroke-width:5;opacity:.18}50%{stroke-width:6.5;opacity:.28}}
+@keyframes snakeBodyPulse{0%,100%{stroke-width:4}30%{stroke-width:5.5}60%{stroke-width:3.5}}
+@keyframes bandWeave{0%,100%{opacity:.15}50%{opacity:.25}}
+@keyframes centralKnot{0%{transform:rotate(0deg) scale(1)}50%{transform:rotate(180deg) scale(1.03)}100%{transform:rotate(360deg) scale(1)}}
+@keyframes outerRing{0%{transform:rotate(0deg)}100%{transform:rotate(-360deg)}}
+@keyframes innerGlow{0%,100%{opacity:.08}50%{opacity:.18}}
 .gb{background:transparent;border:1px solid rgba(200,160,60,.3);color:#e8c850;padding:12px 32px;font-size:14px;font-family:'Cinzel',serif;cursor:pointer;transition:all .4s;letter-spacing:3px;border-radius:2px}
 .gb:hover{background:rgba(200,160,60,.08);border-color:rgba(240,200,80,.6)}
 .gp{background:linear-gradient(180deg,rgba(200,160,60,.2),rgba(200,160,60,.08));border-color:rgba(200,160,60,.5)}
@@ -1815,136 +1819,105 @@ export default function MokshaPatam108(){
           <polygon points="400,510 325,360 475,360" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".06" style={{animation:"cymaticPulse 10s ease infinite 5s"}}/>
           <polygon points="400,330 355,420 445,420" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".04" style={{animation:"cymaticPulse 12s ease infinite 2s"}}/>
           <polygon points="400,470 355,380 445,380" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".04" style={{animation:"cymaticPulse 12s ease infinite 7s"}}/>
+        {/* ═══ TEMPLE ENDLESS KNOT — Somanathapur/Jain style interlocking bands ═══ */}
+        {/* Central medallion knot — thick bands weaving over-under like temple ceilings */}
+        <svg style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"min(110vw,110vh)",height:"min(110vw,110vh)",pointerEvents:"none",opacity:1}} viewBox="0 0 500 500">
+          {/* Outermost ring — beaded border like temple frame */}
+          <g style={{transformOrigin:"250px 250px",animation:"outerRing 120s linear infinite"}}>
+            <circle cx="250" cy="250" r="240" fill="none" stroke="#6a5520" strokeWidth="3" opacity=".1"/>
+            <circle cx="250" cy="250" r="237" fill="none" stroke="#8a7030" strokeWidth="1" strokeDasharray="4 4" opacity=".08"/>
+            <circle cx="250" cy="250" r="243" fill="none" stroke="#5a4518" strokeWidth="1" strokeDasharray="4 4" opacity=".06"/>
+            {/* Beaded dots on outer ring */}
+            {Array.from({length:36}).map((_,i)=><circle key={"ob"+i} cx={250+240*Math.cos(i*10*Math.PI/180)} cy={250+240*Math.sin(i*10*Math.PI/180)} r="2" fill="#8a7030" opacity=".08"/>)}
+          </g>
+
+          {/* Second concentric ring */}
+          <circle cx="250" cy="250" r="200" fill="none" stroke="#7a6528" strokeWidth="2.5" opacity=".08" style={{animation:"bandWeave 6s ease infinite"}}/>
+          <circle cx="250" cy="250" r="197" fill="none" stroke="#8a7030" strokeWidth=".8" strokeDasharray="3 5" opacity=".06"/>
+
+          {/* ═══ THE MAIN INTERLOCKING KNOT — 4 thick bands weaving in figure-8 loops ═══ */}
+          <g style={{transformOrigin:"250px 250px",animation:"centralKnot 40s linear infinite"}}>
+            {/* Band 1 — horizontal figure-8 */}
+            <path d="M100,250 C100,170 180,150 250,150 C320,150 340,200 340,250 C340,300 320,350 250,350 C180,350 100,330 100,250 Z" fill="none" stroke="#8a7030" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" opacity=".2" style={{animation:"knotPulse 5s ease infinite"}}/>
+            <path d="M100,250 C100,170 180,150 250,150 C320,150 340,200 340,250 C340,300 320,350 250,350 C180,350 100,330 100,250 Z" fill="none" stroke="#c0a040" strokeWidth="2.5" strokeDasharray="10 8" strokeLinecap="round" opacity=".1" style={{animation:"snakeFlow 4s linear infinite"}}/>
+
+            {/* Band 2 — vertical figure-8 */}
+            <path d="M250,100 C330,100 350,180 350,250 C350,320 300,340 250,340 C200,340 150,320 150,250 C150,180 170,100 250,100 Z" fill="none" stroke="#8a7030" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" opacity=".2" style={{animation:"knotPulse 5s ease infinite 1.25s"}}/>
+            <path d="M250,100 C330,100 350,180 350,250 C350,320 300,340 250,340 C200,340 150,320 150,250 C150,180 170,100 250,100 Z" fill="none" stroke="#c0a040" strokeWidth="2.5" strokeDasharray="10 8" strokeLinecap="round" opacity=".1" style={{animation:"snakeFlowReverse 5s linear infinite"}}/>
+
+            {/* Band 3 — diagonal NW-SE */}
+            <path d="M130,130 C180,100 230,140 270,180 C310,220 350,250 370,200 C390,150 350,120 300,150 C250,180 200,350 170,370 C140,390 110,360 130,310 C150,260 160,180 130,130 Z" fill="none" stroke="#7a6020" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" opacity=".15" style={{animation:"knotPulse 5s ease infinite 2.5s"}}/>
+            <path d="M130,130 C180,100 230,140 270,180 C310,220 350,250 370,200 C390,150 350,120 300,150 C250,180 200,350 170,370 C140,390 110,360 130,310 C150,260 160,180 130,130 Z" fill="none" stroke="#c0a040" strokeWidth="2" strokeDasharray="8 10" strokeLinecap="round" opacity=".08" style={{animation:"snakeFlow 6s linear infinite"}}/>
+
+            {/* Band 4 — diagonal NE-SW (mirror) */}
+            <path d="M370,130 C320,100 270,140 230,180 C190,220 150,250 130,200 C110,150 150,120 200,150 C250,180 300,350 330,370 C360,390 390,360 370,310 C350,260 340,180 370,130 Z" fill="none" stroke="#7a6020" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" opacity=".15" style={{animation:"knotPulse 5s ease infinite 3.75s"}}/>
+            <path d="M370,130 C320,100 270,140 230,180 C190,220 150,250 130,200 C110,150 150,120 200,150 C250,180 300,350 330,370 C360,390 390,360 370,310 C350,260 340,180 370,130 Z" fill="none" stroke="#c0a040" strokeWidth="2" strokeDasharray="8 10" strokeLinecap="round" opacity=".08" style={{animation:"snakeFlowReverse 7s linear infinite"}}/>
+          </g>
+
+          {/* ═══ INNER KNOT — smaller tighter weave at center like temple lotus bud ═══ */}
+          <g style={{transformOrigin:"250px 250px",animation:"centralKnot 25s linear infinite reverse"}}>
+            <path d="M210,250 C210,220 230,210 250,210 C270,210 290,220 290,250 C290,280 270,290 250,290 C230,290 210,280 210,250 Z" fill="none" stroke="#a08830" strokeWidth="5" opacity=".2" style={{animation:"knotPulse 4s ease infinite"}}/>
+            <path d="M250,210 C280,210 290,230 290,250 C290,270 280,290 250,290 C220,290 210,270 210,250 C210,230 220,210 250,210 Z" fill="none" stroke="#c0a040" strokeWidth="2" strokeDasharray="6 6" opacity=".12" style={{animation:"snakeFlow 3s linear infinite"}}/>
+            {/* Cross bands through center */}
+            <path d="M220,230 C240,210 260,210 280,230 C260,250 240,250 220,230 Z" fill="none" stroke="#8a7030" strokeWidth="4" opacity=".12"/>
+            <path d="M220,270 C240,290 260,290 280,270 C260,250 240,250 220,270 Z" fill="none" stroke="#8a7030" strokeWidth="4" opacity=".12"/>
+          </g>
+
+          {/* Center lotus circle — like the Somanathapur ceiling center */}
+          <circle cx="250" cy="250" r="18" fill="none" stroke="#c0a040" strokeWidth="2" opacity=".15" style={{animation:"innerGlow 4s ease infinite"}}/>
+          <circle cx="250" cy="250" r="10" fill="none" stroke="#c0a040" strokeWidth="1.5" opacity=".1" style={{animation:"innerGlow 4s ease infinite 2s"}}/>
+          <circle cx="250" cy="250" r="4" fill="#c0a040" opacity=".15" style={{animation:"innerGlow 3s ease infinite"}}/>
+
+          {/* ═══ OUTER INTERLOCKING LOOPS — bands that extend to the border ═══ */}
+          <g style={{transformOrigin:"250px 250px",animation:"outerRing 80s linear infinite reverse"}} opacity=".1">
+            {/* 8 loops extending from the knot to the outer ring */}
+            {[0,45,90,135,180,225,270,315].map(a=>{
+              const r1=160,r2=220,cx=250,cy=250;
+              const rad=a*Math.PI/180;
+              const x1=cx+r1*Math.cos(rad),y1=cy+r1*Math.sin(rad);
+              const x2=cx+r2*Math.cos(rad),y2=cy+r2*Math.sin(rad);
+              const perpRad=rad+Math.PI/2;
+              const off=25;
+              const mx1=cx+(r1+r2)/2*Math.cos(rad)+off*Math.cos(perpRad);
+              const my1=cy+(r1+r2)/2*Math.sin(rad)+off*Math.sin(perpRad);
+              const mx2=cx+(r1+r2)/2*Math.cos(rad)-off*Math.cos(perpRad);
+              const my2=cy+(r1+r2)/2*Math.sin(rad)-off*Math.sin(perpRad);
+              return <g key={"loop"+a}>
+                <path d={`M${x1},${y1} Q${mx1},${my1} ${x2},${y2}`} fill="none" stroke="#8a7030" strokeWidth="5" strokeLinecap="round"/>
+                <path d={`M${x1},${y1} Q${mx2},${my2} ${x2},${y2}`} fill="none" stroke="#8a7030" strokeWidth="5" strokeLinecap="round"/>
+                <path d={`M${x1},${y1} Q${mx1},${my1} ${x2},${y2}`} fill="none" stroke="#c0a040" strokeWidth="1.5" strokeDasharray="5 7" strokeLinecap="round" style={{animation:`snakeFlow ${3+a/100}s linear infinite`}}/>
+              </g>
+            })}
+          </g>
+        </svg>
+
+        {/* ═══ BORDER SERPENT — continuous snake flowing around the page edge ═══ */}
+        <svg style={{position:"absolute",inset:0,width:"100%",height:"100%",pointerEvents:"none"}} viewBox="0 0 400 700" preserveAspectRatio="none">
+          {/* Flowing border rope */}
+          <path d={
+            "M50,20 C120,5 200,35 280,15 C340,2 370,15 385,35 "+
+            "C395,55 390,120 392,200 C394,300 388,400 392,500 C396,580 390,640 385,665 "+
+            "C375,685 340,695 280,685 C200,670 120,698 50,680 "+
+            "C30,675 15,660 12,640 C5,580 10,500 8,400 C6,300 10,200 12,100 C14,50 25,25 50,20 Z"
+          } fill="none" stroke="#6a5520" strokeWidth="4" strokeLinecap="round" opacity=".12" style={{animation:"snakeBodyPulse 6s ease infinite"}}/>
+          <path d={
+            "M50,20 C120,5 200,35 280,15 C340,2 370,15 385,35 "+
+            "C395,55 390,120 392,200 C394,300 388,400 392,500 C396,580 390,640 385,665 "+
+            "C375,685 340,695 280,685 C200,670 120,698 50,680 "+
+            "C30,675 15,660 12,640 C5,580 10,500 8,400 C6,300 10,200 12,100 C14,50 25,25 50,20 Z"
+          } fill="none" stroke="#c0a040" strokeWidth="1.5" strokeDasharray="10 8" strokeLinecap="round" opacity=".08" style={{animation:"snakeFlow 5s linear infinite"}}/>
+          <path d={
+            "M50,20 C120,5 200,35 280,15 C340,2 370,15 385,35 "+
+            "C395,55 390,120 392,200 C394,300 388,400 392,500 C396,580 390,640 385,665 "+
+            "C375,685 340,695 280,685 C200,670 120,698 50,680 "+
+            "C30,675 15,660 12,640 C5,580 10,500 8,400 C6,300 10,200 12,100 C14,50 25,25 50,20 Z"
+          } fill="none" stroke="#a09040" strokeWidth="1" strokeDasharray="5 12" strokeLinecap="round" opacity=".06" style={{animation:"snakeFlowReverse 7s linear infinite"}}/>
+        </svg>
+      </div>
 
           {/* Connecting radial lines — like spokes */}
           {[0,45,90,135,180,225,270,315].map(a=><line key={"sp"+a} x1={400+70*Math.cos(a*Math.PI/180)} y1={400+70*Math.sin(a*Math.PI/180)} x2={400+350*Math.cos(a*Math.PI/180)} y2={400+350*Math.sin(a*Math.PI/180)} stroke="#c0a040" strokeWidth=".15" opacity=".04"/>)}
         </svg>
-        {/* ═══ ANIMATED NAGA ROPE — living serpent border that slithers and ties knots ═══ */}
-        <svg style={{position:"absolute",inset:0,width:"100%",height:"100%",pointerEvents:"none"}} viewBox="0 0 400 700" preserveAspectRatio="xMidYMid slice">
-          <defs>
-            {/* Rope texture pattern — scale-like dashes */}
-            <pattern id="ropeScale" patternUnits="userSpaceOnUse" width="8" height="8">
-              <path d="M0,4 Q4,0 8,4" fill="none" stroke="#c0a040" strokeWidth=".6" opacity=".3"/>
-            </pattern>
-          </defs>
-
-          {/* ═══ MAIN SERPENT — continuous loop around the entire border ═══ */}
-          {/* This is one continuous path that goes: top→right→bottom→left→back to start */}
-          {/* The snake body: thick golden rope that flows continuously */}
-          <path d={
-            "M50,25 "+
-            "C80,10 120,40 160,22 C200,4 240,40 280,22 C320,4 350,30 370,25 "+
-            "C385,22 390,40 388,60 "+
-            "C392,100 378,140 390,180 C402,220 378,260 390,300 C402,340 378,380 390,420 C402,460 378,500 390,540 C402,580 378,620 388,650 "+
-            "C390,665 385,678 370,675 "+
-            "C350,680 320,650 280,678 C240,696 200,660 160,678 C120,696 80,660 50,675 "+
-            "C35,678 25,665 22,650 "+
-            "C18,620 32,580 20,540 C8,500 32,460 20,420 C8,380 32,340 20,300 C8,260 32,220 20,180 C8,140 32,100 22,60 "+
-            "C25,40 35,22 50,25 Z"
-          } fill="none" stroke="#8a7030" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" opacity=".18"
-            style={{animation:"snakeBodyPulse 4s ease infinite"}}/>
-
-          {/* Second strand — slightly offset for braided rope effect */}
-          <path d={
-            "M50,25 "+
-            "C80,10 120,40 160,22 C200,4 240,40 280,22 C320,4 350,30 370,25 "+
-            "C385,22 390,40 388,60 "+
-            "C392,100 378,140 390,180 C402,220 378,260 390,300 C402,340 378,380 390,420 C402,460 378,500 390,540 C402,580 378,620 388,650 "+
-            "C390,665 385,678 370,675 "+
-            "C350,680 320,650 280,678 C240,696 200,660 160,678 C120,696 80,660 50,675 "+
-            "C35,678 25,665 22,650 "+
-            "C18,620 32,580 20,540 C8,500 32,460 20,420 C8,380 32,340 20,300 C8,260 32,220 20,180 C8,140 32,100 22,60 "+
-            "C25,40 35,22 50,25 Z"
-          } fill="none" stroke="#c0a040" strokeWidth="2" strokeDasharray="12 8" strokeLinecap="round" opacity=".12"
-            style={{animation:"snakeFlow 3s linear infinite"}}/>
-
-          {/* Third strand — flows opposite direction for intertwining effect */}
-          <path d={
-            "M50,25 "+
-            "C80,10 120,40 160,22 C200,4 240,40 280,22 C320,4 350,30 370,25 "+
-            "C385,22 390,40 388,60 "+
-            "C392,100 378,140 390,180 C402,220 378,260 390,300 C402,340 378,380 390,420 C402,460 378,500 390,540 C402,580 378,620 388,650 "+
-            "C390,665 385,678 370,675 "+
-            "C350,680 320,650 280,678 C240,696 200,660 160,678 C120,696 80,660 50,675 "+
-            "C35,678 25,665 22,650 "+
-            "C18,620 32,580 20,540 C8,500 32,460 20,420 C8,380 32,340 20,300 C8,260 32,220 20,180 C8,140 32,100 22,60 "+
-            "C25,40 35,22 50,25 Z"
-          } fill="none" stroke="#a09040" strokeWidth="1.5" strokeDasharray="6 14" strokeLinecap="round" opacity=".1"
-            style={{animation:"snakeFlowReverse 4s linear infinite"}}/>
-
-          {/* ═══ KNOTS — circular loops where the snake ties itself ═══ */}
-          {/* Top-left knot */}
-          <g style={{transformOrigin:"40px 35px",animation:"knotTie 12s ease infinite"}}>
-            <circle cx="40" cy="35" r="14" fill="none" stroke="#8a7030" strokeWidth="4" opacity=".2" style={{animation:"knotPulse 3s ease infinite"}}/>
-            <circle cx="40" cy="35" r="8" fill="none" stroke="#c0a040" strokeWidth="2" opacity=".15"/>
-            <circle cx="40" cy="35" r="3" fill="#c0a040" opacity=".2"/>
-          </g>
-          {/* Top-right knot */}
-          <g style={{transformOrigin:"360px 35px",animation:"knotTie 15s ease infinite reverse"}}>
-            <circle cx="360" cy="35" r="14" fill="none" stroke="#8a7030" strokeWidth="4" opacity=".2" style={{animation:"knotPulse 3.5s ease infinite .5s"}}/>
-            <circle cx="360" cy="35" r="8" fill="none" stroke="#c0a040" strokeWidth="2" opacity=".15"/>
-            <circle cx="360" cy="35" r="3" fill="#c0a040" opacity=".2"/>
-          </g>
-          {/* Bottom-left knot */}
-          <g style={{transformOrigin:"40px 665px",animation:"knotTie 14s ease infinite 2s"}}>
-            <circle cx="40" cy="665" r="14" fill="none" stroke="#8a7030" strokeWidth="4" opacity=".2" style={{animation:"knotPulse 4s ease infinite 1s"}}/>
-            <circle cx="40" cy="665" r="8" fill="none" stroke="#c0a040" strokeWidth="2" opacity=".15"/>
-            <circle cx="40" cy="665" r="3" fill="#c0a040" opacity=".2"/>
-          </g>
-          {/* Bottom-right knot */}
-          <g style={{transformOrigin:"360px 665px",animation:"knotTie 13s ease infinite 3s reverse"}}>
-            <circle cx="360" cy="665" r="14" fill="none" stroke="#8a7030" strokeWidth="4" opacity=".2" style={{animation:"knotPulse 3s ease infinite 1.5s"}}/>
-            <circle cx="360" cy="665" r="8" fill="none" stroke="#c0a040" strokeWidth="2" opacity=".15"/>
-            <circle cx="360" cy="665" r="3" fill="#c0a040" opacity=".2"/>
-          </g>
-
-          {/* ═══ MID-EDGE KNOTS — additional rope loops at midpoints ═══ */}
-          <g style={{transformOrigin:"200px 15px",animation:"knotTie 18s linear infinite"}}>
-            <circle cx="200" cy="15" r="10" fill="none" stroke="#8a7030" strokeWidth="3.5" opacity=".15" style={{animation:"knotPulse 5s ease infinite"}}/>
-            <circle cx="200" cy="15" r="5" fill="none" stroke="#c0a040" strokeWidth="1.5" opacity=".1"/>
-          </g>
-          <g style={{transformOrigin:"200px 685px",animation:"knotTie 16s linear infinite reverse"}}>
-            <circle cx="200" cy="685" r="10" fill="none" stroke="#8a7030" strokeWidth="3.5" opacity=".15" style={{animation:"knotPulse 5s ease infinite 2s"}}/>
-            <circle cx="200" cy="685" r="5" fill="none" stroke="#c0a040" strokeWidth="1.5" opacity=".1"/>
-          </g>
-          <g style={{transformOrigin:"12px 350px",animation:"knotTie 20s linear infinite 1s"}}>
-            <circle cx="12" cy="350" r="10" fill="none" stroke="#8a7030" strokeWidth="3.5" opacity=".15" style={{animation:"knotPulse 4s ease infinite 1s"}}/>
-            <circle cx="12" cy="350" r="5" fill="none" stroke="#c0a040" strokeWidth="1.5" opacity=".1"/>
-          </g>
-          <g style={{transformOrigin:"388px 350px",animation:"knotTie 17s linear infinite 2s reverse"}}>
-            <circle cx="388" cy="350" r="10" fill="none" stroke="#8a7030" strokeWidth="3.5" opacity=".15" style={{animation:"knotPulse 4.5s ease infinite .5s"}}/>
-            <circle cx="388" cy="350" r="5" fill="none" stroke="#c0a040" strokeWidth="1.5" opacity=".1"/>
-          </g>
-
-          {/* ═══ NAGA HEADS — cobra hoods at cardinal points, part of the rope ═══ */}
-          {/* Top center — hood facing up */}
-          <g opacity=".2" transform="translate(200,4)">
-            <path d="M-10,8 C-14,-2 -8,-10 0,-12 C8,-10 14,-2 10,8 L6,12 C3,14 -3,14 -6,12 Z" fill="rgba(140,112,48,.15)" stroke="#c0a040" strokeWidth="1.5"/>
-            <circle cx="-3.5" cy="-3" r="1.2" fill="#e0c060"/>
-            <circle cx="3.5" cy="-3" r="1.2" fill="#e0c060"/>
-            <path d="M-1.5,4 L0,8 L1.5,4" fill="none" stroke="#c0a040" strokeWidth=".8"/>
-          </g>
-          {/* Bottom center — hood facing down */}
-          <g opacity=".2" transform="translate(200,696) scale(1,-1)">
-            <path d="M-10,8 C-14,-2 -8,-10 0,-12 C8,-10 14,-2 10,8 L6,12 C3,14 -3,14 -6,12 Z" fill="rgba(140,112,48,.15)" stroke="#c0a040" strokeWidth="1.5"/>
-            <circle cx="-3.5" cy="-3" r="1.2" fill="#e0c060"/>
-            <circle cx="3.5" cy="-3" r="1.2" fill="#e0c060"/>
-            <path d="M-1.5,4 L0,8 L1.5,4" fill="none" stroke="#c0a040" strokeWidth=".8"/>
-          </g>
-          {/* Left center — hood facing left */}
-          <g opacity=".2" transform="translate(4,350) rotate(-90)">
-            <path d="M-10,8 C-14,-2 -8,-10 0,-12 C8,-10 14,-2 10,8 L6,12 C3,14 -3,14 -6,12 Z" fill="rgba(140,112,48,.15)" stroke="#c0a040" strokeWidth="1.5"/>
-            <circle cx="-3.5" cy="-3" r="1.2" fill="#e0c060"/>
-            <circle cx="3.5" cy="-3" r="1.2" fill="#e0c060"/>
-          </g>
-          {/* Right center — hood facing right */}
-          <g opacity=".2" transform="translate(396,350) rotate(90)">
-            <path d="M-10,8 C-14,-2 -8,-10 0,-12 C8,-10 14,-2 10,8 L6,12 C3,14 -3,14 -6,12 Z" fill="rgba(140,112,48,.15)" stroke="#c0a040" strokeWidth="1.5"/>
-            <circle cx="-3.5" cy="-3" r="1.2" fill="#e0c060"/>
-            <circle cx="3.5" cy="-3" r="1.2" fill="#e0c060"/>
-          </g>
-        </svg>
-      </div>
 
       {/* Main content */}
       <div style={{position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center",width:"100%",maxWidth:520}}>
