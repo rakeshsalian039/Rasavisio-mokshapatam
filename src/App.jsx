@@ -1059,15 +1059,6 @@ const CSS=`
 @keyframes cymaticFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes nagaSlither{0%{d:path('M0,20 Q15,5 30,20 T60,20')}50%{d:path('M0,20 Q15,35 30,20 T60,20')}100%{d:path('M0,20 Q15,5 30,20 T60,20')}}
 @keyframes ringPulse{0%,100%{r:40;opacity:.06}50%{r:48;opacity:.1}}
-
-
-
-
-
-
-
-
-
 .gb{background:transparent;border:1px solid rgba(200,160,60,.3);color:#e8c850;padding:12px 32px;font-size:14px;font-family:'Cinzel',serif;cursor:pointer;transition:all .4s;letter-spacing:3px;border-radius:2px}
 .gb:hover{background:rgba(200,160,60,.08);border-color:rgba(240,200,80,.6)}
 .gp{background:linear-gradient(180deg,rgba(200,160,60,.2),rgba(200,160,60,.08));border-color:rgba(200,160,60,.5)}
@@ -1193,10 +1184,7 @@ export default function MokshaPatam108(){
   // Game tracking stats (reset each game)
   const gameStats=useRef({startTime:0,turns:0,snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0});
 
-  const[screen,setScreen_]=useState("title"); // title|story|pickcount|yama|setup|game
-  const screenHistory=useRef([]);
-  const setScreen=useCallback((s)=>{screenHistory.current.push(screen);setScreen_(s)},[screen]);
-  const goBack=useCallback(()=>{const prev=screenHistory.current.pop();if(prev){VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){}setScreen_(prev)}},[]); 
+  const[screen,setScreen]=useState("title"); // title|story|pickcount|setup|game
   const[nP,setNP]=useState(2);
   const[players,setPlayers]=useState([]);
   const[tempName,setTempName]=useState("");
@@ -1615,44 +1603,6 @@ export default function MokshaPatam108(){
   // ═══ GLOBAL OVERLAYS — rendered on every screen ═══
   const globalOverlays=<>
     <style>{CSS}</style>
-    {/* ═══ SHARED SACRED BACKGROUND — visible on all screens ═══ */}
-    <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0}}>
-      <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at center,transparent 30%,rgba(8,6,3,.85) 100%)"}}/>
-      <svg style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"140%",height:"140%"}} viewBox="0 0 800 800">
-        {/* Subtle concentric rings — like ripples in still water */}
-        {[60,110,170,240,320].map((r,i)=><circle key={i} cx="400" cy="400" r={r} fill="none" stroke="#c0a040" strokeWidth={.4-.05*i} opacity={.06-.008*i}/>)}
-        {/* Seed of life — 6 circles */}
-        {[0,60,120,180,240,300].map(a=><circle key={"s"+a} cx={400+55*Math.cos(a*Math.PI/180)} cy={400+55*Math.sin(a*Math.PI/180)} r="55" fill="none" stroke="#c0a040" strokeWidth=".25" opacity=".035"/>)}
-        {/* Sri Yantra — interlocking triangles */}
-        <polygon points="400,300 340,425 460,425" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".04"/>
-        <polygon points="400,500 340,375 460,375" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".04"/>
-        {/* Outer ring of dots */}
-        {[0,30,60,90,120,150,180,210,240,270,300,330].map(a=><circle key={"d"+a} cx={400+200*Math.cos(a*Math.PI/180)} cy={400+200*Math.sin(a*Math.PI/180)} r="1.5" fill="#c0a040" opacity=".05"/>)}
-      </svg>
-    </div>
-    {/* ═══ PERSISTENT HEADER — website feel with nav, profile, back ═══ */}
-    <div style={{position:"fixed",top:0,left:0,right:0,zIndex:200,background:"linear-gradient(180deg,rgba(12,10,7,.95),rgba(12,10,7,.7),transparent)",padding:"8px 16px 20px",pointerEvents:"auto"}}>
-      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",maxWidth:900,margin:"0 auto"}}>
-        {/* Left — back + logo */}
-        <div style={{display:"flex",alignItems:"center",gap:8}}>
-          {screen!=="title"&&<button onClick={goBack} style={{background:"transparent",border:"1px solid rgba(200,160,60,.15)",color:"#8a7a50",padding:"3px 10px",fontSize:10,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif"}}>← Back</button>}
-          <span onClick={()=>{VoiceEngine.stop();setScreen_("title");screenHistory.current=[]}} style={{fontSize:12,fontFamily:"'Yatra One',serif",color:"#c0a040",cursor:"pointer",letterSpacing:1}}>मोक्ष पटम् १०८</span>
-        </div>
-        {/* Center — nav links */}
-        <div style={{display:"flex",gap:10,alignItems:"center",flexWrap:"wrap",justifyContent:"center"}}>
-          <button onClick={()=>setShowGuide(true)} style={{background:"transparent",border:"none",color:"#8a7a50",fontSize:9,cursor:"pointer",fontFamily:"'Cinzel',serif",letterSpacing:1,padding:"2px 6px"}}>Rules</button>
-          <button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"none",color:"#8a7a50",fontSize:9,cursor:"pointer",fontFamily:"'Cinzel',serif",letterSpacing:1,padding:"2px 6px"}}>Encyclopaedia</button>
-          <a href="https://instagram.com/india.rasavisio" target="_blank" rel="noopener noreferrer" style={{color:"#8a7a50",fontSize:9,fontFamily:"'Cinzel',serif",letterSpacing:1,textDecoration:"none",padding:"2px 6px"}}>@rasavisio</a>
-        </div>
-        {/* Right — profile */}
-        <div>
-          {auth.user?<button onClick={()=>{setShowProfile(true);setProfileTab("overview")}} style={{display:"flex",alignItems:"center",gap:5,padding:"3px 10px 3px 3px",background:"rgba(240,200,80,.04)",border:"1px solid rgba(200,160,60,.12)",borderRadius:14,cursor:"pointer",color:"#c0b080",fontSize:10,fontFamily:"'Cinzel',serif"}}>
-            {auth.profile?.avatar_url?<img src={auth.profile.avatar_url} alt="" style={{width:18,height:18,borderRadius:"50%"}} referrerPolicy="no-referrer"/>:<span style={{fontSize:12}}>🪷</span>}
-            <span style={{maxWidth:60,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{(auth.profile?.display_name||auth.user?.user_metadata?.full_name||"").split(" ")[0]||"Profile"}</span>
-          </button>:<button onClick={auth.signInGoogle} style={{display:"flex",alignItems:"center",gap:5,padding:"3px 10px",background:"transparent",border:"1px solid rgba(200,160,60,.12)",borderRadius:14,cursor:"pointer",color:"#8a7a50",fontSize:10,fontFamily:"'Cinzel',serif"}}><GoogleIcon/>Sign In</button>}
-        </div>
-      </div>
-    </div>
     {showInfo&&<div key="info-panel" style={{position:"fixed",inset:0,background:"rgba(6,5,3,.95)",zIndex:300,overflowY:"auto",padding:"clamp(12px,3vw,24px)",animation:"fadeIn .3s ease"}}>
       <div style={{maxWidth:700,margin:"0 auto"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
@@ -1821,8 +1771,51 @@ export default function MokshaPatam108(){
 
   // ═══ TITLE ═══
   if(screen==="title")return(
-    <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"56px 20px 40px",minHeight:"100vh",overflowY:"auto"}}>
+    <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 20px 60px",minHeight:"100vh",overflowY:"auto"}}>
       {globalOverlays}
+      {/* Sacred geometry background — cymatics water vibration patterns */}
+      <div style={{position:"fixed",inset:0,pointerEvents:"none",overflow:"hidden"}}>
+        <div style={{position:"fixed",inset:0,background:"radial-gradient(ellipse at center,transparent 35%,rgba(8,6,3,.8) 100%)"}}/>
+        {/* Cymatics rings — water vibration patterns at different frequencies */}
+        <svg style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"120%",height:"120%",opacity:1}} viewBox="0 0 800 800">
+          {/* Cymatics water vibration rings — multiple frequencies */}
+          <circle cx="400" cy="400" r="60" fill="none" stroke="#c0a040" strokeWidth=".6" opacity=".08" style={{animation:"cymaticPulse 3.5s ease infinite"}}/>
+          <circle cx="400" cy="400" r="100" fill="none" stroke="#c0a040" strokeWidth=".5" opacity=".1" style={{animation:"cymaticPulse 4s ease infinite .3s"}}/>
+          <circle cx="400" cy="400" r="150" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".12" style={{animation:"cymaticPulse 5s ease infinite .6s"}}/>
+          <circle cx="400" cy="400" r="210" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".1" style={{animation:"cymaticPulse 6s ease infinite 1s"}}/>
+          <circle cx="400" cy="400" r="280" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".08" style={{animation:"cymaticPulse 7s ease infinite 1.4s"}}/>
+          <circle cx="400" cy="400" r="360" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".06" style={{animation:"cymaticPulse 8s ease infinite 1.8s"}}/>
+
+          {/* Flower of Life — seed of life circles */}
+          {[0,60,120,180,240,300].map(a=><circle key={"fl"+a} cx={400+60*Math.cos(a*Math.PI/180)} cy={400+60*Math.sin(a*Math.PI/180)} r="60" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".06" style={{animation:`cymaticPulse ${5+a/100}s ease infinite ${a/400}s`}}/>)}
+
+          {/* Hexagonal cymatics nodes — inner ring */}
+          {[0,60,120,180,240,300].map(a=><g key={"n1"+a}><circle cx={400+105*Math.cos(a*Math.PI/180)} cy={400+105*Math.sin(a*Math.PI/180)} r="4" fill="#c0a040" opacity=".12" style={{animation:`cymaticPulse ${3+a/100}s ease infinite ${a/200}s`}}/><line x1={400+95*Math.cos(a*Math.PI/180)} y1={400+95*Math.sin(a*Math.PI/180)} x2={400+115*Math.cos(a*Math.PI/180)} y2={400+115*Math.sin(a*Math.PI/180)} stroke="#c0a040" strokeWidth=".3" opacity=".08"/></g>)}
+
+          {/* Outer ring nodes */}
+          {[0,30,60,90,120,150,180,210,240,270,300,330].map(a=><circle key={"n2"+a} cx={400+220*Math.cos(a*Math.PI/180)} cy={400+220*Math.sin(a*Math.PI/180)} r="2.5" fill="#c0a040" opacity=".08" style={{animation:`cymaticPulse ${4+a/120}s ease infinite ${a/300}s`}}/>)}
+
+          {/* Naga serpent knots — slow rotating infinity patterns */}
+          <g style={{animation:"cymaticRotate 50s linear infinite"}} opacity=".1">
+            <path d="M300,400 C300,340 350,300 400,300 C450,300 500,340 500,400 C500,460 450,500 400,500 C350,500 300,460 300,400 Z" fill="none" stroke="#c0a040" strokeWidth=".7"/>
+            <path d="M320,400 C320,355 355,320 400,320 C445,320 480,355 480,400 C480,445 445,480 400,480 C355,480 320,445 320,400 Z" fill="none" stroke="#c0a040" strokeWidth=".5"/>
+          </g>
+          <g style={{animation:"cymaticRotate 70s linear infinite reverse"}} opacity=".08">
+            <path d="M230,400 Q315,280 400,400 T570,400" fill="none" stroke="#c0a040" strokeWidth=".5"/>
+            <path d="M230,400 Q315,520 400,400 T570,400" fill="none" stroke="#c0a040" strokeWidth=".5"/>
+          </g>
+
+          {/* Sri Yantra triangles */}
+          <polygon points="400,290 325,440 475,440" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".06" style={{animation:"cymaticPulse 10s ease infinite"}}/>
+          <polygon points="400,510 325,360 475,360" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".06" style={{animation:"cymaticPulse 10s ease infinite 5s"}}/>
+          <polygon points="400,330 355,420 445,420" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".04" style={{animation:"cymaticPulse 12s ease infinite 2s"}}/>
+          <polygon points="400,470 355,380 445,380" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".04" style={{animation:"cymaticPulse 12s ease infinite 7s"}}/>
+
+          {/* Connecting radial lines — like spokes */}
+          {[0,45,90,135,180,225,270,315].map(a=><line key={"sp"+a} x1={400+70*Math.cos(a*Math.PI/180)} y1={400+70*Math.sin(a*Math.PI/180)} x2={400+350*Math.cos(a*Math.PI/180)} y2={400+350*Math.sin(a*Math.PI/180)} stroke="#c0a040" strokeWidth=".15" opacity=".04"/>)}
+        </svg>
+      </div>
+
       {/* Main content */}
       <div style={{position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center",width:"100%",maxWidth:520}}>
         <div style={{fontSize:42,marginBottom:8,animation:"pulse 3s ease infinite"}}>🔱</div>
@@ -1830,37 +1823,62 @@ export default function MokshaPatam108(){
         <div style={{fontSize:"clamp(12px,2.5vw,20px)",letterSpacing:10,fontFamily:"'Cinzel Decorative',serif",fontWeight:700,opacity:.5,animation:"reveal 1.5s ease .2s both"}}>MOKSHA PATAM 108</div>
         <div style={{fontSize:"clamp(7px,1.2vw,10px)",letterSpacing:6,opacity:.2,marginTop:3}}>THE ANCIENT GAME OF KARMA</div>
 
-        <div style={{width:80,height:1,background:"linear-gradient(90deg,transparent,rgba(240,200,80,.3),transparent)",margin:"18px 0"}}/>
+        {/* Divider with naga knot */}
+        <div style={{position:"relative",width:120,height:16,margin:"16px 0"}}>
+          <div style={{position:"absolute",top:"50%",left:0,right:0,height:1,background:"linear-gradient(90deg,transparent,rgba(240,200,80,.3),transparent)"}}/>
+          <svg style={{position:"absolute",left:"50%",top:"50%",transform:"translate(-50%,-50%)",width:20,height:20,opacity:.4}} viewBox="0 0 20 20">
+            <circle cx="10" cy="10" r="4" fill="none" stroke="#f0d050" strokeWidth=".8"/>
+            <circle cx="10" cy="10" r="1.5" fill="#f0d050" opacity=".5"/>
+          </svg>
+        </div>
 
         {/* Shloka */}
-        <div style={{textAlign:"center",opacity:shF?1:0,transition:"all .8s",marginBottom:14,minHeight:44}}>
+        <div style={{textAlign:"center",opacity:shF?1:0,transition:"all .8s",marginBottom:16,minHeight:50}}>
           <div style={{fontSize:"clamp(12px,2.2vw,16px)",fontFamily:"'Noto Serif Devanagari',serif",lineHeight:2,color:"#f0d050",opacity:.65}}>{shl.s}</div>
           <div style={{fontSize:9,opacity:.3,fontFamily:"'Noto Serif Devanagari',serif",marginTop:2}}>{shl.r}</div>
         </div>
 
-        <div style={{fontSize:"clamp(9px,1.2vw,11px)",fontStyle:"italic",opacity:.2,marginBottom:20,letterSpacing:2,textAlign:"center"}}>"Rise through virtue. Fall through vice. Seek liberation."</div>
+        <div style={{fontSize:"clamp(9px,1.2vw,11px)",fontStyle:"italic",opacity:.25,marginBottom:20,letterSpacing:2,textAlign:"center"}}>"Rise through virtue. Fall through vice. Seek liberation."</div>
 
-        {/* ═══ MANDATORY LOGIN or GAME OPTIONS ═══ */}
+        {/* ═══ MANDATORY LOGIN GATE ═══ */}
         {!auth.user && !auth.loading ? (
           <div style={{width:"100%",animation:"reveal 1.5s ease .3s both"}}>
-            <div style={{background:"linear-gradient(180deg,rgba(240,200,80,.03),rgba(240,200,80,.01))",border:"1px solid rgba(200,160,60,.12)",borderRadius:10,padding:"24px 20px",textAlign:"center"}}>
-              <div style={{fontSize:10,letterSpacing:4,color:"#7a6a40",marginBottom:14}}>ENTER THE SACRED BOARD</div>
-              <button onClick={auth.signInGoogle} style={{display:"flex",alignItems:"center",gap:10,padding:"12px 28px",background:"rgba(255,255,255,.05)",border:"1px solid rgba(200,160,60,.2)",borderRadius:8,cursor:"pointer",color:"#e8c850",fontSize:14,fontFamily:"'Cinzel',serif",letterSpacing:2,margin:"0 auto"}}>
+            {/* Login card */}
+            <div style={{background:"linear-gradient(180deg,rgba(240,200,80,.04),rgba(240,200,80,.01))",border:"1px solid rgba(200,160,60,.15)",borderRadius:12,padding:"24px 20px",textAlign:"center",position:"relative",overflow:"hidden"}}>
+              {/* Subtle cymatics pattern inside card */}
+              <svg style={{position:"absolute",top:0,left:0,width:"100%",height:"100%",opacity:.03,pointerEvents:"none"}} viewBox="0 0 300 200">
+                <circle cx="150" cy="100" r="60" fill="none" stroke="#c0a040" strokeWidth=".5"/>
+                <circle cx="150" cy="100" r="90" fill="none" stroke="#c0a040" strokeWidth=".3"/>
+              </svg>
+              <div style={{fontSize:11,letterSpacing:4,color:"#8a7a50",marginBottom:14,position:"relative"}}>ENTER THE SACRED BOARD</div>
+              <button onClick={auth.signInGoogle} style={{display:"flex",alignItems:"center",gap:10,padding:"12px 28px",background:"rgba(255,255,255,.06)",border:"1px solid rgba(200,160,60,.25)",borderRadius:8,cursor:"pointer",color:"#e8c850",fontSize:14,fontFamily:"'Cinzel',serif",letterSpacing:2,margin:"0 auto",transition:"all .3s",position:"relative"}}>
                 <GoogleIcon/>Sign in with Google
               </button>
-              <div style={{fontSize:9,color:"#5a4a30",marginTop:12,lineHeight:1.7}}>Sign in to save your karma · Track Punya & Papa · Sacred leaderboard</div>
+              <div style={{fontSize:9,color:"#5a4a30",marginTop:12,lineHeight:1.7}}>
+                Sign in to save your karma across lifetimes<br/>
+                Track Punya, Papa, and climb the sacred leaderboard
+              </div>
             </div>
           </div>
         ) : auth.loading ? (
           <div style={{fontSize:12,color:"#8a7a50",opacity:.5,animation:"pulse 1.5s ease infinite"}}>Connecting to the cosmos...</div>
         ) : (
+          /* ═══ SIGNED IN — Show game options ═══ */
           <div style={{width:"100%",animation:"reveal 1s ease"}}>
-            {/* Language selector */}
-            <div style={{display:"flex",justifyContent:"center",gap:6,marginBottom:18}}>
-              <div style={{fontSize:9,letterSpacing:3,color:"#5a4a30",alignSelf:"center",marginRight:4}}>VOICE</div>
-              <button onClick={()=>{setChosenLang('en');ambient.start()}} style={{padding:"5px 14px",background:chosenLang==='en'?"rgba(240,200,80,.12)":"transparent",border:`1px solid ${chosenLang==='en'?"rgba(240,200,80,.5)":"rgba(200,160,60,.15)"}`,borderRadius:16,color:chosenLang==='en'?"#f0d050":"#8a7a50",fontSize:11,cursor:"pointer",fontFamily:"'Cinzel',serif",letterSpacing:1}}>EN</button>
-              <button onClick={()=>{setChosenLang('hi');ambient.start()}} style={{padding:"5px 14px",background:chosenLang==='hi'?"rgba(240,200,80,.12)":"transparent",border:`1px solid ${chosenLang==='hi'?"rgba(240,200,80,.5)":"rgba(200,160,60,.15)"}`,borderRadius:16,color:chosenLang==='hi'?"#f0d050":"#8a7a50",fontSize:11,cursor:"pointer",fontFamily:"'Noto Serif Devanagari',serif",letterSpacing:1}}>हिन्दी</button>
+            {/* Signed in badge */}
+            <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginBottom:16}}>
+              {auth.profile?.avatar_url?<img src={auth.profile.avatar_url} alt="" style={{width:28,height:28,borderRadius:"50%",border:"1.5px solid rgba(240,200,80,.3)"}} referrerPolicy="no-referrer"/>:<div style={{width:28,height:28,borderRadius:"50%",background:"rgba(240,200,80,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,color:"#f0d050"}}>🪷</div>}
+              <span style={{fontSize:12,color:"#c0b080"}}>{auth.profile?.display_name||auth.user?.user_metadata?.full_name||auth.user?.email?.split("@")[0]||"Seeker"}</span>
+              <button onClick={()=>{setShowProfile(true);setProfileTab("overview")}} style={{background:"transparent",border:"1px solid rgba(200,160,60,.12)",color:"#8a7a50",padding:"2px 10px",fontSize:9,cursor:"pointer",borderRadius:12,fontFamily:"'Cinzel',serif",letterSpacing:1}}>Profile</button>
             </div>
+
+            {/* Language selector — compact pills */}
+            <div style={{display:"flex",justifyContent:"center",gap:6,marginBottom:16}}>
+              <div style={{fontSize:9,letterSpacing:3,color:"#5a4a30",alignSelf:"center",marginRight:4}}>VOICE</div>
+              <button onClick={()=>{setChosenLang('en');ambient.start()}} style={{padding:"5px 14px",background:chosenLang==='en'?"rgba(240,200,80,.12)":"transparent",border:`1px solid ${chosenLang==='en'?"rgba(240,200,80,.5)":"rgba(200,160,60,.15)"}`,borderRadius:16,color:chosenLang==='en'?"#f0d050":"#8a7a50",fontSize:11,cursor:"pointer",fontFamily:"'Cinzel',serif",letterSpacing:1,transition:"all .2s"}}>EN</button>
+              <button onClick={()=>{setChosenLang('hi');ambient.start()}} style={{padding:"5px 14px",background:chosenLang==='hi'?"rgba(240,200,80,.12)":"transparent",border:`1px solid ${chosenLang==='hi'?"rgba(240,200,80,.5)":"rgba(200,160,60,.15)"}`,borderRadius:16,color:chosenLang==='hi'?"#f0d050":"#8a7a50",fontSize:11,cursor:"pointer",fontFamily:"'Noto Serif Devanagari',serif",letterSpacing:1,transition:"all .2s"}}>हिन्दी</button>
+            </div>
+
             {/* Action buttons */}
             <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
               <button className="gb gp" disabled={preloading} onClick={()=>{
@@ -1877,12 +1895,21 @@ export default function MokshaPatam108(){
               </button>
               <button className="gb" onClick={()=>{ambient.start();setScreen("pickcount")}} style={{fontSize:13,padding:"12px 28px",letterSpacing:2,opacity:.5}}>⚡ PLAY</button>
             </div>
-            <div style={{marginTop:8,opacity:.1,fontSize:8,textAlign:"center"}}>Screen text = English · Voice = your choice</div>
+
+            <div style={{marginTop:8,opacity:.12,fontSize:8,textAlign:"center"}}>Screen text = English · Voice = your choice</div>
+
+            {/* Utilities row */}
+            <div style={{display:"flex",gap:8,justifyContent:"center",marginTop:12,flexWrap:"wrap"}}>
+              <button onClick={()=>setShowGuide(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.1)",color:"#8a7a50",padding:"3px 10px",fontSize:9,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1}}>📜 Rules</button>
+              <button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.1)",color:"#8a7a50",padding:"3px 10px",fontSize:9,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1}}>📖 Encyclopaedia</button>
+            </div>
+            <div style={{marginTop:8,textAlign:"center"}}><InstaBadge/></div>
           </div>
         )}
       </div>
-      {/* Footer */}
-      <div style={{marginTop:"auto",paddingTop:20,textAlign:"center",position:"relative",zIndex:1}}>
+
+      {/* ═══ COPYRIGHT FOOTER — not fixed, flows at bottom ═══ */}
+      <div style={{marginTop:"auto",paddingTop:24,textAlign:"center",position:"relative",zIndex:1}}>
         <div style={{fontSize:10,color:"#7a6a40",letterSpacing:2}}>© {new Date().getFullYear()} RasaVisio · All rights reserved</div>
         <div style={{fontSize:9,color:"#5a4a30",letterSpacing:1,marginTop:3}}>Inspired by the ancient game of Moksha Patam · Created in India 🇮🇳</div>
       </div>
@@ -1893,8 +1920,9 @@ export default function MokshaPatam108(){
   if(screen==="story"){
     const pg=STORY_PAGES[storyPage];
     return(
-      <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",padding:"52px 20px 40px",overflowY:"auto"}}>
+      <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",padding:"clamp(16px,4vw,40px)",overflowY:"auto"}}>
         {globalOverlays}
+        <button onClick={()=>{VoiceEngine.stop();if(storyPage>0)setStoryPage(storyPage-1);else setScreen("title")}} style={{position:"fixed",top:20,left:20,background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#8a7a50",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
         <div style={{maxWidth:640,width:"100%",animation:"slideUp .8s ease"}} key={storyPage}>
           <div style={{textAlign:"center",marginBottom:24}}>
             <div style={{fontSize:40,marginBottom:8}}>{pg.icon}</div>
@@ -1930,9 +1958,10 @@ export default function MokshaPatam108(){
 
   // ═══ PICK COUNT ═══
   if(screen==="pickcount")return(
-    <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"52px 20px 20px"}}>
+    <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20}}>
       {globalOverlays}
       <div style={{animation:"slideUp .8s ease",textAlign:"center"}}>
+        <button onClick={()=>{VoiceEngine.stop();setScreen("title")}} style={{position:"absolute",top:20,left:20,background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#8a7a50",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
         <div style={{fontSize:32,marginBottom:12}}>🔱</div>
         <h2 style={{fontSize:"clamp(20px,4vw,32px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"0 0 8px"}}>How Many Seekers?</h2>
         <p style={{fontSize:13,opacity:.4,marginBottom:12,letterSpacing:3}}>Each soul walks a different path</p>
@@ -1958,8 +1987,9 @@ export default function MokshaPatam108(){
     const yamaIntroHi='तो, तुम मुझसे खेलना चाहते हो? मैं यमराज हूँ। मृत्यु का देवता। मैं महान भैंसे पर सवार होकर मृतकों के लोक से गुज़रता हूँ। हर आत्मा जो इस पट पर चलती है, अंत में मेरे पास आती है। मैं सृष्टि के आरम्भ से प्रतीक्षा कर रहा हूँ। तुम्हें लगता है तुम मृत्यु को हरा सकते हो? तुम्हें लगता है तुम्हारे छोटे-छोटे पुण्य तुम्हें बचा लेंगे? मैंने लाखों आत्माओं को गिरते देखा है। वीर योद्धा। ज्ञानी ऋषि। पवित्र संत। सब गिरे। और मैंने उनका कर्म निगल लिया। खेलो अपना छोटा सा खेल, नश्वर प्राणी। मैं देख रहा हूँ। हर एक कदम। और जब तुम्हारा कर्म डगमगाएगा, एक फुसफुसाहट भर भी, मैं वहीं रहूँगा। इंतज़ार करता हुआ। अब बताओ, छोटी सी आत्मा। तुम कौन हो?';
 
     return(
-      <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"52px 20px 20px",minHeight:"100vh",background:"radial-gradient(ellipse at center,#1a0808 0%,#0c0505 40%,#050202 100%)"}}>
+      <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20,minHeight:"100vh",background:"radial-gradient(ellipse at center,#1a0808 0%,#0c0505 40%,#050202 100%)"}}>
         {globalOverlays}
+        <button onClick={()=>{VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){}setScreen("pickcount");setYamaPhase(0)}} style={{position:"fixed",top:20,left:20,background:"transparent",border:"1px solid rgba(160,64,64,.25)",color:"#806060",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
         <div style={{position:"fixed",inset:0,background:"radial-gradient(ellipse at center,rgba(160,40,40,.08),transparent 60%)",pointerEvents:"none"}}/>
         
         {yamaPhase===0&&<div style={{textAlign:"center",animation:"yamaReveal 2s ease forwards",display:"flex",flexDirection:"column",alignItems:"center"}}>
@@ -2006,10 +2036,11 @@ export default function MokshaPatam108(){
   if(screen==="setup"){
     const pidx=players.length;
     return(
-      <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",padding:"52px 16px 32px",overflowY:"auto"}}>
+      <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",padding:"clamp(16px,4vw,32px)",overflowY:"auto"}}>
         {globalOverlays}
         <div style={{maxWidth:680,width:"100%",animation:"slideUp .6s ease"}} key={pidx}>
           <div style={{textAlign:"center",marginBottom:20}}>
+            <button onClick={()=>{VoiceEngine.stop();setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("pickcount")}} style={{position:"absolute",top:20,left:20,background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#8a7a50",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
             <div style={{fontSize:10,opacity:.3,letterSpacing:5}}>SEEKER {pidx+1} OF {nP}</div>
             <h2 style={{fontSize:"clamp(20px,4vw,30px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"8px 0"}}>Choose Your Identity</h2>
           </div>
