@@ -1054,11 +1054,6 @@ const CSS=`
 @keyframes yamaReveal{0%{opacity:0;transform:scale(2);filter:blur(20px)}100%{opacity:1;transform:scale(1);filter:blur(0)}}
 @keyframes yamaTextReveal{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
 @keyframes waveBar{0%,100%{height:8px}50%{height:28px}}
-@keyframes cymaticPulse{0%{transform:scale(.95);opacity:.04}50%{transform:scale(1.05);opacity:.12}100%{transform:scale(.95);opacity:.04}}
-@keyframes cymaticRotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-@keyframes cymaticFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-@keyframes nagaSlither{0%{d:path('M0,20 Q15,5 30,20 T60,20')}50%{d:path('M0,20 Q15,35 30,20 T60,20')}100%{d:path('M0,20 Q15,5 30,20 T60,20')}}
-@keyframes ringPulse{0%,100%{r:40;opacity:.06}50%{r:48;opacity:.1}}
 .gb{background:transparent;border:1px solid rgba(200,160,60,.3);color:#e8c850;padding:12px 32px;font-size:14px;font-family:'Cinzel',serif;cursor:pointer;transition:all .4s;letter-spacing:3px;border-radius:2px}
 .gb:hover{background:rgba(200,160,60,.08);border-color:rgba(240,200,80,.6)}
 .gp{background:linear-gradient(180deg,rgba(200,160,60,.2),rgba(200,160,60,.08));border-color:rgba(200,160,60,.5)}
@@ -1748,149 +1743,71 @@ export default function MokshaPatam108(){
 
   // ═══ TITLE ═══
   if(screen==="title")return(
-    <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 20px 60px",minHeight:"100vh",overflowY:"auto"}}>
+    <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20}}>
       {globalOverlays}
-      {/* Sacred geometry background — cymatics water vibration patterns */}
-      <div style={{position:"fixed",inset:0,pointerEvents:"none",overflow:"hidden"}}>
-        <div style={{position:"fixed",inset:0,background:"radial-gradient(ellipse at center,transparent 35%,rgba(8,6,3,.8) 100%)"}}/>
-        {/* Cymatics rings — water vibration patterns at different frequencies */}
-        <svg style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"100%",height:"100%",opacity:.06}} viewBox="0 0 800 800">
-          <circle cx="400" cy="400" r="80" fill="none" stroke="#c0a040" strokeWidth=".5" style={{animation:"cymaticPulse 4s ease infinite"}}/>
-          <circle cx="400" cy="400" r="140" fill="none" stroke="#c0a040" strokeWidth=".3" style={{animation:"cymaticPulse 5s ease infinite .5s"}}/>
-          <circle cx="400" cy="400" r="210" fill="none" stroke="#c0a040" strokeWidth=".3" style={{animation:"cymaticPulse 6s ease infinite 1s"}}/>
-          <circle cx="400" cy="400" r="290" fill="none" stroke="#c0a040" strokeWidth=".2" style={{animation:"cymaticPulse 7s ease infinite 1.5s"}}/>
-          <circle cx="400" cy="400" r="380" fill="none" stroke="#c0a040" strokeWidth=".2" style={{animation:"cymaticPulse 8s ease infinite 2s"}}/>
-          {/* Hexagonal cymatics nodes */}
-          {[0,60,120,180,240,300].map(a=><circle key={a} cx={400+120*Math.cos(a*Math.PI/180)} cy={400+120*Math.sin(a*Math.PI/180)} r="3" fill="#c0a040" opacity=".15" style={{animation:`cymaticPulse ${3+a/100}s ease infinite ${a/200}s`}}/>)}
-          {[0,45,90,135,180,225,270,315].map(a=><circle key={a} cx={400+220*Math.cos(a*Math.PI/180)} cy={400+220*Math.sin(a*Math.PI/180)} r="2" fill="#c0a040" opacity=".1" style={{animation:`cymaticPulse ${4+a/100}s ease infinite ${a/300}s`}}/>)}
-          {/* Naga serpent knots — infinity patterns */}
-          <g style={{animation:"cymaticRotate 60s linear infinite"}}>
-            <path d="M320,400 C320,360 360,340 400,340 C440,340 480,360 480,400 C480,440 440,460 400,460 C360,460 320,440 320,400 Z" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".08"/>
-            <path d="M340,400 C340,370 370,350 400,350 C430,350 460,370 460,400 C460,430 430,450 400,450 C370,450 340,430 340,400 Z" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".06"/>
-          </g>
-          <g style={{animation:"cymaticRotate 90s linear infinite reverse"}}>
-            <path d="M250,400 Q325,300 400,400 T550,400" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".05"/>
-            <path d="M250,400 Q325,500 400,400 T550,400" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".05"/>
-          </g>
-          {/* Sri Yantra triangle hints */}
-          <polygon points="400,310 340,430 460,430" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".04" style={{animation:"cymaticPulse 10s ease infinite"}}/>
-          <polygon points="400,490 340,370 460,370" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".04" style={{animation:"cymaticPulse 10s ease infinite 5s"}}/>
-        </svg>
-        {/* Corner naga knots — temple inspired */}
-        <svg style={{position:"absolute",top:20,left:20,width:60,height:60,opacity:.08}} viewBox="0 0 60 60">
-          <path d="M10,30 Q30,5 50,30 Q30,55 10,30 Z" fill="none" stroke="#c0a040" strokeWidth="1"/>
-          <path d="M20,30 Q30,15 40,30 Q30,45 20,30 Z" fill="none" stroke="#c0a040" strokeWidth=".5"/>
-          <circle cx="30" cy="30" r="3" fill="#c0a040" opacity=".3"/>
-        </svg>
-        <svg style={{position:"absolute",top:20,right:20,width:60,height:60,opacity:.08,transform:"scaleX(-1)"}} viewBox="0 0 60 60">
-          <path d="M10,30 Q30,5 50,30 Q30,55 10,30 Z" fill="none" stroke="#c0a040" strokeWidth="1"/>
-          <path d="M20,30 Q30,15 40,30 Q30,45 20,30 Z" fill="none" stroke="#c0a040" strokeWidth=".5"/>
-          <circle cx="30" cy="30" r="3" fill="#c0a040" opacity=".3"/>
-        </svg>
-        <svg style={{position:"absolute",bottom:60,left:20,width:60,height:60,opacity:.06}} viewBox="0 0 60 60">
-          <path d="M10,30 Q30,5 50,30 Q30,55 10,30 Z" fill="none" stroke="#c0a040" strokeWidth="1"/>
-        </svg>
-        <svg style={{position:"absolute",bottom:60,right:20,width:60,height:60,opacity:.06,transform:"scaleX(-1)"}} viewBox="0 0 60 60">
-          <path d="M10,30 Q30,5 50,30 Q30,55 10,30 Z" fill="none" stroke="#c0a040" strokeWidth="1"/>
-        </svg>
+      <div style={{position:"fixed",inset:0,background:"radial-gradient(ellipse at center,transparent 35%,rgba(8,6,3,.8) 100%)",pointerEvents:"none"}}/>
+      <div style={{fontSize:52,marginBottom:12,animation:"pulse 3s ease infinite"}}>🔱</div>
+      <h1 style={{fontSize:"clamp(38px,9vw,72px)",fontFamily:"'Yatra One',serif",margin:"0 0 6px",letterSpacing:4,textShadow:"0 2px 10px rgba(0,0,0,.7)",color:"#f0d050",animation:"reveal 1.5s ease"}}>मोक्ष पटम् १०८</h1>
+      <div style={{fontSize:"clamp(14px,3vw,24px)",letterSpacing:12,fontFamily:"'Cinzel Decorative',serif",fontWeight:700,opacity:.55,animation:"reveal 1.5s ease .2s both"}}>MOKSHA PATAM 108</div>
+      <div style={{fontSize:"clamp(8px,1.3vw,11px)",letterSpacing:7,opacity:.25,marginTop:4}}>THE ANCIENT GAME OF KARMA</div>
+      <div style={{width:60,height:1,background:"linear-gradient(90deg,transparent,rgba(240,200,80,.4),transparent)",margin:"22px 0"}}/>
+      <div style={{maxWidth:520,textAlign:"center",opacity:shF?1:0,transition:"all .8s",marginBottom:24}}>
+        <div style={{fontSize:"clamp(14px,2.5vw,19px)",fontFamily:"'Noto Serif Devanagari',serif",lineHeight:2,color:"#f0d050",opacity:.7}}>{shl.s}</div>
+        <div style={{fontSize:10,opacity:.35,fontFamily:"'Noto Serif Devanagari',serif",marginTop:4}}>{shl.r}</div>
       </div>
-
-      {/* Main content */}
-      <div style={{position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center",width:"100%",maxWidth:520}}>
-        <div style={{fontSize:42,marginBottom:8,animation:"pulse 3s ease infinite"}}>🔱</div>
-        <h1 style={{fontSize:"clamp(32px,8vw,64px)",fontFamily:"'Yatra One',serif",margin:"0 0 4px",letterSpacing:4,textShadow:"0 2px 10px rgba(0,0,0,.7)",color:"#f0d050",animation:"reveal 1.5s ease",textAlign:"center"}}>मोक्ष पटम् १०८</h1>
-        <div style={{fontSize:"clamp(12px,2.5vw,20px)",letterSpacing:10,fontFamily:"'Cinzel Decorative',serif",fontWeight:700,opacity:.5,animation:"reveal 1.5s ease .2s both"}}>MOKSHA PATAM 108</div>
-        <div style={{fontSize:"clamp(7px,1.2vw,10px)",letterSpacing:6,opacity:.2,marginTop:3}}>THE ANCIENT GAME OF KARMA</div>
-
-        {/* Divider with naga knot */}
-        <div style={{position:"relative",width:120,height:16,margin:"16px 0"}}>
-          <div style={{position:"absolute",top:"50%",left:0,right:0,height:1,background:"linear-gradient(90deg,transparent,rgba(240,200,80,.3),transparent)"}}/>
-          <svg style={{position:"absolute",left:"50%",top:"50%",transform:"translate(-50%,-50%)",width:20,height:20,opacity:.4}} viewBox="0 0 20 20">
-            <circle cx="10" cy="10" r="4" fill="none" stroke="#f0d050" strokeWidth=".8"/>
-            <circle cx="10" cy="10" r="1.5" fill="#f0d050" opacity=".5"/>
-          </svg>
+      <div style={{fontSize:"clamp(10px,1.4vw,13px)",fontStyle:"italic",opacity:.3,marginBottom:28,letterSpacing:2,textAlign:"center"}}>"Rise through virtue. Fall through vice. Seek liberation."</div>
+      <div style={{marginBottom:20,textAlign:"center",animation:"reveal 1.5s ease .3s both"}}>
+        <div style={{fontSize:11,opacity:.4,letterSpacing:4,marginBottom:12}}>CHOOSE NARRATION VOICE</div>
+        <div style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap"}}>
+          <button onClick={()=>{setChosenLang('en');ambient.start()}} style={{width:120,background:chosenLang==='en'?"rgba(200,160,60,.15)":"transparent",border:`1px solid ${chosenLang==='en'?"rgba(240,200,80,.7)":"rgba(200,160,60,.3)"}`,boxShadow:chosenLang==='en'?"0 0 20px rgba(240,200,80,.1)":"none",color:"#e8c850",padding:"14px 0",fontSize:13,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,transition:"all .15s",letterSpacing:2,textAlign:"center"}}>
+            <div style={{fontSize:20,marginBottom:4}}>🇬🇧</div>English
+          </button>
+          <button onClick={()=>{setChosenLang('hi');ambient.start()}} style={{width:120,background:chosenLang==='hi'?"rgba(200,160,60,.15)":"transparent",border:`1px solid ${chosenLang==='hi'?"rgba(240,200,80,.7)":"rgba(200,160,60,.3)"}`,boxShadow:chosenLang==='hi'?"0 0 20px rgba(240,200,80,.1)":"none",color:"#e8c850",padding:"14px 0",fontSize:13,fontFamily:"'Noto Serif Devanagari',serif",cursor:"pointer",borderRadius:3,transition:"all .15s",letterSpacing:2,textAlign:"center"}}>
+            <div style={{fontSize:20,marginBottom:4}}>🇮🇳</div>हिन्दी
+          </button>
         </div>
-
-        {/* Shloka */}
-        <div style={{textAlign:"center",opacity:shF?1:0,transition:"all .8s",marginBottom:16,minHeight:50}}>
-          <div style={{fontSize:"clamp(12px,2.2vw,16px)",fontFamily:"'Noto Serif Devanagari',serif",lineHeight:2,color:"#f0d050",opacity:.65}}>{shl.s}</div>
-          <div style={{fontSize:9,opacity:.3,fontFamily:"'Noto Serif Devanagari',serif",marginTop:2}}>{shl.r}</div>
-        </div>
-
-        <div style={{fontSize:"clamp(9px,1.2vw,11px)",fontStyle:"italic",opacity:.25,marginBottom:20,letterSpacing:2,textAlign:"center"}}>"Rise through virtue. Fall through vice. Seek liberation."</div>
-
-        {/* ═══ MANDATORY LOGIN GATE ═══ */}
-        {!auth.user && !auth.loading ? (
-          <div style={{width:"100%",animation:"reveal 1.5s ease .3s both"}}>
-            {/* Login card */}
-            <div style={{background:"linear-gradient(180deg,rgba(240,200,80,.04),rgba(240,200,80,.01))",border:"1px solid rgba(200,160,60,.15)",borderRadius:12,padding:"24px 20px",textAlign:"center",position:"relative",overflow:"hidden"}}>
-              {/* Subtle cymatics pattern inside card */}
-              <svg style={{position:"absolute",top:0,left:0,width:"100%",height:"100%",opacity:.03,pointerEvents:"none"}} viewBox="0 0 300 200">
-                <circle cx="150" cy="100" r="60" fill="none" stroke="#c0a040" strokeWidth=".5"/>
-                <circle cx="150" cy="100" r="90" fill="none" stroke="#c0a040" strokeWidth=".3"/>
-              </svg>
-              <div style={{fontSize:11,letterSpacing:4,color:"#8a7a50",marginBottom:14,position:"relative"}}>ENTER THE SACRED BOARD</div>
-              <button onClick={auth.signInGoogle} style={{display:"flex",alignItems:"center",gap:10,padding:"12px 28px",background:"rgba(255,255,255,.06)",border:"1px solid rgba(200,160,60,.25)",borderRadius:8,cursor:"pointer",color:"#e8c850",fontSize:14,fontFamily:"'Cinzel',serif",letterSpacing:2,margin:"0 auto",transition:"all .3s",position:"relative"}}>
-                <GoogleIcon/>Sign in with Google
-              </button>
-              <div style={{fontSize:9,color:"#5a4a30",marginTop:12,lineHeight:1.7}}>
-                Sign in to save your karma across lifetimes<br/>
-                Track Punya, Papa, and climb the sacred leaderboard
-              </div>
+      </div>
+      <div style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap",animation:"reveal 1.5s ease .4s both"}}>
+        <button className="gb gp" disabled={preloading} onClick={()=>{
+          ambient.start();
+          const isLocal = ['localhost','127.0.0.1',''].includes(window.location.hostname);
+          if (isLocal) { setScreen("story"); setStoryPage(0); return; }
+          setPreloading(true); setPreloadPct(0);
+          const { promise, progress } = AudioCache.preloadAll(chosenLang);
+          const iv = setInterval(() => setPreloadPct(progress()), 300);
+          promise.then(() => { clearInterval(iv); setPreloadPct(100); setCacheCount(AudioCache.count()); setPreloading(false); setScreen("story"); setStoryPage(0); })
+            .catch(() => { clearInterval(iv); setPreloading(false); setScreen("story"); setStoryPage(0); });
+        }} style={{fontSize:14,padding:"14px 32px",letterSpacing:3}}>
+          {preloading ? `📜 LOADING VOICES... ${preloadPct}%` : "📜 BEGIN WITH STORY"}
+        </button>
+        <button className="gb" onClick={()=>{ambient.start();setScreen("pickcount")}} style={{fontSize:14,padding:"14px 32px",letterSpacing:3,opacity:.6}}>⚡ SKIP TO GAME</button>
+      </div>
+      <div style={{marginTop:10,opacity:.15,fontSize:9}}>Screen text is always English · Voice follows your choice</div>
+      <div style={{display:"flex",gap:10,justifyContent:"center",marginTop:16,flexWrap:"wrap"}}>
+        <button onClick={()=>setShowGuide(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📜 How to Play</button>
+        <button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📖 Encyclopaedia</button>
+      </div>
+      <div style={{marginTop:10}}><InstaBadge/></div>
+      {/* ═══ AUTH: Sign In / Profile ═══ */}
+      <div style={{marginTop:12,animation:"reveal 1.5s ease .5s both"}}>
+        {auth.user?(
+          <button onClick={()=>{setShowProfile(true);setProfileTab("overview")}} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 16px 6px 6px",background:"rgba(240,200,80,.05)",border:"1px solid rgba(200,160,60,.15)",borderRadius:20,cursor:"pointer",color:"#e8c850",fontSize:11,fontFamily:"'Cinzel',serif",margin:"0 auto"}}>
+            {auth.profile?.avatar_url?<img src={auth.profile.avatar_url} alt="" style={{width:24,height:24,borderRadius:"50%",border:"1px solid rgba(240,200,80,.2)"}} referrerPolicy="no-referrer"/>:<div style={{width:24,height:24,borderRadius:"50%",background:"rgba(240,200,80,.12)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12}}>🪷</div>}
+            {auth.profile?.display_name||"View Profile"}
+          </button>
+        ):(
+          <div style={{display:"flex",flexDirection:"column",gap:8,alignItems:"center"}}>
+            <div style={{fontSize:9,opacity:.3,letterSpacing:3}}>SAVE YOUR KARMA</div>
+            <div style={{display:"flex",gap:8,flexWrap:"wrap",justifyContent:"center"}}>
+              <button onClick={auth.signInGoogle} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 18px",background:"rgba(255,255,255,.04)",border:"1px solid rgba(200,160,60,.15)",borderRadius:6,cursor:"pointer",color:"#c0b080",fontSize:11,fontFamily:"'Cinzel',serif",letterSpacing:1}}><GoogleIcon/>Google</button>
             </div>
-          </div>
-        ) : auth.loading ? (
-          <div style={{fontSize:12,color:"#8a7a50",opacity:.5,animation:"pulse 1.5s ease infinite"}}>Connecting to the cosmos...</div>
-        ) : (
-          /* ═══ SIGNED IN — Show game options ═══ */
-          <div style={{width:"100%",animation:"reveal 1s ease"}}>
-            {/* Signed in badge */}
-            <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginBottom:16}}>
-              {auth.profile?.avatar_url?<img src={auth.profile.avatar_url} alt="" style={{width:28,height:28,borderRadius:"50%",border:"1.5px solid rgba(240,200,80,.3)"}} referrerPolicy="no-referrer"/>:<div style={{width:28,height:28,borderRadius:"50%",background:"rgba(240,200,80,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,color:"#f0d050"}}>🪷</div>}
-              <span style={{fontSize:12,color:"#c0b080"}}>{auth.profile?.display_name||"Seeker"}</span>
-              <button onClick={()=>{setShowProfile(true);setProfileTab("overview")}} style={{background:"transparent",border:"1px solid rgba(200,160,60,.12)",color:"#8a7a50",padding:"2px 10px",fontSize:9,cursor:"pointer",borderRadius:12,fontFamily:"'Cinzel',serif",letterSpacing:1}}>Profile</button>
-            </div>
-
-            {/* Language selector — compact pills */}
-            <div style={{display:"flex",justifyContent:"center",gap:6,marginBottom:16}}>
-              <div style={{fontSize:9,letterSpacing:3,color:"#5a4a30",alignSelf:"center",marginRight:4}}>VOICE</div>
-              <button onClick={()=>{setChosenLang('en');ambient.start()}} style={{padding:"5px 14px",background:chosenLang==='en'?"rgba(240,200,80,.12)":"transparent",border:`1px solid ${chosenLang==='en'?"rgba(240,200,80,.5)":"rgba(200,160,60,.15)"}`,borderRadius:16,color:chosenLang==='en'?"#f0d050":"#8a7a50",fontSize:11,cursor:"pointer",fontFamily:"'Cinzel',serif",letterSpacing:1,transition:"all .2s"}}>EN</button>
-              <button onClick={()=>{setChosenLang('hi');ambient.start()}} style={{padding:"5px 14px",background:chosenLang==='hi'?"rgba(240,200,80,.12)":"transparent",border:`1px solid ${chosenLang==='hi'?"rgba(240,200,80,.5)":"rgba(200,160,60,.15)"}`,borderRadius:16,color:chosenLang==='hi'?"#f0d050":"#8a7a50",fontSize:11,cursor:"pointer",fontFamily:"'Noto Serif Devanagari',serif",letterSpacing:1,transition:"all .2s"}}>हिन्दी</button>
-            </div>
-
-            {/* Action buttons */}
-            <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
-              <button className="gb gp" disabled={preloading} onClick={()=>{
-                ambient.start();
-                const isLocal = ['localhost','127.0.0.1',''].includes(window.location.hostname);
-                if (isLocal) { setScreen("story"); setStoryPage(0); return; }
-                setPreloading(true); setPreloadPct(0);
-                const { promise, progress } = AudioCache.preloadAll(chosenLang);
-                const iv = setInterval(() => setPreloadPct(progress()), 300);
-                promise.then(() => { clearInterval(iv); setPreloadPct(100); setCacheCount(AudioCache.count()); setPreloading(false); setScreen("story"); setStoryPage(0); })
-                  .catch(() => { clearInterval(iv); setPreloading(false); setScreen("story"); setStoryPage(0); });
-              }} style={{fontSize:13,padding:"12px 28px",letterSpacing:2}}>
-                {preloading ? `📜 LOADING... ${preloadPct}%` : "📜 BEGIN STORY"}
-              </button>
-              <button className="gb" onClick={()=>{ambient.start();setScreen("pickcount")}} style={{fontSize:13,padding:"12px 28px",letterSpacing:2,opacity:.5}}>⚡ PLAY</button>
-            </div>
-
-            <div style={{marginTop:8,opacity:.12,fontSize:8,textAlign:"center"}}>Screen text = English · Voice = your choice</div>
-
-            {/* Utilities row */}
-            <div style={{display:"flex",gap:8,justifyContent:"center",marginTop:12,flexWrap:"wrap"}}>
-              <button onClick={()=>setShowGuide(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.1)",color:"#8a7a50",padding:"3px 10px",fontSize:9,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1}}>📜 Rules</button>
-              <button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.1)",color:"#8a7a50",padding:"3px 10px",fontSize:9,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1}}>📖 Encyclopaedia</button>
-            </div>
-            <div style={{marginTop:8,textAlign:"center"}}><InstaBadge/></div>
           </div>
         )}
       </div>
-
-      {/* ═══ COPYRIGHT FOOTER — not fixed, flows at bottom ═══ */}
-      <div style={{marginTop:"auto",paddingTop:24,textAlign:"center",position:"relative",zIndex:1}}>
-        <div style={{fontSize:10,color:"#7a6a40",letterSpacing:2}}>© {new Date().getFullYear()} RasaVisio · All rights reserved</div>
-        <div style={{fontSize:9,color:"#5a4a30",letterSpacing:1,marginTop:3}}>Inspired by the ancient game of Moksha Patam · Created in India 🇮🇳</div>
+      {/* ═══ COPYRIGHT FOOTER ═══ */}
+      <div style={{position:"fixed",bottom:12,left:0,right:0,textAlign:"center"}}>
+        <div style={{fontSize:11,color:"#8a7a50",letterSpacing:2}}>© {new Date().getFullYear()} RasaVisio · All rights reserved</div>
+        <div style={{fontSize:10,color:"#6a5a38",letterSpacing:1,marginTop:3}}>Inspired by the ancient game of Moksha Patam · Created in India 🇮🇳</div>
       </div>
     </div>
   );
