@@ -1603,41 +1603,6 @@ export default function MokshaPatam108(){
   // ═══ GLOBAL OVERLAYS — rendered on every screen ═══
   const globalOverlays=<>
     <style>{CSS}</style>
-    {/* ═══ SACRED BACKGROUND — visible on ALL screens ═══ */}
-    <div style={{position:"fixed",inset:0,pointerEvents:"none",overflow:"hidden",zIndex:0}}>
-      <div style={{position:"fixed",inset:0,background:"radial-gradient(ellipse at center,transparent 35%,rgba(8,6,3,.8) 100%)"}}/>
-      <svg style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"120%",height:"120%",opacity:1}} viewBox="0 0 800 800">
-        <circle cx="400" cy="400" r="60" fill="none" stroke="#c0a040" strokeWidth=".6" opacity=".08" style={{animation:"cymaticPulse 3.5s ease infinite"}}/>
-        <circle cx="400" cy="400" r="100" fill="none" stroke="#c0a040" strokeWidth=".5" opacity=".1" style={{animation:"cymaticPulse 4s ease infinite .3s"}}/>
-        <circle cx="400" cy="400" r="150" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".12" style={{animation:"cymaticPulse 5s ease infinite .6s"}}/>
-        <circle cx="400" cy="400" r="210" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".1" style={{animation:"cymaticPulse 6s ease infinite 1s"}}/>
-        <circle cx="400" cy="400" r="280" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".08" style={{animation:"cymaticPulse 7s ease infinite 1.4s"}}/>
-        <circle cx="400" cy="400" r="360" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".06" style={{animation:"cymaticPulse 8s ease infinite 1.8s"}}/>
-        {[0,60,120,180,240,300].map(a=><circle key={"fl"+a} cx={400+60*Math.cos(a*Math.PI/180)} cy={400+60*Math.sin(a*Math.PI/180)} r="60" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".06" style={{animation:`cymaticPulse ${5+a/100}s ease infinite ${a/400}s`}}/>)}
-        {[0,60,120,180,240,300].map(a=><g key={"n1"+a}><circle cx={400+105*Math.cos(a*Math.PI/180)} cy={400+105*Math.sin(a*Math.PI/180)} r="4" fill="#c0a040" opacity=".12" style={{animation:`cymaticPulse ${3+a/100}s ease infinite ${a/200}s`}}/><line x1={400+95*Math.cos(a*Math.PI/180)} y1={400+95*Math.sin(a*Math.PI/180)} x2={400+115*Math.cos(a*Math.PI/180)} y2={400+115*Math.sin(a*Math.PI/180)} stroke="#c0a040" strokeWidth=".3" opacity=".08"/></g>)}
-        {[0,30,60,90,120,150,180,210,240,270,300,330].map(a=><circle key={"n2"+a} cx={400+220*Math.cos(a*Math.PI/180)} cy={400+220*Math.sin(a*Math.PI/180)} r="2.5" fill="#c0a040" opacity=".08" style={{animation:`cymaticPulse ${4+a/120}s ease infinite ${a/300}s`}}/>)}
-        <g style={{animation:"cymaticRotate 50s linear infinite"}} opacity=".1">
-          <path d="M300,400 C300,340 350,300 400,300 C450,300 500,340 500,400 C500,460 450,500 400,500 C350,500 300,460 300,400 Z" fill="none" stroke="#c0a040" strokeWidth=".7"/>
-          <path d="M320,400 C320,355 355,320 400,320 C445,320 480,355 480,400 C480,445 445,480 400,480 C355,480 320,445 320,400 Z" fill="none" stroke="#c0a040" strokeWidth=".5"/>
-        </g>
-        <g style={{animation:"cymaticRotate 70s linear infinite reverse"}} opacity=".08">
-          <path d="M230,400 Q315,280 400,400 T570,400" fill="none" stroke="#c0a040" strokeWidth=".5"/>
-          <path d="M230,400 Q315,520 400,400 T570,400" fill="none" stroke="#c0a040" strokeWidth=".5"/>
-        </g>
-        <polygon points="400,290 325,440 475,440" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".06" style={{animation:"cymaticPulse 10s ease infinite"}}/>
-        <polygon points="400,510 325,360 475,360" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".06" style={{animation:"cymaticPulse 10s ease infinite 5s"}}/>
-        <polygon points="400,330 355,420 445,420" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".04" style={{animation:"cymaticPulse 12s ease infinite 2s"}}/>
-        <polygon points="400,470 355,380 445,380" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".04" style={{animation:"cymaticPulse 12s ease infinite 7s"}}/>
-        {[0,45,90,135,180,225,270,315].map(a=><line key={"sp"+a} x1={400+70*Math.cos(a*Math.PI/180)} y1={400+70*Math.sin(a*Math.PI/180)} x2={400+350*Math.cos(a*Math.PI/180)} y2={400+350*Math.sin(a*Math.PI/180)} stroke="#c0a040" strokeWidth=".15" opacity=".04"/>)}
-      </svg>
-    </div>
-    {/* ═══ PROFILE BUTTON — visible on ALL screens (top-right) ═══ */}
-    <div style={{position:"fixed",top:12,right:12,zIndex:250,pointerEvents:"auto"}}>
-      {auth.user?<button onClick={()=>{setShowProfile(true);setProfileTab("overview")}} style={{display:"flex",alignItems:"center",gap:5,padding:"4px 10px 4px 4px",background:"rgba(12,10,7,.8)",border:"1px solid rgba(200,160,60,.15)",borderRadius:16,cursor:"pointer",color:"#c0b080",fontSize:10,fontFamily:"'Cinzel',serif",backdropFilter:"blur(8px)"}}>
-        {auth.profile?.avatar_url?<img src={auth.profile.avatar_url} alt="" style={{width:20,height:20,borderRadius:"50%",border:"1px solid rgba(240,200,80,.2)"}} referrerPolicy="no-referrer"/>:<span style={{fontSize:14}}>🪷</span>}
-        <span style={{maxWidth:70,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{(auth.profile?.display_name||auth.user?.user_metadata?.full_name||"").split(" ")[0]||"Profile"}</span>
-      </button>:<button onClick={auth.signInGoogle} style={{display:"flex",alignItems:"center",gap:5,padding:"4px 10px",background:"rgba(12,10,7,.8)",border:"1px solid rgba(200,160,60,.12)",borderRadius:16,cursor:"pointer",color:"#8a7a50",fontSize:10,fontFamily:"'Cinzel',serif",backdropFilter:"blur(8px)"}}><GoogleIcon/>Sign In</button>}
-    </div>
     {showInfo&&<div key="info-panel" style={{position:"fixed",inset:0,background:"rgba(6,5,3,.95)",zIndex:300,overflowY:"auto",padding:"clamp(12px,3vw,24px)",animation:"fadeIn .3s ease"}}>
       <div style={{maxWidth:700,margin:"0 auto"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
@@ -1808,6 +1773,48 @@ export default function MokshaPatam108(){
   if(screen==="title")return(
     <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 20px 60px",minHeight:"100vh",overflowY:"auto"}}>
       {globalOverlays}
+      {/* Sacred geometry background — cymatics water vibration patterns */}
+      <div style={{position:"fixed",inset:0,pointerEvents:"none",overflow:"hidden"}}>
+        <div style={{position:"fixed",inset:0,background:"radial-gradient(ellipse at center,transparent 35%,rgba(8,6,3,.8) 100%)"}}/>
+        {/* Cymatics rings — water vibration patterns at different frequencies */}
+        <svg style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"120%",height:"120%",opacity:1}} viewBox="0 0 800 800">
+          {/* Cymatics water vibration rings — multiple frequencies */}
+          <circle cx="400" cy="400" r="60" fill="none" stroke="#c0a040" strokeWidth=".6" opacity=".08" style={{animation:"cymaticPulse 3.5s ease infinite"}}/>
+          <circle cx="400" cy="400" r="100" fill="none" stroke="#c0a040" strokeWidth=".5" opacity=".1" style={{animation:"cymaticPulse 4s ease infinite .3s"}}/>
+          <circle cx="400" cy="400" r="150" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".12" style={{animation:"cymaticPulse 5s ease infinite .6s"}}/>
+          <circle cx="400" cy="400" r="210" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".1" style={{animation:"cymaticPulse 6s ease infinite 1s"}}/>
+          <circle cx="400" cy="400" r="280" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".08" style={{animation:"cymaticPulse 7s ease infinite 1.4s"}}/>
+          <circle cx="400" cy="400" r="360" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".06" style={{animation:"cymaticPulse 8s ease infinite 1.8s"}}/>
+
+          {/* Flower of Life — seed of life circles */}
+          {[0,60,120,180,240,300].map(a=><circle key={"fl"+a} cx={400+60*Math.cos(a*Math.PI/180)} cy={400+60*Math.sin(a*Math.PI/180)} r="60" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".06" style={{animation:`cymaticPulse ${5+a/100}s ease infinite ${a/400}s`}}/>)}
+
+          {/* Hexagonal cymatics nodes — inner ring */}
+          {[0,60,120,180,240,300].map(a=><g key={"n1"+a}><circle cx={400+105*Math.cos(a*Math.PI/180)} cy={400+105*Math.sin(a*Math.PI/180)} r="4" fill="#c0a040" opacity=".12" style={{animation:`cymaticPulse ${3+a/100}s ease infinite ${a/200}s`}}/><line x1={400+95*Math.cos(a*Math.PI/180)} y1={400+95*Math.sin(a*Math.PI/180)} x2={400+115*Math.cos(a*Math.PI/180)} y2={400+115*Math.sin(a*Math.PI/180)} stroke="#c0a040" strokeWidth=".3" opacity=".08"/></g>)}
+
+          {/* Outer ring nodes */}
+          {[0,30,60,90,120,150,180,210,240,270,300,330].map(a=><circle key={"n2"+a} cx={400+220*Math.cos(a*Math.PI/180)} cy={400+220*Math.sin(a*Math.PI/180)} r="2.5" fill="#c0a040" opacity=".08" style={{animation:`cymaticPulse ${4+a/120}s ease infinite ${a/300}s`}}/>)}
+
+          {/* Naga serpent knots — slow rotating infinity patterns */}
+          <g style={{animation:"cymaticRotate 50s linear infinite"}} opacity=".1">
+            <path d="M300,400 C300,340 350,300 400,300 C450,300 500,340 500,400 C500,460 450,500 400,500 C350,500 300,460 300,400 Z" fill="none" stroke="#c0a040" strokeWidth=".7"/>
+            <path d="M320,400 C320,355 355,320 400,320 C445,320 480,355 480,400 C480,445 445,480 400,480 C355,480 320,445 320,400 Z" fill="none" stroke="#c0a040" strokeWidth=".5"/>
+          </g>
+          <g style={{animation:"cymaticRotate 70s linear infinite reverse"}} opacity=".08">
+            <path d="M230,400 Q315,280 400,400 T570,400" fill="none" stroke="#c0a040" strokeWidth=".5"/>
+            <path d="M230,400 Q315,520 400,400 T570,400" fill="none" stroke="#c0a040" strokeWidth=".5"/>
+          </g>
+
+          {/* Sri Yantra triangles */}
+          <polygon points="400,290 325,440 475,440" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".06" style={{animation:"cymaticPulse 10s ease infinite"}}/>
+          <polygon points="400,510 325,360 475,360" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".06" style={{animation:"cymaticPulse 10s ease infinite 5s"}}/>
+          <polygon points="400,330 355,420 445,420" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".04" style={{animation:"cymaticPulse 12s ease infinite 2s"}}/>
+          <polygon points="400,470 355,380 445,380" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".04" style={{animation:"cymaticPulse 12s ease infinite 7s"}}/>
+
+          {/* Connecting radial lines — like spokes */}
+          {[0,45,90,135,180,225,270,315].map(a=><line key={"sp"+a} x1={400+70*Math.cos(a*Math.PI/180)} y1={400+70*Math.sin(a*Math.PI/180)} x2={400+350*Math.cos(a*Math.PI/180)} y2={400+350*Math.sin(a*Math.PI/180)} stroke="#c0a040" strokeWidth=".15" opacity=".04"/>)}
+        </svg>
+      </div>
 
       {/* Main content */}
       <div style={{position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center",width:"100%",maxWidth:520}}>
