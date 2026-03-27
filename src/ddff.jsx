@@ -1072,18 +1072,24 @@ function useAuth(){
   const[profile,setProfile]=useState(null);
   const[loading,setLoading]=useState(true);
   const loadProfile=async(uid)=>{
-    if(!sbUrl||!sbKey||!uid)return;
+    if(!supabase)return;
     try{
-      console.log("Auth: Loading profile via REST for",uid);
-      const res=await fetch(`${sbUrl}/rest/v1/profiles?id=eq.${uid}&select=*`,{headers:{"apikey":sbKey,"Authorization":`Bearer ${sbKey}`}});
-      if(res.ok){
-        const data=await res.json();
-        if(data&&data.length>0){
-          setProfile(data[0]);
-          console.log("Auth: Profile loaded ✓",data[0].display_name);
-        }else{console.log("Auth: No profile found for",uid)}
-      }else{console.error("Auth: Profile load failed:",res.status)}
-    }catch(e){console.error("Auth: Profile load error:",e)}
+      const{data}=await supabase.from("profiles").select("*").eq("id",uid).single();
+      if(data){
+        setProfile(data);
+        // Update profile with Google data if name/email missing
+        const meta=supabase.auth?.getUser?.()?.then?.(r=>r.data?.user?.user_metadata);
+        if(meta)meta.then(m=>{
+          if(m&&(!data.display_name||data.display_name==="Seeker"||!data.email)){
+            supabase.from("profiles").update({
+              display_name:m.full_name||m.name||data.display_name,
+              avatar_url:m.avatar_url||m.picture||data.avatar_url,
+              email:m.email||data.email
+            }).eq("id",uid).then(()=>supabase.from("profiles").select("*").eq("id",uid).single().then(r=>{if(r.data)setProfile(r.data)}));
+          }
+        });
+      }
+    }catch(e){console.error("Profile load error:",e)}
   };
   useEffect(()=>{
     if(!supabase){setLoading(false);return}
@@ -1100,11 +1106,7 @@ function useAuth(){
     try{const{error}=await supabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.origin}});if(error){console.error("Google sign-in error:",error);alert("Google sign-in failed: "+error.message)}}catch(e){console.error("Sign-in error:",e);alert("Sign-in error: "+e.message)}
   },[]);
   const signOut=useCallback(async()=>{if(!supabase)return;await supabase.auth.signOut();setUser(null);setProfile(null)},[]);
-  const refresh=useCallback(async()=>{
-    if(!user)return;
-    console.log("Auth: Refreshing profile via REST...");
-    await loadProfile(user.id);
-  },[user]);
+  const refresh=useCallback(async()=>{if(user)await loadProfile(user.id)},[user]);
   return{user,profile,signInGoogle,signOut,loading,refresh};
 }
 
@@ -1198,29 +1200,14 @@ const GameDB={
   },
   async getHistory(userId,limit=20){
     if(!sbUrl||!sbKey||!userId)return[];
-    try{
-      console.log("GameDB: Loading history for",userId);
-      const res=await this._get(`game_history?user_id=eq.${userId}&select=*&order=played_at.desc&limit=${limit}`);
-      console.log("GameDB: History loaded:",res.data?.length||0,"games",res.error?.message||"");
-      return res.data||[];
-    }catch(e){console.error("GameDB: History error:",e);return[]}
+    try{const res=await this._get(`game_history?user_id=eq.${userId}&select=*&order=played_at.desc&limit=${limit}`);return res.data||[]}catch(e){return[]}
   },
   async getLeaderboard(limit=50){
     if(!sbUrl||!sbKey)return[];
     try{
-      console.log("GameDB: Loading leaderboard...");
       const res=await this._get(`profiles?total_games=gt.0&select=id,display_name,avatar_url,total_games,total_wins,total_punya_earned,total_papa_earned,total_moksha_wins,total_karma_wins,total_riddles_correct,longest_streak,last_played_at&order=total_punya_earned.desc&limit=${limit}`);
-      console.log("GameDB: Leaderboard loaded:",res.data?.length||0,"players",res.error?.message||"");
       return(res.data||[]).map(p=>({...p,karma_score:(p.total_punya_earned||0)-(p.total_papa_earned||0)}));
-    }catch(e){console.error("GameDB: Leaderboard error:",e);return[]}
-  },
-  // Read profile directly via REST (for refresh)
-  async getProfile(userId){
-    if(!sbUrl||!sbKey||!userId)return null;
-    try{
-      const res=await this._get(`profiles?id=eq.${userId}&select=*`);
-      return res.data?.[0]||null;
-    }catch(e){return null}
+    }catch(e){return[]}
   },
 };
 
@@ -1238,19 +1225,6 @@ export default function MokshaPatam108(){
   const[histLoading,setHistLoading]=useState(false);
   // Game tracking stats (reset each game)
   const gameStats=useRef({startTime:0,turns:0,snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0});
-
-  // Auto-load profile data when profile panel opens
-  useEffect(()=>{
-    if(!showProfile||!auth.user)return;
-    console.log("Profile: Auto-loading data...");
-    // Refresh profile stats from DB
-    auth.refresh();
-    // Load history
-    setHistLoading(true);
-    GameDB.getHistory(auth.user.id).then(d=>{setGameHistory(d);setHistLoading(false)});
-    // Load leaderboard
-    GameDB.getLeaderboard().then(d=>setLeaderboard(d));
-  },[showProfile]);
 
   const[screen,setScreen]=useState("title"); // title|story|pickcount|setup|game
   const[nP,setNP]=useState(2);
