@@ -161,7 +161,7 @@ const STORY_PAGES=[
   en:"Listen carefully. What I am about to tell you, has been hidden for five thousand years. Before the Mahabharata was written down. Before the first temples were carved into stone. There existed, a game. A game of the soul. Created by unknown rishis, sages so ancient, that even the gods have forgotten their names. They called it, Moksha Patam. The Board, of Liberation. For thousands of years, kings played it in marble palaces. Sages played it by firelight. It was passed from guru to disciple in whispered secrecy. And then, foreigners came. They stole it. Stripped away every sacred name. Every Sanskrit verse. And renamed it. Snakes and Ladders. A children's game. The soul of the game was murdered. Until, this very moment. Tonight, you play the original.",
   hi:"ध्यान से सुनो। जो मैं बताने जा रहा हूँ, वो पांच हज़ार सालों से छिपाया गया है। महाभारत लिखे जाने से पहले। पहले मंदिरों को पत्थर में तराशे जाने से पहले। एक खेल था। आत्मा का खेल। अज्ञात ऋषियों द्वारा रचा गया, इतने प्राचीन कि देवताओं को भी उनके नाम याद नहीं। उन्होंने इसे कहा, मोक्षपटम। मुक्ति का पट। हज़ारों सालों तक राजाओं ने इसे संगमरमर के महलों में खेला। ऋषियों ने अग्नि की रोशनी में खेला। गुरु से शिष्य तक दबी आवाज़ में पहुंचाया गया। फिर विदेशी आए। चुरा लिया। हर पवित्र नाम छीन लिया। और नाम रख दिया सांप सीढ़ी। बच्चों का खेल। खेल की आत्मा की हत्या कर दी। इस एक क्षण तक। आज रात, तुम असली खेल खेलोगे।",
   visuals:[
-    {type:"miniboard"},
+    {type:"board",label:"108 Sacred Squares"},
     {type:"text",content:"Not Snakes & Ladders.\nThis is the original ancient game.\nPlayed by kings. Feared by gods."}
   ]},
   {title:"The Sacred Board",icon:"📜",
@@ -169,19 +169,27 @@ const STORY_PAGES=[
   hi:"पट को देखो। ये सिर्फ पट नहीं है। ये तुम्हारी आत्मा की यात्रा का नक्शा है। 108 खाने। तीन लोक। और एक मंज़िल। भूलोक, खाना 1 से 33, पृथ्वी लोक, जहाँ अराजकता राज करती है। अंतर्लोक, खाना 34 से 66, आंतरिक लोक, जहाँ चालाक सर्प तुम्हारे मन में संदेह का विष भरते हैं। स्वर्गलोक, खाना 67 से 99, दिव्य लोक, जहाँ एक गिरावट जन्मों की साधना मिटा देती है। और सबसे ऊपर, पवित्र मुकुट, खाना 101 से 108, अष्टांग मार्ग, पतंजलि का आठ-सूत्री मार्ग। यहाँ एक-एक कदम चलते हो। हर कदम तुम्हारे योग और धर्म ज्ञान की परीक्षा लेता है।",
   visuals:[
     {type:"realms",data:[
-      {name:"भूलोक",en:"BHULOKA",range:"1–33",desc:"Earthly · Chaos · Snakes lurk",color:"#8a6030",squares:[1,33]},
-      {name:"अन्तर्लोक",en:"ANTARLOKA",range:"34–66",desc:"Inner · Mind poisoned",color:"#6a80a0",squares:[34,66]},
-      {name:"स्वर्गलोक",en:"SVARGALOKA",range:"67–99",desc:"Celestial · Deadly falls",color:"#a080c0",squares:[67,99]},
-      {name:"अष्टांग",en:"SACRED CROWN",range:"101–108",desc:"8-fold path · Riddles",color:"#f0d050",squares:[101,108]}
-    ]},
-    {type:"boardRealms"}
+      {name:"भूलोक",en:"BHULOKA",range:"1–33",desc:"Earthly Realm · Chaos",color:"#8a6030"},
+      {name:"अन्तर्लोक",en:"ANTARLOKA",range:"34–66",desc:"Inner Realm · Mind",color:"#6a80a0"},
+      {name:"स्वर्गलोक",en:"SVARGALOKA",range:"67–99",desc:"Celestial · Dangerous",color:"#a080c0"},
+      {name:"अष्टांग",en:"SACRED CROWN",range:"101–108",desc:"8-fold Path · 1 step",color:"#f0d050"}
+    ]}
   ]},
   {title:"Two Sacred Dice",icon:"🎲",
   en:"Every turn, you roll not one, but two dice. The first, the Karma Die, a six-sided die that moves you across the board. Simple. Familiar. But the second die, the Navagraha Die, this is what makes this game truly ancient. Nine planets. Nine cosmic forces. Each one, a living god that intervenes in your journey. Surya, the Sun, blazes your path with 2 extra steps. Chandra, the Moon, purifies you with Punya. Mangal, Mars, fills you with battle fury, pushing your rival back 3 squares but staining you with Papa. Budh, Mercury, swaps your position with the nearest seeker. Brihaspati, Jupiter, blesses everyone on the board. Shukra, Venus, grants a divine Shield against the next serpent. Shani, Saturn, the lord of karma, pushes you back 3 squares. Rahu, the Shadow, steals from the leader and gives to the weakest. And Ketu, the Tail, strips all shields from every player.",
   hi:"हर बारी, तुम एक नहीं, दो पासे फेंकते हो। पहला, कर्म पासा, छह-मुखी पासा जो तुम्हें पट पर चलाता है। सरल। परिचित। लेकिन दूसरा, नवग्रह पासा, यही इस खेल को प्राचीन बनाता है। नौ ग्रह। नौ ब्रह्मांडीय शक्तियां। हर एक जीवित देवता जो तुम्हारी यात्रा में हस्तक्षेप करता है। सूर्य 2 अतिरिक्त कदम देता है। चन्द्र पुण्य से शुद्ध करता है। मंगल प्रतिद्वंद्वी को 3 खाने पीछे धकेलता है। बुध तुम्हारी स्थिति अदला-बदली कर देता है। बृहस्पति सबको आशीर्वाद देता है। शुक्र दिव्य कवच देता है। शनि तुम्हें 3 खाने पीछे ले जाता है। राहु नेता से चुराकर कमज़ोर को देता है। और केतु सबके कवच छीन लेता है।",
   visuals:[
-    {type:"diceDemo"},
-    {type:"grahaSlideshow"}
+    {type:"graha",data:[
+      {icon:"☀",name:"Surya",effect:"+2 steps",color:"#f0b840"},
+      {icon:"☾",name:"Chandra",effect:"+1 Punya",color:"#a0c8e0"},
+      {icon:"♂",name:"Mangal",effect:"Rival -3",color:"#e07050"},
+      {icon:"☿",name:"Budh",effect:"Swap pos",color:"#80c080"},
+      {icon:"♃",name:"Jupiter",effect:"All +1P",color:"#f0d060"},
+      {icon:"♀",name:"Shukra",effect:"Shield!",color:"#d0a0c0"},
+      {icon:"♄",name:"Shani",effect:"You -3",color:"#8080a0"},
+      {icon:"☊",name:"Rahu",effect:"Steal P",color:"#6050a0"},
+      {icon:"☋",name:"Ketu",effect:"No shield",color:"#a06060"}
+    ]}
   ]},
   {title:"Serpents & Virtues",icon:"𓆙",
   en:"Ten colossal Nagas coil around this board. They are not just snakes. They are living nightmares. Each one a manifestation of the darkest force inside every human soul. Krodh, Wrath. Lobh, Greed. Moh, Delusion. When a serpent catches you, it drags you screaming into the depths. You lose squares, and gain 2 Papa, sin karma. But for every serpent, there is a ladder, a virtue. Daya, Compassion. Satya, Truth. Seva, Service. Bhakti, Devotion. When a ladder lifts you, you gain 1 Punya, sacred merit. Between the serpents, Dharma Dilemmas appear. Ancient moral choices from the epics. Choose wisely, for your choices shape your karma.",
@@ -192,8 +200,7 @@ const STORY_PAGES=[
       {icon:"🪔",label:"Ladder Rise",desc:"Lifted up + 1 Punya",color:"#f0d050"},
       {icon:"⚖",label:"Dharma Card",desc:"Moral choice → karma",color:"#a0c8e0"},
       {icon:"🛡",label:"Venus Shield",desc:"Blocks 1 snake bite",color:"#d0a0c0"}
-    ]},
-    {type:"dharmaDemo"}
+    ]}
   ]},
   {title:"Yama Awaits",icon:"💀",
   en:"In solo mode, you do not play alone. You play against Yama. The God of Death. Lord of the Underworld. Judge of all souls. He is not a computer opponent. He is a cosmic force who has been judging souls since the dawn of creation. Yama plays by different rules. He cannot be reasoned with. He cannot be bribed. And when his serpents catch you, he laughs. Oh, how he laughs. You will hear him. His voice echoes through the board like thunder through an empty temple. Every move you make, he watches. Every mistake, he remembers. You may choose to face Yama alone, or bring companions. 2, 3, or 4 seekers can walk this path together. But remember, only one soul achieves Moksha first.",
@@ -1162,7 +1169,6 @@ const CSS=`
 @keyframes waveBar{0%,100%{height:8px}50%{height:28px}}
 @keyframes cymaticPulse{0%{transform:scale(.97);opacity:.08}50%{transform:scale(1.03);opacity:.2}100%{transform:scale(.97);opacity:.08}}
 @keyframes cymaticRotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-@keyframes diceRoll{0%{transform:rotate(0deg) scale(1)}25%{transform:rotate(90deg) scale(1.2)}50%{transform:rotate(180deg) scale(.9)}75%{transform:rotate(270deg) scale(1.1)}100%{transform:rotate(360deg) scale(1)}}
 @keyframes cymaticFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes nagaSlither{0%{d:path('M0,20 Q15,5 30,20 T60,20')}50%{d:path('M0,20 Q15,35 30,20 T60,20')}100%{d:path('M0,20 Q15,5 30,20 T60,20')}}
 @keyframes ringPulse{0%,100%{r:40;opacity:.06}50%{r:48;opacity:.1}}
@@ -2367,94 +2373,9 @@ export default function MokshaPatam108(){
   // ═══ STORY ═══
   if(screen==="story"){
     const pg=STORY_PAGES[storyPage];
-    const [activeGraha,setActiveGraha]=useState(0);
-    const [diceAnim,setDiceAnim]=useState(false);
-    const [diceVal,setDiceVal]=useState(4);
-    // Auto-cycle graha on page 2 (dice page)
-    useEffect(()=>{if(storyPage!==2)return;const iv=setInterval(()=>setActiveGraha(g=>(g+1)%9),2500);return()=>clearInterval(iv)},[storyPage]);
-    const GRAHA_INFO=[
-      {icon:"☀",skt:"सूर्य",name:"Surya — The Sun",effect:"You get +2 extra steps forward",color:"#f0b840",type:"blessing"},
-      {icon:"☾",skt:"चन्द्र",name:"Chandra — The Moon",effect:"Purifies your soul: +1 Punya",color:"#a0c8e0",type:"blessing"},
-      {icon:"♂",skt:"मंगल",name:"Mangal — Mars",effect:"Nearest rival pushed back 3 squares, you get +1 Papa",color:"#e07050",type:"mixed"},
-      {icon:"☿",skt:"बुध",name:"Budh — Mercury",effect:"Your position swaps with the nearest seeker",color:"#80c080",type:"chaos"},
-      {icon:"♃",skt:"बृहस्पति",name:"Brihaspati — Jupiter",effect:"All seekers on the board gain +1 Punya",color:"#f0d060",type:"blessing"},
-      {icon:"♀",skt:"शुक्र",name:"Shukra — Venus",effect:"Grants a divine Shield — blocks the next snake bite",color:"#d0a0c0",type:"blessing"},
-      {icon:"♄",skt:"शनि",name:"Shani — Saturn",effect:"Pushed back 3 squares + 1 Papa. No one escapes Saturn.",color:"#8080a0",type:"curse"},
-      {icon:"☊",skt:"राहु",name:"Rahu — The Shadow",effect:"Steals 1 Punya from leader, gives to trailing seeker",color:"#6050a0",type:"chaos"},
-      {icon:"☋",skt:"केतु",name:"Ketu — The Tail",effect:"All shields destroyed. Closest to 108 gets +1 Punya.",color:"#a06060",type:"mixed"},
-    ];
     const renderVisuals=(vis)=>{
       if(!vis)return null;
       return vis.map((v,vi)=>{
-        // ═══ MINI BOARD PREVIEW — animated 10x10 grid ═══
-        if(v.type==="miniboard") return <div key={vi} style={{marginTop:16,animation:"fadeIn 1s ease"}}>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(10,1fr)",gap:1,maxWidth:320,margin:"0 auto",background:"rgba(20,16,10,.8)",border:"1px solid rgba(200,160,60,.15)",borderRadius:4,padding:3}}>
-            {Array.from({length:100}).map((_,i)=>{
-              const n=100-i; // top-left=100, bottom-right=1
-              const row=Math.floor(i/10);
-              const isSnake=[98,95,86,74,63,56,47,36,16,8].includes(n);
-              const isLadder=[3,9,22,28,37,44,53,61,71,82].includes(n);
-              const isMoksha=n===100;
-              const bg=isMoksha?"rgba(240,200,80,.25)":isSnake?"rgba(200,60,40,.15)":isLadder?"rgba(80,200,80,.12)":
-                n<=33?"rgba(138,96,48,.06)":n<=66?"rgba(106,128,160,.06)":"rgba(160,128,192,.06)";
-              return <div key={i} style={{aspectRatio:"1",background:bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:5,color:isMoksha?"#f0d050":isSnake?"#e06030":isLadder?"#80c080":"rgba(200,160,60,.2)",borderRadius:1}}>
-                {isMoksha?"ॐ":isSnake?"𓆙":isLadder?"↑":n}
-              </div>
-            })}
-          </div>
-          <div style={{display:"flex",justifyContent:"center",gap:12,marginTop:8,fontSize:9,color:"#8a7a50"}}>
-            <span style={{color:"#e06030"}}>𓆙 Snakes</span>
-            <span style={{color:"#80c080"}}>↑ Ladders</span>
-            <span style={{color:"#f0d050"}}>ॐ Moksha</span>
-          </div>
-        </div>;
-
-        // ═══ BOARD WITH REALM HIGHLIGHTS ═══
-        if(v.type==="boardRealms") return <div key={vi} style={{marginTop:12,animation:"fadeIn 1s ease .3s both"}}>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(10,1fr)",gap:1,maxWidth:280,margin:"0 auto",borderRadius:4,padding:2}}>
-            {Array.from({length:100}).map((_,i)=>{
-              const n=100-i;
-              const c=n<=33?"#8a6030":n<=66?"#6a80a0":n<=99?"#a080c0":"#f0d050";
-              return <div key={i} style={{aspectRatio:"1",background:`${c}18`,border:`0.5px solid ${c}30`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:5,color:`${c}80`,borderRadius:1}}>{n}</div>
-            })}
-          </div>
-          <div style={{textAlign:"center",marginTop:6,fontSize:9,color:"#8a7a50"}}>+ Sacred Crown (101–108) above the board</div>
-        </div>;
-
-        // ═══ DICE DEMO — animated roll ═══
-        if(v.type==="diceDemo") return <div key={vi} style={{marginTop:16,textAlign:"center",animation:"fadeIn .8s ease"}}>
-          <div style={{fontSize:10,letterSpacing:3,color:"#8a7a50",marginBottom:10}}>TAP TO ROLL</div>
-          <div style={{display:"flex",justifyContent:"center",gap:20,alignItems:"center"}}>
-            <div onClick={()=>{setDiceAnim(true);setTimeout(()=>{setDiceVal(Math.floor(Math.random()*6)+1);setActiveGraha(Math.floor(Math.random()*9));setDiceAnim(false)},400)}} style={{width:56,height:56,background:"rgba(240,200,80,.1)",border:"2px solid rgba(240,200,80,.3)",borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,color:"#f0d050",cursor:"pointer",animation:diceAnim?"diceRoll .4s ease":"none",fontFamily:"'Cinzel',serif",fontWeight:900}}>
-              {diceVal}
-            </div>
-            <div style={{fontSize:16,color:"#5a4a30"}}>+</div>
-            <div onClick={()=>{setDiceAnim(true);setTimeout(()=>{setActiveGraha(Math.floor(Math.random()*9));setDiceAnim(false)},400)}} style={{width:56,height:56,background:`${GRAHA_INFO[activeGraha].color}15`,border:`2px solid ${GRAHA_INFO[activeGraha].color}40`,borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,cursor:"pointer",animation:diceAnim?"diceRoll .4s ease":"none"}}>
-              {GRAHA_INFO[activeGraha].icon}
-            </div>
-          </div>
-          <div style={{display:"flex",justifyContent:"center",gap:16,marginTop:10,fontSize:10}}>
-            <span style={{color:"#f0d050"}}>Karma Die: {diceVal}</span>
-            <span style={{color:GRAHA_INFO[activeGraha].color}}>Graha: {GRAHA_INFO[activeGraha].skt}</span>
-          </div>
-        </div>;
-
-        // ═══ GRAHA SLIDESHOW — auto-cycling planet cards ═══
-        if(v.type==="grahaSlideshow"){const g=GRAHA_INFO[activeGraha]; return <div key={vi} style={{marginTop:16}}>
-          <div style={{background:`${g.color}10`,border:`1.5px solid ${g.color}30`,borderRadius:8,padding:16,textAlign:"center",transition:"all .5s ease",minHeight:100}}>
-            <div style={{fontSize:36,marginBottom:6,transition:"all .3s"}}>{g.icon}</div>
-            <div style={{fontSize:14,fontFamily:"'Noto Serif Devanagari',serif",color:g.color,fontWeight:700}}>{g.skt}</div>
-            <div style={{fontSize:13,color:g.color,fontFamily:"'Cinzel',serif",letterSpacing:1,marginTop:2}}>{g.name}</div>
-            <div style={{fontSize:11,color:"#c0b080",marginTop:8,lineHeight:1.7}}>{g.effect}</div>
-            <div style={{marginTop:8}}><span style={{fontSize:9,padding:"2px 10px",borderRadius:10,background:g.type==="blessing"?"rgba(80,200,80,.1)":g.type==="curse"?"rgba(200,60,60,.1)":"rgba(160,120,200,.1)",color:g.type==="blessing"?"#80c080":g.type==="curse"?"#e08060":"#b0a0d0",border:`1px solid ${g.type==="blessing"?"rgba(80,200,80,.2)":g.type==="curse"?"rgba(200,60,60,.2)":"rgba(160,120,200,.2)"}`}}>{g.type==="blessing"?"✦ Blessing":g.type==="curse"?"✦ Curse":"✦ Chaos"}</span></div>
-          </div>
-          {/* Graha dots */}
-          <div style={{display:"flex",justifyContent:"center",gap:4,marginTop:10}}>
-            {GRAHA_INFO.map((gi,i)=><div key={i} onClick={()=>setActiveGraha(i)} style={{width:i===activeGraha?22:14,height:14,borderRadius:7,background:i===activeGraha?gi.color:`${gi.color}30`,cursor:"pointer",transition:"all .3s",display:"flex",alignItems:"center",justifyContent:"center",fontSize:8}}>{i===activeGraha?gi.icon:""}</div>)}
-          </div>
-        </div>}
-
-        // ═══ REALMS ═══
         if(v.type==="realms") return <div key={vi} style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(130px,1fr))",gap:8,marginTop:16}}>
           {v.data.map((r,ri)=><div key={ri} style={{background:`${r.color}10`,border:`1px solid ${r.color}30`,borderRadius:6,padding:12,textAlign:"center",animation:`fadeIn .6s ease ${ri*0.15}s both`}}>
             <div style={{fontSize:14,fontFamily:"'Noto Serif Devanagari',serif",color:r.color,fontWeight:700}}>{r.name}</div>
@@ -2463,49 +2384,31 @@ export default function MokshaPatam108(){
             <div style={{fontSize:10,color:"#8a7a50"}}>{r.desc}</div>
           </div>)}
         </div>;
-
-        // ═══ SNAKE/LADDER/DHARMA/SHIELD CARDS ═══
+        if(v.type==="graha") return <div key={vi} style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6,marginTop:16}}>
+          {v.data.map((g,gi)=><div key={gi} style={{background:`${g.color}10`,border:`1px solid ${g.color}25`,borderRadius:6,padding:"8px 6px",textAlign:"center",animation:`fadeIn .5s ease ${gi*0.1}s both`}}>
+            <div style={{fontSize:18}}>{g.icon}</div>
+            <div style={{fontSize:10,color:g.color,fontWeight:700,marginTop:2}}>{g.name}</div>
+            <div style={{fontSize:9,color:"#8a7a50",marginTop:2}}>{g.effect}</div>
+          </div>)}
+        </div>;
         if(v.type==="snakeladder") return <div key={vi} style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:8,marginTop:16}}>
           {v.data.map((s,si)=><div key={si} style={{background:`${s.color}10`,border:`1px solid ${s.color}25`,borderRadius:6,padding:12,display:"flex",gap:10,alignItems:"center",animation:`fadeIn .6s ease ${si*0.2}s both`}}>
             <span style={{fontSize:24}}>{s.icon}</span>
             <div><div style={{fontSize:12,color:s.color,fontWeight:700}}>{s.label}</div><div style={{fontSize:10,color:"#8a7a50"}}>{s.desc}</div></div>
           </div>)}
         </div>;
-
-        // ═══ DHARMA DEMO — sample dilemma card ═══
-        if(v.type==="dharmaDemo") return <div key={vi} style={{marginTop:16,animation:"fadeIn .8s ease .5s both"}}>
-          <div style={{fontSize:10,letterSpacing:3,color:"#5a4a30",textAlign:"center",marginBottom:8}}>EXAMPLE DHARMA DILEMMA</div>
-          <div style={{background:"rgba(160,200,224,.06)",border:"1px solid rgba(160,200,224,.15)",borderRadius:8,padding:14}}>
-            <div style={{fontSize:13,fontFamily:"'Noto Serif Devanagari',serif",color:"#a0c8e0",fontWeight:700}}>यक्ष-प्रश्न — <span style={{fontFamily:"'Cinzel',serif",fontSize:11}}>The Yaksha's Riddle</span></div>
-            <div style={{fontSize:11,color:"#c0b080",lineHeight:1.7,margin:"8px 0"}}>At a cursed lake, a spirit asks: "What is the greatest wonder?" Answer with humility or seize water by force?</div>
-            <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
-              <div style={{flex:1,background:"rgba(80,200,80,.06)",border:"1px solid rgba(80,200,80,.15)",borderRadius:6,padding:8,fontSize:10,color:"#80c080",textAlign:"center"}}>🙏 Answer humbly<br/><span style={{fontSize:9,opacity:.7}}>Skip turn, +3 Punya</span></div>
-              <div style={{flex:1,background:"rgba(200,60,60,.06)",border:"1px solid rgba(200,60,60,.15)",borderRadius:6,padding:8,fontSize:10,color:"#e08060",textAlign:"center"}}>💀 Seize by force<br/><span style={{fontSize:9,opacity:.7}}>+10 squares, +3 Papa</span></div>
-            </div>
-          </div>
+        if(v.type==="versus") return <div key={vi} style={{background:"rgba(160,40,40,.08)",border:"1px solid rgba(160,40,40,.2)",borderRadius:8,padding:20,textAlign:"center",marginTop:16,animation:"fadeIn .8s ease"}}>
+          <div style={{fontSize:48,marginBottom:8}}>{v.data.icon}</div>
+          <div style={{fontSize:18,fontFamily:"'Yatra One',serif",color:"#e08080"}}>{v.data.name}</div>
+          <div style={{fontSize:11,color:"#806060",marginTop:4}}>{v.data.desc}</div>
         </div>;
-
-        // ═══ YAMA VERSUS ═══
-        if(v.type==="versus") return <div key={vi} style={{background:"radial-gradient(ellipse at center,rgba(160,40,40,.1),transparent)",border:"1px solid rgba(160,40,40,.2)",borderRadius:8,padding:24,textAlign:"center",marginTop:16,animation:"fadeIn .8s ease"}}>
-          <div style={{fontSize:56,marginBottom:8,animation:"pulse 3s ease infinite"}}>{v.data.icon}</div>
-          <div style={{fontSize:20,fontFamily:"'Yatra One',serif",color:"#e08080"}}>{v.data.name}</div>
-          <div style={{fontSize:11,color:"#806060",marginTop:6,lineHeight:1.7}}>{v.data.desc}</div>
-          <div style={{display:"flex",justifyContent:"center",gap:16,marginTop:14}}>
-            <div style={{background:"rgba(160,40,40,.08)",border:"1px solid rgba(160,40,40,.15)",borderRadius:6,padding:"8px 14px",fontSize:10,color:"#c08080"}}>☠️ 1 vs Yama</div>
-            <div style={{background:"rgba(200,160,60,.06)",border:"1px solid rgba(200,160,60,.15)",borderRadius:6,padding:"8px 14px",fontSize:10,color:"#c0b080"}}>👥 2-4 Players</div>
-          </div>
-        </div>;
-
-        // ═══ MOKSHA PATHS ═══
         if(v.type==="paths") return <div key={vi} style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginTop:16}}>
           {v.data.map((p,pi)=><div key={pi} style={{background:`${p.color}08`,border:`1px solid ${p.color}25`,borderRadius:8,padding:14,textAlign:"center",animation:`fadeIn .7s ease ${pi*0.3}s both`}}>
-            <div style={{fontSize:32,marginBottom:6}}>{p.icon}</div>
+            <div style={{fontSize:28,marginBottom:6}}>{p.icon}</div>
             <div style={{fontSize:12,color:p.color,fontWeight:700,fontFamily:"'Cinzel',serif",letterSpacing:2}}>{p.label}</div>
-            <div style={{fontSize:10,color:"#8a7a50",marginTop:8,lineHeight:1.7}}>{p.desc}</div>
+            <div style={{fontSize:10,color:"#8a7a50",marginTop:6,lineHeight:1.6}}>{p.desc}</div>
           </div>)}
         </div>;
-
-        // ═══ TEXT ═══
         if(v.type==="text") return <div key={vi} style={{textAlign:"center",marginTop:12,padding:10}}>
           {v.content.split("\n").map((l,li)=><div key={li} style={{fontSize:11,color:"#8a7a50",lineHeight:2,fontStyle:"italic"}}>{l}</div>)}
         </div>;
