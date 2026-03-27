@@ -260,39 +260,7 @@ const STORY_PAGES=[
   ],
   en:"Two paths to escape the wheel of Samsara. The First Path, reach Square 108 with an exact roll. But even if you arrive, the gates will not open for a tainted soul. Your Punya must equal or exceed your Papa. If impure, you are cast back to Square 67. To suffer again. The Second Path, far rarer, far more beautiful. Accumulate 30 Punya at any moment during your journey. The board itself dissolves beneath you. Instant Moksha. This is the ancient truth the sages encoded. A truly pure soul can break free from any square. The dice are ready. The serpents can smell your fear. Step onto the board.",
   hi:"संसार के चक्र से बचने के दो रास्ते। पहला, खाना 108 पर सटीक पासे से। लेकिन दूषित आत्मा के लिए द्वार नहीं। पुण्य पाप से ज़्यादा होना चाहिए। अशुद्ध हो तो 67 पर वापस। दूसरा रास्ता, 30 पुण्य। पट विलीन। तुरंत मोक्ष। पासे तैयार हैं। सांप तुम्हारे डर की गंध सूंघ रहे हैं।",
-  visuals:[{type:"animatedBoard",mode:"intro"}]},
-  {title:"Dharma Dilemma",icon:"⚖",
-  bullets_en:[
-    {icon:"⚖",accent:"#a0c8e0",title:"21 Moral Crossroads",text:"From the Mahabharata and real life. Ancient dilemmas that kings, sages, and warriors faced — now yours to answer."},
-    {icon:"🙏",accent:"#80c080",title:"Choose Punya — The Righteous Path",text:"Harder. Costlier. Sometimes you move back. But your soul grows lighter. Karma accumulates."},
-    {icon:"💀",accent:"#e06030",title:"Choose Papa — The Dark Path",text:"Easier. You advance faster. But sin accumulates. And the gates of Moksha may reject you."},
-    {icon:"⚡",accent:"#f0d050",title:"Balance is Everything",text:"30 Punya anywhere = instant Moksha. But Papa can undo lifetimes of Punya. Every choice is permanent."},
-  ],
-  bullets_hi:[
-    {icon:"⚖",accent:"#a0c8e0",title:"21 नैतिक चौराहे",text:"महाभारत और असल जीवन से। राजाओं, ऋषियों और योद्धाओं के सामने आए प्राचीन प्रश्न — अब तुम्हारे सामने।"},
-    {icon:"🙏",accent:"#80c080",title:"पुण्य चुनो — धर्म का मार्ग",text:"कठिन। महंगा। कभी-कभी पीछे जाते हो। लेकिन आत्मा हल्की होती है। कर्म जमा होता है।"},
-    {icon:"💀",accent:"#e06030",title:"पाप चुनो — अधर्म का मार्ग",text:"आसान। तेज़ आगे बढ़ते हो। लेकिन पाप जमा होता है। और मोक्ष के द्वार बंद हो सकते हैं।"},
-    {icon:"⚡",accent:"#f0d050",title:"संतुलन सब कुछ है",text:"30 पुण्य कहीं से भी = तुरंत मोक्ष। लेकिन पाप जन्मों का पुण्य मिटा सकता है। हर चुनाव स्थायी है।"},
-  ],
-  en:"Every few squares, life stops you. A Dharma Dilemma appears. An ancient crossroads. These are not simple questions. They are the same moral choices that destroyed kings and elevated sages. Karna gave away his divine armour to a beggar. Knowing it would kill him. Eklavya cut off his own thumb for his guru. Yudhishthira told a half-truth to win a war. These choices are yours now. Choose Punya, the righteous path, and move back but grow purer. Choose Papa, the easy path, advance faster but sin accumulates. The board does not care about your intentions. Only your karma matters at the final gate.",
-  hi:"हर कुछ खानों पर, जीवन तुम्हें रोकता है। एक धर्म दुविधा प्रकट होती है। एक प्राचीन चौराहा। ये सरल प्रश्न नहीं हैं। ये वही नैतिक चुनाव हैं जिन्होंने राजाओं को नष्ट किया और ऋषियों को ऊपर उठाया। कर्ण ने अपना दिव्य कवच एक भिखारी को दिया। जानते हुए कि इससे मृत्यु होगी। एकलव्य ने गुरु के लिए अपना अंगूठा काटा। युधिष्ठिर ने युद्ध जीतने के लिए आधा सच बोला। ये चुनाव अब तुम्हारे हैं।",
-  visuals:[{type:"dharmaStage"}]},
-  {title:"The 8-Fold Sacred Path",icon:"🪷",
-  bullets_en:[
-    {icon:"🪷",accent:"#f0d050",title:"Above Square 100 — A Different World",text:"Once you pass square 100, dice rolls no longer matter. You move exactly ONE step per turn."},
-    {icon:"📖",accent:"#c0a0e0",title:"Patanjali's Ashtanga Yoga",text:"Each of the 8 steps tests your knowledge of yoga and dharma. Answer correctly — gain Punya. Fail — gain Papa and fall back."},
-    {icon:"🚪",accent:"#f0b840",title:"The Final Gate at 107",text:"At Dhyana (square 107), you need an exact roll of 1. Only absolute surrender opens the gate to Moksha."},
-    {icon:"ॐ",accent:"#80c080",title:"The Navagraha Cannot Touch You",text:"On the Sacred Path, no planet effects apply. No swapping. No pushing. You are beyond the material world."},
-  ],
-  bullets_hi:[
-    {icon:"🪷",accent:"#f0d050",title:"खाना 100 के ऊपर — एक अलग दुनिया",text:"खाना 100 पार करने के बाद, पासे से कोई फर्क नहीं। हर बारी एक ही कदम चलते हो।"},
-    {icon:"📖",accent:"#c0a0e0",title:"पतंजलि का अष्टांग योग",text:"8 में से हर कदम योग और धर्म ज्ञान की परीक्षा लेता है। सही उत्तर दो — पुण्य मिलता है। गलत — पाप और वापस।"},
-    {icon:"🚪",accent:"#f0b840",title:"खाना 107 पर अंतिम द्वार",text:"ध्यान पर, सटीक 1 चाहिए। केवल पूर्ण समर्पण मोक्ष का द्वार खोलता है।"},
-    {icon:"ॐ",accent:"#80c080",title:"नवग्रह तुम्हें नहीं छू सकते",text:"पवित्र मार्ग पर कोई ग्रह प्रभाव नहीं। अदला-बदली नहीं। धक्का नहीं। तुम भौतिक संसार से परे हो।"},
-  ],
-  en:"Past square 100, the rules change. You have transcended the material world. The Navagraha cannot touch you. You move one step at a time along the Ashtanga Marga — the eight-fold path of Patanjali. Yama, self-restraint. Niyama, discipline. Asana, steadiness. Pranayama, the expansion of life-force. Pratyahara, withdrawal of the senses. Dharana, single-pointed concentration. Dhyana, deep meditation. And finally, Moksha at square 108, liberation from the cycle of birth and death. But at square 107, the Dhyana gate demands exactness. You must roll a one. Only perfect surrender, no grasping, no eagerness, opens the final door.",
-  hi:"खाना 100 के बाद, नियम बदल जाते हैं। तुम भौतिक संसार को पार कर चुके हो। नवग्रह तुम्हें नहीं छू सकते। अष्टांग मार्ग पर एक-एक कदम चलते हो। यम, नियम, आसन, प्राणायाम, प्रत्याहार, धारणा, ध्यान। और अंत में, खाना 108 पर मोक्ष — जन्म और मृत्यु के चक्र से मुक्ति। लेकिन खाना 107 पर, ध्यान का द्वार सटीकता मांगता है। सटीक 1 फेंकना होगा। केवल पूर्ण समर्पण अंतिम द्वार खोलता है।",
-  visuals:[{type:"sacredPathStage"}]}
+  visuals:[{type:"animatedBoard",mode:"intro"}]}
 ];
 
 function sqP(n){
@@ -1026,8 +994,7 @@ const VoiceEngine = {
 
   // ═══ NARRATOR VOICE — Vedic temple processing for story onboarding ═══
   // staticUrl: pre-generated /onboarding/story-N-lang.mp3 (zero API cost)
-  // onAudioStart: fires the MOMENT audio begins playing (used for UI sync)
-  async speakNarrator(text, lang, staticUrl, onAudioStart) {
+  async speakNarrator(text, lang, staticUrl) {
     this.stop();
     if (!text) return;
 
@@ -1052,7 +1019,7 @@ const VoiceEngine = {
       }
     }
 
-    if (!audioUrl) { this._browserSpeak(text, lang); onAudioStart && onAudioStart(); return; }
+    if (!audioUrl) { this._browserSpeak(text, lang); return; }
 
     try {
       const resp = await fetch(audioUrl);
@@ -1173,7 +1140,6 @@ const VoiceEngine = {
         setTimeout(()=>{try{osc1.stop();osc2.stop();osc3.stop();ctx.close()}catch(e){}this._yamaCtx=null},2000);
       };
       source.start(0);
-      onAudioStart && onAudioStart(); // ← fires exactly when audio begins
       osc1.start(0);
       osc2.start(0);
       osc3.start(0);
@@ -1188,7 +1154,6 @@ const VoiceEngine = {
       audio.volume = 1.0;
       this.audio = audio;
       this.speaking = true;
-      audio.onplay  = () => { onAudioStart && onAudioStart(); };
       audio.onended = () => { this.speaking = false; };
       await audio.play().catch(()=>{});
     } catch(e) {
@@ -1198,262 +1163,233 @@ const VoiceEngine = {
 };
 
 // ═══════════════════════════════════════════════════════════════════════
-// MINI BOARD — pixel-perfect miniature of the actual game board
-// Shares the same sqP() layout, realm zones, SVG snake/ladder paths,
-// sacred crown strip, geometry overlays, and animated token.
+// ONBOARDING BOARD — real 10×10 board with animated highlights & SVG paths
 // ═══════════════════════════════════════════════════════════════════════
 function OnboardingBoard({ mode }) {
-  const [tokenPos, setTokenPos]   = useState(1);
-  const [highlight, setHighlight] = useState(null); // sq number or null
-  const [realmPulse, setRealmPulse] = useState(null); // 'bhuloka'|'antarloka'|'svargaloka'
-  const [snakeActive, setSnakeActive] = useState(null); // snake head sq
-  const [ladderActive, setLadderActive] = useState(null); // ladder foot sq
-  const [snakeFlash, setSnakeFlash] = useState(false);
-  const [ladderFlash, setLadderFlash] = useState(false);
+  const [animStep, setAnimStep] = useState(0);
+  const [tokenPos, setTokenPos] = useState(1);
+  const [highlightSq, setHighlightSq] = useState(null);
+  const [highlightRealm, setHighlightRealm] = useState(null); // 'bhuloka'|'antarloka'|'svargaloka'|null
+  const [snakeBiting, setSnakeBiting] = useState(false); // snake bite anim
+  const [ladderLifting, setLadderLifting] = useState(false);
   const timerRef = useRef(null);
 
-  // Same cell layout as game board
-  function sqP(n) {
-    if(n<1)n=1;if(n>100)n=100;
-    const r=Math.floor((n-1)/10);
-    return{r:9-r,c:r%2===0?(n-1)%10:9-((n-1)%10)};
+  // Board geometry helpers
+  function sqPos(n) {
+    if (n < 1) n = 1; if (n > 100) n = 100;
+    const row = Math.floor((n - 1) / 10);
+    const col = row % 2 === 0 ? (n - 1) % 10 : 9 - ((n - 1) % 10);
+    return { row: 9 - row, col };
   }
-  function cellCenter(n,cs) {
-    const{r,c}=sqP(n);
-    return{x:c*cs+cs/2,y:r*cs+cs/2};
+  function cellXY(n, cellSize) {
+    const { row, col } = sqPos(n);
+    return { x: col * cellSize + cellSize / 2, y: row * cellSize + cellSize / 2 };
   }
-  const CS=28; // cell size px
-  const W=10*CS;
 
-  const realmOf=n=>n<=33?'bhuloka':n<=66?'antarloka':'svargaloka';
-  const RCOL={bhuloka:'#8a6030',antarloka:'#5a80a0',svargaloka:'#9070c0'};
+  const CELL = 28; // px per cell
+  const W = 10 * CELL;
 
-  const SHEAD=Object.keys(SNAKES).map(Number);
-  const LFOOT=Object.keys(LADDERS).map(Number);
-  const DLM=DLM_SQ;
+  // Snakes: head sq → tail sq
+  const SHEAD = Object.keys(SNAKES).map(Number);
+  // Ladders: foot sq → top sq
+  const LFOOT = Object.keys(LADDERS).map(Number);
 
-  useEffect(()=>{
+  useEffect(() => {
     clearInterval(timerRef.current);
-    clearTimeout(timerRef.current);
 
-    if(mode==='intro'){
-      const path=[1,3,9,18,22,28,31,37,44,47,53,56,61,65,71,74,82,85,89,95,97];
-      let i=0;
-      timerRef.current=setInterval(()=>{
-        i=(i+1)%path.length;
+    if (mode === 'intro') {
+      // Token walks from sq 1 upward with slight pauses at snakes/ladders
+      const path = [1, 3, 9, 12, 18, 22, 28, 31, 38, 42, 44, 53, 61, 65, 71, 82, 85, 89, 95, 97, 99];
+      let i = 0;
+      timerRef.current = setInterval(() => {
+        i = (i + 1) % path.length;
         setTokenPos(path[i]);
-        setHighlight(path[i]);
-      },700);
+        setHighlightSq(path[i]);
+      }, 700);
     }
-    if(mode==='realms'){
-      const seq=['bhuloka','antarloka','svargaloka',null];
-      let ri=0;
-      setRealmPulse(seq[0]);
-      timerRef.current=setInterval(()=>{
-        ri=(ri+1)%seq.length;
-        setRealmPulse(seq[ri]);
-      },2000);
+
+    if (mode === 'realms') {
+      const realms = ['bhuloka', 'antarloka', 'svargaloka', null];
+      let ri = 0;
+      setHighlightRealm(realms[0]);
+      timerRef.current = setInterval(() => {
+        ri = (ri + 1) % realms.length;
+        setHighlightRealm(realms[ri]);
+      }, 1800);
     }
-    if(mode==='snakeladder'){
-      const steps=[
-        ()=>{setTokenPos(9);setHighlight(9);setLadderActive(9);setLadderFlash(true);setSnakeActive(null);setSnakeFlash(false)},
-        ()=>{setTokenPos(31);setHighlight(31);setLadderFlash(false);setLadderActive(null)},
-        ()=>{setTokenPos(47);setHighlight(47);setSnakeActive(47);setSnakeFlash(true)},
-        ()=>{setTokenPos(29);setHighlight(29);setSnakeFlash(false);setSnakeActive(null)},
-        ()=>{setHighlight(null)},
+
+    if (mode === 'snakeLadder') {
+      // Sequence: token at ladder foot → climbs → token at snake head → bitten
+      const seq = [
+        () => { setTokenPos(9); setHighlightSq(9); setLadderLifting(false); setSnakeBiting(false); },
+        () => { setLadderLifting(true); setTokenPos(31); setHighlightSq(31); },
+        () => { setLadderLifting(false); setTokenPos(47); setHighlightSq(47); },
+        () => { setSnakeBiting(true); setTokenPos(29); setHighlightSq(29); },
+        () => { setSnakeBiting(false); },
       ];
-      let si=0; steps[0]();
-      timerRef.current=setInterval(()=>{si=(si+1)%steps.length;steps[si]();},1800);
+      let si = 0;
+      seq[0]();
+      timerRef.current = setInterval(() => {
+        si = (si + 1) % seq.length;
+        seq[si]();
+      }, 1600);
     }
-    return()=>{clearInterval(timerRef.current);clearTimeout(timerRef.current)};
-  },[mode]);
 
-  const{x:tx,y:ty}=cellCenter(tokenPos,CS);
+    return () => clearInterval(timerRef.current);
+  }, [mode]);
 
-  // Build snake SVG path (sinuous curve)
-  const snakePath=(from,to)=>{
-    const f=cellCenter(from,CS),t=cellCenter(to,CS);
-    const dx=t.x-f.x,dy=t.y-f.y,len=Math.sqrt(dx*dx+dy*dy),nx=-dy/len,amp=len*.14;
-    let d=`M${f.x} ${f.y}`;
-    for(let i=1;i<=6;i++){
-      const p=i/6,s=i%2===0?1:-1;
-      d+=` Q${f.x+dx*((i-.5)/6)+nx*amp*s} ${f.y+dy*((i-.5)/6)+(dx/len)*amp*s} ${f.x+dx*p} ${f.y+dy*p}`;
-    }
-    return{d,fx:f.x,fy:f.y};
-  };
-  // Ladder SVG lines
-  const ladderLines=(from,to)=>{
-    const f=cellCenter(from,CS),t=cellCenter(to,CS);
-    return{x1f:f.x-2,y1f:f.y,x1t:t.x-2,y1t:t.y,x2f:f.x+2,y2f:f.y,x2t:t.x+2,y2t:t.y,fx:f.x,fy:f.y};
-  };
+  const realmOf = n => n <= 33 ? 'bhuloka' : n <= 66 ? 'antarloka' : 'svargaloka';
+  const REALM_COLORS = { bhuloka: '#8a6030', antarloka: '#5a80a0', svargaloka: '#9070c0' };
+  const REALM_GLOW   = { bhuloka: 'rgba(138,96,48,.4)', antarloka: 'rgba(90,128,160,.4)', svargaloka: 'rgba(144,112,192,.4)' };
 
-  return(
-    <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:4}}>
-      {/* Sacred Crown strip — matches actual game */}
-      <div style={{
-        width:W,background:'linear-gradient(180deg,rgba(240,200,80,.1),rgba(20,16,10,.4))',
-        border:'1px solid rgba(240,200,80,.2)',borderBottom:'2px solid rgba(240,200,80,.2)',
-        borderRadius:'4px 4px 0 0',padding:'3px 2px 2px',position:'relative',overflow:'hidden',
-      }}>
-        <svg style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',opacity:.07}} viewBox="0 0 200 36" preserveAspectRatio="none">
-          {[0,25,50,75,100,125,150,175].map(x=><g key={x}>
-            <polygon points={`${x+12.5},3 ${x+25},33 ${x},33`} fill="none" stroke="#f0d050" strokeWidth=".5"/>
-            <polygon points={`${x+12.5},33 ${x+25},3 ${x},3`} fill="none" stroke="#f0d050" strokeWidth=".5"/>
-          </g>)}
-        </svg>
-        <div style={{fontSize:6,textAlign:'center',letterSpacing:3,color:'#f0d050',opacity:.55,marginBottom:2,fontFamily:"'Cinzel',serif"}}>अष्टांग मार्ग</div>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(8,1fr)',gap:1}}>
-          {SACRED_PATH.map((sq,si)=>(
-            <div key={sq.num} style={{
-              aspectRatio:'1',
-              background:sq.num===108?'radial-gradient(circle,rgba(240,200,80,.25),rgba(240,200,80,.04))':'radial-gradient(circle,rgba(240,200,80,.08),transparent)',
-              border:`0.5px solid ${sq.num===108?'rgba(240,200,80,.5)':'rgba(240,200,80,.15)'}`,
-              borderRadius:2,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
-              animation:`sacredGlow ${3+si*.3}s ease infinite`,
-            }}>
-              <span style={{fontSize:8}}>{sq.icon}</span>
-              <span style={{fontSize:5,color:'#f0d050',fontFamily:"'Noto Serif Devanagari',serif",lineHeight:1}}>{sq.skt}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+  // Token pixel position
+  const { x: tx, y: ty } = cellXY(tokenPos > 100 ? 100 : tokenPos, CELL);
 
-      {/* Main 10×10 board */}
-      <div style={{
-        width:W,height:W,position:'relative',
-        background:"radial-gradient(ellipse at 30% 30%,rgba(60,45,20,.25),transparent 50%),radial-gradient(ellipse at 70% 70%,rgba(60,45,20,.2),transparent 50%),#1e1810",
-        border:'1.5px solid rgba(200,160,60,.3)',
-        boxShadow:'0 0 30px rgba(0,0,0,.5),inset 0 0 20px rgba(0,0,0,.3)',
-      }}>
-        {/* Realm divider lines */}
-        <div style={{position:'absolute',left:'2%',right:'2%',top:'33.3%',height:1,background:'linear-gradient(90deg,transparent,rgba(200,160,60,.2),transparent)',zIndex:8,pointerEvents:'none'}}/>
-        <div style={{position:'absolute',left:'2%',right:'2%',top:'66.6%',height:1,background:'linear-gradient(90deg,transparent,rgba(200,160,60,.2),transparent)',zIndex:8,pointerEvents:'none'}}/>
+  return (
+    <div style={{ position: 'relative', width: W, height: W, margin: '0 auto', flexShrink: 0 }}>
+      {/* Board cells */}
+      {Array.from({ length: 100 }, (_, i) => {
+        const n = i + 1;
+        const { row, col } = sqPos(n);
+        const realm = realmOf(n);
+        const rc = REALM_COLORS[realm];
+        const isSnakeHead = SHEAD.includes(n);
+        const isLadderFoot = LFOOT.includes(n);
+        const isHighlightRealm = highlightRealm && realmOf(n) === highlightRealm;
+        const isHighlightSq = highlightSq === n;
 
-        {/* Realm labels */}
-        {[{top:'5%',t:'स्वर्गलोक',c:'#9070c0'},{top:'38%',t:'अन्तर्लोक',c:'#5a80a0'},{top:'72%',t:'भूलोक',c:'#8a6030'}].map((r,i)=>(
-          <div key={i} style={{
-            position:'absolute',top:r.top,left:'50%',transform:'translateX(-50%)',
-            fontSize:6,letterSpacing:3,color:r.c,opacity:realmPulse?
-              (realmPulse===(['svargaloka','antarloka','bhuloka'][i])?0.7:0.15):0.2,
-            zIndex:9,pointerEvents:'none',whiteSpace:'nowrap',
-            transition:'opacity .5s',fontFamily:"'Cinzel',serif",
-          }}>{r.t}</div>
-        ))}
+        let bg = `${rc}18`;
+        if (isHighlightRealm) bg = `${rc}38`;
+        if (isSnakeHead) bg = 'rgba(200,60,40,.18)';
+        if (isLadderFoot) bg = 'rgba(80,180,80,.15)';
+        if (isHighlightSq) bg = `${rc}60`;
 
-        {/* Sacred geometry overlay */}
-        <svg style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',zIndex:2,opacity:.1}} viewBox="0 0 100 100" preserveAspectRatio="none">
-          {[70,77,84,91].map(y=><line key={'bh'+y} x1="5" y1={y} x2="95" y2={y} stroke="#c0a060" strokeWidth=".4"/>)}
-          {[10,20,30,40,50,60,70,80,90].map(x=><line key={'bv'+x} x1={x} y1="67" x2={x} y2="100" stroke="#c0a060" strokeWidth=".3"/>)}
-          {[42,53].map(y=><g key={'al'+y}>
-            <polygon points={`50,${y-5} 58,${y+5} 42,${y+5}`} fill="none" stroke="#c0a060" strokeWidth=".4"/>
-            <polygon points={`50,${y+5} 42,${y-5} 58,${y-5}`} fill="none" stroke="#c0a060" strokeWidth=".4"/>
-          </g>)}
-          {[10,20].map(y=><g key={'sl'+y}>
-            <circle cx="50" cy={y} r="10" fill="none" stroke="#c0a060" strokeWidth=".3"/>
-            <circle cx="50" cy={y} r="5" fill="none" stroke="#c0a060" strokeWidth=".25"/>
-          </g>)}
-        </svg>
+        return (
+          <div key={n} style={{
+            position: 'absolute',
+            left: col * CELL, top: row * CELL,
+            width: CELL, height: CELL,
+            background: bg,
+            border: isHighlightRealm ? `0.5px solid ${rc}60` :
+                    isHighlightSq    ? `1px solid ${rc}` :
+                    isSnakeHead      ? '0.5px solid rgba(200,60,40,.35)' :
+                    isLadderFoot     ? '0.5px solid rgba(80,200,80,.35)' :
+                                       `0.5px solid ${rc}22`,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 5, color: `${rc}70`, fontFamily: "'Cinzel',serif",
+            transition: 'background .4s, border-color .4s',
+            boxSizing: 'border-box',
+            boxShadow: isHighlightSq ? `0 0 8px ${REALM_GLOW[realm]}` : 'none',
+          }}>
+            {isSnakeHead ? <span style={{ fontSize: 8, opacity: .7 }}>𓆙</span> :
+             isLadderFoot ? <span style={{ fontSize: 8, opacity: .7 }}>↑</span> : n}
+          </div>
+        );
+      })}
 
-        {/* SVG layer: snakes + ladders + token */}
-        <svg style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',zIndex:6}} viewBox={`0 0 ${W} ${W}`}>
-          <defs>
-            <filter id="mbglow"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-          </defs>
+      {/* SVG layer — snakes + ladders */}
+      <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }} viewBox={`0 0 ${W} ${W}`}>
+        <defs>
+          <filter id="obglow-s"><feGaussianBlur stdDeviation="1.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="obglow-l"><feGaussianBlur stdDeviation="1" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
 
-          {/* Ladders */}
-          {Object.entries(LADDERS).map(([from,{to}])=>{
-            const l=ladderLines(+from,+to);
-            const isAct=ladderActive===+from;
-            return(
-              <g key={'l'+from} opacity={isAct?1:0.5} filter={isAct?"url(#mbglow)":""}>
-                <line x1={l.x1f} y1={l.y1f} x2={l.x1t} y2={l.y1t} stroke={isAct?"#f0d050":"rgba(200,160,60,.55)"} strokeWidth={isAct?1.4:0.7}/>
-                <line x1={l.x2f} y1={l.y2f} x2={l.x2t} y2={l.y2t} stroke={isAct?"#f0d050":"rgba(200,160,60,.55)"} strokeWidth={isAct?1.4:0.7}/>
-                {Array.from({length:Math.max(2,Math.floor(Math.sqrt((l.x1t-l.x1f)**2+(l.y1t-l.y1f)**2)/10))}).map((_,i,arr)=>{
-                  const tt=(i+1)/(arr.length+1);
-                  return<line key={i} x1={l.x1f+(l.x1t-l.x1f)*tt} y1={l.y1f+(l.y1t-l.y1f)*tt} x2={l.x2f+(l.x2t-l.x2f)*tt} y2={l.y2f+(l.y2t-l.y2f)*tt} stroke={isAct?"rgba(240,200,80,.8)":"rgba(200,160,60,.3)"} strokeWidth={0.5}/>;
-                })}
-                {isAct&&ladderFlash&&[0,1,2].map(i=>(
-                  <circle key={i} cx={l.fx+(i-1)*3} r={2} fill="#f0d050" opacity={.7-i*.2}>
-                    <animate attributeName="cy" values={`${l.fy};${l.fy-12};${l.fy}`} dur=".8s" begin={`${i*.2}s`} repeatCount="indefinite"/>
-                  </circle>
-                ))}
-              </g>
-            );
-          })}
+        {/* Ladders */}
+        {Object.entries(LADDERS).map(([from, { to }]) => {
+          const f = cellXY(+from, CELL), t = cellXY(+to, CELL);
+          const isActive = ladderLifting && (+from === 9);
+          return (
+            <g key={'l' + from} opacity={isActive ? 1 : 0.55} filter={isActive ? "url(#obglow-l)" : ""}>
+              <line x1={f.x - 2} y1={f.y} x2={t.x - 2} y2={t.y} stroke={isActive ? "#f0d050" : "rgba(200,160,60,.5)"} strokeWidth={isActive ? 1.5 : 0.8} />
+              <line x1={f.x + 2} y1={f.y} x2={t.x + 2} y2={t.y} stroke={isActive ? "#f0d050" : "rgba(200,160,60,.5)"} strokeWidth={isActive ? 1.5 : 0.8} />
+              {Array.from({ length: Math.max(3, Math.floor(Math.sqrt((t.x - f.x) ** 2 + (t.y - f.y) ** 2) / 8)) }).map((_, i, arr) => {
+                const tt = (i + 1) / (arr.length + 1);
+                return <line key={i} x1={f.x - 2 + (t.x - f.x) * tt} y1={f.y + (t.y - f.y) * tt} x2={f.x + 2 + (t.x - f.x) * tt} y2={f.y + (t.y - f.y) * tt} stroke={isActive ? "rgba(240,200,80,.8)" : "rgba(200,160,60,.3)"} strokeWidth={0.5} />;
+              })}
+            </g>
+          );
+        })}
 
-          {/* Snakes */}
-          {Object.entries(SNAKES).map(([from,{to}])=>{
-            const{d,fx,fy}=snakePath(+from,+to);
-            const isAct=snakeActive===+from;
-            return(
-              <g key={'s'+from} opacity={isAct?1:0.45} filter={isAct?"url(#mbglow)":""}>
-                <path d={d} fill="none" stroke={isAct?"#ff4020":"rgba(160,60,30,.6)"} strokeWidth={isAct?2:1} strokeLinecap="round"/>
-                <circle cx={fx} cy={fy} r={isAct?3:2} fill={isAct?"#ff4020":"rgba(180,60,30,.7)"}/>
-                {isAct&&snakeFlash&&(
-                  <circle cx={fx} cy={fy} r={10} fill="none" stroke="rgba(255,40,20,.5)" strokeWidth={1.5}>
-                    <animate attributeName="r" values="6;16;6" dur=".7s" repeatCount="indefinite"/>
-                    <animate attributeName="opacity" values="1;0;1" dur=".7s" repeatCount="indefinite"/>
-                  </circle>
-                )}
-              </g>
-            );
-          })}
+        {/* Snakes */}
+        {Object.entries(SNAKES).map(([from, { to }]) => {
+          const f = cellXY(+from, CELL), t = cellXY(+to, CELL);
+          const dx = t.x - f.x, dy = t.y - f.y, len = Math.sqrt(dx * dx + dy * dy);
+          const nx = -dy / len, amp = len * 0.14;
+          let d = `M ${f.x} ${f.y}`;
+          for (let i = 1; i <= 6; i++) {
+            const p = i / 6, s = i % 2 === 0 ? 1 : -1;
+            d += ` Q ${f.x + dx * ((i - .5) / 6) + nx * amp * s} ${f.y + dy * ((i - .5) / 6) + (dx / len) * amp * s} ${f.x + dx * p} ${f.y + dy * p}`;
+          }
+          const isActive = snakeBiting && (+from === 47);
+          return (
+            <g key={'s' + from} opacity={isActive ? 1 : 0.45} filter={isActive ? "url(#obglow-s)" : ""}>
+              <path d={d} fill="none" stroke={isActive ? "#ff4020" : "rgba(160,60,30,.6)"} strokeWidth={isActive ? 2 : 1.2} strokeLinecap="round" />
+              <circle cx={f.x} cy={f.y} r={isActive ? 3 : 2} fill={isActive ? "#ff4020" : "rgba(180,60,30,.7)"} />
+            </g>
+          );
+        })}
 
-          {/* Token */}
-          <g style={{transition:'transform .5s cubic-bezier(.34,1.56,.64,1)'}}
-             transform={`translate(${tx},${ty})`}>
-            <circle r={8} fill="rgba(240,200,80,.12)" stroke="none">
-              <animate attributeName="r" values="7;10;7" dur="2s" repeatCount="indefinite"/>
+        {/* Moksha label — square 100 */}
+        {(() => { const { x, y } = cellXY(100, CELL); return <text x={x} y={y + 2} textAnchor="middle" fontSize="8" fill="#f0d050" opacity=".8">ॐ</text>; })()}
+
+        {/* Animated token */}
+        <g transform={`translate(${tx},${ty})`} style={{ transition: 'transform .5s cubic-bezier(.34,1.56,.64,1)' }}>
+          <circle r={7} fill="rgba(240,200,80,.15)" stroke="none">
+            <animate attributeName="r" values="7;9;7" dur="1.5s" repeatCount="indefinite" />
+          </circle>
+          <circle r={5} fill="#f0d050" />
+          <text textAnchor="middle" y={2} fontSize="6" fill="#1a1408">🔱</text>
+        </g>
+
+        {/* Snake bite effect */}
+        {snakeBiting && (() => { const { x, y } = cellXY(47, CELL); return (
+          <g>
+            <circle cx={x} cy={y} r={12} fill="none" stroke="rgba(255,40,20,.5)" strokeWidth={1.5}>
+              <animate attributeName="r" values="8;18;8" dur=".8s" repeatCount="indefinite" />
+              <animate attributeName="opacity" values="1;0;1" dur=".8s" repeatCount="indefinite" />
             </circle>
-            <circle r={5.5} fill="#f0d050" stroke="rgba(240,200,80,.6)" strokeWidth={1}/>
-            <text textAnchor="middle" y={2} fontSize="7" fill="#1a1408" fontWeight="bold">🔱</text>
           </g>
-        </svg>
+        );})()}
 
-        {/* Cell grid */}
-        <div style={{display:'grid',gridTemplateColumns:'repeat(10,1fr)',position:'relative',zIndex:5,width:'100%',height:'100%',position:'absolute',inset:0}}>
-          {Array.from({length:100},(_,i)=>{
-            const num=i+1;
-            const sn=SNAKES[num],ld=LADDERS[num],dl=DLM.includes(num),mk=num===100;
-            const realm=realmOf(num);
-            const rc=RCOL[realm];
-            const isPulsed=realmPulse&&realmOf(num)===realmPulse;
-            let bg='transparent',bdr=`${rc}22`;
-            if(mk){bg='radial-gradient(circle,rgba(240,200,80,.2),transparent)';bdr='rgba(240,200,80,.5)'}
-            else if(sn){bg='radial-gradient(circle,rgba(180,60,20,.18),transparent)';bdr='rgba(180,60,20,.35)'}
-            else if(ld){bg='radial-gradient(circle,rgba(200,160,60,.14),transparent)';bdr='rgba(200,160,60,.25)'}
-            else if(dl){bg='radial-gradient(circle,rgba(120,80,180,.15),transparent)';bdr='rgba(140,100,200,.3)'}
-            if(isPulsed)bg=`${rc}30`;
-            return(
-              <div key={num} style={{
-                aspectRatio:'1',background:bg,
-                border:`0.5px solid ${bdr}`,
-                display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
-                position:'relative',transition:'background .4s',
-                boxShadow:highlight===num?`0 0 8px ${rc}80`:'none',
-              }}>
-                <span style={{position:'absolute',top:1,left:1.5,fontSize:5,color:`${rc}70`,fontFamily:"'Cinzel',serif"}}>{num}</span>
-                {mk&&<span style={{fontSize:9,animation:'mp 3s ease infinite',color:'#f0d050'}}>ॐ</span>}
-                {sn&&<span style={{fontSize:8,lineHeight:1}}>𓆙</span>}
-                {ld&&<span style={{fontSize:8,lineHeight:1}}>🪔</span>}
-                {dl&&!sn&&!ld&&<span style={{fontSize:7,lineHeight:1}}>⚖</span>}
-              </div>
-            );
-          })}
+        {/* Ladder lift effect */}
+        {ladderLifting && (() => { const { x, y } = cellXY(9, CELL); return (
+          <g>
+            {[0, 1, 2].map(i => <circle key={i} cx={x + (i - 1) * 4} cy={y - i * 6} r={2} fill="#f0d050" opacity={.7 - i * .2}>
+              <animate attributeName="cy" values={`${y};${y - 14};${y}`} dur=".9s" begin={`${i * 0.2}s`} repeatCount="indefinite" />
+            </circle>)}
+          </g>
+        );})()}
+      </svg>
+
+      {/* Realm label overlay */}
+      {highlightRealm && (
+        <div style={{
+          position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          pointerEvents: 'none',
+        }}>
+          <div style={{
+            background: 'rgba(10,8,5,.82)', border: `1px solid ${REALM_COLORS[highlightRealm]}50`,
+            borderRadius: 6, padding: '4px 12px', fontSize: 9, letterSpacing: 3,
+            color: REALM_COLORS[highlightRealm], fontFamily: "'Cinzel',serif",
+            boxShadow: `0 0 20px ${REALM_GLOW[highlightRealm]}`,
+            animation: 'fadeIn .4s ease',
+          }}>
+            {{ bhuloka: '🌍 BHULOKA · 1–33', antarloka: '🌌 ANTARLOKA · 34–66', svargaloka: '✨ SVARGALOKA · 67–99' }[highlightRealm]}
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Legend */}
-      <div style={{display:'flex',gap:14,fontSize:8,letterSpacing:2,color:'#5a4a30',marginTop:4,flexWrap:'wrap',justifyContent:'center'}}>
-        <span style={{color:'#e06030'}}>𓆙 NĀGA</span>
-        <span style={{color:'#f0d050'}}>🪔 VIRTUE</span>
-        <span style={{color:'#c8a0f0'}}>⚖ DHARMA</span>
-        <span style={{color:'#f0d050'}}>ॐ MOKSHA</span>
-      </div>
-
-      {/* Event label */}
-      {ladderFlash&&<div style={{fontSize:9,color:'#80c080',animation:'fadeIn .3s ease',letterSpacing:2,textAlign:'center'}}>🪔 VIRTUE LIFTS · +22 sq · +1 Punya</div>}
-      {snakeFlash&&<div style={{fontSize:9,color:'#e06030',animation:'fadeIn .3s ease',letterSpacing:2,textAlign:'center'}}>𓆙 SERPENT BITES · −18 sq · +2 Papa</div>}
+      {/* Snake/ladder event labels */}
+      {snakeBiting && (
+        <div style={{ position: 'absolute', bottom: -24, left: 0, right: 0, textAlign: 'center', fontSize: 10, color: '#e06030', animation: 'fadeIn .3s ease', letterSpacing: 2 }}>
+          𓆙 SERPENT BITES · −18 squares · +2 Papa
+        </div>
+      )}
+      {ladderLifting && (
+        <div style={{ position: 'absolute', bottom: -24, left: 0, right: 0, textAlign: 'center', fontSize: 10, color: '#80c080', animation: 'fadeIn .3s ease', letterSpacing: 2 }}>
+          🪔 VIRTUE LIFTS · +22 squares · +1 Punya
+        </div>
+      )}
     </div>
   );
 }
@@ -1482,7 +1418,7 @@ const GRAHA_NARRATE_TIMING = [
   [8,  4500],   // Ketu — "strips all shields"
 ];
 
-function DiceStage({ GRAHA_INFO, chosenLang, isNarrating, narrateStartedAt }) {
+function DiceStage({ GRAHA_INFO, chosenLang, isNarrating }) {
   const [karmaDie, setKarmaDie] = useState(4);
   const [grahaIdx, setGrahaIdx] = useState(-1); // -1 = intro (no planet)
   const [showEffect, setShowEffect] = useState(false);
@@ -1544,10 +1480,10 @@ function DiceStage({ GRAHA_INFO, chosenLang, isNarrating, narrateStartedAt }) {
     clearTimeout(idleRef.current);
     clearInterval(idleRef.current);
 
-    if (isNarrating && narrateStartedAt) {
-      // Audio just started — begin graha sync sequence NOW
+    if (isNarrating) {
+      // Sync with narration — start immediately
       startNarrateSequence();
-    } else if (!isNarrating) {
+    } else {
       // Idle auto-cycle every 3.5s
       setGrahaIdx(0); setShowEffect(true);
       idleRef.current = setInterval(() => {
@@ -1556,15 +1492,13 @@ function DiceStage({ GRAHA_INFO, chosenLang, isNarrating, narrateStartedAt }) {
         setShowEffect(true);
       }, 3500);
     }
-    // if isNarrating but narrateStartedAt is null → loading, don't start yet
-
     return () => {
       clearTimeout(narrateRef.current);
       clearInterval(narrateRef.current);
       clearTimeout(idleRef.current);
       clearInterval(idleRef.current);
     };
-  }, [isNarrating, narrateStartedAt]);
+  }, [isNarrating]);
 
   const DIE_DOTS = {
     1: [[50,50]],
@@ -1714,451 +1648,6 @@ function DiceStage({ GRAHA_INFO, chosenLang, isNarrating, narrateStartedAt }) {
           Roll <strong style={{color:'#f0d050'}}>{karmaDie}</strong> square{karmaDie!==1?'s':''} &nbsp;+&nbsp; {g.icon} {g.name.split('—')[0].trim()} effect
         </div>
       )}
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════════
-// DHARMA STAGE — cinematic moral choice experience
-// Shows: the dilemma → player chooses → consequence plays out visually
-// The balance scale animates, token moves, karma shifts in real time
-// ═══════════════════════════════════════════════════════════════════════
-function DharmaStage() {
-  const CARDS=[
-    {skt:"कर्णकवच",en:"Karna's Armour",era:"Mahabharata",
-     story:"The god Indra disguises as a beggar. He begs Karna for his divine armour — the one that makes him invincible. Karna knew it was Indra. Knew it meant death. He gave it away with a smile.",
-     punya:{l:"🙏 Give the armour",sub:"Honour above survival",karma:4,sq:-5,color:"#80c080"},
-     papa:{l:"💀 Keep the armour",sub:"Survival above honour",karma:3,sq:8,color:"#e06030"}},
-    {skt:"द्रौपदीवस्त्र",en:"Draupadi's Shame",era:"Mahabharata",
-     story:"In the royal court, Dushasana drags Draupadi by her hair. Bhishma, Drona, every elder — silent. Speaking costs you exile. Silence costs your soul.",
-     punya:{l:"🙏 Speak against the king",sub:"Exile for righteousness",karma:4,sq:-8,color:"#80c080"},
-     papa:{l:"💀 Stay silent",sub:"Complicit in adharma",karma:3,sq:6,color:"#e06030"}},
-    {skt:"कर्मचारी",en:"The Whistleblower",era:"Modern Life",
-     story:"Your company dumps toxins in a river. Children are sick. You have proof. If you leak it — you lose your job, your parents lose support. If you stay silent — the poisoning continues.",
-     punya:{l:"🙏 Blow the whistle",sub:"Truth at personal cost",karma:5,sq:0,color:"#80c080"},
-     papa:{l:"💀 Stay silent",sub:"Protect your family",karma:4,sq:10,color:"#e06030"}},
-    {skt:"एकलव्य",en:"Eklavya's Thumb",era:"Mahabharata",
-     story:"Dronacharya demands your right thumb as payment for the archery you taught yourself. Giving it destroys your greatest skill. But to refuse is to deny your guru.",
-     punya:{l:"🙏 Give the thumb",sub:"Devotion above all",karma:4,sq:-5,color:"#80c080"},
-     papa:{l:"💀 Refuse the guru",sub:"Keep your power",karma:3,sq:7,color:"#e06030"}},
-  ];
-
-  const [cardIdx,setCardIdx]=useState(0);
-  const [phase,setPhase]=useState('reveal'); // reveal → question → chosen → consequence → next
-  const [chosen,setChosen]=useState(null);
-  const [tokenSq,setTokenSq]=useState(28);
-  const [punya,setPunya]=useState(8);
-  const [papa,setPapa]=useState(4);
-  const [shake,setShake]=useState(false);
-  const [glowSide,setGlowSide]=useState(null); // 'punya'|'papa'
-  const timerRef=useRef(null);
-
-  const card=CARDS[cardIdx];
-
-  // Auto-reveal on mount and card change
-  useEffect(()=>{
-    setPhase('reveal');
-    const t=setTimeout(()=>setPhase('question'),1200);
-    return()=>clearTimeout(t);
-  },[cardIdx]);
-
-  const choose=(side)=>{
-    if(phase!=='question')return;
-    const c=card[side];
-    setChosen(side);
-    setGlowSide(side);
-    setPhase('chosen');
-
-    // Animate consequence
-    setTimeout(()=>{
-      setPhase('consequence');
-      setShake(true);
-      setTimeout(()=>setShake(false),600);
-      setTokenSq(sq=>Math.max(1,Math.min(99,sq+c.sq)));
-      if(side==='punya') setPunya(p=>Math.min(30,p+c.karma));
-      else setPapa(p=>Math.min(30,p+c.karma));
-    },800);
-
-    // Auto-advance to next card
-    setTimeout(()=>{
-      setChosen(null);setGlowSide(null);
-      setCardIdx(i=>(i+1)%CARDS.length);
-    },3800);
-
-    return()=>clearTimeout(timerRef.current);
-  };
-
-  const total=Math.max(punya+papa,1);
-  const punyaPct=(punya/total)*100;
-  const isPure=punya>=papa;
-  const realmOf=n=>n<=33?{name:'भूलोक',c:'#8a6030'}:n<=66?{name:'अन्तर्लोक',c:'#5a80a0'}:{name:'स्वर्गलोक',c:'#9070c0'};
-  const realm=realmOf(tokenSq);
-
-  return(
-    <div style={{display:'flex',flexDirection:'column',gap:14,width:'100%'}}>
-
-      {/* ── TOP: Karma scale + token position ── */}
-      <div style={{
-        display:'grid',gridTemplateColumns:'1fr auto 1fr',gap:10,
-        background:'rgba(8,6,3,.7)',border:'1px solid rgba(200,160,60,.1)',
-        borderRadius:12,padding:'14px 16px',alignItems:'center',
-      }}>
-        {/* Punya side */}
-        <div style={{textAlign:'center'}}>
-          <div style={{fontSize:9,letterSpacing:3,color:'#f0d050',marginBottom:6,fontFamily:"'Cinzel',serif"}}>पुण्य</div>
-          <div style={{fontSize:28,fontWeight:900,color:'#f0d050',fontFamily:"'Cinzel',serif",
-            transition:'all .8s cubic-bezier(.34,1.56,.64,1)',
-            textShadow:glowSide==='punya'?'0 0 20px #f0d050,0 0 40px rgba(240,200,80,.6)':'none'}}>{punya}</div>
-          <div style={{height:4,background:'rgba(200,160,60,.1)',borderRadius:2,overflow:'hidden',marginTop:6}}>
-            <div style={{height:'100%',background:'linear-gradient(90deg,#f0d050,#80c080)',borderRadius:2,width:`${punyaPct}%`,transition:'width .8s cubic-bezier(.4,0,.2,1)'}}/>
-          </div>
-        </div>
-
-        {/* Balance scale SVG */}
-        <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:4}}>
-          <svg width={48} height={56} viewBox="0 0 48 56">
-            {/* Fulcrum */}
-            <line x1={24} y1={8} x2={24} y2={48} stroke="rgba(200,160,60,.4)" strokeWidth={1.5}/>
-            <polygon points="18,48 30,48 24,52" fill="rgba(200,160,60,.35)"/>
-            {/* Beam — tilts based on balance */}
-            <line
-              x1={4} y1={isPure?12:16} x2={44} y2={isPure?16:12}
-              stroke={isPure?"#80c080":"#e06030"} strokeWidth={2}
-              style={{transition:'all .8s cubic-bezier(.4,0,.2,1)'}}/>
-            {/* Left pan (punya) */}
-            <ellipse cx={4} cy={isPure?16:20} rx={6} ry={2} fill="rgba(80,200,80,.25)" stroke="#80c080" strokeWidth={.8}
-              style={{transition:'all .8s'}}/>
-            {/* Right pan (papa) */}
-            <ellipse cx={44} cy={isPure?20:16} rx={6} ry={2} fill="rgba(200,80,60,.2)" stroke="#e06030" strokeWidth={.8}
-              style={{transition:'all .8s'}}/>
-          </svg>
-          <div style={{fontSize:8,letterSpacing:2,color:isPure?'#80c080':'#e06030',textAlign:'center',transition:'color .5s'}}>
-            {isPure?'PURE':'IMPURE'}
-          </div>
-        </div>
-
-        {/* Papa side */}
-        <div style={{textAlign:'center'}}>
-          <div style={{fontSize:9,letterSpacing:3,color:'#e06030',marginBottom:6,fontFamily:"'Cinzel',serif"}}>पाप</div>
-          <div style={{fontSize:28,fontWeight:900,color:'#e06030',fontFamily:"'Cinzel',serif",
-            transition:'all .8s cubic-bezier(.34,1.56,.64,1)',
-            textShadow:glowSide==='papa'?'0 0 20px #e06030,0 0 40px rgba(200,80,40,.6)':'none'}}>{papa}</div>
-          <div style={{height:4,background:'rgba(200,80,60,.1)',borderRadius:2,overflow:'hidden',marginTop:6}}>
-            <div style={{height:'100%',background:'linear-gradient(90deg,#e06030,#a03020)',borderRadius:2,width:`${100-punyaPct}%`,transition:'width .8s cubic-bezier(.4,0,.2,1)'}}/>
-          </div>
-        </div>
-      </div>
-
-      {/* Token position strip */}
-      <div style={{display:'flex',alignItems:'center',gap:10,padding:'6px 14px',background:'rgba(8,6,3,.5)',border:'1px solid rgba(200,160,60,.08)',borderRadius:8}}>
-        {/* Mini progress bar */}
-        <div style={{flex:1,height:6,background:'rgba(200,160,60,.08)',borderRadius:3,overflow:'visible',position:'relative'}}>
-          <div style={{
-            position:'absolute',left:0,top:0,height:'100%',
-            width:`${(tokenSq/100)*100}%`,
-            background:`linear-gradient(90deg,${realm.c}60,${realm.c})`,
-            borderRadius:3,transition:'width 1s cubic-bezier(.34,1.56,.64,1)',
-          }}/>
-          {/* Token dot */}
-          <div style={{
-            position:'absolute',top:'50%',transform:'translate(-50%,-50%)',
-            left:`${(tokenSq/100)*100}%`,
-            width:14,height:14,borderRadius:'50%',
-            background:`radial-gradient(circle at 35% 30%,${realm.c},${realm.c}50)`,
-            border:`2px solid ${realm.c}`,
-            boxShadow:`0 0 8px ${realm.c}80`,
-            display:'flex',alignItems:'center',justifyContent:'center',
-            fontSize:7,transition:'left 1s cubic-bezier(.34,1.56,.64,1)',
-            animation:shake?'diceRoll .5s ease':'none',
-          }}>🔱</div>
-        </div>
-        <div style={{fontSize:9,color:realm.c,letterSpacing:2,whiteSpace:'nowrap',minWidth:80,textAlign:'right',transition:'color .5s'}}>
-          Sq {tokenSq} · {realm.name}
-        </div>
-      </div>
-
-      {/* ── DILEMMA CARD ── */}
-      <div style={{
-        background:'rgba(160,200,224,.04)',
-        border:`1.5px solid ${phase==='reveal'?'rgba(160,200,224,.1)':'rgba(160,200,224,.22)'}`,
-        borderRadius:12,overflow:'hidden',
-        transition:'all .5s',
-        boxShadow:phase==='question'?'0 0 40px rgba(160,200,224,.06)':'none',
-      }}>
-        {/* Card header */}
-        <div style={{padding:'14px 16px 10px',borderBottom:'1px solid rgba(160,200,224,.08)',
-          background:'rgba(160,200,224,.03)'}}>
-          <div style={{display:'flex',gap:10,alignItems:'center',marginBottom:6}}>
-            <span style={{fontSize:20}}>⚖</span>
-            <div style={{flex:1}}>
-              <div style={{fontSize:13,fontFamily:"'Noto Serif Devanagari',serif",color:'#a0c8e0',fontWeight:700}}>{card.skt}</div>
-              <div style={{fontSize:10,color:'#5a7080',letterSpacing:2}}>{card.en} · {card.era}</div>
-            </div>
-            <div style={{fontSize:8,padding:'2px 8px',borderRadius:10,background:'rgba(160,200,224,.06)',
-              border:'1px solid rgba(160,200,224,.12)',color:'#5a7080',letterSpacing:2}}>
-              {cardIdx+1}/{CARDS.length}
-            </div>
-          </div>
-          <div style={{
-            fontSize:11,color:'#c0b080',lineHeight:1.8,fontStyle:'italic',
-            opacity:phase==='reveal'?0:1,transition:'opacity .6s',
-          }}>
-            {card.story}
-          </div>
-        </div>
-
-        {/* Choices */}
-        <div style={{padding:'12px 14px',display:'flex',gap:10,flexWrap:'wrap'}}>
-          {/* Punya choice */}
-          <button
-            disabled={phase!=='question'}
-            onClick={()=>choose('punya')}
-            style={{
-              flex:'1 1 140px',
-              background:chosen==='punya'?'rgba(80,200,80,.15)':phase==='consequence'&&chosen!=='punya'?'rgba(10,8,5,.3)':'rgba(80,200,80,.05)',
-              border:`1.5px solid ${chosen==='punya'?'rgba(80,200,80,.5)':'rgba(80,200,80,.18)'}`,
-              borderRadius:10,padding:'12px 12px',cursor:phase==='question'?'pointer':'default',
-              textAlign:'center',transition:'all .4s cubic-bezier(.34,1.56,.64,1)',
-              transform:chosen==='punya'?'scale(1.03)':'scale(1)',
-              opacity:phase==='consequence'&&chosen!=='punya'?0.35:1,
-              boxShadow:chosen==='punya'?'0 0 20px rgba(80,200,80,.15)':'none',
-            }}
-            onMouseEnter={e=>{if(phase==='question'){e.currentTarget.style.background='rgba(80,200,80,.12)';e.currentTarget.style.transform='translateY(-2px) scale(1.01)'}}}
-            onMouseLeave={e=>{if(phase==='question'){e.currentTarget.style.background='rgba(80,200,80,.05)';e.currentTarget.style.transform='scale(1)'}}}
-          >
-            <div style={{fontSize:11,color:'#80c080',fontWeight:700,fontFamily:"'Cinzel',serif",marginBottom:4}}>{card.punya.l}</div>
-            <div style={{fontSize:9,color:'#5a8060',letterSpacing:1}}>{card.punya.sub}</div>
-            <div style={{fontSize:9,color:'rgba(80,200,80,.6)',marginTop:6,letterSpacing:1}}>+{card.punya.karma} Punya · {card.punya.sq<0?`Back ${Math.abs(card.punya.sq)}`:'Skip'} sq</div>
-          </button>
-
-          {/* Papa choice */}
-          <button
-            disabled={phase!=='question'}
-            onClick={()=>choose('papa')}
-            style={{
-              flex:'1 1 140px',
-              background:chosen==='papa'?'rgba(200,80,40,.15)':phase==='consequence'&&chosen!=='papa'?'rgba(10,8,5,.3)':'rgba(200,80,40,.05)',
-              border:`1.5px solid ${chosen==='papa'?'rgba(200,80,40,.5)':'rgba(200,80,40,.18)'}`,
-              borderRadius:10,padding:'12px 12px',cursor:phase==='question'?'pointer':'default',
-              textAlign:'center',transition:'all .4s cubic-bezier(.34,1.56,.64,1)',
-              transform:chosen==='papa'?'scale(1.03)':'scale(1)',
-              opacity:phase==='consequence'&&chosen!=='papa'?0.35:1,
-              boxShadow:chosen==='papa'?'0 0 20px rgba(200,80,40,.15)':'none',
-            }}
-            onMouseEnter={e=>{if(phase==='question'){e.currentTarget.style.background='rgba(200,80,40,.12)';e.currentTarget.style.transform='translateY(-2px) scale(1.01)'}}}
-            onMouseLeave={e=>{if(phase==='question'){e.currentTarget.style.background='rgba(200,80,40,.05)';e.currentTarget.style.transform='scale(1)'}}}
-          >
-            <div style={{fontSize:11,color:'#e06030',fontWeight:700,fontFamily:"'Cinzel',serif",marginBottom:4}}>{card.papa.l}</div>
-            <div style={{fontSize:9,color:'#80503a',letterSpacing:1}}>{card.papa.sub}</div>
-            <div style={{fontSize:9,color:'rgba(200,80,40,.6)',marginTop:6,letterSpacing:1}}>+{card.papa.karma} Papa · Advance {card.papa.sq} sq</div>
-          </button>
-        </div>
-
-        {/* Consequence reveal */}
-        {phase==='consequence'&&chosen&&(
-          <div style={{
-            margin:'0 14px 14px',padding:'12px',
-            background:chosen==='punya'?'rgba(80,200,80,.06)':'rgba(200,80,40,.06)',
-            border:`1px solid ${chosen==='punya'?'rgba(80,200,80,.2)':'rgba(200,80,40,.2)'}`,
-            borderRadius:8,animation:'fadeIn .4s ease',textAlign:'center',
-          }}>
-            <div style={{fontSize:16,marginBottom:4}}>{chosen==='punya'?'🙏':'💀'}</div>
-            <div style={{fontSize:12,color:chosen==='punya'?'#80c080':'#e06030',fontWeight:700,letterSpacing:1}}>
-              {chosen==='punya'?`+${card.punya.karma} Punya · ${card.punya.sq<0?`Back ${Math.abs(card.punya.sq)} squares`:'Turn skipped'}`:`+${card.papa.karma} Papa · Advance ${card.papa.sq} squares`}
-            </div>
-            <div style={{fontSize:9,color:'#5a4a30',marginTop:4,letterSpacing:2}}>
-              {chosen==='punya'?'DHARMIC PATH CHOSEN':'ADHARMIC PATH CHOSEN'}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Moksha gate status */}
-      <div style={{
-        textAlign:'center',padding:'8px',
-        background:isPure?'rgba(80,200,80,.04)':'rgba(200,80,40,.04)',
-        border:`1px solid ${isPure?'rgba(80,200,80,.12)':'rgba(200,80,40,.12)'}`,
-        borderRadius:8,transition:'all .5s',
-      }}>
-        <div style={{fontSize:10,color:isPure?'#80c080':'#e06030',letterSpacing:2,fontFamily:"'Cinzel',serif"}}>
-          {isPure?`✓ Moksha Gate OPEN — Punya (${punya}) ≥ Papa (${papa})`:`✗ Moksha Gate CLOSED — Papa (${papa}) > Punya (${punya})`}
-        </div>
-        {!isPure&&<div style={{fontSize:9,color:'#5a4a30',marginTop:3,letterSpacing:1}}>If you reach sq 108 like this, Yama casts you back to square 67</div>}
-      </div>
-
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════════
-// SACRED PATH STAGE — cinematic Ashtanga gate ascension
-// ═══════════════════════════════════════════════════════════════════════
-function SacredPathStage({SACRED_PATH}) {
-  const [active,setActive]=useState(0);
-  const [entering,setEntering]=useState(false);
-  const timerRef=useRef(null);
-
-  useEffect(()=>{
-    timerRef.current=setInterval(()=>{
-      setEntering(true);
-      setTimeout(()=>{
-        setActive(a=>(a+1)%8);
-        setEntering(false);
-      },300);
-    },2600);
-    return()=>clearInterval(timerRef.current);
-  },[]);
-
-  const sq=SACRED_PATH[active];
-  const isMoksha=sq.num===108;
-  const STEP_COLORS=['#a0c8e0','#f0b840','#80c0a0','#c0a0e0','#e0c080','#d0a0c0','#90c0b0','#f0d050'];
-  const sc=STEP_COLORS[active];
-
-  const RIDGE_DESCS=[
-    "The first gate. Restrain the senses. Still the mind. Without Yama, no gate opens.",
-    "Daily practice. Sacred rituals. Without Niyama, discipline dissolves.",
-    "The body as temple. Perfect stillness. Without Asana, the mind cannot settle.",
-    "Breath is the bridge. Expand the life-force. Pranayama opens every other gate.",
-    "Withdraw the senses. Turn the gaze inward. Without Pratyahara, distractions rule.",
-    "Single-pointed focus. The laser of consciousness. Dharana burns through illusion.",
-    "The stream flows unbroken. Thought dissolves into awareness. Dhyana is the door.",
-    "The wheel of Samsara stops. You are free. Moksha — the only goal.",
-  ];
-
-  return(
-    <div style={{display:'flex',flexDirection:'column',gap:12,width:'100%'}}>
-
-      {/* Gate path — horizontal scroll of 8 gates */}
-      <div style={{position:'relative',padding:'8px 4px 4px'}}>
-        {/* Connecting path line */}
-        <div style={{
-          position:'absolute',top:'50%',left:16,right:16,height:2,
-          background:'linear-gradient(90deg,rgba(200,160,60,.08),rgba(200,160,60,.15),rgba(200,160,60,.08))',
-          zIndex:0,
-        }}/>
-        <div style={{display:'flex',gap:4,position:'relative',zIndex:1}}>
-          {SACRED_PATH.slice(0,8).map((s,i)=>{
-            const isAct=i===active;
-            const isDone=i<active;
-            const c=STEP_COLORS[i];
-            return(
-              <div key={i}
-                onClick={()=>{clearInterval(timerRef.current);setActive(i)}}
-                style={{
-                  flex:isAct?'0 0 auto':'1',
-                  display:'flex',flexDirection:'column',alignItems:'center',gap:2,
-                  cursor:'pointer',
-                  padding:isAct?'8px 10px':'6px 4px',
-                  background:isAct?`${c}15`:isDone?'rgba(200,160,60,.04)':'transparent',
-                  border:`1px solid ${isAct?`${c}50`:isDone?`${c}18`:'transparent'}`,
-                  borderRadius:10,
-                  transition:'all .4s cubic-bezier(.34,1.56,.64,1)',
-                  boxShadow:isAct?`0 0 16px ${c}20`:'none',
-                }}>
-                <div style={{
-                  fontSize:isAct?22:14,
-                  filter:isAct?`drop-shadow(0 0 6px ${c})`:'none',
-                  opacity:isAct?1:isDone?0.7:0.3,
-                  transition:'all .4s',
-                }}>{s.icon}</div>
-                {isAct&&<div style={{fontSize:7,color:c,fontFamily:"'Cinzel',serif",letterSpacing:1,whiteSpace:'nowrap',fontWeight:700}}>
-                  {s.en}
-                </div>}
-                {isDone&&!isAct&&<div style={{width:6,height:2,borderRadius:1,background:`${c}50`}}/>}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Main gate card */}
-      <div style={{
-        background:`radial-gradient(ellipse at 50% 0%,${sc}10,rgba(8,6,3,.7) 60%)`,
-        border:`2px solid ${sc}30`,borderRadius:16,
-        padding:'24px 20px',textAlign:'center',
-        transition:'border-color .5s,box-shadow .5s',
-        boxShadow:`0 0 40px ${sc}10,inset 0 0 40px rgba(0,0,0,.3)`,
-        position:'relative',overflow:'hidden',
-        opacity:entering?0:1,
-        transform:entering?'translateY(8px)':'translateY(0)',
-        transition:'opacity .3s ease,transform .3s ease,border-color .5s,box-shadow .5s',
-      }}>
-        {/* Background mandala */}
-        <svg style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',opacity:.04}} viewBox="0 0 200 120" preserveAspectRatio="xMidYMid slice">
-          <circle cx={100} cy={60} r={50} fill="none" stroke={sc} strokeWidth={.8}/>
-          <circle cx={100} cy={60} r={35} fill="none" stroke={sc} strokeWidth={.6}/>
-          <circle cx={100} cy={60} r={20} fill="none" stroke={sc} strokeWidth={.5}/>
-          {[0,45,90,135,180,225,270,315].map(a=>(
-            <line key={a}
-              x1={100+50*Math.cos(a*Math.PI/180)} y1={60+50*Math.sin(a*Math.PI/180)}
-              x2={100+20*Math.cos(a*Math.PI/180)} y2={60+20*Math.sin(a*Math.PI/180)}
-              stroke={sc} strokeWidth={.4}/>
-          ))}
-        </svg>
-
-        {/* Gate number */}
-        <div style={{fontSize:8,letterSpacing:5,color:sc,opacity:.5,marginBottom:8,fontFamily:"'Cinzel',serif"}}>
-          GATE {active+1} OF 8 &nbsp;·&nbsp; SQUARE {sq.num}
-        </div>
-
-        {/* Icon */}
-        <div style={{
-          fontSize:48,marginBottom:12,
-          filter:`drop-shadow(0 0 16px ${sc}) drop-shadow(0 0 32px ${sc}50)`,
-          animation:'pulse 2.5s ease infinite',
-        }}>{sq.icon}</div>
-
-        {/* Names */}
-        <div style={{fontSize:24,fontFamily:"'Noto Serif Devanagari',serif",color:sc,fontWeight:700,marginBottom:4,
-          textShadow:`0 0 20px ${sc}50`}}>{sq.skt}</div>
-        <div style={{fontSize:16,color:'#e8c850',fontFamily:"'Cinzel',serif",letterSpacing:4,marginBottom:12}}>{sq.en}</div>
-        <div style={{fontSize:11,color:'#8a7a50',letterSpacing:1,fontStyle:'italic',lineHeight:1.7,maxWidth:360,margin:'0 auto'}}>
-          {RIDGE_DESCS[active]}
-        </div>
-
-        {/* Special badges */}
-        {sq.num===107&&(
-          <div style={{
-            marginTop:14,display:'inline-flex',alignItems:'center',gap:8,
-            padding:'6px 14px',borderRadius:20,
-            background:'rgba(240,180,60,.08)',border:'1px solid rgba(240,180,60,.25)',
-          }}>
-            <span style={{fontSize:14}}>🚪</span>
-            <span style={{fontSize:9,color:'#f0b840',letterSpacing:2}}>ROLL EXACT 1 TO ENTER MOKSHA</span>
-          </div>
-        )}
-        {isMoksha&&(
-          <div style={{marginTop:14}}>
-            <div style={{fontSize:36,animation:'mp 3s ease infinite',color:'#f0d050',
-              filter:'drop-shadow(0 0 20px rgba(240,200,80,.8))'}}>ॐ</div>
-            <div style={{fontSize:10,letterSpacing:4,color:'rgba(240,200,80,.5)',marginTop:4}}>LIBERATION · MOKSHA · मोक्ष</div>
-          </div>
-        )}
-      </div>
-
-      {/* Step progress dots */}
-      <div style={{display:'flex',gap:6,justifyContent:'center',alignItems:'center'}}>
-        {SACRED_PATH.slice(0,8).map((_,i)=>(
-          <div key={i}
-            onClick={()=>{clearInterval(timerRef.current);setActive(i)}}
-            style={{
-              width:i===active?28:8,height:8,borderRadius:4,cursor:'pointer',
-              background:i===active?STEP_COLORS[i]:i<active?`${STEP_COLORS[i]}50`:'rgba(200,160,60,.08)',
-              boxShadow:i===active?`0 0 8px ${STEP_COLORS[i]}80`:'none',
-              transition:'all .4s cubic-bezier(.34,1.56,.64,1)',
-          }}/>
-        ))}
-      </div>
-
-      {/* Navagraha reminder */}
-      <div style={{
-        textAlign:'center',padding:'8px 14px',
-        background:'rgba(240,200,80,.03)',border:'1px solid rgba(240,200,80,.08)',borderRadius:8,
-      }}>
-        <div style={{fontSize:9,color:'rgba(240,200,80,.4)',letterSpacing:2}}>
-          🌌 On the Sacred Path — no Navagraha effects · no swaps · no pushes · beyond the material world
-        </div>
-      </div>
     </div>
   );
 }
@@ -2680,7 +2169,6 @@ export default function MokshaPatam108(){
   const[gameVoicesPct,setGameVoicesPct]=useState(0);
   const[gameVoicesReady,setGameVoicesReady]=useState(false);
   const[yamaPhase,setYamaPhase]=useState(0); // 0=intro speaking, 1=who are you?, 2=go to setup // tracks which players are CPU
-  const[narrateStartedAt,setNarrateStartedAt]=useState(null); // timestamp when narrator audio actually begins — used for DiceStage graha sync
 
   const sfx=useSound();
   const ambient=useAmbient();
@@ -2746,14 +2234,8 @@ export default function MokshaPatam108(){
       // Small delay so browser is ready
       setTimeout(()=>{
         if(!muted){
-          setNarrateStartedAt(null); // reset before new narration
           const staticUrl=`/onboarding/story-${storyPage}-${chosenLang}.mp3`;
-          VoiceEngine.speakNarrator(
-            STORY_PAGES[storyPage][chosenLang],
-            chosenLang,
-            staticUrl,
-            ()=>setNarrateStartedAt(Date.now()) // fires when audio ACTUALLY starts
-          );
+          VoiceEngine.speakNarrator(STORY_PAGES[storyPage][chosenLang],chosenLang,staticUrl);
         }
       },300);
     }
@@ -3565,11 +3047,9 @@ export default function MokshaPatam108(){
       );
 
       if(vis.type==="diceStage") return(
-        <DiceStage GRAHA_INFO={GRAHA_INFO} chosenLang={chosenLang} isNarrating={!muted} narrateStartedAt={narrateStartedAt}/>
+        <DiceStage GRAHA_INFO={GRAHA_INFO} chosenLang={chosenLang} isNarrating={!muted}/>
       );
 
-      if(vis.type==="dharmaStage") return <DharmaStage key={0}/>;
-      if(vis.type==="sacredPathStage") return <SacredPathStage key={0} SACRED_PATH={SACRED_PATH}/>;
       if(vis.type==="versus") return(
         <div style={{background:"radial-gradient(ellipse at center,rgba(160,40,40,.12),transparent 70%)",border:"1px solid rgba(160,40,40,.25)",borderRadius:12,padding:"24px 20px",textAlign:"center",animation:"fadeIn .8s ease",position:"relative",overflow:"hidden"}}>
           <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 50% 0%,rgba(160,30,30,.08),transparent 60%)",pointerEvents:"none"}}/>
@@ -3608,7 +3088,7 @@ export default function MokshaPatam108(){
             </div>
           </div>
           <div style={{display:"flex",gap:6,alignItems:"center"}}>
-            <button onClick={()=>{if(!muted){const su=`/onboarding/story-${storyPage}-${chosenLang}.mp3`;setNarrateStartedAt(null);VoiceEngine.speakNarrator(pg[chosenLang],chosenLang,su,()=>setNarrateStartedAt(Date.now()))}else VoiceEngine.stop()}}
+            <button onClick={()=>{if(!muted){const su=`/onboarding/story-${storyPage}-${chosenLang}.mp3`;VoiceEngine.speakNarrator(pg[chosenLang],chosenLang,su)}else VoiceEngine.stop()}}
               style={{background:"transparent",border:"1px solid rgba(200,160,60,.18)",color:"#c0b080",padding:"5px 10px",fontSize:13,cursor:"pointer",borderRadius:3,lineHeight:1}}>
               🔊
             </button>
@@ -3637,70 +3117,54 @@ export default function MokshaPatam108(){
               <div style={{width:60,height:1,background:"linear-gradient(90deg,transparent,rgba(240,200,80,.3),transparent)",margin:"14px auto 0"}}/>
             </div>
 
-            {/* ── Responsive layout: full-width for cinematic pages, two-panel otherwise ── */}
-            {(vis?.type==="dharmaStage"||vis?.type==="sacredPathStage") ? (
-              /* FULL-WIDTH CINEMATIC — bullets stacked above visual */
-              <div style={{display:"flex",flexDirection:"column",gap:16}}>
-                {/* Compact bullet row */}
-                <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))",gap:8}}>
+            {/* ── Responsive two-panel layout ── */}
+            <div style={{display:"flex",gap:24,alignItems:"flex-start",flexWrap:"wrap"}}>
+
+              {/* LEFT: Bullet list */}
+              <div style={{flex:"1 1 260px",minWidth:0}}>
+                <div style={{display:"flex",flexDirection:"column",gap:10}}>
                   {bullets.map((b,bi)=>(
                     <div key={bi} style={{
-                      display:"flex",gap:10,alignItems:"flex-start",
-                      background:"rgba(20,16,10,.5)",
-                      border:`1px solid ${b.accent}18`,
-                      borderLeft:`2px solid ${b.accent}`,
-                      borderRadius:"0 6px 6px 0",
-                      padding:"8px 12px",
-                      animation:`slideUp .4s ease ${bi*0.08}s both`,
-                    }}>
-                      <div style={{width:28,height:28,borderRadius:6,flexShrink:0,background:`${b.accent}12`,border:`1px solid ${b.accent}25`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}>{b.icon}</div>
+                      display:"flex",gap:14,alignItems:"flex-start",
+                      background:"rgba(20,16,10,.55)",
+                      border:`1px solid ${b.accent}22`,
+                      borderLeft:`3px solid ${b.accent}`,
+                      borderRadius:"0 8px 8px 0",
+                      padding:"12px 14px",
+                      animation:`slideUp .5s ease ${bi*0.1}s both`,
+                      transition:"background .2s",
+                    }}
+                    onMouseEnter={e=>e.currentTarget.style.background="rgba(30,22,12,.7)"}
+                    onMouseLeave={e=>e.currentTarget.style.background="rgba(20,16,10,.55)"}
+                    >
+                      {/* Icon bubble */}
+                      <div style={{
+                        width:34,height:34,borderRadius:8,flexShrink:0,
+                        background:`${b.accent}15`,border:`1px solid ${b.accent}30`,
+                        display:"flex",alignItems:"center",justifyContent:"center",
+                        fontSize:16,
+                      }}>
+                        {b.icon}
+                      </div>
+                      {/* Text */}
                       <div style={{flex:1,minWidth:0}}>
-                        <div style={{fontSize:10,fontWeight:700,color:b.accent,letterSpacing:.5,marginBottom:2,fontFamily:"'Cinzel',serif"}}>{b.title}</div>
-                        <div style={{fontSize:10,color:"#8a7a50",lineHeight:1.6}}>{b.text}</div>
+                        <div style={{fontSize:12,fontWeight:700,color:b.accent,letterSpacing:.5,marginBottom:3,fontFamily:"'Cinzel',serif"}}>
+                          {b.title}
+                        </div>
+                        <div style={{fontSize:11,color:"#a09070",lineHeight:1.7}}>
+                          {b.text}
+                        </div>
                       </div>
                     </div>
                   ))}
                 </div>
-                {/* Full-width visual */}
-                <div style={{width:"100%"}}>
-                  {renderMainVisual()}
-                </div>
               </div>
-            ) : (
-              /* TWO-PANEL — bullets left, visual right */
-              <div style={{display:"flex",gap:24,alignItems:"flex-start",flexWrap:"wrap"}}>
-                {/* LEFT: Bullet list */}
-                <div style={{flex:"1 1 260px",minWidth:0}}>
-                  <div style={{display:"flex",flexDirection:"column",gap:10}}>
-                    {bullets.map((b,bi)=>(
-                      <div key={bi} style={{
-                        display:"flex",gap:14,alignItems:"flex-start",
-                        background:"rgba(20,16,10,.55)",
-                        border:`1px solid ${b.accent}22`,
-                        borderLeft:`3px solid ${b.accent}`,
-                        borderRadius:"0 8px 8px 0",
-                        padding:"12px 14px",
-                        animation:`slideUp .5s ease ${bi*0.1}s both`,
-                        transition:"background .2s",
-                      }}
-                      onMouseEnter={e=>e.currentTarget.style.background="rgba(30,22,12,.7)"}
-                      onMouseLeave={e=>e.currentTarget.style.background="rgba(20,16,10,.55)"}
-                      >
-                        <div style={{width:34,height:34,borderRadius:8,flexShrink:0,background:`${b.accent}15`,border:`1px solid ${b.accent}30`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>{b.icon}</div>
-                        <div style={{flex:1,minWidth:0}}>
-                          <div style={{fontSize:12,fontWeight:700,color:b.accent,letterSpacing:.5,marginBottom:3,fontFamily:"'Cinzel',serif"}}>{b.title}</div>
-                          <div style={{fontSize:11,color:"#a09070",lineHeight:1.7}}>{b.text}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                {/* RIGHT: Visual */}
-                <div style={{flex:"0 0 auto",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",paddingTop:4,minWidth:280}}>
-                  {renderMainVisual()}
-                </div>
+
+              {/* RIGHT: Animated visual */}
+              <div style={{flex:"0 0 auto",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",paddingTop:4,minWidth:280}}>
+                {renderMainVisual()}
               </div>
-            )}
+            </div>
 
           </div>
         </div>
