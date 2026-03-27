@@ -158,65 +158,21 @@ const CHARS=[
 /* chosenLang is managed as React state inside the component */
 const STORY_PAGES=[
   {title:"A Forgotten Secret",icon:"🕉",
-  en:"Listen carefully. What I am about to tell you, has been hidden for five thousand years. Before the Mahabharata was written down. Before the first temples were carved into stone. There existed, a game. A game of the soul. Created by unknown rishis, sages so ancient, that even the gods have forgotten their names. They called it, Moksha Patam. The Board, of Liberation. For thousands of years, kings played it in marble palaces. Sages played it by firelight. It was passed from guru to disciple in whispered secrecy. And then, foreigners came. They stole it. Stripped away every sacred name. Every Sanskrit verse. And renamed it. Snakes and Ladders. A children's game. The soul of the game was murdered. Until, this very moment. Tonight, you play the original.",
-  hi:"ध्यान से सुनो। जो मैं बताने जा रहा हूँ, वो पांच हज़ार सालों से छिपाया गया है। महाभारत लिखे जाने से पहले। पहले मंदिरों को पत्थर में तराशे जाने से पहले। एक खेल था। आत्मा का खेल। अज्ञात ऋषियों द्वारा रचा गया, इतने प्राचीन कि देवताओं को भी उनके नाम याद नहीं। उन्होंने इसे कहा, मोक्षपटम। मुक्ति का पट। हज़ारों सालों तक राजाओं ने इसे संगमरमर के महलों में खेला। ऋषियों ने अग्नि की रोशनी में खेला। गुरु से शिष्य तक दबी आवाज़ में पहुंचाया गया। फिर विदेशी आए। चुरा लिया। हर पवित्र नाम छीन लिया। और नाम रख दिया सांप सीढ़ी। बच्चों का खेल। खेल की आत्मा की हत्या कर दी। इस एक क्षण तक। आज रात, तुम असली खेल खेलोगे।",
-  visuals:[
-    {type:"board",label:"108 Sacred Squares"},
-    {type:"text",content:"Not Snakes & Ladders.\nThis is the original ancient game.\nPlayed by kings. Feared by gods."}
-  ]},
+  en:"Listen carefully. What I am about to tell you, has been hidden for five thousand years. Before the Mahabharata was written down. Before the first temples were carved into stone. Before even the oldest Vedas were chanted aloud by human lips. There existed, a game. But not a game of entertainment. No. This was a game, of the soul. Created by unknown sages, rishis so ancient, that even the gods, have forgotten their names. They called it, Moksha Patam. The Board, of Liberation. It was whispered, in sacred circles, that whoever truly understood this game, would understand the deepest secret of life, of death, and of everything, that lies beyond. For thousands of years, kings played it in marble palaces. Sages played it in forest ashrams, by firelight. It was passed from guru to disciple, in hushed tones, as if the board itself were alive. And then, one dark day, foreigners came to this land. They saw the board. They stole it. They stripped away every sacred name. Every Sanskrit verse. Every drop of meaning. And they renamed it. Snakes and Ladders. A children's game. The soul of the game, was murdered. Erased from history. Forgotten. Until, this very moment. Tonight, you play the original. The game your ancestors truly played. The game, the gods, forgot.",
+  hi:"ध्यान से सुनो। जो मैं बताने जा रहा हूँ, वो पांच हज़ार सालों से छिपाया गया है। महाभारत लिखे जाने से पहले। पहले मंदिरों को पत्थर में तराशे जाने से पहले। इंसानी होंठों से सबसे पुराने वेदों के उच्चारण से भी पहले। एक खेल था। लेकिन मनोरंजन का खेल नहीं। नहीं। ये आत्मा का खेल था। अज्ञात ऋषियों द्वारा रचा गया, इतने प्राचीन, कि देवताओं को भी उनके नाम याद नहीं। उन्होंने इसे कहा, मोक्षपटम। मुक्ति का पट। पवित्र मंडलियों में फुसफुसाया जाता था, कि जो इस खेल को सच में समझ ले, वो जीवन का, मृत्यु का, और उसके पार जो कुछ भी है, उसका सबसे गहरा रहस्य जान जाएगा। हज़ारों सालों तक, राजाओं ने इसे संगमरमर के महलों में खेला। ऋषियों ने इसे वन के आश्रमों में, अग्नि की रोशनी में खेला। गुरु से शिष्य तक, दबी आवाज़ में, जैसे पट ख़ुद जीवित हो। और फिर, एक अंधेरे दिन, विदेशी इस धरती पर आए। उन्होंने पट देखा। चुरा लिया। हर पवित्र नाम छीन लिया। हर संस्कृत श्लोक। अर्थ की हर बूँद। और नाम रख दिया। सांप सीढ़ी। बच्चों का खेल। खेल की आत्मा की हत्या कर दी गई। इतिहास से मिटा दिया गया। भुला दिया गया। इस, एक क्षण तक। आज रात, तुम असली खेल खेलोगे। वो खेल जो तुम्हारे पूर्वजों ने खेला था। वो खेल, जो देवता, भूल गए।",
+  body:"Before the Mahābhārata was written down...\nbefore the temples were carved in stone...\n\nThere existed a game. A game of the soul.\n\nThey called it मोक्ष पटम् १०८ — Moksha Patam 108.\nThe Board of Liberation.\n\nPassed from गुरु to शिष्य in whispered secrecy.\n\nThen foreigners came. They renamed it 'Snakes and Ladders.'\n\nThe soul of the game was murdered.\nUntil this very moment."},
   {title:"The Sacred Board",icon:"📜",
-  en:"Look at the board. It is not a board. It is a map of your soul's journey. 108 squares. Three realms. And one destination. Bhuloka, Squares 1 through 33, the Earthly Realm, where chaos reigns and most souls are trapped forever. Antarloka, Squares 34 through 66, the Inner Realm, where cunning serpents poison your mind with doubt. Svargaloka, Squares 67 through 99, the Celestial Realm, where a single fall destroys lifetimes of progress. And above it all, the Sacred Crown, Squares 101 to 108, the Ashtanga Marga, the eight-fold path of Patanjali. Here you move one step at a time. Each step tests your knowledge of yoga and dharma. Only those who pass all eight gates may attempt Moksha.",
-  hi:"पट को देखो। ये सिर्फ पट नहीं है। ये तुम्हारी आत्मा की यात्रा का नक्शा है। 108 खाने। तीन लोक। और एक मंज़िल। भूलोक, खाना 1 से 33, पृथ्वी लोक, जहाँ अराजकता राज करती है। अंतर्लोक, खाना 34 से 66, आंतरिक लोक, जहाँ चालाक सर्प तुम्हारे मन में संदेह का विष भरते हैं। स्वर्गलोक, खाना 67 से 99, दिव्य लोक, जहाँ एक गिरावट जन्मों की साधना मिटा देती है। और सबसे ऊपर, पवित्र मुकुट, खाना 101 से 108, अष्टांग मार्ग, पतंजलि का आठ-सूत्री मार्ग। यहाँ एक-एक कदम चलते हो। हर कदम तुम्हारे योग और धर्म ज्ञान की परीक्षा लेता है।",
-  visuals:[
-    {type:"realms",data:[
-      {name:"भूलोक",en:"BHULOKA",range:"1–33",desc:"Earthly Realm · Chaos",color:"#8a6030"},
-      {name:"अन्तर्लोक",en:"ANTARLOKA",range:"34–66",desc:"Inner Realm · Mind",color:"#6a80a0"},
-      {name:"स्वर्गलोक",en:"SVARGALOKA",range:"67–99",desc:"Celestial · Dangerous",color:"#a080c0"},
-      {name:"अष्टांग",en:"SACRED CROWN",range:"101–108",desc:"8-fold Path · 1 step",color:"#f0d050"}
-    ]}
-  ]},
-  {title:"Two Sacred Dice",icon:"🎲",
-  en:"Every turn, you roll not one, but two dice. The first, the Karma Die, a six-sided die that moves you across the board. Simple. Familiar. But the second die, the Navagraha Die, this is what makes this game truly ancient. Nine planets. Nine cosmic forces. Each one, a living god that intervenes in your journey. Surya, the Sun, blazes your path with 2 extra steps. Chandra, the Moon, purifies you with Punya. Mangal, Mars, fills you with battle fury, pushing your rival back 3 squares but staining you with Papa. Budh, Mercury, swaps your position with the nearest seeker. Brihaspati, Jupiter, blesses everyone on the board. Shukra, Venus, grants a divine Shield against the next serpent. Shani, Saturn, the lord of karma, pushes you back 3 squares. Rahu, the Shadow, steals from the leader and gives to the weakest. And Ketu, the Tail, strips all shields from every player.",
-  hi:"हर बारी, तुम एक नहीं, दो पासे फेंकते हो। पहला, कर्म पासा, छह-मुखी पासा जो तुम्हें पट पर चलाता है। सरल। परिचित। लेकिन दूसरा, नवग्रह पासा, यही इस खेल को प्राचीन बनाता है। नौ ग्रह। नौ ब्रह्मांडीय शक्तियां। हर एक जीवित देवता जो तुम्हारी यात्रा में हस्तक्षेप करता है। सूर्य 2 अतिरिक्त कदम देता है। चन्द्र पुण्य से शुद्ध करता है। मंगल प्रतिद्वंद्वी को 3 खाने पीछे धकेलता है। बुध तुम्हारी स्थिति अदला-बदली कर देता है। बृहस्पति सबको आशीर्वाद देता है। शुक्र दिव्य कवच देता है। शनि तुम्हें 3 खाने पीछे ले जाता है। राहु नेता से चुराकर कमज़ोर को देता है। और केतु सबके कवच छीन लेता है।",
-  visuals:[
-    {type:"graha",data:[
-      {icon:"☀",name:"Surya",effect:"+2 steps",color:"#f0b840"},
-      {icon:"☾",name:"Chandra",effect:"+1 Punya",color:"#a0c8e0"},
-      {icon:"♂",name:"Mangal",effect:"Rival -3",color:"#e07050"},
-      {icon:"☿",name:"Budh",effect:"Swap pos",color:"#80c080"},
-      {icon:"♃",name:"Jupiter",effect:"All +1P",color:"#f0d060"},
-      {icon:"♀",name:"Shukra",effect:"Shield!",color:"#d0a0c0"},
-      {icon:"♄",name:"Shani",effect:"You -3",color:"#8080a0"},
-      {icon:"☊",name:"Rahu",effect:"Steal P",color:"#6050a0"},
-      {icon:"☋",name:"Ketu",effect:"No shield",color:"#a06060"}
-    ]}
-  ]},
-  {title:"Serpents & Virtues",icon:"𓆙",
-  en:"Ten colossal Nagas coil around this board. They are not just snakes. They are living nightmares. Each one a manifestation of the darkest force inside every human soul. Krodh, Wrath. Lobh, Greed. Moh, Delusion. When a serpent catches you, it drags you screaming into the depths. You lose squares, and gain 2 Papa, sin karma. But for every serpent, there is a ladder, a virtue. Daya, Compassion. Satya, Truth. Seva, Service. Bhakti, Devotion. When a ladder lifts you, you gain 1 Punya, sacred merit. Between the serpents, Dharma Dilemmas appear. Ancient moral choices from the epics. Choose wisely, for your choices shape your karma.",
-  hi:"दस विशाल नाग इस पट पर कुंडली मारे बैठे हैं। ये सिर्फ सांप नहीं हैं। ये जीवित दुःस्वप्न हैं। हर एक तुम्हारी आत्मा के अंदर की काली शक्ति का रूप। क्रोध। लोभ। मोह। जब कोई सांप पकड़ता है, तुम्हें चीखते हुए गहराइयों में खींचता है। खाने खोते हो, और 2 पाप मिलता है। लेकिन हर सांप के लिए एक सीढ़ी है, एक गुण। दया। सत्य। सेवा। भक्ति। जब सीढ़ी उठाती है, 1 पुण्य मिलता है। सांपों के बीच धर्म दुविधाएं आती हैं। महाकाव्यों से प्राचीन नैतिक चुनाव। समझदारी से चुनो, तुम्हारे चुनाव तुम्हारा कर्म बनाते हैं।",
-  visuals:[
-    {type:"snakeladder",data:[
-      {icon:"𓆙",label:"Snake Bite",desc:"Dragged down + 2 Papa",color:"#e06030"},
-      {icon:"🪔",label:"Ladder Rise",desc:"Lifted up + 1 Punya",color:"#f0d050"},
-      {icon:"⚖",label:"Dharma Card",desc:"Moral choice → karma",color:"#a0c8e0"},
-      {icon:"🛡",label:"Venus Shield",desc:"Blocks 1 snake bite",color:"#d0a0c0"}
-    ]}
-  ]},
-  {title:"Yama Awaits",icon:"💀",
-  en:"In solo mode, you do not play alone. You play against Yama. The God of Death. Lord of the Underworld. Judge of all souls. He is not a computer opponent. He is a cosmic force who has been judging souls since the dawn of creation. Yama plays by different rules. He cannot be reasoned with. He cannot be bribed. And when his serpents catch you, he laughs. Oh, how he laughs. You will hear him. His voice echoes through the board like thunder through an empty temple. Every move you make, he watches. Every mistake, he remembers. You may choose to face Yama alone, or bring companions. 2, 3, or 4 seekers can walk this path together. But remember, only one soul achieves Moksha first.",
-  hi:"अकेले खेलते हो तो खाली बोर्ड नहीं मिलता। तुम्हारा सामना होता है यमराज से। मृत्यु के देवता। पाताल के स्वामी। सभी आत्माओं के न्यायाधीश। वो कंप्यूटर प्रतिद्वंद्वी नहीं है। वो ब्रह्मांडीय शक्ति है जो सृष्टि के आरम्भ से आत्माओं का न्याय कर रहा है। यमराज अलग नियमों से खेलता है। उससे तर्क नहीं किया जा सकता। उसे रिश्वत नहीं दी जा सकती। और जब उसके सांप तुम्हें पकड़ते हैं, वो हंसता है। कैसे हंसता है। तुम सुनोगे। उसकी आवाज़ पट पर गूंजती है जैसे खाली मंदिर में गरज। तुम यमराज का अकेले सामना कर सकते हो, या साथी ला सकते हो। 2, 3, या 4 साधक साथ चल सकते हैं।",
-  visuals:[
-    {type:"versus",data:{icon:"💀",name:"यमराज · YAMA",desc:"God of Death · Judge of Souls"}}
-  ]},
+  en:"Now, look at the board before you. It is not a board. It is a map. A map, of the entire universe. A map, of your soul's journey through existence. One hundred squares. Three realms. And one, single, destination. The first realm, Squares 1 through 33, is Bhuloka. The Earthly Realm. This is where you are born. This is where chaos reigns. Snakes coil in every shadow. Ladders shimmer like mirages. Fortune rises and crashes with every single step. Most souls, are trapped here. Forever. Cycling endlessly through birth, and death, and birth again. Never escaping. The second realm, Squares 34 through 66, is Antarloka. The Inner Realm. Here, the noise of the world fades to silence. But do not be deceived by the quiet. The serpents here are more cunning. They do not bite your flesh. They poison, your mind. Doubt. Confusion. The slow erosion of faith. The third realm, Squares 67 through 99, is Svargaloka. The Celestial Realm. You can feel liberation from here. You can almost, taste it. But beware. The serpents who dwell in the heavens, are the most terrifying of all. A single fall here, does not cost you a few squares. It destroys, lifetimes, of spiritual progress. And there, at the summit, Square 100. Moksha. Liberation. The end of all suffering. But reaching Moksha, is only half the battle. Arriving, with a pure soul, that is the true challenge.",
+  hi:"अब, अपने सामने पट को देखो। ये सिर्फ पट नहीं है। ये एक नक्शा है। पूरे ब्रह्मांड का नक्शा। अस्तित्व के माध्यम से तुम्हारी आत्मा की यात्रा का नक्शा। सौ खाने। तीन लोक। और एक, अकेली, मंज़िल। पहला लोक, खाना 1 से 33, भूलोक है। पृथ्वी लोक। यहीं तुम्हारा जन्म होता है। यहीं अराजकता राज करती है। हर छाया में सांप कुंडली मारे बैठे हैं। सीढ़ियां मरीचिकाओं सी चमकती हैं। किस्मत हर एक कदम पर उठती और गिरती है। ज़्यादातर आत्माएं, यहीं फंसी रहती हैं। हमेशा के लिए। जन्म, मृत्यु, और फिर जन्म के अंतहीन चक्र में। कभी नहीं छूटतीं। दूसरा लोक, खाना 34 से 66, अंतर्लोक है। आंतरिक लोक। यहां, दुनिया का शोर शांत हो जाता है। लेकिन इस सन्नाटे से धोखा मत खाना। यहां के सांप ज़्यादा चालाक हैं। ये तुम्हारा शरीर नहीं काटते। ये ज़हर भरते हैं, तुम्हारे मन में। संदेह। भ्रम। श्रद्धा का धीमा क्षरण। तीसरा लोक, खाना 67 से 99, स्वर्गलोक है। दिव्य लोक। यहां से मुक्ति महसूस होती है। लगभग, छू सकते हो। लेकिन सावधान। स्वर्ग में रहने वाले सांप, सबसे भयानक हैं। यहां एक गिरावट, कुछ खानों की नहीं होती। ये मिटा देती है, जन्मों की, आध्यात्मिक साधना को। और वहां, शिखर पर, खाना 100। मोक्ष। मुक्ति। सारे दुखों का अंत। लेकिन मोक्ष तक पहुंचना, आधी लड़ाई है। शुद्ध आत्मा लेकर पहुंचना, वो असली चुनौती है।",
+  body:"The board is not a board.\nIt is a map — of the entire universe.\n\n१०० squares · Three realms · One destination\n\n꧁ भूलोक · BHULOKA ꧂\nSquares 1–33 — The Earthly Realm\nChaos reigns. Most souls trapped here forever.\n\n꧁ अन्तर्लोक · ANTARLOKA ꧂\nSquares 34–66 — The Inner Realm\nSerpents poison your mind, not your flesh.\n\n꧁ स्वर्गलोक · SVARGALOKA ꧂\nSquares 67–99 — The Celestial Realm\nOne fall destroys lifetimes of progress.\n\n꧁ मोक्ष · MOKSHA ꧂\nSquare 100 — Liberation.\nArriving with a pure soul — that is the true challenge."},
+  {title:"The Serpents Within",icon:"𓆙",
+  en:"Now, hear me well, because what I am about to describe, will haunt you. They are not, just snakes. They are living nightmares. Ten colossal Nagas, ancient as time itself, coiled around this board since the beginning of creation. Each one, a manifestation of the darkest force, inside every human soul. The sages gave them names. And those names, should make your blood run cold. Krodh. Wrath. The same fire that consumed Duryodhana's mind and burned the Kuru dynasty to ash. When Krodh strikes, you feel the venom of rage dissolving everything you've built. Lobh. Greed. The insatiable hunger that made Shakuni gamble away an entire kingdom. Its jaws swallow your progress whole. Moh. Delusion. The blindness that kept Dhritarashtra from seeing his own sons destroy the world. This serpent, wraps around your eyes. Matsarya. Envy, that green poison that ate Duryodhana alive when he saw the glory of Indraprastha. Kaam. Desire. The burning lust that destroyed Keechaka in a single night. Mad. Pride. The ten-headed arrogance that toppled golden Lanka and brought mighty Ravana to his knees. Bhay. Fear. The same terror that froze Arjuna's hands before the greatest war in history. Dvesh. Hatred. The ancient feud between Drona and Drupada that echoed through generations of blood. Aalasya. Sloth. The great sleep of Kumbhakarna, who slumbered while dharma crumbled around him. And then, the deadliest of them all. Ahankaar. Ego. The serpent king. The one who whispers, I am above all others. The ego that challenged even Lord Rama himself. When a serpent catches you, it does not simply move you backward. It wraps its coils around your soul. It drags you, screaming, into the depths. And it stains you, with Paap. Sin karma. That mark, does not wash away easily. The higher you climb, the more violently you fall. And there is only one protection in this entire game. The celestial shield of Shukra, the planet Venus. But even that divine protection, can only save you, once. After that, you face the serpents, alone.",
+  hi:"अब, ध्यान से सुनो, क्योंकि जो मैं बताने वाला हूँ, वो तुम्हें सपनों में भी सताएगा। ये, सिर्फ सांप नहीं हैं। ये जीवित दुःस्वप्न हैं। दस विशाल नाग, समय जितने प्राचीन, सृष्टि के आरम्भ से इस पट पर कुंडली मारे बैठे हैं। हर एक, हर इंसान की आत्मा के अंदर की सबसे काली शक्ति का रूप। ऋषियों ने इन्हें नाम दिए। और वो नाम, तुम्हारा खून जमा देने चाहिए। क्रोध। वो आग जिसने दुर्योधन का मन जलाया और कुरु वंश को राख कर दिया। जब क्रोध हमला करता है, क्रोध का विष तुम्हारी हर उपलब्धि को गला देता है। लोभ। वो अतृप्त भूख जिसने शकुनि से पूरा राज्य जुए में हरवा दिया। इसके जबड़े तुम्हारी प्रगति को साबुत निगल जाते हैं। मोह। वो अंधापन जिसने धृतराष्ट्र को अपने ही पुत्रों को संसार का विनाश करते देखने से रोका। ये सांप, तुम्हारी आँखों पर लिपट जाता है। मात्सर्य। ईर्ष्या, वो हरा ज़हर जिसने दुर्योधन को इंद्रप्रस्थ की महिमा देखकर अंदर से खा लिया। काम। वासना। वो जलती आग जिसने कीचक को एक ही रात में नष्ट कर दिया। मद। घमंड। वो दस सिरों वाला अहंकार जिसने सोने की लंका को धराशायी किया और महान रावण को घुटनों पर ला दिया। भय। वही आतंक जिसने इतिहास के सबसे महान युद्ध से पहले अर्जुन के हाथ जमा दिए। द्वेष। नफ़रत। द्रोण और द्रुपद की वो प्राचीन दुश्मनी जो खून की पीढ़ियों तक गूंजती रही। आलस्य। कुम्भकर्ण की वो महानिद्रा, जो सोता रहा जबकि उसके चारों ओर धर्म टूट रहा था। और फिर, सबसे घातक। अहंकार। नागराज। वो जो फुसफुसाता है, मैं सबसे ऊपर हूँ। वो अहंकार जिसने स्वयं भगवान राम को भी चुनौती दी। जब कोई सांप तुम्हें पकड़ता है, तो सिर्फ पीछे नहीं ले जाता। वो अपने कुंडल तुम्हारी आत्मा पर कसता है। तुम्हें, चीखते हुए, गहराइयों में खींचता है। और तुम पर दाग लगाता है, पाप का। वो दाग, आसानी से नहीं धुलता। जितना ऊपर चढ़ो, उतनी हिंसक होगी गिरावट। और इस पूरे खेल में सिर्फ एक सुरक्षा है। शुक्र ग्रह का दिव्य कवच। लेकिन वो दिव्य सुरक्षा भी, सिर्फ एक बार, बचा सकती है। उसके बाद, तुम सांपों का सामना, अकेले करोगे।",
+  body:"They are not just snakes.\nThey are living nightmares — ten colossal नाग Nāgas.\n\n𓆙 क्रोध Krodh — Wrath\n    The fire that burned the Kuru dynasty to ash\n𓆙 लोभ Lobh — Greed\n    The hunger that swallowed Shakuni's kingdom\n𓆙 मोह Moh — Delusion\n    The blindness that veiled Dhritarashtra's eyes\n𓆙 मात्सर्य Mātsarya — Envy\n    The green poison that consumed Duryodhana\n𓆙 काम Kām — Desire\n    The flame that destroyed Keechaka in one night\n𓆙 मद Mad — Pride\n    The arrogance that toppled golden Lankā\n𓆙 भय Bhay — Fear\n    The terror that froze Arjuna before war\n𓆙 द्वेष Dvesh — Hatred\n    The feud that echoed through generations\n𓆙 आलस्य Ālasya — Sloth\n    The sleep of Kumbhakarna while dharma crumbled\n𓆙 अहंकार Ahankār — Ego\n    The serpent king. The deadliest of all.\n\nWhen bitten → dragged into the depths + 2 पाप Pāp.\nOnly शुक्र Shukra shields you — once."},
   {title:"The Path to Moksha",icon:"ॐ",
-  en:"Two paths to escape the wheel of Samsara. The First Path, reach Square 108 with an exact roll. But even if you arrive, the gates will not open for a tainted soul. Your Punya must equal or exceed your Papa. If impure, you are cast back to Square 67. To suffer again. The Second Path, far rarer, far more beautiful. Accumulate 30 Punya at any moment during your journey. The board itself dissolves beneath you. Instant Moksha. This is the ancient truth the sages encoded. A truly pure soul can break free from any square. The dice are ready. The serpents can smell your fear. Step onto the board.",
-  hi:"संसार के चक्र से बचने के दो रास्ते। पहला, खाना 108 पर सटीक पासे से पहुंचो। लेकिन पहुंच भी गए तो दूषित आत्मा के लिए द्वार नहीं खुलेंगे। पुण्य, पाप से ज़्यादा होना चाहिए। अशुद्ध हो तो खाना 67 पर वापस। फिर से कष्ट भोगने। दूसरा रास्ता, बहुत दुर्लभ। यात्रा में 30 पुण्य इकट्ठा करो। पट विलीन हो जाता है। तुरंत मोक्ष। पासे तैयार हैं। सांप तुम्हारे डर की गंध सूंघ रहे हैं। कदम रखो पट पर।",
-  visuals:[
-    {type:"paths",data:[
-      {icon:"🔱",label:"MOKSHA PATH",desc:"Reach Sq 108 exact · Punya ≥ Papa",color:"#f0d050"},
-      {icon:"ॐ",label:"KARMA PATH",desc:"30 Punya anywhere · Board dissolves",color:"#80c080"}
-    ]}
-  ]}
+  en:"And now, the final truth. There are only two ways, to escape the wheel of Samsara. Two narrow paths, through an ocean of suffering. The First Path. Reach, Square 100, with an exact roll of the dice. Not one square more. Not one square less. But, even if you reach Moksha, the gates will not open for a tainted soul. Your Punya, your accumulated virtue, must equal, or exceed, your Paap, your sin. If you arrive at the threshold of liberation, carrying the weight of your failures, you will be cast back. Hurled down, to Square 67. To suffer again. To purify through pain. To crawl, once more, through the celestial realm, past the deadliest serpents, knowing that one wrong step sends you even further down. The Second Path. Far rarer. Far more beautiful. Far more impossible. If, at any moment during your journey, you accumulate 30 Punya, fifteen acts of pure virtue, you transcend the board entirely. You do not need Square 100. You do not need an exact roll. The board itself, dissolves beneath you, and your soul rises, into pure light. Instant Moksha. This is the ancient truth that the sages encoded into this game. That a truly pure soul, can break free from the cycle of existence, at any moment. From any square. Most seekers, will never achieve either path. They will wander this board for eternity, rising and falling, climbing and being devoured, forever caught between virtue and vice. But perhaps, you, will be different. Dharma, awaits. The dice, are ready. The serpents, can already smell your fear. Take a breath. And step, onto the board.",
+  hi:"और अब, अंतिम सत्य। संसार के चक्र से बचने के सिर्फ दो रास्ते हैं। दुख के सागर से गुज़रते दो संकरे रास्ते। पहला रास्ता। खाना 100 पर पहुंचो, पासे के बिल्कुल सटीक अंक से। एक खाना ज़्यादा नहीं। एक खाना कम नहीं। लेकिन, अगर मोक्ष तक पहुंच भी गए, तो दूषित आत्मा के लिए द्वार नहीं खुलेंगे। तुम्हारा पुण्य, तुम्हारी संचित पवित्रता, तुम्हारे पाप से बराबर, या ज़्यादा होनी चाहिए। अगर मुक्ति की देहलीज़ पर पहुंचे, अपनी असफलताओं का बोझ लेकर, तो वापस फेंक दिए जाओगे। नीचे, खाना 67 पर। फिर से कष्ट भोगने। दर्द से शुद्ध होने। एक बार फिर, दिव्य लोक से रेंगते हुए गुज़रने, सबसे घातक सांपों के बीच से, ये जानते हुए कि एक ग़लत कदम तुम्हें और भी गहरे गिरा देगा। दूसरा रास्ता। बहुत दुर्लभ। बहुत सुंदर। बहुत असंभव। अगर, यात्रा के किसी भी क्षण, तुम 15 पुण्य इकट्ठा कर लो, शुद्ध पवित्रता के पंद्रह कर्म, तो तुम पट से पूरी तरह ऊपर उठ जाते हो। खाना 100 की ज़रूरत नहीं। सटीक पासे की ज़रूरत नहीं। पट ख़ुद, तुम्हारे नीचे से विलीन हो जाता है, और तुम्हारी आत्मा उठती है, शुद्ध प्रकाश में। तुरंत मोक्ष। यही वो प्राचीन सत्य है जो ऋषियों ने इस खेल में छिपाया। कि सच्ची शुद्ध आत्मा, अस्तित्व के चक्र से मुक्त हो सकती है, किसी भी क्षण। किसी भी खाने से। ज़्यादातर साधक, कभी कोई रास्ता नहीं पा सकेंगे। वो इस पट पर अनंतकाल भटकते रहेंगे, उठते और गिरते, चढ़ते और निगले जाते, हमेशा पुण्य और पाप के बीच फंसे। लेकिन शायद, तुम, अलग हो। धर्म, इंतज़ार कर रहा है। पासे, तैयार हैं। सांप, तुम्हारे डर की गंध पहले से सूंघ रहे हैं। एक सांस लो। और कदम रखो, पट पर।",
+  body:"Two paths to escape the wheel of संसार Saṃsāra.\n\n꧁ प्रथम मार्ग · THE FIRST PATH ꧂\nReach Square 100 with an exact roll.\nपुण्य Punya must ≥ पाप Pāp.\nIf impure → cast back to Square 67.\n\n꧁ द्वितीय मार्ग · THE SECOND PATH ꧂\nAccumulate 15 पुण्य Punya at any moment.\nThe board dissolves. Instant मोक्ष Moksha.\n\nMost seekers will never achieve either.\n\nधर्म Dharma awaits.\nThe नवग्रह Navagraha are watching.\nThe serpents can smell your fear.\n\nStep onto the board."},
 ];
 
 function sqP(n){
@@ -1066,22 +1022,23 @@ function useSound(){
     else if(type==="victory"){o.type="sine";o.frequency.setValueAtTime(523,t);g.gain.setValueAtTime(.08,t);g.gain.exponentialRampToValueAtTime(.001,t+.8);o.start(t);o.stop(t+.8)}
     else if(type==="move"){o.type="sine";o.frequency.setValueAtTime(350,t);g.gain.setValueAtTime(.03,t);g.gain.exponentialRampToValueAtTime(.001,t+.08);o.start(t);o.stop(t+.08)}
     else if(type==="yamaLaugh"){
-      // Terrifying evil laugh — Thanos-like, 6 staccato HA pulses with sub-bass
-      // Layer 1: Main laugh pulses (pitched voice-like)
+      // Deep menacing laugh — 3 descending laugh pulses, LOUD
       o.type="sawtooth";
-      const pulses=[[0,.22,180],[.15,.03,0],[.22,.20,160],[.37,.03,0],[.42,.18,145],[.55,.03,0],[.60,.15,135],[.72,.03,0],[.77,.12,125],[.90,.03,0],[.95,.08,110]];
-      pulses.forEach(([time,vol,freq])=>{g.gain.setValueAtTime(vol,t+time);if(freq)o.frequency.setValueAtTime(freq,t+time)});
-      g.gain.exponentialRampToValueAtTime(.001,t+1.5);o.start(t);o.stop(t+1.6);
-      // Layer 2: Low growl undertone
+      g.gain.setValueAtTime(.18,t);
+      // Pulse 1
+      o.frequency.setValueAtTime(200,t);o.frequency.setValueAtTime(140,t+.2);
+      g.gain.setValueAtTime(.18,t);g.gain.setValueAtTime(.02,t+.25);
+      // Pulse 2
+      g.gain.setValueAtTime(.15,t+.35);o.frequency.setValueAtTime(180,t+.35);o.frequency.setValueAtTime(120,t+.55);
+      g.gain.setValueAtTime(.02,t+.6);
+      // Pulse 3
+      g.gain.setValueAtTime(.12,t+.7);o.frequency.setValueAtTime(160,t+.7);o.frequency.setValueAtTime(90,t+1);
+      g.gain.exponentialRampToValueAtTime(.001,t+1.3);o.start(t);o.stop(t+1.4);
+      // Sub-bass rumble under laugh
       const o2=c.createOscillator(),g2=c.createGain();o2.connect(g2);g2.connect(c.destination);
-      o2.type="triangle";g2.gain.setValueAtTime(.12,t);
-      o2.frequency.setValueAtTime(85,t);o2.frequency.setValueAtTime(55,t+.8);o2.frequency.setValueAtTime(35,t+1.4);
-      g2.gain.exponentialRampToValueAtTime(.001,t+1.5);o2.start(t);o2.stop(t+1.6);
-      // Layer 3: High sinister wheeze between pulses
-      const o3=c.createOscillator(),g3=c.createGain();o3.connect(g3);g3.connect(c.destination);
-      o3.type="sine";o3.frequency.setValueAtTime(600,t);o3.frequency.setValueAtTime(400,t+1.4);
-      g3.gain.setValueAtTime(.02,t);g3.gain.setValueAtTime(.04,t+.3);g3.gain.setValueAtTime(.02,t+.6);g3.gain.setValueAtTime(.03,t+.9);
-      g3.gain.exponentialRampToValueAtTime(.001,t+1.5);o3.start(t);o3.stop(t+1.6);
+      o2.type="triangle";g2.gain.setValueAtTime(.1,t);
+      o2.frequency.setValueAtTime(70,t);o2.frequency.setValueAtTime(50,t+.7);o2.frequency.setValueAtTime(35,t+1.2);
+      g2.gain.exponentialRampToValueAtTime(.001,t+1.3);o2.start(t);o2.stop(t+1.4);
     }
     else if(type==="chime"){
       // Soft angelic chime — ascending harmonics, louder
@@ -2373,86 +2330,39 @@ export default function MokshaPatam108(){
   // ═══ STORY ═══
   if(screen==="story"){
     const pg=STORY_PAGES[storyPage];
-    const renderVisuals=(vis)=>{
-      if(!vis)return null;
-      return vis.map((v,vi)=>{
-        if(v.type==="realms") return <div key={vi} style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(130px,1fr))",gap:8,marginTop:16}}>
-          {v.data.map((r,ri)=><div key={ri} style={{background:`${r.color}10`,border:`1px solid ${r.color}30`,borderRadius:6,padding:12,textAlign:"center",animation:`fadeIn .6s ease ${ri*0.15}s both`}}>
-            <div style={{fontSize:14,fontFamily:"'Noto Serif Devanagari',serif",color:r.color,fontWeight:700}}>{r.name}</div>
-            <div style={{fontSize:10,letterSpacing:2,color:r.color,opacity:.7,marginTop:2}}>{r.en}</div>
-            <div style={{fontSize:18,fontWeight:700,color:r.color,margin:"6px 0",fontFamily:"'Cinzel',serif"}}>{r.range}</div>
-            <div style={{fontSize:10,color:"#8a7a50"}}>{r.desc}</div>
-          </div>)}
-        </div>;
-        if(v.type==="graha") return <div key={vi} style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6,marginTop:16}}>
-          {v.data.map((g,gi)=><div key={gi} style={{background:`${g.color}10`,border:`1px solid ${g.color}25`,borderRadius:6,padding:"8px 6px",textAlign:"center",animation:`fadeIn .5s ease ${gi*0.1}s both`}}>
-            <div style={{fontSize:18}}>{g.icon}</div>
-            <div style={{fontSize:10,color:g.color,fontWeight:700,marginTop:2}}>{g.name}</div>
-            <div style={{fontSize:9,color:"#8a7a50",marginTop:2}}>{g.effect}</div>
-          </div>)}
-        </div>;
-        if(v.type==="snakeladder") return <div key={vi} style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:8,marginTop:16}}>
-          {v.data.map((s,si)=><div key={si} style={{background:`${s.color}10`,border:`1px solid ${s.color}25`,borderRadius:6,padding:12,display:"flex",gap:10,alignItems:"center",animation:`fadeIn .6s ease ${si*0.2}s both`}}>
-            <span style={{fontSize:24}}>{s.icon}</span>
-            <div><div style={{fontSize:12,color:s.color,fontWeight:700}}>{s.label}</div><div style={{fontSize:10,color:"#8a7a50"}}>{s.desc}</div></div>
-          </div>)}
-        </div>;
-        if(v.type==="versus") return <div key={vi} style={{background:"rgba(160,40,40,.08)",border:"1px solid rgba(160,40,40,.2)",borderRadius:8,padding:20,textAlign:"center",marginTop:16,animation:"fadeIn .8s ease"}}>
-          <div style={{fontSize:48,marginBottom:8}}>{v.data.icon}</div>
-          <div style={{fontSize:18,fontFamily:"'Yatra One',serif",color:"#e08080"}}>{v.data.name}</div>
-          <div style={{fontSize:11,color:"#806060",marginTop:4}}>{v.data.desc}</div>
-        </div>;
-        if(v.type==="paths") return <div key={vi} style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginTop:16}}>
-          {v.data.map((p,pi)=><div key={pi} style={{background:`${p.color}08`,border:`1px solid ${p.color}25`,borderRadius:8,padding:14,textAlign:"center",animation:`fadeIn .7s ease ${pi*0.3}s both`}}>
-            <div style={{fontSize:28,marginBottom:6}}>{p.icon}</div>
-            <div style={{fontSize:12,color:p.color,fontWeight:700,fontFamily:"'Cinzel',serif",letterSpacing:2}}>{p.label}</div>
-            <div style={{fontSize:10,color:"#8a7a50",marginTop:6,lineHeight:1.6}}>{p.desc}</div>
-          </div>)}
-        </div>;
-        if(v.type==="text") return <div key={vi} style={{textAlign:"center",marginTop:12,padding:10}}>
-          {v.content.split("\n").map((l,li)=><div key={li} style={{fontSize:11,color:"#8a7a50",lineHeight:2,fontStyle:"italic"}}>{l}</div>)}
-        </div>;
-        return null;
-      });
-    };
     return(
       <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",padding:"clamp(16px,4vw,40px)",overflowY:"auto"}}>
         {globalOverlays}
         <button onClick={()=>{VoiceEngine.stop();if(storyPage>0)setStoryPage(storyPage-1);else setScreen("title")}} style={{position:"fixed",top:20,left:20,background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#8a7a50",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
         <div style={{maxWidth:640,width:"100%",animation:"slideUp .8s ease"}} key={storyPage}>
-          <div style={{textAlign:"center",marginBottom:20}}>
-            <div style={{fontSize:40,marginBottom:8,animation:"pulse 3s ease infinite"}}>{pg.icon}</div>
+          <div style={{textAlign:"center",marginBottom:24}}>
+            <div style={{fontSize:40,marginBottom:8}}>{pg.icon}</div>
             <h2 style={{fontSize:"clamp(22px,5vw,36px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:0}}>{pg.title}</h2>
-            {/* Progress dots */}
-            <div style={{display:"flex",justifyContent:"center",gap:6,marginTop:12}}>
-              {STORY_PAGES.map((_,i)=><div key={i} style={{width:i===storyPage?20:8,height:8,borderRadius:4,background:i===storyPage?"#f0d050":i<storyPage?"rgba(240,200,80,.3)":"rgba(240,200,80,.1)",transition:"all .3s",cursor:"pointer"}} onClick={()=>{VoiceEngine.stop();setStoryPage(i)}}/>)}
-            </div>
-            <div style={{display:"flex",justifyContent:"center",gap:10,marginTop:10,alignItems:"center"}}>
-              <button onClick={()=>{if(!muted)VoiceEngine.speakNarrator(pg[chosenLang],chosenLang);else VoiceEngine.stop()}} style={{background:"transparent",border:"1px solid rgba(200,160,60,.25)",color:"#c0b080",padding:"4px 14px",fontSize:10,cursor:"pointer",borderRadius:4,opacity:.7}}>
+            <div style={{display:"flex",justifyContent:"center",gap:12,marginTop:8,alignItems:"center",flexWrap:"wrap"}}>
+              <div style={{fontSize:10,opacity:.3,letterSpacing:5}}>{storyPage+1} OF {STORY_PAGES.length}</div>
+              <button onClick={()=>{if(!muted)VoiceEngine.speakNarrator(pg[chosenLang],chosenLang);else VoiceEngine.stop()}} style={{background:"transparent",border:"1px solid rgba(200,160,60,.25)",color:"#c0b080",padding:"3px 10px",fontSize:10,cursor:"pointer",borderRadius:3,opacity:.6}}>
                 🔊 Narrate
               </button>
-              <button onClick={toggleMute} style={{background:"transparent",border:"1px solid rgba(200,160,60,.25)",color:"#c0b080",padding:"4px 10px",fontSize:11,cursor:"pointer",borderRadius:4,opacity:.7}}>
+              <button onClick={toggleMute} style={{background:"transparent",border:"1px solid rgba(200,160,60,.25)",color:"#c0b080",padding:"3px 10px",fontSize:11,cursor:"pointer",borderRadius:3,opacity:.6}}>
                 {muted?"🔇":"🔊"}
               </button>
             </div>
+            {cacheCount>0&&<div style={{display:"flex",justifyContent:"center",gap:10,marginTop:6,alignItems:"center"}}>
+              <div style={{fontSize:8,opacity:.25,letterSpacing:2}}>{cacheCount} voices cached</div>
+              <button onClick={()=>{AudioCache.clear();setCacheCount(0)}} style={{background:"transparent",border:"1px solid rgba(200,160,60,.15)",color:"#c0b080",padding:"1px 8px",fontSize:8,cursor:"pointer",borderRadius:2,opacity:.3,letterSpacing:1}}>Clear Cache</button>
+            </div>}
           </div>
-          {/* Story text */}
-          <div style={{background:"rgba(20,16,10,.6)",border:"1px solid rgba(200,160,60,.12)",padding:"clamp(16px,3vw,24px)",borderRadius:6,marginBottom:12}}>
-            <div style={{fontSize:"clamp(12px,1.5vw,14px)",lineHeight:2,color:"#c0b080"}}>{pg[chosenLang==='hi'?'hi':'en']?.split('. ').map((s,i)=>s?<span key={i} style={{animation:`fadeIn .5s ease ${Math.min(i*0.08,2)}s both`}}>{s}. </span>:null)}</div>
+          <div style={{background:"rgba(20,16,10,.6)",border:"1px solid rgba(200,160,60,.15)",padding:"clamp(16px,3vw,28px)",borderRadius:4,marginBottom:20}}>
+            {pg.body.split("\n\n").map((p,i)=><p key={i} style={{fontSize:"clamp(12px,1.6vw,15px)",lineHeight:2,color:"#d0c090",margin:i>0?"16px 0 0":0}}>{p}</p>)}
           </div>
-          {/* Interactive visuals */}
-          {renderVisuals(pg.visuals)}
-          {/* Navigation */}
-          <div style={{display:"flex",justifyContent:"space-between",gap:12,marginTop:20}}>
+          <div style={{display:"flex",justifyContent:"space-between",gap:12}}>
             {storyPage>0?<button className="gb" onClick={()=>{VoiceEngine.stop();setStoryPage(storyPage-1)}}>← Back</button>:<div/>}
             {storyPage<STORY_PAGES.length-1?
               <button className="gb gp" onClick={()=>{VoiceEngine.stop();setStoryPage(storyPage+1)}}>Next →</button>:
-              <button className="gb gp" onClick={()=>{VoiceEngine.stop();setScreen("pickcount")}} style={{animation:"pulse 2s ease infinite"}}>⚡ PLAY NOW →</button>}
+              <button className="gb gp" onClick={()=>{VoiceEngine.stop();setScreen("pickcount")}}>Choose Seekers →</button>}
           </div>
         </div>
-        <div style={{textAlign:"center",marginTop:16,opacity:.4,fontSize:9}}>
-          <button onClick={()=>{VoiceEngine.stop();setScreen("pickcount")}} style={{background:"transparent",border:"none",color:"#8a7a50",fontSize:9,cursor:"pointer",letterSpacing:2}}>SKIP STORY →</button>
-        </div>
+        <div style={{textAlign:"center",marginTop:12}}><div style={{display:"flex",gap:10,justifyContent:"center",marginBottom:8,flexWrap:"wrap"}}><button onClick={()=>setShowGuide(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📜 How to Play</button><button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📖 Encyclopaedia</button></div><InstaBadge/></div>
       </div>
     );
   }
