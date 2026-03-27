@@ -158,109 +158,58 @@ const CHARS=[
 /* chosenLang is managed as React state inside the component */
 const STORY_PAGES=[
   {title:"A Forgotten Secret",icon:"🕉",
-  bullets_en:[
-    {icon:"🕰",accent:"#f0d050",title:"5,000 Years Hidden",text:"Before the Mahabharata was written. Before temples were carved in stone. This game existed."},
-    {icon:"🔱",accent:"#c0a8e0",title:"Created by Forgotten Rishis",text:"Ancient sages so old, even the gods have forgotten their names. They called it Moksha Patam — the Board of Liberation."},
-    {icon:"♟",accent:"#80c0b0",title:"Played by Kings & Sages",text:"For millennia, kings played in marble palaces. Sages by firelight. Passed from guru to disciple in whispered secrecy."},
-    {icon:"⚔",accent:"#e08060",title:"Stolen & Stripped",text:"Foreigners came. Stripped every Sanskrit name. Every sacred verse. And renamed it Snakes & Ladders — a children's game."},
-    {icon:"🔥",accent:"#f0d050",title:"Tonight — The Original",text:"The soul of the game is restored. You are about to play it as the ancient rishis intended."},
-  ],
-  bullets_hi:[
-    {icon:"🕰",accent:"#f0d050",title:"पांच हज़ार साल छिपाया गया",text:"महाभारत लिखे जाने से पहले। मंदिरों को तराशे जाने से पहले। यह खेल था।"},
-    {icon:"🔱",accent:"#c0a8e0",title:"भूले हुए ऋषियों द्वारा रचा गया",text:"इतने प्राचीन कि देवताओं को भी नाम याद नहीं। उन्होंने इसे कहा मोक्षपटम — मुक्ति का पट।"},
-    {icon:"♟",accent:"#80c0b0",title:"राजाओं और ऋषियों का खेल",text:"हज़ारों सालों तक महलों और अग्नि की रोशनी में खेला गया। गुरु से शिष्य तक।"},
-    {icon:"⚔",accent:"#e08060",title:"चुराया और बदला गया",text:"विदेशी आए। हर संस्कृत नाम छीन लिया। और नाम दिया सांप सीढ़ी।"},
-    {icon:"🔥",accent:"#f0d050",title:"आज रात — असली खेल",text:"खेल की आत्मा वापस आई। तुम इसे उसी तरह खेलोगे जैसे ऋषियों ने सोचा था।"},
-  ],
   en:"Listen carefully. What I am about to tell you, has been hidden for five thousand years. Before the Mahabharata was written down. Before the first temples were carved into stone. There existed, a game. A game of the soul. Created by unknown rishis, sages so ancient, that even the gods have forgotten their names. They called it, Moksha Patam. The Board, of Liberation. For thousands of years, kings played it in marble palaces. Sages played it by firelight. It was passed from guru to disciple in whispered secrecy. And then, foreigners came. They stole it. Stripped away every sacred name. Every Sanskrit verse. And renamed it. Snakes and Ladders. A children's game. The soul of the game was murdered. Until, this very moment. Tonight, you play the original.",
   hi:"ध्यान से सुनो। जो मैं बताने जा रहा हूँ, वो पांच हज़ार सालों से छिपाया गया है। महाभारत लिखे जाने से पहले। पहले मंदिरों को पत्थर में तराशे जाने से पहले। एक खेल था। आत्मा का खेल। अज्ञात ऋषियों द्वारा रचा गया, इतने प्राचीन कि देवताओं को भी उनके नाम याद नहीं। उन्होंने इसे कहा, मोक्षपटम। मुक्ति का पट। हज़ारों सालों तक राजाओं ने इसे संगमरमर के महलों में खेला। ऋषियों ने अग्नि की रोशनी में खेला। गुरु से शिष्य तक दबी आवाज़ में पहुंचाया गया। फिर विदेशी आए। चुरा लिया। हर पवित्र नाम छीन लिया। और नाम रख दिया सांप सीढ़ी। बच्चों का खेल। खेल की आत्मा की हत्या कर दी। इस एक क्षण तक। आज रात, तुम असली खेल खेलोगे।",
-  visuals:[{type:"animatedBoard",mode:"intro"}]},
+  visuals:[
+    {type:"miniboard"},
+    {type:"text",content:"Not Snakes & Ladders.\nThis is the original ancient game.\nPlayed by kings. Feared by gods."}
+  ]},
   {title:"The Sacred Board",icon:"📜",
-  bullets_en:[
-    {icon:"🗺",accent:"#f0d050",title:"108 Squares · 3 Realms",text:"Not a game board — a map of your soul's journey across three worlds toward liberation."},
-    {icon:"🌍",accent:"#8a6030",title:"भूलोक · Bhuloka (1–33)",text:"The Earthly Realm. Chaos reigns. Most souls are trapped here forever by serpents of vice."},
-    {icon:"🌌",accent:"#6a80a0",title:"अन्तर्लोक · Antarloka (34–66)",text:"The Inner Realm. Cunning serpents poison the mind with doubt, desire, and delusion."},
-    {icon:"✨",accent:"#a080c0",title:"स्वर्गलोक · Svargaloka (67–99)",text:"The Celestial Realm. One single serpent can destroy lifetimes of progress."},
-    {icon:"ॐ",accent:"#f0d050",title:"अष्टांग मार्ग · Sacred Crown (101–108)",text:"The 8-fold Path of Patanjali. Move one step at a time. Each gate demands wisdom."},
-  ],
-  bullets_hi:[
-    {icon:"🗺",accent:"#f0d050",title:"108 खाने · 3 लोक",text:"खेल का पट नहीं — तीन लोकों में तुम्हारी आत्मा की यात्रा का नक्शा।"},
-    {icon:"🌍",accent:"#8a6030",title:"भूलोक (1–33)",text:"पृथ्वी लोक। अराजकता राज करती है। अधिकांश आत्माएं यहाँ सांपों में फंसी रहती हैं।"},
-    {icon:"🌌",accent:"#6a80a0",title:"अन्तर्लोक (34–66)",text:"आंतरिक लोक। चालाक सांप मन में संदेह, इच्छा और भ्रम का विष भरते हैं।"},
-    {icon:"✨",accent:"#a080c0",title:"स्वर्गलोक (67–99)",text:"दिव्य लोक। एक ही सांप जन्मों की साधना मिटा सकता है।"},
-    {icon:"ॐ",accent:"#f0d050",title:"अष्टांग मार्ग (101–108)",text:"पतंजलि का आठ-सूत्री मार्ग। एक-एक कदम चलते हो। हर द्वार ज्ञान मांगता है।"},
-  ],
   en:"Look at the board. It is not a board. It is a map of your soul's journey. 108 squares. Three realms. And one destination. Bhuloka, Squares 1 through 33, the Earthly Realm, where chaos reigns and most souls are trapped forever. Antarloka, Squares 34 through 66, the Inner Realm, where cunning serpents poison your mind with doubt. Svargaloka, Squares 67 through 99, the Celestial Realm, where a single fall destroys lifetimes of progress. And above it all, the Sacred Crown, Squares 101 to 108, the Ashtanga Marga, the eight-fold path of Patanjali. Here you move one step at a time. Each step tests your knowledge of yoga and dharma. Only those who pass all eight gates may attempt Moksha.",
-  hi:"पट को देखो। ये सिर्फ पट नहीं है। ये तुम्हारी आत्मा की यात्रा का नक्शा है। 108 खाने। तीन लोक। और एक मंज़िल। भूलोक, खाना 1 से 33, पृथ्वी लोक, जहाँ अराजकता राज करती है। अंतर्लोक, खाना 34 से 66, आंतरिक लोक, जहाँ चालाक सर्प तुम्हारे मन में संदेह का विष भरते हैं। स्वर्गलोक, खाना 67 से 99, दिव्य लोक, जहाँ एक गिरावट जन्मों की साधना मिटा देती है। और सबसे ऊपर, पवित्र मुकुट, खाना 101 से 108, अष्टांग मार्ग, पतंजलि का आठ-सूत्री मार्ग।",
-  visuals:[{type:"animatedBoard",mode:"realms"}]},
+  hi:"पट को देखो। ये सिर्फ पट नहीं है। ये तुम्हारी आत्मा की यात्रा का नक्शा है। 108 खाने। तीन लोक। और एक मंज़िल। भूलोक, खाना 1 से 33, पृथ्वी लोक, जहाँ अराजकता राज करती है। अंतर्लोक, खाना 34 से 66, आंतरिक लोक, जहाँ चालाक सर्प तुम्हारे मन में संदेह का विष भरते हैं। स्वर्गलोक, खाना 67 से 99, दिव्य लोक, जहाँ एक गिरावट जन्मों की साधना मिटा देती है। और सबसे ऊपर, पवित्र मुकुट, खाना 101 से 108, अष्टांग मार्ग, पतंजलि का आठ-सूत्री मार्ग। यहाँ एक-एक कदम चलते हो। हर कदम तुम्हारे योग और धर्म ज्ञान की परीक्षा लेता है।",
+  visuals:[
+    {type:"realms",data:[
+      {name:"भूलोक",en:"BHULOKA",range:"1–33",desc:"Earthly · Chaos · Snakes lurk",color:"#8a6030",squares:[1,33]},
+      {name:"अन्तर्लोक",en:"ANTARLOKA",range:"34–66",desc:"Inner · Mind poisoned",color:"#6a80a0",squares:[34,66]},
+      {name:"स्वर्गलोक",en:"SVARGALOKA",range:"67–99",desc:"Celestial · Deadly falls",color:"#a080c0",squares:[67,99]},
+      {name:"अष्टांग",en:"SACRED CROWN",range:"101–108",desc:"8-fold path · Riddles",color:"#f0d050",squares:[101,108]}
+    ]},
+    {type:"boardRealms"}
+  ]},
   {title:"Two Sacred Dice",icon:"🎲",
-  bullets_en:[
-    {icon:"🎲",accent:"#f0d050",title:"Karma Die (1–6)",text:"The six-sided die of fate. Roll it and move forward. Familiar. Simple. But only half the story."},
-    {icon:"🌌",accent:"#c0a0e0",title:"Navagraha Die — The 9 Planets",text:"Nine living gods that intervene in your journey. Each planet has cosmic power over your fate."},
-    {icon:"☀",accent:"#f0b840",title:"Blessings",text:"Surya +2 steps · Chandra +1 Punya · Brihaspati blesses all · Shukra grants divine Shield"},
-    {icon:"⚡",accent:"#e08060",title:"Chaos & Curses",text:"Mangal pushes rivals back · Budh swaps positions · Shani sets you back 3 squares"},
-    {icon:"🌑",accent:"#9060a0",title:"Shadow & Fate",text:"Rahu steals Punya from the leader · Ketu strips all shields from every player"},
-  ],
-  bullets_hi:[
-    {icon:"🎲",accent:"#f0d050",title:"कर्म पासा (1–6)",text:"भाग्य का छह-मुखी पासा। फेंको और आगे बढ़ो। परिचित। सरल। लेकिन आधी कहानी।"},
-    {icon:"🌌",accent:"#c0a0e0",title:"नवग्रह पासा — 9 ग्रह",text:"नौ जीवित देवता जो तुम्हारी यात्रा में हस्तक्षेप करते हैं।"},
-    {icon:"☀",accent:"#f0b840",title:"आशीर्वाद",text:"सूर्य +2 कदम · चन्द्र +1 पुण्य · बृहस्पति सबको आशीर्वाद · शुक्र दिव्य कवच"},
-    {icon:"⚡",accent:"#e08060",title:"अराजकता और शाप",text:"मंगल प्रतिद्वंद्वी को पीछे धकेलता · बुध स्थान बदलता · शनि 3 खाने पीछे"},
-    {icon:"🌑",accent:"#9060a0",title:"छाया और भाग्य",text:"राहु नेता का पुण्य चुराता · केतु सबके कवच छीनता"},
-  ],
-  en:"Every turn, you roll not one, but two dice. The first, the Karma Die, a six-sided die that moves you across the board. Simple. Familiar. But the second die, the Navagraha Die, this is what makes this game truly ancient. Nine planets. Nine cosmic forces. Each one, a living god that intervenes in your journey. Surya, the Sun, blazes your path with 2 extra steps. Chandra, the Moon, purifies you with Punya. Mangal, Mars, fills you with battle fury, pushing your rival back 3 squares. Budh, Mercury, swaps your position. Brihaspati, Jupiter, blesses everyone. Shukra, Venus, grants a divine Shield. Shani, Saturn, pushes you back 3 squares. Rahu steals from the leader. Ketu strips all shields.",
-  hi:"हर बारी, तुम एक नहीं, दो पासे फेंकते हो। पहला, कर्म पासा। लेकिन दूसरा, नवग्रह पासा, यही इस खेल को प्राचीन बनाता है। नौ ग्रह। सूर्य 2 अतिरिक्त कदम। चन्द्र पुण्य। मंगल प्रतिद्वंद्वी को पीछे। बुध स्थान बदलता। बृहस्पति सबको। शुक्र कवच। शनि 3 पीछे। राहु चुराता। केतु कवच छीनता।",
-  visuals:[{type:"diceStage"}]},
+  en:"Every turn, you roll not one, but two dice. The first, the Karma Die, a six-sided die that moves you across the board. Simple. Familiar. But the second die, the Navagraha Die, this is what makes this game truly ancient. Nine planets. Nine cosmic forces. Each one, a living god that intervenes in your journey. Surya, the Sun, blazes your path with 2 extra steps. Chandra, the Moon, purifies you with Punya. Mangal, Mars, fills you with battle fury, pushing your rival back 3 squares but staining you with Papa. Budh, Mercury, swaps your position with the nearest seeker. Brihaspati, Jupiter, blesses everyone on the board. Shukra, Venus, grants a divine Shield against the next serpent. Shani, Saturn, the lord of karma, pushes you back 3 squares. Rahu, the Shadow, steals from the leader and gives to the weakest. And Ketu, the Tail, strips all shields from every player.",
+  hi:"हर बारी, तुम एक नहीं, दो पासे फेंकते हो। पहला, कर्म पासा, छह-मुखी पासा जो तुम्हें पट पर चलाता है। सरल। परिचित। लेकिन दूसरा, नवग्रह पासा, यही इस खेल को प्राचीन बनाता है। नौ ग्रह। नौ ब्रह्मांडीय शक्तियां। हर एक जीवित देवता जो तुम्हारी यात्रा में हस्तक्षेप करता है। सूर्य 2 अतिरिक्त कदम देता है। चन्द्र पुण्य से शुद्ध करता है। मंगल प्रतिद्वंद्वी को 3 खाने पीछे धकेलता है। बुध तुम्हारी स्थिति अदला-बदली कर देता है। बृहस्पति सबको आशीर्वाद देता है। शुक्र दिव्य कवच देता है। शनि तुम्हें 3 खाने पीछे ले जाता है। राहु नेता से चुराकर कमज़ोर को देता है। और केतु सबके कवच छीन लेता है।",
+  visuals:[
+    {type:"diceDemo"},
+    {type:"grahaSlideshow"}
+  ]},
   {title:"Serpents & Virtues",icon:"𓆙",
-  bullets_en:[
-    {icon:"𓆙",accent:"#e06030",title:"10 Living Nightmares",text:"Ten Nagas coil across the board. Each one a manifestation of the darkest force inside the human soul."},
-    {icon:"💀",accent:"#e06030",title:"When a Serpent Catches You",text:"Dragged screaming to a lower square. You gain +2 Papa (sin). The Yama laughs."},
-    {icon:"🪔",accent:"#f0d050",title:"10 Divine Ladders",text:"Ten virtues lift your soul upward. Daya (Compassion). Satya (Truth). Seva (Service). Bhakti (Devotion)."},
-    {icon:"☀",accent:"#80c080",title:"When a Ladder Lifts You",text:"Carried upward to higher ground. You gain +1 Punya (sacred merit)."},
-    {icon:"⚖",accent:"#a0c8e0",title:"Dharma Dilemmas",text:"21 moral crossroads from the Mahabharata and real life. Your choices shape your karma permanently."},
-  ],
-  bullets_hi:[
-    {icon:"𓆙",accent:"#e06030",title:"10 जीवित दुःस्वप्न",text:"दस नाग पट पर कुंडली मारे बैठे हैं। हर एक आत्मा की काली शक्ति का रूप।"},
-    {icon:"💀",accent:"#e06030",title:"जब सांप पकड़े",text:"चीखते हुए नीचे खिंचते हो। +2 पाप मिलता है। यमराज हंसता है।"},
-    {icon:"🪔",accent:"#f0d050",title:"10 दिव्य सीढ़ियां",text:"दस गुण आत्मा को ऊपर उठाते हैं। दया। सत्य। सेवा। भक्ति।"},
-    {icon:"☀",accent:"#80c080",title:"जब सीढ़ी उठाए",text:"ऊपर पहुंचते हो। +1 पुण्य मिलता है।"},
-    {icon:"⚖",accent:"#a0c8e0",title:"धर्म दुविधाएं",text:"महाभारत से 21 नैतिक चुनाव। तुम्हारे निर्णय कर्म बनाते हैं।"},
-  ],
   en:"Ten colossal Nagas coil around this board. They are not just snakes. They are living nightmares. Each one a manifestation of the darkest force inside every human soul. Krodh, Wrath. Lobh, Greed. Moh, Delusion. When a serpent catches you, it drags you screaming into the depths. You lose squares, and gain 2 Papa, sin karma. But for every serpent, there is a ladder, a virtue. Daya, Compassion. Satya, Truth. Seva, Service. Bhakti, Devotion. When a ladder lifts you, you gain 1 Punya, sacred merit. Between the serpents, Dharma Dilemmas appear. Ancient moral choices from the epics. Choose wisely, for your choices shape your karma.",
-  hi:"दस विशाल नाग इस पट पर कुंडली मारे बैठे हैं। ये सिर्फ सांप नहीं हैं। ये जीवित दुःस्वप्न हैं। क्रोध। लोभ। मोह। जब कोई सांप पकड़ता है, 2 पाप मिलता है। लेकिन हर सांप के लिए एक सीढ़ी है। दया। सत्य। सेवा। भक्ति। जब सीढ़ी उठाती है, 1 पुण्य मिलता है।",
-  visuals:[{type:"animatedBoard",mode:"snakeladder"}]},
+  hi:"दस विशाल नाग इस पट पर कुंडली मारे बैठे हैं। ये सिर्फ सांप नहीं हैं। ये जीवित दुःस्वप्न हैं। हर एक तुम्हारी आत्मा के अंदर की काली शक्ति का रूप। क्रोध। लोभ। मोह। जब कोई सांप पकड़ता है, तुम्हें चीखते हुए गहराइयों में खींचता है। खाने खोते हो, और 2 पाप मिलता है। लेकिन हर सांप के लिए एक सीढ़ी है, एक गुण। दया। सत्य। सेवा। भक्ति। जब सीढ़ी उठाती है, 1 पुण्य मिलता है। सांपों के बीच धर्म दुविधाएं आती हैं। महाकाव्यों से प्राचीन नैतिक चुनाव। समझदारी से चुनो, तुम्हारे चुनाव तुम्हारा कर्म बनाते हैं।",
+  visuals:[
+    {type:"snakeladder",data:[
+      {icon:"𓆙",label:"Snake Bite",desc:"Dragged down + 2 Papa",color:"#e06030"},
+      {icon:"🪔",label:"Ladder Rise",desc:"Lifted up + 1 Punya",color:"#f0d050"},
+      {icon:"⚖",label:"Dharma Card",desc:"Moral choice → karma",color:"#a0c8e0"},
+      {icon:"🛡",label:"Venus Shield",desc:"Blocks 1 snake bite",color:"#d0a0c0"}
+    ]},
+    {type:"dharmaDemo"}
+  ]},
   {title:"Yama Awaits",icon:"💀",
-  bullets_en:[
-    {icon:"☠️",accent:"#e06060",title:"Not a Computer — A Cosmic Force",text:"In solo mode, you face Yama. The God of Death. He has judged souls since the dawn of creation."},
-    {icon:"🎲",accent:"#c06060",title:"Yama Plays Different Rules",text:"He favours Papa choices 60% of the time. He cannot be reasoned with. He cannot be bribed."},
-    {icon:"😂",accent:"#e04040",title:"When His Serpents Catch You",text:"He laughs. Oh, how he laughs. His voice echoes like thunder through an empty temple."},
-    {icon:"👥",accent:"#c0b080",title:"Solo or Multiplayer",text:"Face Yama alone. Or bring 2, 3, or 4 seekers. But only one soul achieves Moksha first."},
-  ],
-  bullets_hi:[
-    {icon:"☠️",accent:"#e06060",title:"कंप्यूटर नहीं — ब्रह्मांडीय शक्ति",text:"अकेले खेलो तो यमराज से सामना। मृत्यु के देवता। सृष्टि के आरम्भ से न्याय कर रहे हैं।"},
-    {icon:"🎲",accent:"#c06060",title:"यमराज अलग नियमों से खेलता है",text:"60% बार पाप चुनता है। न तर्क, न रिश्वत।"},
-    {icon:"😂",accent:"#e04040",title:"जब उसके सांप पकड़ें",text:"वो हंसता है। खाली मंदिर में गरज की तरह उसकी आवाज़ गूंजती है।"},
-    {icon:"👥",accent:"#c0b080",title:"अकेले या साथ",text:"अकेले यमराज से लड़ो। या 2, 3, 4 साधक साथ आएं। मोक्ष पहले एक ही पाएगा।"},
-  ],
   en:"In solo mode, you do not play alone. You play against Yama. The God of Death. Lord of the Underworld. Judge of all souls. He is not a computer opponent. He is a cosmic force who has been judging souls since the dawn of creation. Yama plays by different rules. He cannot be reasoned with. He cannot be bribed. And when his serpents catch you, he laughs. Oh, how he laughs. You will hear him. His voice echoes through the board like thunder through an empty temple. Every move you make, he watches. Every mistake, he remembers. You may choose to face Yama alone, or bring companions. 2, 3, or 4 seekers can walk this path together. But remember, only one soul achieves Moksha first.",
-  hi:"अकेले खेलते हो तो यमराज से सामना होता है। मृत्यु के देवता। वो ब्रह्मांडीय शक्ति है। यमराज अलग नियमों से खेलता है। जब उसके सांप तुम्हें पकड़ते हैं, वो हंसता है। उसकी आवाज़ पट पर गूंजती है जैसे खाली मंदिर में गरज। साथी ला सकते हो। लेकिन मोक्ष पहले एक ही पाएगा।",
-  visuals:[{type:"versus",data:{icon:"💀",name:"यमराज · YAMA",desc:"God of Death · Judge of Souls"}}]},
+  hi:"अकेले खेलते हो तो खाली बोर्ड नहीं मिलता। तुम्हारा सामना होता है यमराज से। मृत्यु के देवता। पाताल के स्वामी। सभी आत्माओं के न्यायाधीश। वो कंप्यूटर प्रतिद्वंद्वी नहीं है। वो ब्रह्मांडीय शक्ति है जो सृष्टि के आरम्भ से आत्माओं का न्याय कर रहा है। यमराज अलग नियमों से खेलता है। उससे तर्क नहीं किया जा सकता। उसे रिश्वत नहीं दी जा सकती। और जब उसके सांप तुम्हें पकड़ते हैं, वो हंसता है। कैसे हंसता है। तुम सुनोगे। उसकी आवाज़ पट पर गूंजती है जैसे खाली मंदिर में गरज। तुम यमराज का अकेले सामना कर सकते हो, या साथी ला सकते हो। 2, 3, या 4 साधक साथ चल सकते हैं।",
+  visuals:[
+    {type:"versus",data:{icon:"💀",name:"यमराज · YAMA",desc:"God of Death · Judge of Souls"}}
+  ]},
   {title:"The Path to Moksha",icon:"ॐ",
-  bullets_en:[
-    {icon:"🔱",accent:"#f0d050",title:"Path 1 — Reach Square 108",text:"Roll the exact number to land on 108. But the gate won't open for a tainted soul — Punya must equal or exceed Papa."},
-    {icon:"💔",accent:"#e06030",title:"If Impure",text:"Cast back to Square 67. Back to suffering. The board shows no mercy."},
-    {icon:"ॐ",accent:"#80c080",title:"Path 2 — Karma Victory",text:"Accumulate 30 Punya from any square. The board itself dissolves beneath you. Instant Moksha. The rarest path."},
-    {icon:"🐍",accent:"#c08060",title:"The Dice Are Ready",text:"The serpents can smell your fear. The planets watch your every step. Step onto the board."},
-  ],
-  bullets_hi:[
-    {icon:"🔱",accent:"#f0d050",title:"रास्ता 1 — खाना 108",text:"सटीक पासे से 108 पर पहुंचो। लेकिन अशुद्ध आत्मा के लिए द्वार बंद — पुण्य पाप से ज़्यादा होना चाहिए।"},
-    {icon:"💔",accent:"#e06030",title:"अशुद्ध हो तो",text:"खाना 67 पर वापस। फिर से कष्ट। पट दया नहीं दिखाता।"},
-    {icon:"ॐ",accent:"#80c080",title:"रास्ता 2 — कर्म विजय",text:"कहीं से भी 30 पुण्य इकट्ठा करो। पट विलीन हो जाता है। तुरंत मोक्ष। सबसे दुर्लभ रास्ता।"},
-    {icon:"🐍",accent:"#c08060",title:"पासे तैयार हैं",text:"सांप तुम्हारे डर की गंध सूंघ रहे हैं। कदम रखो पट पर।"},
-  ],
   en:"Two paths to escape the wheel of Samsara. The First Path, reach Square 108 with an exact roll. But even if you arrive, the gates will not open for a tainted soul. Your Punya must equal or exceed your Papa. If impure, you are cast back to Square 67. To suffer again. The Second Path, far rarer, far more beautiful. Accumulate 30 Punya at any moment during your journey. The board itself dissolves beneath you. Instant Moksha. This is the ancient truth the sages encoded. A truly pure soul can break free from any square. The dice are ready. The serpents can smell your fear. Step onto the board.",
-  hi:"संसार के चक्र से बचने के दो रास्ते। पहला, खाना 108 पर सटीक पासे से। लेकिन दूषित आत्मा के लिए द्वार नहीं। पुण्य पाप से ज़्यादा होना चाहिए। अशुद्ध हो तो 67 पर वापस। दूसरा रास्ता, 30 पुण्य। पट विलीन। तुरंत मोक्ष। पासे तैयार हैं। सांप तुम्हारे डर की गंध सूंघ रहे हैं।",
-  visuals:[{type:"animatedBoard",mode:"intro"}]}
+  hi:"संसार के चक्र से बचने के दो रास्ते। पहला, खाना 108 पर सटीक पासे से पहुंचो। लेकिन पहुंच भी गए तो दूषित आत्मा के लिए द्वार नहीं खुलेंगे। पुण्य, पाप से ज़्यादा होना चाहिए। अशुद्ध हो तो खाना 67 पर वापस। फिर से कष्ट भोगने। दूसरा रास्ता, बहुत दुर्लभ। यात्रा में 30 पुण्य इकट्ठा करो। पट विलीन हो जाता है। तुरंत मोक्ष। पासे तैयार हैं। सांप तुम्हारे डर की गंध सूंघ रहे हैं। कदम रखो पट पर।",
+  visuals:[
+    {type:"paths",data:[
+      {icon:"🔱",label:"MOKSHA PATH",desc:"Reach Sq 108 exact · Punya ≥ Papa",color:"#f0d050"},
+      {icon:"ॐ",label:"KARMA PATH",desc:"30 Punya anywhere · Board dissolves",color:"#80c080"}
+    ]}
+  ]}
 ];
 
 function sqP(n){
@@ -554,98 +503,39 @@ function useAmbient(){
 }
 
 /* ═══ VOICEOVER — Puter.js Neural AI → Browser Fallback ═══ */
-/* ═══ AUDIO CACHE — IndexedDB persistent MP3 cache (zero repeat OpenAI charges) ═══ */
+/* ═══ AUDIO CACHE — Preloads all narration, plays instantly ═══ */
 const AudioCache = {
-  cache: {},    // in-memory session cache: key → blob URL
-  loading: {},  // in-flight promises
+  cache: {},
+  loading: {},
 
-  // ── IndexedDB layer ──────────────────────────────────────────
-  _db: null,
-  async _getDB() {
-    if (this._db) return this._db;
-    return new Promise((resolve, reject) => {
-      const req = indexedDB.open('mp108_voice_cache_v1', 1);
-      req.onupgradeneeded = e => {
-        e.target.result.createObjectStore('voices');
-      };
-      req.onsuccess = e => { this._db = e.target.result; resolve(this._db); };
-      req.onerror  = () => reject(req.error);
-    });
-  },
-  async _dbGet(dbKey) {
-    try {
-      const db = await this._getDB();
-      return new Promise(resolve => {
-        const tx  = db.transaction('voices', 'readonly');
-        const req = tx.objectStore('voices').get(dbKey);
-        req.onsuccess = () => resolve(req.result || null);
-        req.onerror   = () => resolve(null);
-      });
-    } catch(e) { return null; }
-  },
-  async _dbSet(dbKey, arrayBuffer) {
-    try {
-      const db = await this._getDB();
-      return new Promise(resolve => {
-        const tx = db.transaction('voices', 'readwrite');
-        tx.objectStore('voices').put(arrayBuffer, dbKey);
-        tx.oncomplete = resolve;
-        tx.onerror    = resolve; // never fail silently
-      });
-    } catch(e) {}
-  },
-  // ─────────────────────────────────────────────────────────────
-
-  _key(text)            { return text.slice(0, 80); },
-  _dbKey(text, lang)    { return `${lang||'en'}::${text.slice(0, 120)}`; },
+  _key(text) { return text.slice(0, 80); },
 
   async fetchTTS(text, lang, voiceOverride, instructionOverride) {
-    const key   = this._key(text);
-    const dbKey = this._dbKey(text, lang);
-
-    // 1. In-memory hit (fastest)
-    if (this.cache[key])   return this.cache[key];
+    const key = this._key(text);
+    if (this.cache[key]) return this.cache[key];
     if (this.loading[key]) return this.loading[key];
 
-    const promise = (async () => {
-      // 2. IndexedDB hit — no OpenAI call, no charge
-      const stored = await this._dbGet(dbKey);
-      if (stored) {
-        const blob = new Blob([stored], { type: 'audio/mpeg' });
-        const url  = URL.createObjectURL(blob);
-        this.cache[key] = url;
-        console.log('[AudioCache] IndexedDB hit:', key.slice(0,40));
-        return url;
-      }
-
-      // 3. Fetch from OpenAI TTS (only on first use, then cached forever)
-      const isHi = lang === 'hi';
-      const resp = await fetch('/api/tts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text,
-          voice: voiceOverride || 'ash',
-          instructions: instructionOverride || (isHi
-            ? 'You are an ancient Indian storyteller narrating in Hindi. Speak slowly, mysteriously, with deep emotion. Pause dramatically between sentences.'
-            : 'You are an ancient Indian sage narrating a sacred epic in English. Speak slowly, with deep gravitas and reverence. Pause dramatically between sentences.')
-        }),
-      });
-      if (!resp.ok) throw new Error('TTS API failed: ' + resp.status);
-
-      const arrayBuffer = await resp.arrayBuffer();
-      // Store in IndexedDB — all future loads are free
-      await this._dbSet(dbKey, arrayBuffer);
-      console.log('[AudioCache] Fetched & cached:', key.slice(0,40));
-
-      const blob = new Blob([arrayBuffer], { type: 'audio/mpeg' });
-      const url  = URL.createObjectURL(blob);
+    const isHi = lang === 'hi';
+    const promise = fetch('/api/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        text,
+        voice: voiceOverride || 'ash',
+        instructions: instructionOverride || (isHi
+          ? 'You are an ancient Indian storyteller narrating in Hindi. Speak slowly, mysteriously, with deep emotion. Pause dramatically between sentences.'
+          : 'You are an ancient Indian sage narrating a sacred epic in English. Speak slowly, with deep gravitas and reverence. Pause dramatically between sentences.')
+      }),
+    }).then(r => {
+      if (!r.ok) throw new Error('TTS failed');
+      return r.blob();
+    }).then(blob => {
+      const url = URL.createObjectURL(blob);
       this.cache[key] = url;
       delete this.loading[key];
       return url;
-    })().catch(e => {
+    }).catch(e => {
       delete this.loading[key];
-      console.warn('[AudioCache] fetchTTS failed:', e.message);
       return null;
     });
 
@@ -654,19 +544,6 @@ const AudioCache = {
   },
 
   get(text) { return this.cache[this._key(text)] || null; },
-
-  // Returns count of entries cached in IndexedDB
-  async countCached() {
-    try {
-      const db = await this._getDB();
-      return new Promise(resolve => {
-        const tx  = db.transaction('voices', 'readonly');
-        const req = tx.objectStore('voices').count();
-        req.onsuccess = () => resolve(req.result);
-        req.onerror   = () => resolve(0);
-      });
-    } catch(e) { return 0; }
-  },
 
   preloadAll(lang) {
     const texts = [];
@@ -1149,383 +1026,6 @@ const VoiceEngine = {
   }
 };
 
-// ═══════════════════════════════════════════════════════════════════════
-// ONBOARDING BOARD — real 10×10 board with animated highlights & SVG paths
-// ═══════════════════════════════════════════════════════════════════════
-function OnboardingBoard({ mode }) {
-  const [animStep, setAnimStep] = useState(0);
-  const [tokenPos, setTokenPos] = useState(1);
-  const [highlightSq, setHighlightSq] = useState(null);
-  const [highlightRealm, setHighlightRealm] = useState(null); // 'bhuloka'|'antarloka'|'svargaloka'|null
-  const [snakeBiting, setSnakeBiting] = useState(false); // snake bite anim
-  const [ladderLifting, setLadderLifting] = useState(false);
-  const timerRef = useRef(null);
-
-  // Board geometry helpers
-  function sqPos(n) {
-    if (n < 1) n = 1; if (n > 100) n = 100;
-    const row = Math.floor((n - 1) / 10);
-    const col = row % 2 === 0 ? (n - 1) % 10 : 9 - ((n - 1) % 10);
-    return { row: 9 - row, col };
-  }
-  function cellXY(n, cellSize) {
-    const { row, col } = sqPos(n);
-    return { x: col * cellSize + cellSize / 2, y: row * cellSize + cellSize / 2 };
-  }
-
-  const CELL = 28; // px per cell
-  const W = 10 * CELL;
-
-  // Snakes: head sq → tail sq
-  const SHEAD = Object.keys(SNAKES).map(Number);
-  // Ladders: foot sq → top sq
-  const LFOOT = Object.keys(LADDERS).map(Number);
-
-  useEffect(() => {
-    clearInterval(timerRef.current);
-
-    if (mode === 'intro') {
-      // Token walks from sq 1 upward with slight pauses at snakes/ladders
-      const path = [1, 3, 9, 12, 18, 22, 28, 31, 38, 42, 44, 53, 61, 65, 71, 82, 85, 89, 95, 97, 99];
-      let i = 0;
-      timerRef.current = setInterval(() => {
-        i = (i + 1) % path.length;
-        setTokenPos(path[i]);
-        setHighlightSq(path[i]);
-      }, 700);
-    }
-
-    if (mode === 'realms') {
-      const realms = ['bhuloka', 'antarloka', 'svargaloka', null];
-      let ri = 0;
-      setHighlightRealm(realms[0]);
-      timerRef.current = setInterval(() => {
-        ri = (ri + 1) % realms.length;
-        setHighlightRealm(realms[ri]);
-      }, 1800);
-    }
-
-    if (mode === 'snakeLadder') {
-      // Sequence: token at ladder foot → climbs → token at snake head → bitten
-      const seq = [
-        () => { setTokenPos(9); setHighlightSq(9); setLadderLifting(false); setSnakeBiting(false); },
-        () => { setLadderLifting(true); setTokenPos(31); setHighlightSq(31); },
-        () => { setLadderLifting(false); setTokenPos(47); setHighlightSq(47); },
-        () => { setSnakeBiting(true); setTokenPos(29); setHighlightSq(29); },
-        () => { setSnakeBiting(false); },
-      ];
-      let si = 0;
-      seq[0]();
-      timerRef.current = setInterval(() => {
-        si = (si + 1) % seq.length;
-        seq[si]();
-      }, 1600);
-    }
-
-    return () => clearInterval(timerRef.current);
-  }, [mode]);
-
-  const realmOf = n => n <= 33 ? 'bhuloka' : n <= 66 ? 'antarloka' : 'svargaloka';
-  const REALM_COLORS = { bhuloka: '#8a6030', antarloka: '#5a80a0', svargaloka: '#9070c0' };
-  const REALM_GLOW   = { bhuloka: 'rgba(138,96,48,.4)', antarloka: 'rgba(90,128,160,.4)', svargaloka: 'rgba(144,112,192,.4)' };
-
-  // Token pixel position
-  const { x: tx, y: ty } = cellXY(tokenPos > 100 ? 100 : tokenPos, CELL);
-
-  return (
-    <div style={{ position: 'relative', width: W, height: W, margin: '0 auto', flexShrink: 0 }}>
-      {/* Board cells */}
-      {Array.from({ length: 100 }, (_, i) => {
-        const n = i + 1;
-        const { row, col } = sqPos(n);
-        const realm = realmOf(n);
-        const rc = REALM_COLORS[realm];
-        const isSnakeHead = SHEAD.includes(n);
-        const isLadderFoot = LFOOT.includes(n);
-        const isHighlightRealm = highlightRealm && realmOf(n) === highlightRealm;
-        const isHighlightSq = highlightSq === n;
-
-        let bg = `${rc}18`;
-        if (isHighlightRealm) bg = `${rc}38`;
-        if (isSnakeHead) bg = 'rgba(200,60,40,.18)';
-        if (isLadderFoot) bg = 'rgba(80,180,80,.15)';
-        if (isHighlightSq) bg = `${rc}60`;
-
-        return (
-          <div key={n} style={{
-            position: 'absolute',
-            left: col * CELL, top: row * CELL,
-            width: CELL, height: CELL,
-            background: bg,
-            border: isHighlightRealm ? `0.5px solid ${rc}60` :
-                    isHighlightSq    ? `1px solid ${rc}` :
-                    isSnakeHead      ? '0.5px solid rgba(200,60,40,.35)' :
-                    isLadderFoot     ? '0.5px solid rgba(80,200,80,.35)' :
-                                       `0.5px solid ${rc}22`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 5, color: `${rc}70`, fontFamily: "'Cinzel',serif",
-            transition: 'background .4s, border-color .4s',
-            boxSizing: 'border-box',
-            boxShadow: isHighlightSq ? `0 0 8px ${REALM_GLOW[realm]}` : 'none',
-          }}>
-            {isSnakeHead ? <span style={{ fontSize: 8, opacity: .7 }}>𓆙</span> :
-             isLadderFoot ? <span style={{ fontSize: 8, opacity: .7 }}>↑</span> : n}
-          </div>
-        );
-      })}
-
-      {/* SVG layer — snakes + ladders */}
-      <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }} viewBox={`0 0 ${W} ${W}`}>
-        <defs>
-          <filter id="obglow-s"><feGaussianBlur stdDeviation="1.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-          <filter id="obglow-l"><feGaussianBlur stdDeviation="1" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-        </defs>
-
-        {/* Ladders */}
-        {Object.entries(LADDERS).map(([from, { to }]) => {
-          const f = cellXY(+from, CELL), t = cellXY(+to, CELL);
-          const isActive = ladderLifting && (+from === 9);
-          return (
-            <g key={'l' + from} opacity={isActive ? 1 : 0.55} filter={isActive ? "url(#obglow-l)" : ""}>
-              <line x1={f.x - 2} y1={f.y} x2={t.x - 2} y2={t.y} stroke={isActive ? "#f0d050" : "rgba(200,160,60,.5)"} strokeWidth={isActive ? 1.5 : 0.8} />
-              <line x1={f.x + 2} y1={f.y} x2={t.x + 2} y2={t.y} stroke={isActive ? "#f0d050" : "rgba(200,160,60,.5)"} strokeWidth={isActive ? 1.5 : 0.8} />
-              {Array.from({ length: Math.max(3, Math.floor(Math.sqrt((t.x - f.x) ** 2 + (t.y - f.y) ** 2) / 8)) }).map((_, i, arr) => {
-                const tt = (i + 1) / (arr.length + 1);
-                return <line key={i} x1={f.x - 2 + (t.x - f.x) * tt} y1={f.y + (t.y - f.y) * tt} x2={f.x + 2 + (t.x - f.x) * tt} y2={f.y + (t.y - f.y) * tt} stroke={isActive ? "rgba(240,200,80,.8)" : "rgba(200,160,60,.3)"} strokeWidth={0.5} />;
-              })}
-            </g>
-          );
-        })}
-
-        {/* Snakes */}
-        {Object.entries(SNAKES).map(([from, { to }]) => {
-          const f = cellXY(+from, CELL), t = cellXY(+to, CELL);
-          const dx = t.x - f.x, dy = t.y - f.y, len = Math.sqrt(dx * dx + dy * dy);
-          const nx = -dy / len, amp = len * 0.14;
-          let d = `M ${f.x} ${f.y}`;
-          for (let i = 1; i <= 6; i++) {
-            const p = i / 6, s = i % 2 === 0 ? 1 : -1;
-            d += ` Q ${f.x + dx * ((i - .5) / 6) + nx * amp * s} ${f.y + dy * ((i - .5) / 6) + (dx / len) * amp * s} ${f.x + dx * p} ${f.y + dy * p}`;
-          }
-          const isActive = snakeBiting && (+from === 47);
-          return (
-            <g key={'s' + from} opacity={isActive ? 1 : 0.45} filter={isActive ? "url(#obglow-s)" : ""}>
-              <path d={d} fill="none" stroke={isActive ? "#ff4020" : "rgba(160,60,30,.6)"} strokeWidth={isActive ? 2 : 1.2} strokeLinecap="round" />
-              <circle cx={f.x} cy={f.y} r={isActive ? 3 : 2} fill={isActive ? "#ff4020" : "rgba(180,60,30,.7)"} />
-            </g>
-          );
-        })}
-
-        {/* Moksha label — square 100 */}
-        {(() => { const { x, y } = cellXY(100, CELL); return <text x={x} y={y + 2} textAnchor="middle" fontSize="8" fill="#f0d050" opacity=".8">ॐ</text>; })()}
-
-        {/* Animated token */}
-        <g transform={`translate(${tx},${ty})`} style={{ transition: 'transform .5s cubic-bezier(.34,1.56,.64,1)' }}>
-          <circle r={7} fill="rgba(240,200,80,.15)" stroke="none">
-            <animate attributeName="r" values="7;9;7" dur="1.5s" repeatCount="indefinite" />
-          </circle>
-          <circle r={5} fill="#f0d050" />
-          <text textAnchor="middle" y={2} fontSize="6" fill="#1a1408">🔱</text>
-        </g>
-
-        {/* Snake bite effect */}
-        {snakeBiting && (() => { const { x, y } = cellXY(47, CELL); return (
-          <g>
-            <circle cx={x} cy={y} r={12} fill="none" stroke="rgba(255,40,20,.5)" strokeWidth={1.5}>
-              <animate attributeName="r" values="8;18;8" dur=".8s" repeatCount="indefinite" />
-              <animate attributeName="opacity" values="1;0;1" dur=".8s" repeatCount="indefinite" />
-            </circle>
-          </g>
-        );})()}
-
-        {/* Ladder lift effect */}
-        {ladderLifting && (() => { const { x, y } = cellXY(9, CELL); return (
-          <g>
-            {[0, 1, 2].map(i => <circle key={i} cx={x + (i - 1) * 4} cy={y - i * 6} r={2} fill="#f0d050" opacity={.7 - i * .2}>
-              <animate attributeName="cy" values={`${y};${y - 14};${y}`} dur=".9s" begin={`${i * 0.2}s`} repeatCount="indefinite" />
-            </circle>)}
-          </g>
-        );})()}
-      </svg>
-
-      {/* Realm label overlay */}
-      {highlightRealm && (
-        <div style={{
-          position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
-          pointerEvents: 'none',
-        }}>
-          <div style={{
-            background: 'rgba(10,8,5,.82)', border: `1px solid ${REALM_COLORS[highlightRealm]}50`,
-            borderRadius: 6, padding: '4px 12px', fontSize: 9, letterSpacing: 3,
-            color: REALM_COLORS[highlightRealm], fontFamily: "'Cinzel',serif",
-            boxShadow: `0 0 20px ${REALM_GLOW[highlightRealm]}`,
-            animation: 'fadeIn .4s ease',
-          }}>
-            {{ bhuloka: '🌍 BHULOKA · 1–33', antarloka: '🌌 ANTARLOKA · 34–66', svargaloka: '✨ SVARGALOKA · 67–99' }[highlightRealm]}
-          </div>
-        </div>
-      )}
-
-      {/* Snake/ladder event labels */}
-      {snakeBiting && (
-        <div style={{ position: 'absolute', bottom: -24, left: 0, right: 0, textAlign: 'center', fontSize: 10, color: '#e06030', animation: 'fadeIn .3s ease', letterSpacing: 2 }}>
-          𓆙 SERPENT BITES · −18 squares · +2 Papa
-        </div>
-      )}
-      {ladderLifting && (
-        <div style={{ position: 'absolute', bottom: -24, left: 0, right: 0, textAlign: 'center', fontSize: 10, color: '#80c080', animation: 'fadeIn .3s ease', letterSpacing: 2 }}>
-          🪔 VIRTUE LIFTS · +22 squares · +1 Punya
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════════
-// DICE STAGE — 3D karma die + orbital graha die with animated effect card
-// ═══════════════════════════════════════════════════════════════════════
-function DiceStage({ GRAHA_INFO, chosenLang }) {
-  const [rolling, setRolling] = useState(false);
-  const [karmaDie, setKarmaDie] = useState(4);
-  const [grahaIdx, setGrahaIdx] = useState(0);
-  const [showEffect, setShowEffect] = useState(false);
-  const autoRef = useRef(null);
-
-  // Auto-cycle gracefully
-  useEffect(() => {
-    autoRef.current = setInterval(() => {
-      handleRoll();
-    }, 3200);
-    return () => clearInterval(autoRef.current);
-  }, []);
-
-  const handleRoll = () => {
-    clearInterval(autoRef.current);
-    setRolling(true);
-    setShowEffect(false);
-    setTimeout(() => {
-      setKarmaDie(Math.floor(Math.random() * 6) + 1);
-      setGrahaIdx(g => (g + 1) % 9);
-      setRolling(false);
-      setTimeout(() => setShowEffect(true), 150);
-    }, 440);
-    autoRef.current = setInterval(handleRoll, 3200);
-  };
-
-  const DIE_DOTS = {
-    1: [[50, 50]],
-    2: [[25, 25], [75, 75]],
-    3: [[25, 25], [50, 50], [75, 75]],
-    4: [[25, 25], [75, 25], [25, 75], [75, 75]],
-    5: [[25, 25], [75, 25], [50, 50], [25, 75], [75, 75]],
-    6: [[25, 22], [75, 22], [25, 50], [75, 50], [25, 78], [75, 78]],
-  };
-
-  const g = GRAHA_INFO[grahaIdx];
-  const typeColor = g.type === 'blessing' ? '#80c080' : g.type === 'curse' ? '#e06030' : '#b0a0d0';
-  const typeBg    = g.type === 'blessing' ? 'rgba(80,200,80,.1)' : g.type === 'curse' ? 'rgba(200,80,40,.1)' : 'rgba(160,120,200,.1)';
-  const typeLabel = g.type === 'blessing' ? '✦ Blessing' : g.type === 'curse' ? '✦ Curse' : '✦ Chaos';
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-      {/* Tap to roll label */}
-      <div style={{ fontSize: 9, letterSpacing: 4, color: '#5a4a30', cursor: 'pointer' }} onClick={handleRoll}>
-        TAP TO ROLL
-      </div>
-
-      {/* Dice row */}
-      <div style={{ display: 'flex', gap: 24, alignItems: 'center', justifyContent: 'center' }}>
-
-        {/* ── KARMA DIE — SVG dot-face die ── */}
-        <div onClick={handleRoll} style={{ cursor: 'pointer', transition: 'transform .2s', transform: rolling ? 'scale(.88) rotate(18deg)' : 'scale(1)' }}>
-          <svg width={68} height={68} viewBox="0 0 100 100" style={{ filter: 'drop-shadow(0 4px 12px rgba(240,200,80,.25))' }}>
-            <defs>
-              <linearGradient id="dieFace" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="rgba(40,32,16,.95)" />
-                <stop offset="100%" stopColor="rgba(24,18,8,.98)" />
-              </linearGradient>
-            </defs>
-            {/* Die body */}
-            <rect x={4} y={4} width={92} height={92} rx={18} fill="url(#dieFace)" stroke="rgba(240,200,80,.35)" strokeWidth={2} />
-            {/* Top shine */}
-            <rect x={10} y={6} width={80} height={18} rx={8} fill="rgba(255,255,255,.04)" />
-            {/* Dots */}
-            {(DIE_DOTS[karmaDie] || []).map(([cx, cy], i) => (
-              <circle key={i} cx={cx} cy={cy} r={7}
-                fill="#f0d050"
-                style={{ filter: 'drop-shadow(0 0 4px rgba(240,200,80,.6))' }}
-              />
-            ))}
-          </svg>
-          <div style={{ textAlign: 'center', fontSize: 9, color: 'rgba(240,200,80,.5)', letterSpacing: 2, marginTop: 4 }}>KARMA</div>
-        </div>
-
-        {/* Plus sign */}
-        <div style={{ fontSize: 20, color: 'rgba(200,160,60,.2)', fontWeight: 700, userSelect: 'none' }}>+</div>
-
-        {/* ── GRAHA DIE — orbital planet ── */}
-        <div onClick={handleRoll} style={{ cursor: 'pointer', transition: 'transform .2s', transform: rolling ? 'scale(.88) rotate(-18deg)' : 'scale(1)' }}>
-          <div style={{
-            width: 68, height: 68,
-            background: `radial-gradient(circle at 35% 35%, ${g.color}30, rgba(10,8,5,.95))`,
-            border: `2px solid ${g.color}50`,
-            borderRadius: 16,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 32,
-            boxShadow: `0 0 20px ${g.color}30, inset 0 0 20px rgba(0,0,0,.4)`,
-            transition: 'all .4s',
-            position: 'relative', overflow: 'hidden',
-          }}>
-            {/* Orbit ring */}
-            <div style={{
-              position: 'absolute', inset: -4,
-              border: `1px solid ${g.color}25`,
-              borderRadius: '50%',
-              animation: 'cymaticRotate 4s linear infinite',
-            }} />
-            <span style={{ position: 'relative', zIndex: 1, transition: 'all .3s', transform: rolling ? 'scale(.5)' : 'scale(1)' }}>{g.icon}</span>
-          </div>
-          <div style={{ textAlign: 'center', fontSize: 9, color: `${g.color}80`, letterSpacing: 2, marginTop: 4 }}>GRAHA</div>
-        </div>
-      </div>
-
-      {/* ── Effect card ── */}
-      <div style={{
-        width: '100%', maxWidth: 300,
-        background: showEffect ? `${g.color}0d` : 'transparent',
-        border: showEffect ? `1px solid ${g.color}35` : '1px solid transparent',
-        borderRadius: 10,
-        padding: showEffect ? '14px 16px' : '0 16px',
-        transition: 'all .5s cubic-bezier(.34,1.56,.64,1)',
-        opacity: showEffect ? 1 : 0,
-        transform: showEffect ? 'translateY(0)' : 'translateY(8px)',
-        textAlign: 'center',
-        boxShadow: showEffect ? `0 0 24px ${g.color}18` : 'none',
-        overflow: 'hidden',
-        maxHeight: showEffect ? 120 : 0,
-      }}>
-        {/* Planet name */}
-        <div style={{ fontSize: 13, fontFamily: "'Noto Serif Devanagari',serif", color: g.color, fontWeight: 700 }}>
-          {g.skt} &nbsp;·&nbsp; <span style={{ fontFamily: "'Cinzel',serif", fontSize: 11 }}>{g.name}</span>
-        </div>
-        {/* Effect text */}
-        <div style={{ fontSize: 11, color: '#c0b080', marginTop: 6, lineHeight: 1.6 }}>{g.effect}</div>
-        {/* Type badge */}
-        <div style={{ marginTop: 8 }}>
-          <span style={{ fontSize: 9, padding: '2px 10px', borderRadius: 10, background: typeBg, color: typeColor, border: `1px solid ${typeColor}35` }}>
-            {typeLabel}
-          </span>
-        </div>
-      </div>
-
-      {/* Karma Die result */}
-      <div style={{ fontSize: 10, color: 'rgba(240,200,80,.4)', letterSpacing: 2, opacity: showEffect ? 1 : 0, transition: 'opacity .5s' }}>
-        Move <strong style={{ color: '#f0d050' }}>{karmaDie}</strong> squares + {g.name.split('—')[0].trim()} effect
-      </div>
-    </div>
-  );
-}
-
 /* Yama Image — put yama.png in /public folder */
 function YamaIcon({size=80}){
   return <div style={{width:size,height:size*1.3,display:"flex",alignItems:"center",justifyContent:"center"}}>
@@ -1665,15 +1165,7 @@ const CSS=`
 @keyframes diceRoll{0%{transform:rotate(0deg) scale(1)}25%{transform:rotate(90deg) scale(1.2)}50%{transform:rotate(180deg) scale(.9)}75%{transform:rotate(270deg) scale(1.1)}100%{transform:rotate(360deg) scale(1)}}
 @keyframes cymaticFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes nagaSlither{0%{d:path('M0,20 Q15,5 30,20 T60,20')}50%{d:path('M0,20 Q15,35 30,20 T60,20')}100%{d:path('M0,20 Q15,5 30,20 T60,20')}}
-@keyframes tokenPop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.2)}100%{transform:scale(1);opacity:1}}
-@keyframes realmGlow{0%,100%{opacity:.18}50%{opacity:.38}}
-@keyframes snakePulse{0%,100%{stroke-width:1.2;opacity:.45}50%{stroke-width:2.2;opacity:1}}
-@keyframes ladderShine{0%,100%{opacity:.55}50%{opacity:1;filter:brightness(1.4)}}
-@keyframes bulletReveal{0%{opacity:0;transform:translateX(-12px)}100%{opacity:1;transform:translateX(0)}}
-@keyframes dieAppear{0%{transform:rotateY(90deg);opacity:0}100%{transform:rotateY(0deg);opacity:1}}
-@keyframes effectSlide{0%{opacity:0;transform:translateY(8px) scale(.95)}100%{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes orbitSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-
+@keyframes ringPulse{0%,100%{r:40;opacity:.06}50%{r:48;opacity:.1}}
 .gb{background:transparent;border:1px solid rgba(200,160,60,.3);color:#e8c850;padding:12px 32px;font-size:14px;font-family:'Cinzel',serif;cursor:pointer;transition:all .4s;letter-spacing:3px;border-radius:2px}
 .gb:hover{background:rgba(200,160,60,.08);border-color:rgba(240,200,80,.6)}
 .gp{background:linear-gradient(180deg,rgba(200,160,60,.2),rgba(200,160,60,.08));border-color:rgba(200,160,60,.5)}
@@ -2890,179 +2382,175 @@ export default function MokshaPatam108(){
     </div>
   );
 
-  // ═══ STORY — redesigned immersive onboarding ═══
+  // ═══ STORY ═══
   if(screen==="story"){
     const pg=STORY_PAGES[storyPage];
-    const isHi=chosenLang==='hi';
-    const bullets=(isHi?pg.bullets_hi:pg.bullets_en)||[];
-    const vis=pg.visuals?.[0];
-
-    // Determine which visual component to render
-    const renderMainVisual=()=>{
-      if(!vis) return null;
-
-      if(vis.type==="animatedBoard") return(
-        <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:32,paddingTop:4}}>
-          <OnboardingBoard mode={vis.mode}/>
-          {/* Legend bar */}
-          <div style={{display:"flex",gap:16,fontSize:9,letterSpacing:2,color:"#5a4a30",flexWrap:"wrap",justifyContent:"center"}}>
-            <span style={{color:"#e06030"}}>𓆙 SERPENTS</span>
-            <span style={{color:"rgba(200,160,60,.3)"}}>·</span>
-            <span style={{color:"#80c080"}}>↑ VIRTUES</span>
-            <span style={{color:"rgba(200,160,60,.3)"}}>·</span>
-            <span style={{color:"#f0d050"}}>ॐ MOKSHA</span>
+    const renderVisuals=(vis)=>{
+      if(!vis)return null;
+      return vis.map((v,vi)=>{
+        // ═══ MINI BOARD PREVIEW — animated 10x10 grid ═══
+        if(v.type==="miniboard") return <div key={vi} style={{marginTop:16,animation:"fadeIn 1s ease"}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(10,1fr)",gap:1,maxWidth:320,margin:"0 auto",background:"rgba(20,16,10,.8)",border:"1px solid rgba(200,160,60,.15)",borderRadius:4,padding:3}}>
+            {Array.from({length:100}).map((_,i)=>{
+              const n=100-i; // top-left=100, bottom-right=1
+              const row=Math.floor(i/10);
+              const isSnake=[98,95,86,74,63,56,47,36,16,8].includes(n);
+              const isLadder=[3,9,22,28,37,44,53,61,71,82].includes(n);
+              const isMoksha=n===100;
+              const bg=isMoksha?"rgba(240,200,80,.25)":isSnake?"rgba(200,60,40,.15)":isLadder?"rgba(80,200,80,.12)":
+                n<=33?"rgba(138,96,48,.06)":n<=66?"rgba(106,128,160,.06)":"rgba(160,128,192,.06)";
+              return <div key={i} style={{aspectRatio:"1",background:bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:5,color:isMoksha?"#f0d050":isSnake?"#e06030":isLadder?"#80c080":"rgba(200,160,60,.2)",borderRadius:1}}>
+                {isMoksha?"ॐ":isSnake?"𓆙":isLadder?"↑":n}
+              </div>
+            })}
           </div>
-        </div>
-      );
-
-      if(vis.type==="diceStage") return(
-        <DiceStage GRAHA_INFO={GRAHA_INFO} chosenLang={chosenLang}/>
-      );
-
-      if(vis.type==="versus") return(
-        <div style={{background:"radial-gradient(ellipse at center,rgba(160,40,40,.12),transparent 70%)",border:"1px solid rgba(160,40,40,.25)",borderRadius:12,padding:"24px 20px",textAlign:"center",animation:"fadeIn .8s ease",position:"relative",overflow:"hidden"}}>
-          <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 50% 0%,rgba(160,30,30,.08),transparent 60%)",pointerEvents:"none"}}/>
-          <div style={{fontSize:56,marginBottom:8,animation:"pulse 3s ease infinite",filter:"drop-shadow(0 0 20px rgba(200,40,40,.5))"}}>{vis.data.icon}</div>
-          <div style={{fontSize:18,fontFamily:"'Yatra One',serif",color:"#e08080",letterSpacing:2}}>{vis.data.name}</div>
-          <div style={{fontSize:11,color:"#806060",marginTop:6,lineHeight:1.8}}>{vis.data.desc}</div>
-          <div style={{display:"flex",justifyContent:"center",gap:10,marginTop:16}}>
-            <div style={{background:"rgba(160,40,40,.1)",border:"1px solid rgba(160,40,40,.2)",borderRadius:8,padding:"8px 16px",fontSize:10,color:"#c08080"}}>☠️ 1 vs Yama</div>
-            <div style={{background:"rgba(200,160,60,.05)",border:"1px solid rgba(200,160,60,.15)",borderRadius:8,padding:"8px 16px",fontSize:10,color:"#c0b080"}}>👥 2–4 Players</div>
+          <div style={{display:"flex",justifyContent:"center",gap:12,marginTop:8,fontSize:9,color:"#8a7a50"}}>
+            <span style={{color:"#e06030"}}>𓆙 Snakes</span>
+            <span style={{color:"#80c080"}}>↑ Ladders</span>
+            <span style={{color:"#f0d050"}}>ॐ Moksha</span>
           </div>
-        </div>
-      );
+        </div>;
 
-      return null;
+        // ═══ BOARD WITH REALM HIGHLIGHTS ═══
+        if(v.type==="boardRealms") return <div key={vi} style={{marginTop:12,animation:"fadeIn 1s ease .3s both"}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(10,1fr)",gap:1,maxWidth:280,margin:"0 auto",borderRadius:4,padding:2}}>
+            {Array.from({length:100}).map((_,i)=>{
+              const n=100-i;
+              const c=n<=33?"#8a6030":n<=66?"#6a80a0":n<=99?"#a080c0":"#f0d050";
+              return <div key={i} style={{aspectRatio:"1",background:`${c}18`,border:`0.5px solid ${c}30`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:5,color:`${c}80`,borderRadius:1}}>{n}</div>
+            })}
+          </div>
+          <div style={{textAlign:"center",marginTop:6,fontSize:9,color:"#8a7a50"}}>+ Sacred Crown (101–108) above the board</div>
+        </div>;
+
+        // ═══ DICE DEMO — animated roll ═══
+        if(v.type==="diceDemo") return <div key={vi} style={{marginTop:16,textAlign:"center",animation:"fadeIn .8s ease"}}>
+          <div style={{fontSize:10,letterSpacing:3,color:"#8a7a50",marginBottom:10}}>TAP TO ROLL</div>
+          <div style={{display:"flex",justifyContent:"center",gap:20,alignItems:"center"}}>
+            <div onClick={()=>{setDiceAnim(true);setTimeout(()=>{setDiceVal(Math.floor(Math.random()*6)+1);setActiveGraha(Math.floor(Math.random()*9));setDiceAnim(false)},400)}} style={{width:56,height:56,background:"rgba(240,200,80,.1)",border:"2px solid rgba(240,200,80,.3)",borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,color:"#f0d050",cursor:"pointer",animation:diceAnim?"diceRoll .4s ease":"none",fontFamily:"'Cinzel',serif",fontWeight:900}}>
+              {diceVal}
+            </div>
+            <div style={{fontSize:16,color:"#5a4a30"}}>+</div>
+            <div onClick={()=>{setDiceAnim(true);setTimeout(()=>{setActiveGraha(Math.floor(Math.random()*9));setDiceAnim(false)},400)}} style={{width:56,height:56,background:`${GRAHA_INFO[activeGraha].color}15`,border:`2px solid ${GRAHA_INFO[activeGraha].color}40`,borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,cursor:"pointer",animation:diceAnim?"diceRoll .4s ease":"none"}}>
+              {GRAHA_INFO[activeGraha].icon}
+            </div>
+          </div>
+          <div style={{display:"flex",justifyContent:"center",gap:16,marginTop:10,fontSize:10}}>
+            <span style={{color:"#f0d050"}}>Karma Die: {diceVal}</span>
+            <span style={{color:GRAHA_INFO[activeGraha].color}}>Graha: {GRAHA_INFO[activeGraha].skt}</span>
+          </div>
+        </div>;
+
+        // ═══ GRAHA SLIDESHOW — auto-cycling planet cards ═══
+        if(v.type==="grahaSlideshow"){const g=GRAHA_INFO[activeGraha]; return <div key={vi} style={{marginTop:16}}>
+          <div style={{background:`${g.color}10`,border:`1.5px solid ${g.color}30`,borderRadius:8,padding:16,textAlign:"center",transition:"all .5s ease",minHeight:100}}>
+            <div style={{fontSize:36,marginBottom:6,transition:"all .3s"}}>{g.icon}</div>
+            <div style={{fontSize:14,fontFamily:"'Noto Serif Devanagari',serif",color:g.color,fontWeight:700}}>{g.skt}</div>
+            <div style={{fontSize:13,color:g.color,fontFamily:"'Cinzel',serif",letterSpacing:1,marginTop:2}}>{g.name}</div>
+            <div style={{fontSize:11,color:"#c0b080",marginTop:8,lineHeight:1.7}}>{g.effect}</div>
+            <div style={{marginTop:8}}><span style={{fontSize:9,padding:"2px 10px",borderRadius:10,background:g.type==="blessing"?"rgba(80,200,80,.1)":g.type==="curse"?"rgba(200,60,60,.1)":"rgba(160,120,200,.1)",color:g.type==="blessing"?"#80c080":g.type==="curse"?"#e08060":"#b0a0d0",border:`1px solid ${g.type==="blessing"?"rgba(80,200,80,.2)":g.type==="curse"?"rgba(200,60,60,.2)":"rgba(160,120,200,.2)"}`}}>{g.type==="blessing"?"✦ Blessing":g.type==="curse"?"✦ Curse":"✦ Chaos"}</span></div>
+          </div>
+          {/* Graha dots */}
+          <div style={{display:"flex",justifyContent:"center",gap:4,marginTop:10}}>
+            {GRAHA_INFO.map((gi,i)=><div key={i} onClick={()=>setActiveGraha(i)} style={{width:i===activeGraha?22:14,height:14,borderRadius:7,background:i===activeGraha?gi.color:`${gi.color}30`,cursor:"pointer",transition:"all .3s",display:"flex",alignItems:"center",justifyContent:"center",fontSize:8}}>{i===activeGraha?gi.icon:""}</div>)}
+          </div>
+        </div>}
+
+        // ═══ REALMS ═══
+        if(v.type==="realms") return <div key={vi} style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(130px,1fr))",gap:8,marginTop:16}}>
+          {v.data.map((r,ri)=><div key={ri} style={{background:`${r.color}10`,border:`1px solid ${r.color}30`,borderRadius:6,padding:12,textAlign:"center",animation:`fadeIn .6s ease ${ri*0.15}s both`}}>
+            <div style={{fontSize:14,fontFamily:"'Noto Serif Devanagari',serif",color:r.color,fontWeight:700}}>{r.name}</div>
+            <div style={{fontSize:10,letterSpacing:2,color:r.color,opacity:.7,marginTop:2}}>{r.en}</div>
+            <div style={{fontSize:18,fontWeight:700,color:r.color,margin:"6px 0",fontFamily:"'Cinzel',serif"}}>{r.range}</div>
+            <div style={{fontSize:10,color:"#8a7a50"}}>{r.desc}</div>
+          </div>)}
+        </div>;
+
+        // ═══ SNAKE/LADDER/DHARMA/SHIELD CARDS ═══
+        if(v.type==="snakeladder") return <div key={vi} style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:8,marginTop:16}}>
+          {v.data.map((s,si)=><div key={si} style={{background:`${s.color}10`,border:`1px solid ${s.color}25`,borderRadius:6,padding:12,display:"flex",gap:10,alignItems:"center",animation:`fadeIn .6s ease ${si*0.2}s both`}}>
+            <span style={{fontSize:24}}>{s.icon}</span>
+            <div><div style={{fontSize:12,color:s.color,fontWeight:700}}>{s.label}</div><div style={{fontSize:10,color:"#8a7a50"}}>{s.desc}</div></div>
+          </div>)}
+        </div>;
+
+        // ═══ DHARMA DEMO — sample dilemma card ═══
+        if(v.type==="dharmaDemo") return <div key={vi} style={{marginTop:16,animation:"fadeIn .8s ease .5s both"}}>
+          <div style={{fontSize:10,letterSpacing:3,color:"#5a4a30",textAlign:"center",marginBottom:8}}>EXAMPLE DHARMA DILEMMA</div>
+          <div style={{background:"rgba(160,200,224,.06)",border:"1px solid rgba(160,200,224,.15)",borderRadius:8,padding:14}}>
+            <div style={{fontSize:13,fontFamily:"'Noto Serif Devanagari',serif",color:"#a0c8e0",fontWeight:700}}>यक्ष-प्रश्न — <span style={{fontFamily:"'Cinzel',serif",fontSize:11}}>The Yaksha's Riddle</span></div>
+            <div style={{fontSize:11,color:"#c0b080",lineHeight:1.7,margin:"8px 0"}}>At a cursed lake, a spirit asks: "What is the greatest wonder?" Answer with humility or seize water by force?</div>
+            <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+              <div style={{flex:1,background:"rgba(80,200,80,.06)",border:"1px solid rgba(80,200,80,.15)",borderRadius:6,padding:8,fontSize:10,color:"#80c080",textAlign:"center"}}>🙏 Answer humbly<br/><span style={{fontSize:9,opacity:.7}}>Skip turn, +3 Punya</span></div>
+              <div style={{flex:1,background:"rgba(200,60,60,.06)",border:"1px solid rgba(200,60,60,.15)",borderRadius:6,padding:8,fontSize:10,color:"#e08060",textAlign:"center"}}>💀 Seize by force<br/><span style={{fontSize:9,opacity:.7}}>+10 squares, +3 Papa</span></div>
+            </div>
+          </div>
+        </div>;
+
+        // ═══ YAMA VERSUS ═══
+        if(v.type==="versus") return <div key={vi} style={{background:"radial-gradient(ellipse at center,rgba(160,40,40,.1),transparent)",border:"1px solid rgba(160,40,40,.2)",borderRadius:8,padding:24,textAlign:"center",marginTop:16,animation:"fadeIn .8s ease"}}>
+          <div style={{fontSize:56,marginBottom:8,animation:"pulse 3s ease infinite"}}>{v.data.icon}</div>
+          <div style={{fontSize:20,fontFamily:"'Yatra One',serif",color:"#e08080"}}>{v.data.name}</div>
+          <div style={{fontSize:11,color:"#806060",marginTop:6,lineHeight:1.7}}>{v.data.desc}</div>
+          <div style={{display:"flex",justifyContent:"center",gap:16,marginTop:14}}>
+            <div style={{background:"rgba(160,40,40,.08)",border:"1px solid rgba(160,40,40,.15)",borderRadius:6,padding:"8px 14px",fontSize:10,color:"#c08080"}}>☠️ 1 vs Yama</div>
+            <div style={{background:"rgba(200,160,60,.06)",border:"1px solid rgba(200,160,60,.15)",borderRadius:6,padding:"8px 14px",fontSize:10,color:"#c0b080"}}>👥 2-4 Players</div>
+          </div>
+        </div>;
+
+        // ═══ MOKSHA PATHS ═══
+        if(v.type==="paths") return <div key={vi} style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginTop:16}}>
+          {v.data.map((p,pi)=><div key={pi} style={{background:`${p.color}08`,border:`1px solid ${p.color}25`,borderRadius:8,padding:14,textAlign:"center",animation:`fadeIn .7s ease ${pi*0.3}s both`}}>
+            <div style={{fontSize:32,marginBottom:6}}>{p.icon}</div>
+            <div style={{fontSize:12,color:p.color,fontWeight:700,fontFamily:"'Cinzel',serif",letterSpacing:2}}>{p.label}</div>
+            <div style={{fontSize:10,color:"#8a7a50",marginTop:8,lineHeight:1.7}}>{p.desc}</div>
+          </div>)}
+        </div>;
+
+        // ═══ TEXT ═══
+        if(v.type==="text") return <div key={vi} style={{textAlign:"center",marginTop:12,padding:10}}>
+          {v.content.split("\n").map((l,li)=><div key={li} style={{fontSize:11,color:"#8a7a50",lineHeight:2,fontStyle:"italic"}}>{l}</div>)}
+        </div>;
+        return null;
+      });
     };
-
     return(
-      <div style={{...PG,minHeight:"100vh",display:"flex",flexDirection:"column",overflowY:"auto"}}>
+      <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",padding:"clamp(16px,4vw,40px)",overflowY:"auto"}}>
         {globalOverlays}
-
-        {/* ── Fixed top bar ── */}
-        <div style={{position:"fixed",top:0,left:0,right:0,height:56,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 16px",background:"linear-gradient(180deg,rgba(12,10,7,.95),rgba(12,10,7,0))",zIndex:20}}>
-          <button onClick={()=>{VoiceEngine.stop();if(storyPage>0)setStoryPage(storyPage-1);else setScreen("title")}}
-            style={{background:"transparent",border:"1px solid rgba(200,160,60,.18)",color:"#8a7a50",padding:"5px 14px",fontSize:10,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1}}>
-            ← Back
-          </button>
-          {/* Progress bar */}
-          <div style={{flex:1,margin:"0 16px",height:3,background:"rgba(200,160,60,.08)",borderRadius:2,position:"relative"}}>
-            <div style={{height:"100%",width:`${((storyPage+1)/STORY_PAGES.length)*100}%`,background:"linear-gradient(90deg,rgba(200,160,60,.4),#f0d050)",borderRadius:2,transition:"width .6s cubic-bezier(.4,0,.2,1)"}}/>
-            {/* Chapter dots */}
-            <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 2px"}}>
-              {STORY_PAGES.map((_,i)=>(
-                <div key={i} onClick={()=>{VoiceEngine.stop();setStoryPage(i)}}
-                  style={{width:i===storyPage?10:6,height:i===storyPage?10:6,borderRadius:"50%",background:i<=storyPage?"#f0d050":"rgba(200,160,60,.15)",cursor:"pointer",transition:"all .3s",border:i===storyPage?"2px solid rgba(240,200,80,.4)":"none",flexShrink:0}}/>
-              ))}
+        <button onClick={()=>{VoiceEngine.stop();if(storyPage>0)setStoryPage(storyPage-1);else setScreen("title")}} style={{position:"fixed",top:20,left:20,background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#8a7a50",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
+        <div style={{maxWidth:640,width:"100%",animation:"slideUp .8s ease"}} key={storyPage}>
+          <div style={{textAlign:"center",marginBottom:20}}>
+            <div style={{fontSize:40,marginBottom:8,animation:"pulse 3s ease infinite"}}>{pg.icon}</div>
+            <h2 style={{fontSize:"clamp(22px,5vw,36px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:0}}>{pg.title}</h2>
+            {/* Progress dots */}
+            <div style={{display:"flex",justifyContent:"center",gap:6,marginTop:12}}>
+              {STORY_PAGES.map((_,i)=><div key={i} style={{width:i===storyPage?20:8,height:8,borderRadius:4,background:i===storyPage?"#f0d050":i<storyPage?"rgba(240,200,80,.3)":"rgba(240,200,80,.1)",transition:"all .3s",cursor:"pointer"}} onClick={()=>{VoiceEngine.stop();setStoryPage(i)}}/>)}
+            </div>
+            <div style={{display:"flex",justifyContent:"center",gap:10,marginTop:10,alignItems:"center"}}>
+              <button onClick={()=>{if(!muted)VoiceEngine.speakNarrator(pg[chosenLang],chosenLang);else VoiceEngine.stop()}} style={{background:"transparent",border:"1px solid rgba(200,160,60,.25)",color:"#c0b080",padding:"4px 14px",fontSize:10,cursor:"pointer",borderRadius:4,opacity:.7}}>
+                🔊 Narrate
+              </button>
+              <button onClick={toggleMute} style={{background:"transparent",border:"1px solid rgba(200,160,60,.25)",color:"#c0b080",padding:"4px 10px",fontSize:11,cursor:"pointer",borderRadius:4,opacity:.7}}>
+                {muted?"🔇":"🔊"}
+              </button>
             </div>
           </div>
-          <div style={{display:"flex",gap:6,alignItems:"center"}}>
-            <button onClick={()=>{if(!muted)VoiceEngine.speakNarrator(pg[chosenLang],chosenLang);else VoiceEngine.stop()}}
-              style={{background:"transparent",border:"1px solid rgba(200,160,60,.18)",color:"#c0b080",padding:"5px 10px",fontSize:13,cursor:"pointer",borderRadius:3,lineHeight:1}}>
-              🔊
-            </button>
-            <button onClick={toggleMute}
-              style={{background:"transparent",border:"1px solid rgba(200,160,60,.18)",color:muted?"#5a4a30":"#c0b080",padding:"5px 10px",fontSize:11,cursor:"pointer",borderRadius:3}}>
-              {muted?"🔇":"🎵"}
-            </button>
+          {/* Story text */}
+          <div style={{background:"rgba(20,16,10,.6)",border:"1px solid rgba(200,160,60,.12)",padding:"clamp(16px,3vw,24px)",borderRadius:6,marginBottom:12}}>
+            <div style={{fontSize:"clamp(12px,1.5vw,14px)",lineHeight:2,color:"#c0b080"}}>{pg[chosenLang==='hi'?'hi':'en']?.split('. ').map((s,i)=>s?<span key={i} style={{animation:`fadeIn .5s ease ${Math.min(i*0.08,2)}s both`}}>{s}. </span>:null)}</div>
+          </div>
+          {/* Interactive visuals */}
+          {renderVisuals(pg.visuals)}
+          {/* Navigation */}
+          <div style={{display:"flex",justifyContent:"space-between",gap:12,marginTop:20}}>
+            {storyPage>0?<button className="gb" onClick={()=>{VoiceEngine.stop();setStoryPage(storyPage-1)}}>← Back</button>:<div/>}
+            {storyPage<STORY_PAGES.length-1?
+              <button className="gb gp" onClick={()=>{VoiceEngine.stop();setStoryPage(storyPage+1)}}>Next →</button>:
+              <button className="gb gp" onClick={()=>{VoiceEngine.stop();setScreen("pickcount")}} style={{animation:"pulse 2s ease infinite"}}>⚡ PLAY NOW →</button>}
           </div>
         </div>
-
-        {/* ── Main content — two-column on wide, stacked on mobile ── */}
-        <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",paddingTop:72,paddingBottom:80,paddingLeft:"clamp(16px,4vw,32px)",paddingRight:"clamp(16px,4vw,32px)"}}>
-          <div style={{width:"100%",maxWidth:700,animation:"slideUp .6s ease"}} key={storyPage}>
-
-            {/* ── Chapter header ── */}
-            <div style={{textAlign:"center",marginBottom:28}}>
-              <div style={{fontSize:"clamp(36px,8vw,52px)",marginBottom:10,animation:"pulse 3s ease infinite",filter:"drop-shadow(0 0 16px rgba(240,200,80,.2))"}}>
-                {pg.icon}
-              </div>
-              <div style={{fontSize:9,letterSpacing:5,color:"#5a4a30",marginBottom:6,fontFamily:"'Cinzel',serif"}}>
-                CHAPTER {storyPage+1} OF {STORY_PAGES.length}
-              </div>
-              <h2 style={{fontSize:"clamp(22px,5vw,34px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:0,textShadow:"0 2px 20px rgba(240,200,80,.2)"}}>
-                {pg.title}
-              </h2>
-              <div style={{width:60,height:1,background:"linear-gradient(90deg,transparent,rgba(240,200,80,.3),transparent)",margin:"14px auto 0"}}/>
-            </div>
-
-            {/* ── Responsive two-panel layout ── */}
-            <div style={{display:"flex",gap:24,alignItems:"flex-start",flexWrap:"wrap"}}>
-
-              {/* LEFT: Bullet list */}
-              <div style={{flex:"1 1 260px",minWidth:0}}>
-                <div style={{display:"flex",flexDirection:"column",gap:10}}>
-                  {bullets.map((b,bi)=>(
-                    <div key={bi} style={{
-                      display:"flex",gap:14,alignItems:"flex-start",
-                      background:"rgba(20,16,10,.55)",
-                      border:`1px solid ${b.accent}22`,
-                      borderLeft:`3px solid ${b.accent}`,
-                      borderRadius:"0 8px 8px 0",
-                      padding:"12px 14px",
-                      animation:`slideUp .5s ease ${bi*0.1}s both`,
-                      transition:"background .2s",
-                    }}
-                    onMouseEnter={e=>e.currentTarget.style.background="rgba(30,22,12,.7)"}
-                    onMouseLeave={e=>e.currentTarget.style.background="rgba(20,16,10,.55)"}
-                    >
-                      {/* Icon bubble */}
-                      <div style={{
-                        width:34,height:34,borderRadius:8,flexShrink:0,
-                        background:`${b.accent}15`,border:`1px solid ${b.accent}30`,
-                        display:"flex",alignItems:"center",justifyContent:"center",
-                        fontSize:16,
-                      }}>
-                        {b.icon}
-                      </div>
-                      {/* Text */}
-                      <div style={{flex:1,minWidth:0}}>
-                        <div style={{fontSize:12,fontWeight:700,color:b.accent,letterSpacing:.5,marginBottom:3,fontFamily:"'Cinzel',serif"}}>
-                          {b.title}
-                        </div>
-                        <div style={{fontSize:11,color:"#a09070",lineHeight:1.7}}>
-                          {b.text}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* RIGHT: Animated visual */}
-              <div style={{flex:"0 0 auto",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",paddingTop:4,minWidth:280}}>
-                {renderMainVisual()}
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        {/* ── Fixed bottom navigation ── */}
-        <div style={{position:"fixed",bottom:0,left:0,right:0,padding:"12px 20px",background:"linear-gradient(0deg,rgba(12,10,7,.98) 60%,rgba(12,10,7,0))",display:"flex",justifyContent:"space-between",alignItems:"center",zIndex:20,gap:12}}>
-          <button onClick={()=>{VoiceEngine.stop();setScreen("pickcount")}}
-            style={{background:"transparent",border:"none",color:"rgba(90,74,48,.5)",fontSize:9,cursor:"pointer",letterSpacing:2,fontFamily:"'Cinzel',serif",flexShrink:0}}>
-            SKIP →
-          </button>
-          <div style={{display:"flex",gap:12,flex:1,justifyContent:"flex-end"}}>
-            {storyPage>0&&(
-              <button className="gb" onClick={()=>{VoiceEngine.stop();setStoryPage(storyPage-1)}}
-                style={{padding:"10px 22px",fontSize:11,letterSpacing:2}}>
-                ← Prev
-              </button>
-            )}
-            {storyPage<STORY_PAGES.length-1?(
-              <button className="gb gp" onClick={()=>{VoiceEngine.stop();setStoryPage(storyPage+1)}}
-                style={{padding:"10px 28px",fontSize:12,letterSpacing:3}}>
-                Next →
-              </button>
-            ):(
-              <button className="gb gp" onClick={()=>{VoiceEngine.stop();setScreen("pickcount")}}
-                style={{padding:"10px 28px",fontSize:12,letterSpacing:3,animation:"pulse 2s ease infinite"}}>
-                ⚡ Play Now
-              </button>
-            )}
-          </div>
+        <div style={{textAlign:"center",marginTop:16,opacity:.4,fontSize:9}}>
+          <button onClick={()=>{VoiceEngine.stop();setScreen("pickcount")}} style={{background:"transparent",border:"none",color:"#8a7a50",fontSize:9,cursor:"pointer",letterSpacing:2}}>SKIP STORY →</button>
         </div>
       </div>
     );
