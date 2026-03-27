@@ -1054,7 +1054,7 @@ const CSS=`
 @keyframes yamaReveal{0%{opacity:0;transform:scale(2);filter:blur(20px)}100%{opacity:1;transform:scale(1);filter:blur(0)}}
 @keyframes yamaTextReveal{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
 @keyframes waveBar{0%,100%{height:8px}50%{height:28px}}
-@keyframes cymaticPulse{0%{transform:scale(.97);opacity:.02}50%{transform:scale(1.03);opacity:.06}100%{transform:scale(.97);opacity:.02}}
+@keyframes cymaticPulse{0%{transform:scale(.95);opacity:.04}50%{transform:scale(1.05);opacity:.12}100%{transform:scale(.95);opacity:.04}}
 @keyframes cymaticRotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
 @keyframes cymaticFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes nagaSlither{0%{d:path('M0,20 Q15,5 30,20 T60,20')}50%{d:path('M0,20 Q15,35 30,20 T60,20')}100%{d:path('M0,20 Q15,5 30,20 T60,20')}}
@@ -1823,30 +1823,30 @@ export default function MokshaPatam108(){
     <style>{CSS}</style>
     {/* ═══ SACRED BACKGROUND — visible on ALL screens ═══ */}
     <div style={{position:"fixed",inset:0,pointerEvents:"none",overflow:"hidden",zIndex:0}}>
-      <div style={{position:"fixed",inset:0,background:"radial-gradient(ellipse at center,transparent 30%,rgba(8,6,3,.88) 100%)"}}/>
-      <svg style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"120%",height:"120%"}} viewBox="0 0 800 800">
-        <circle cx="400" cy="400" r="60" fill="none" stroke="#c0a040" strokeWidth=".5" opacity=".04" style={{animation:"cymaticPulse 3.5s ease infinite"}}/>
-        <circle cx="400" cy="400" r="100" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".05" style={{animation:"cymaticPulse 4s ease infinite .3s"}}/>
-        <circle cx="400" cy="400" r="150" fill="none" stroke="#c0a040" strokeWidth=".35" opacity=".06" style={{animation:"cymaticPulse 5s ease infinite .6s"}}/>
-        <circle cx="400" cy="400" r="210" fill="none" stroke="#c0a040" strokeWidth=".35" opacity=".05" style={{animation:"cymaticPulse 6s ease infinite 1s"}}/>
-        <circle cx="400" cy="400" r="280" fill="none" stroke="#c0a040" strokeWidth=".25" opacity=".04" style={{animation:"cymaticPulse 7s ease infinite 1.4s"}}/>
-        <circle cx="400" cy="400" r="360" fill="none" stroke="#c0a040" strokeWidth=".25" opacity=".03" style={{animation:"cymaticPulse 8s ease infinite 1.8s"}}/>
-        {[0,60,120,180,240,300].map(a=><circle key={"fl"+a} cx={400+60*Math.cos(a*Math.PI/180)} cy={400+60*Math.sin(a*Math.PI/180)} r="60" fill="none" stroke="#c0a040" strokeWidth=".25" opacity=".03" style={{animation:`cymaticPulse ${5+a/100}s ease infinite ${a/400}s`}}/>)}
-        {[0,60,120,180,240,300].map(a=><g key={"n1"+a}><circle cx={400+105*Math.cos(a*Math.PI/180)} cy={400+105*Math.sin(a*Math.PI/180)} r="3" fill="#c0a040" opacity=".06" style={{animation:`cymaticPulse ${3+a/100}s ease infinite ${a/200}s`}}/><line x1={400+95*Math.cos(a*Math.PI/180)} y1={400+95*Math.sin(a*Math.PI/180)} x2={400+115*Math.cos(a*Math.PI/180)} y2={400+115*Math.sin(a*Math.PI/180)} stroke="#c0a040" strokeWidth=".2" opacity=".04"/></g>)}
-        {[0,30,60,90,120,150,180,210,240,270,300,330].map(a=><circle key={"n2"+a} cx={400+220*Math.cos(a*Math.PI/180)} cy={400+220*Math.sin(a*Math.PI/180)} r="2" fill="#c0a040" opacity=".04" style={{animation:`cymaticPulse ${4+a/120}s ease infinite ${a/300}s`}}/>)}
-        <g style={{animation:"cymaticRotate 50s linear infinite"}} opacity=".05">
-          <path d="M300,400 C300,340 350,300 400,300 C450,300 500,340 500,400 C500,460 450,500 400,500 C350,500 300,460 300,400 Z" fill="none" stroke="#c0a040" strokeWidth=".6"/>
-          <path d="M320,400 C320,355 355,320 400,320 C445,320 480,355 480,400 C480,445 445,480 400,480 C355,480 320,445 320,400 Z" fill="none" stroke="#c0a040" strokeWidth=".4"/>
+      <div style={{position:"fixed",inset:0,background:"radial-gradient(ellipse at center,transparent 35%,rgba(8,6,3,.8) 100%)"}}/>
+      <svg style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"120%",height:"120%",opacity:1}} viewBox="0 0 800 800">
+        <circle cx="400" cy="400" r="60" fill="none" stroke="#c0a040" strokeWidth=".6" opacity=".08" style={{animation:"cymaticPulse 3.5s ease infinite"}}/>
+        <circle cx="400" cy="400" r="100" fill="none" stroke="#c0a040" strokeWidth=".5" opacity=".1" style={{animation:"cymaticPulse 4s ease infinite .3s"}}/>
+        <circle cx="400" cy="400" r="150" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".12" style={{animation:"cymaticPulse 5s ease infinite .6s"}}/>
+        <circle cx="400" cy="400" r="210" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".1" style={{animation:"cymaticPulse 6s ease infinite 1s"}}/>
+        <circle cx="400" cy="400" r="280" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".08" style={{animation:"cymaticPulse 7s ease infinite 1.4s"}}/>
+        <circle cx="400" cy="400" r="360" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".06" style={{animation:"cymaticPulse 8s ease infinite 1.8s"}}/>
+        {[0,60,120,180,240,300].map(a=><circle key={"fl"+a} cx={400+60*Math.cos(a*Math.PI/180)} cy={400+60*Math.sin(a*Math.PI/180)} r="60" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".06" style={{animation:`cymaticPulse ${5+a/100}s ease infinite ${a/400}s`}}/>)}
+        {[0,60,120,180,240,300].map(a=><g key={"n1"+a}><circle cx={400+105*Math.cos(a*Math.PI/180)} cy={400+105*Math.sin(a*Math.PI/180)} r="4" fill="#c0a040" opacity=".12" style={{animation:`cymaticPulse ${3+a/100}s ease infinite ${a/200}s`}}/><line x1={400+95*Math.cos(a*Math.PI/180)} y1={400+95*Math.sin(a*Math.PI/180)} x2={400+115*Math.cos(a*Math.PI/180)} y2={400+115*Math.sin(a*Math.PI/180)} stroke="#c0a040" strokeWidth=".3" opacity=".08"/></g>)}
+        {[0,30,60,90,120,150,180,210,240,270,300,330].map(a=><circle key={"n2"+a} cx={400+220*Math.cos(a*Math.PI/180)} cy={400+220*Math.sin(a*Math.PI/180)} r="2.5" fill="#c0a040" opacity=".08" style={{animation:`cymaticPulse ${4+a/120}s ease infinite ${a/300}s`}}/>)}
+        <g style={{animation:"cymaticRotate 50s linear infinite"}} opacity=".1">
+          <path d="M300,400 C300,340 350,300 400,300 C450,300 500,340 500,400 C500,460 450,500 400,500 C350,500 300,460 300,400 Z" fill="none" stroke="#c0a040" strokeWidth=".7"/>
+          <path d="M320,400 C320,355 355,320 400,320 C445,320 480,355 480,400 C480,445 445,480 400,480 C355,480 320,445 320,400 Z" fill="none" stroke="#c0a040" strokeWidth=".5"/>
         </g>
-        <g style={{animation:"cymaticRotate 70s linear infinite reverse"}} opacity=".04">
-          <path d="M230,400 Q315,280 400,400 T570,400" fill="none" stroke="#c0a040" strokeWidth=".4"/>
-          <path d="M230,400 Q315,520 400,400 T570,400" fill="none" stroke="#c0a040" strokeWidth=".4"/>
+        <g style={{animation:"cymaticRotate 70s linear infinite reverse"}} opacity=".08">
+          <path d="M230,400 Q315,280 400,400 T570,400" fill="none" stroke="#c0a040" strokeWidth=".5"/>
+          <path d="M230,400 Q315,520 400,400 T570,400" fill="none" stroke="#c0a040" strokeWidth=".5"/>
         </g>
-        <polygon points="400,290 325,440 475,440" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".03" style={{animation:"cymaticPulse 10s ease infinite"}}/>
-        <polygon points="400,510 325,360 475,360" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".03" style={{animation:"cymaticPulse 10s ease infinite 5s"}}/>
-        <polygon points="400,330 355,420 445,420" fill="none" stroke="#c0a040" strokeWidth=".25" opacity=".02" style={{animation:"cymaticPulse 12s ease infinite 2s"}}/>
-        <polygon points="400,470 355,380 445,380" fill="none" stroke="#c0a040" strokeWidth=".25" opacity=".02" style={{animation:"cymaticPulse 12s ease infinite 7s"}}/>
-        {[0,45,90,135,180,225,270,315].map(a=><line key={"sp"+a} x1={400+70*Math.cos(a*Math.PI/180)} y1={400+70*Math.sin(a*Math.PI/180)} x2={400+350*Math.cos(a*Math.PI/180)} y2={400+350*Math.sin(a*Math.PI/180)} stroke="#c0a040" strokeWidth=".1" opacity=".02"/>)}
+        <polygon points="400,290 325,440 475,440" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".06" style={{animation:"cymaticPulse 10s ease infinite"}}/>
+        <polygon points="400,510 325,360 475,360" fill="none" stroke="#c0a040" strokeWidth=".4" opacity=".06" style={{animation:"cymaticPulse 10s ease infinite 5s"}}/>
+        <polygon points="400,330 355,420 445,420" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".04" style={{animation:"cymaticPulse 12s ease infinite 2s"}}/>
+        <polygon points="400,470 355,380 445,380" fill="none" stroke="#c0a040" strokeWidth=".3" opacity=".04" style={{animation:"cymaticPulse 12s ease infinite 7s"}}/>
+        {[0,45,90,135,180,225,270,315].map(a=><line key={"sp"+a} x1={400+70*Math.cos(a*Math.PI/180)} y1={400+70*Math.sin(a*Math.PI/180)} x2={400+350*Math.cos(a*Math.PI/180)} y2={400+350*Math.sin(a*Math.PI/180)} stroke="#c0a040" strokeWidth=".15" opacity=".04"/>)}
       </svg>
     </div>
     {/* ═══ PROFILE BUTTON — visible on ALL screens (top-right) ═══ */}
