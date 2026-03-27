@@ -779,59 +779,6 @@ const VoiceEngine = {
     }
   },
 
-  // ═══ PLAY YAMA TAUNT — static MP3 from /yama-taunts/ with scary processing ═══
-  async playYamaTaunt(type, lang) {
-    this.stop();
-    const isHi = lang === 'hi';
-    let count, prefix;
-    if (type === 'snake') { count = 8; prefix = 'snake'; }
-    else if (type === 'wrong') { count = 4; prefix = 'wrong'; }
-    else if (type === 'reject') { count = 1; prefix = 'reject'; }
-    else return;
-
-    const idx = type === 'reject' ? '' : '-' + (Math.floor(Math.random() * count) + 1);
-    const file = `/yama-taunts/${prefix}-${isHi ? 'hi' : 'en'}${idx}.mp3`;
-    console.log('Yama taunt:', file);
-
-    try {
-      const resp = await fetch(file);
-      if (!resp.ok) throw new Error('File not found: ' + file);
-      const arrayBuf = await resp.arrayBuffer();
-
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      if (ctx.state === 'suspended') await ctx.resume();
-      this._yamaCtx = ctx;
-
-      const buffer = await ctx.decodeAudioData(arrayBuf);
-
-      // Apply Yama audio processing — pitch down + bass + reverb
-      const source = ctx.createBufferSource();
-      source.buffer = buffer;
-      source.playbackRate.value = 0.88;
-      this._yamaSource = source;
-
-      const bassBoost = ctx.createBiquadFilter();
-      bassBoost.type = 'lowshelf'; bassBoost.frequency.value = 200; bassBoost.gain.value = 8;
-
-      const master = ctx.createGain();
-      master.gain.value = 1.2;
-
-      source.connect(bassBoost);
-      bassBoost.connect(master);
-      master.connect(ctx.destination);
-
-      this.speaking = true;
-      source.onended = () => { this.speaking = false; try{ctx.close()}catch(e){} this._yamaCtx=null; };
-      source.start(0);
-    } catch(e) {
-      console.warn('Yama taunt MP3 not found, falling back to TTS API:', e.message);
-      // Fallback: use TTS API if static files don't exist yet
-      const taunts = type === 'snake' ? YAMA_TAUNTS_SNAKE : type === 'wrong' ? YAMA_TAUNTS_WRONG : ["Ha ha ha ha ha! Rejected! The gates of Moksha slam shut in your face!"];
-      const text = taunts[Math.floor(Math.random() * taunts.length)];
-      this.speak(text, lang);
-    }
-  },
-
   // ═══ NARRATOR VOICE — Vedic temple processing for story onboarding ═══
   async speakNarrator(text, lang) {
     this.stop();
@@ -1675,7 +1622,7 @@ export default function MokshaPatam108(){
             showEvent({icon:"🛡",title:`Shield Saved ${pName}!`,subtitle:`The serpent ${sn.skt} (${sn.en}) struck — but Shukra's shield absorbed the venom! Shield is now gone.`,color:"#d0a0c0"},()=>finishTurn(true));
           }else{const o=p;p=sn.to;eMsg=`𓆙 ${o}→${p}`;nPapa[cur]+=2;gameStats.current.snakes++;play("snake");play("yamaLaugh");
             // Yama taunts the player with voice
-            if(!muted){setTimeout(()=>VoiceEngine.playYamaTaunt("snake",chosenLang),800)}
+            if(!muted){const taunt=YAMA_TAUNTS_SNAKE[Math.floor(Math.random()*YAMA_TAUNTS_SNAKE.length)];setTimeout(()=>VoiceEngine.speakYama(taunt,chosenLang),800)}
             showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} caught you! ${sn.tale} Dragged from ${o} to ${p}. +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`},()=>finishTurn(true));
           }}
           else if(LADDERS[p]){const ld=LADDERS[p];const o=p;p=ld.to;eMsg=`🪔 ${o}→${p}`;nPunya[cur]+=1;gameStats.current.ladders++;play("ladder");
@@ -1726,7 +1673,7 @@ export default function MokshaPatam108(){
           else if(p===108){if(nPunya[cur]>=nPapa[cur]){setWin(cur);eMsg=`ॐ MOKSHA!`;play("victory");
             showEvent({icon:"ॐ",title:"मोक्ष प्राप्त — MOKSHA!",subtitle:`${pName} reached Square 108 — Moksha! Punya (${nPunya[cur]}) ≥ Papa (${nPapa[cur]}). Liberation! The cycle of Samsara ends.`,color:"#f0d050"},finishTurn);
           }else{p=67;eMsg="Impure → 67";play("snake");play("yamaLaugh");
-            if(!muted)setTimeout(()=>VoiceEngine.playYamaTaunt("reject",chosenLang),800);
+            if(!muted)setTimeout(()=>VoiceEngine.speakYama("Rejected! The gates of Moksha slam shut in your face! Your soul reeks of Papa! Back to suffering, mortal! Ha ha ha!",chosenLang),800);
             showEvent({icon:"⚠",title:"Gates of Moksha REJECT You!",subtitle:`${pName}, your soul is impure! Punya (${nPunya[cur]}) < Papa (${nPapa[cur]}). Cast back to 67.`,color:"#e06030"},finishTurn);
           }}
           else{finishTurn()}
@@ -1771,7 +1718,8 @@ export default function MokshaPatam108(){
         play("yamaLaugh");
         if(!muted){
           ambient.duck();
-          setTimeout(()=>VoiceEngine.playYamaTaunt("wrong",chosenLang),300);
+          const wrongTaunt=YAMA_TAUNTS_WRONG[Math.floor(Math.random()*YAMA_TAUNTS_WRONG.length)];
+          setTimeout(()=>VoiceEngine.speakYama(wrongTaunt,chosenLang),300);
           setTimeout(()=>ambient.unduck(),4000);
         }
       }
