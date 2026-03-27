@@ -14,23 +14,6 @@ const SNAKES={16:{to:4,skt:"क्रोध",en:"WRATH",tale:"As Duryodhana's ra
 const LADDERS={3:{to:18,skt:"दया",en:"COMPASSION",tale:"Yudhishthira who wept for his enemies..."},9:{to:31,skt:"दान",en:"GENEROSITY",tale:"Karna gave his armour without hesitation..."},22:{to:42,skt:"सत्य",en:"TRUTH",tale:"Harishchandra sacrificed all for truth..."},28:{to:52,skt:"सेवा",en:"SERVICE",tale:"Hanuman whose devotion moved mountains..."},37:{to:58,skt:"तपस्",en:"AUSTERITY",tale:"Vishwamitra whose tapas shook Indra..."},44:{to:65,skt:"श्रद्धा",en:"FAITH",tale:"Shabari waited a lifetime for Rama..."},53:{to:72,skt:"विद्या",en:"WISDOM",tale:"Vidura whose counsel was dharma itself..."},61:{to:80,skt:"विवेक",en:"DISCERNMENT",tale:"Bhishma on his bed of arrows..."},71:{to:89,skt:"भक्ति",en:"DEVOTION",tale:"Prahlada whose devotion survived fire..."},82:{to:97,skt:"वैराग्य",en:"DETACHMENT",tale:"Siddhartha leaving the palace..."}};
 const DLM_SQ=[5,10,14,19,25,30,35,43,48,55,60,64,69,73,78,83,88,92,94,97,99];
 const SHLOKAS=[{s:"कर्मण्येवाधिकारस्ते मा फलेषु कदाचन",r:"भगवद्गीता २.४७"},{s:"यदा यदा हि धर्मस्य ग्लानिर्भवति भारत",r:"भगवद्गीता ४.७"},{s:"असतो मा सद्गमय तमसो मा ज्योतिर्गमय",r:"बृहदारण्यक उपनिषद्"},{s:"नैनं छिन्दन्ति शस्त्राणि नैनं दहति पावकः",r:"भगवद्गीता २.२३"},{s:"सर्वधर्मान्परित्यज्य मामेकं शरणं व्रज",r:"भगवद्गीता १८.६६"},{s:"अहिंसा परमो धर्मः",r:"महाभारत"}];
-// ═══ YAMA TAUNTS — spoken when snake bites or wrong answers ═══
-const YAMA_TAUNTS_SNAKE=[
-  "Ha ha ha! The serpent devours another soul! Did you think virtue would protect you here? I warned you!",
-  "Delicious! Another mortal falls! The Nagas serve me well. Your karma crumbles!",
-  "You stumble and fall! How predictable. Every soul thinks they are special, until the serpent strikes!",
-  "The serpent's venom flows through you! I can taste your fear from here. Magnificent!",
-  "Down you go! Ha ha! The board shows no mercy. Neither do I!",
-  "Another one bites the dust! Or should I say, the serpent bites the seeker! How poetic!",
-  "That snake was mine, you know. I sent it personally. Consider it, a gift from Death!",
-  "Fall! Fall! Ha ha ha! Your precious Punya means nothing when Naga wraps around your soul!",
-];
-const YAMA_TAUNTS_WRONG=[
-  "Wrong! Your ignorance amuses me! The sacred path demands wisdom you clearly lack!",
-  "Ha! You call yourself a seeker? Even my buffalo knows that answer!",
-  "Foolish mortal! The Rishis weep at your ignorance. Back you go!",
-  "Wrong answer! I love watching seekers stumble on the sacred path. It warms my cold heart!",
-];
 const DILEMMAS=[
   {t:"यक्ष-प्रश्न",en:"The Yaksha's Riddle",
     txt:"At the cursed lake of Dvaitavana, a Yaksha (nature spirit) has killed your four brothers for drinking without answering his riddle. He asks: 'What is the greatest wonder in the world?' Answer with the humility of Yudhishthira — that all men see death around them yet live as though immortal — or shove past this guardian and seize the water by force.",
@@ -441,7 +424,7 @@ function useAmbient(){
       // ═══════════════════════════════════════════════════════════
       const a=new Audio("/ambient.mp3");
       a.loop=true;
-      a.volume=1.0;
+      a.volume=0.25;
       audioRef.current=a;
       a.play().then(()=>{playing.current=true}).catch(()=>{});
     }catch(e){}
@@ -1527,11 +1510,7 @@ export default function MokshaPatam108(){
   const doRoll=useCallback(()=>{
     if(dil||win||busy||players.length===0)return;
     if(skipA[cur]){const ns=[...skipA];ns[cur]=false;setSkipA(ns);setMsg(`${players[cur].name}'s turn is skipped.`);setCur(c=>(c+1)%nP);return}
-    // Kill ALL audio before rolling
-    if(voiceTimerRef.current){clearTimeout(voiceTimerRef.current);voiceTimerRef.current=null}
-    VoiceEngine.stop();
-    try{window.speechSynthesis.cancel()}catch(e){}
-    ambient.duck();
+    VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){}
     setBusy(true);play("dice");
     gameStats.current.turns=(gameStats.current.turns||0)+1;
     const r=Math.floor(Math.random()*6)+1,gi=Math.floor(Math.random()*9),g=GRAHA[gi];
@@ -1621,8 +1600,6 @@ export default function MokshaPatam108(){
           if(SNAKES[p]){const sn=SNAKES[p];if(nShield[cur]){nShield[cur]=false;eMsg=`𓆙 ${sn.skt} — Shield!`;play("ladder");
             showEvent({icon:"🛡",title:`Shield Saved ${pName}!`,subtitle:`The serpent ${sn.skt} (${sn.en}) struck — but Shukra's shield absorbed the venom! Shield is now gone.`,color:"#d0a0c0"},()=>finishTurn(true));
           }else{const o=p;p=sn.to;eMsg=`𓆙 ${o}→${p}`;nPapa[cur]+=2;gameStats.current.snakes++;play("snake");play("yamaLaugh");
-            // Yama taunts the player with voice
-            if(!muted){const taunt=YAMA_TAUNTS_SNAKE[Math.floor(Math.random()*YAMA_TAUNTS_SNAKE.length)];setTimeout(()=>VoiceEngine.speakYama(taunt,chosenLang),800)}
             showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} caught you! ${sn.tale} Dragged from ${o} to ${p}. +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`},()=>finishTurn(true));
           }}
           else if(LADDERS[p]){const ld=LADDERS[p];const o=p;p=ld.to;eMsg=`🪔 ${o}→${p}`;nPunya[cur]+=1;gameStats.current.ladders++;play("ladder");
@@ -1673,7 +1650,6 @@ export default function MokshaPatam108(){
           else if(p===108){if(nPunya[cur]>=nPapa[cur]){setWin(cur);eMsg=`ॐ MOKSHA!`;play("victory");
             showEvent({icon:"ॐ",title:"मोक्ष प्राप्त — MOKSHA!",subtitle:`${pName} reached Square 108 — Moksha! Punya (${nPunya[cur]}) ≥ Papa (${nPapa[cur]}). Liberation! The cycle of Samsara ends.`,color:"#f0d050"},finishTurn);
           }else{p=67;eMsg="Impure → 67";play("snake");play("yamaLaugh");
-            if(!muted)setTimeout(()=>VoiceEngine.speakYama("Rejected! The gates of Moksha slam shut in your face! Your soul reeks of Papa! Back to suffering, mortal! Ha ha ha!",chosenLang),800);
             showEvent({icon:"⚠",title:"Gates of Moksha REJECT You!",subtitle:`${pName}, your soul is impure! Punya (${nPunya[cur]}) < Papa (${nPapa[cur]}). Cast back to 67.`,color:"#e06030"},finishTurn);
           }}
           else{finishTurn()}
@@ -1718,8 +1694,7 @@ export default function MokshaPatam108(){
         play("yamaLaugh");
         if(!muted){
           ambient.duck();
-          const wrongTaunt=YAMA_TAUNTS_WRONG[Math.floor(Math.random()*YAMA_TAUNTS_WRONG.length)];
-          setTimeout(()=>VoiceEngine.speakYama(wrongTaunt,chosenLang),300);
+          setTimeout(()=>VoiceEngine.speak(`Wrong answer! Yama laughs at your ignorance. Back to square ${backTo}.`,chosenLang),300);
           setTimeout(()=>ambient.unduck(),4000);
         }
       }
@@ -2757,11 +2732,6 @@ export default function MokshaPatam108(){
             <div style={{letterSpacing:3,marginBottom:2,fontSize:7,color:"#f0d050",fontWeight:700}}>CHRONICLE</div>
             {hist.map((h,i)=><div key={i} style={{padding:"1px 0"}}>{h}</div>)}
           </div>}
-          {/* Copyright */}
-          <div style={{textAlign:"center",padding:"8px 0 4px"}}>
-            <InstaBadge/>
-            <div style={{fontSize:9,color:"#6a5a38",letterSpacing:1,marginTop:3}}>© {new Date().getFullYear()} RasaVisio · Moksha Patam 108 · All rights reserved</div>
-          </div>
         </div>
       </div>
     </div>
