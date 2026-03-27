@@ -14,67 +14,7 @@ const SNAKES={16:{to:4,skt:"क्रोध",en:"WRATH",tale:"As Duryodhana's ra
 const LADDERS={3:{to:18,skt:"दया",en:"COMPASSION",tale:"Yudhishthira who wept for his enemies..."},9:{to:31,skt:"दान",en:"GENEROSITY",tale:"Karna gave his armour without hesitation..."},22:{to:42,skt:"सत्य",en:"TRUTH",tale:"Harishchandra sacrificed all for truth..."},28:{to:52,skt:"सेवा",en:"SERVICE",tale:"Hanuman whose devotion moved mountains..."},37:{to:58,skt:"तपस्",en:"AUSTERITY",tale:"Vishwamitra whose tapas shook Indra..."},44:{to:65,skt:"श्रद्धा",en:"FAITH",tale:"Shabari waited a lifetime for Rama..."},53:{to:72,skt:"विद्या",en:"WISDOM",tale:"Vidura whose counsel was dharma itself..."},61:{to:80,skt:"विवेक",en:"DISCERNMENT",tale:"Bhishma on his bed of arrows..."},71:{to:89,skt:"भक्ति",en:"DEVOTION",tale:"Prahlada whose devotion survived fire..."},82:{to:97,skt:"वैराग्य",en:"DETACHMENT",tale:"Siddhartha leaving the palace..."}};
 const DLM_SQ=[5,10,14,19,25,30,35,43,48,55,60,64,69,73,78,83,88,92,94,97,99];
 const SHLOKAS=[{s:"कर्मण्येवाधिकारस्ते मा फलेषु कदाचन",r:"भगवद्गीता २.४७"},{s:"यदा यदा हि धर्मस्य ग्लानिर्भवति भारत",r:"भगवद्गीता ४.७"},{s:"असतो मा सद्गमय तमसो मा ज्योतिर्गमय",r:"बृहदारण्यक उपनिषद्"},{s:"नैनं छिन्दन्ति शस्त्राणि नैनं दहति पावकः",r:"भगवद्गीता २.२३"},{s:"सर्वधर्मान्परित्यज्य मामेकं शरणं व्रज",r:"भगवद्गीता १८.६६"},{s:"अहिंसा परमो धर्मः",r:"महाभारत"}];
-// ═══ CHITRAGUPTA — Divine Scribe of Yama, Keeper of the Karma Ledger ═══
-const CHITRAGUPTA_LINES = {
-  // On game start
-  intro_en: "I am Chitragupta. The divine scribe of Yama. Since the first soul drew breath, I have kept the record. Every thought. Every deed. Every whisper of virtue and shadow of vice. Today I open a new page in the Agrasandhani — the book of all karma. Let the game begin. I am watching.",
-  intro_hi: "मैं चित्रगुप्त हूँ। यमराज का दिव्य लेखक। जब से पहली आत्मा ने श्वास लिया, मैं अभिलेख रखता आया हूँ। हर विचार। हर कर्म। पुण्य की हर फुसफुसाहट और पाप की हर छाया। आज मैं अग्रसंधानी में नया पृष्ठ खोलता हूँ — समस्त कर्मों की पुस्तक। खेल आरंभ हो। मैं देख रहा हूँ।",
-
-  // Ladder — punya earned
-  ladder_en: "Noted. One Punya recorded. The virtue of compassion does not go unseen. The ledger grows lighter.",
-  ladder_hi: "दर्ज किया गया। एक पुण्य। करुणा का गुण अनदेखा नहीं जाता। खाता हल्का होता है।",
-
-  // Snake bite — papa earned
-  snake_en: "Recorded. Two Papa. The serpent of vice claims its price. The ledger does not judge — it simply records what is true.",
-  snake_hi: "दर्ज किया गया। दो पाप। दुर्गुण का सांप अपना मूल्य लेता है। खाता न्याय नहीं करता — केवल सत्य लिखता है।",
-
-  // Dharma punya choice
-  dharma_punya_en: "A righteous choice. Punya entered in the sacred ledger. Know that every dharmic act, however costly, is written in gold.",
-  dharma_punya_hi: "धर्मिक चुनाव। पुण्य पवित्र खाते में दर्ज किया गया। जानो कि हर धर्मिक कार्य, चाहे कितना भी कठिन हो, सोने में लिखा जाता है।",
-
-  // Dharma papa choice
-  dharma_papa_en: "Recorded without judgment. Papa entered in the ledger. The book never forgets. But it never condemns either. Only Yama reads the final tally.",
-  dharma_papa_hi: "निर्णय के बिना दर्ज किया गया। पाप खाते में लिखा गया। पुस्तक कभी नहीं भूलती। लेकिन निंदा भी नहीं करती। केवल यमराज अंतिम गणना पढ़ते हैं।",
-
-  // Entering sacred path
-  ashtanga_en: "The Ashtanga Marga. I have been waiting to write this entry. From this point, I watch each step with particular attention. The sacred path is where souls reveal what they truly are.",
-  ashtanga_hi: "अष्टांग मार्ग। मैं इस प्रविष्टि को लिखने की प्रतीक्षा कर रहा था। इस बिंदु से, मैं हर कदम पर विशेष ध्यान देता हूँ। पवित्र मार्ग वह है जहाँ आत्माएं प्रकट करती हैं कि वे वास्तव में क्या हैं।",
-
-  // Karma close to balance
-  balance_en: "I note this carefully. Your Punya and Papa stand nearly equal. The gate of Moksha watches. What you do in these next moments will determine everything.",
-  balance_hi: "मैं इसे ध्यान से नोट करता हूँ। तुम्हारे पुण्य और पाप लगभग बराबर हैं। मोक्ष का द्वार देख रहा है। इन अगले क्षणों में तुम जो करोगे, वह सब कुछ तय करेगा।",
-
-  // Moksha gate rejected
-  rejected_en: "The ledger speaks plainly. Papa exceeds Punya. I cannot alter what is written. The gate cannot open for an impure soul. Return. Purify. Try again.",
-  rejected_hi: "खाता स्पष्ट बोलता है। पाप, पुण्य से अधिक है। जो लिखा है उसे मैं नहीं बदल सकता। अशुद्ध आत्मा के लिए द्वार नहीं खुल सकता। लौटो। शुद्ध हो। फिर प्रयास करो।",
-
-  // Karma victory
-  karma_win_en: "Thirty Punya. In all the ages I have kept this record, few souls accumulate such merit so swiftly. I close the page. The book seals itself. You are free.",
-  karma_win_hi: "तीस पुण्य। जब से मैं यह अभिलेख रखता आया हूँ, बहुत कम आत्माएं इतनी तेज़ी से इतना पुण्य इकट्ठा करती हैं। मैं पृष्ठ बंद करता हूँ। पुस्तक स्वयं मुहर लगाती है। तुम मुक्त हो।",
-
-  // Shield saved
-  shield_en: "Noted. Shukra's protection absorbed the venom. One less Papa in the account. Even the planets intervene in karma's unfolding.",
-  shield_hi: "दर्ज किया गया। शुक्र की सुरक्षा ने विष सोख लिया। खाते में एक कम पाप। यहाँ तक कि ग्रह भी कर्म के प्रकटीकरण में हस्तक्षेप करते हैं।",
-
-  // Seeker selection — brief appearance
-  seeker_en: "I have watched every seeker who has ever walked this board. Choose your identity wisely. The character you choose shapes the karma you will carry.",
-  seeker_hi: "मैंने हर उस साधक को देखा है जो इस पट पर चला है। अपनी पहचान बुद्धिमानी से चुनो। तुम जो पात्र चुनते हो, वह उस कर्म को आकार देता है जो तुम वहन करोगे।",
-};
-
-// Chitragupta static voice files (pre-generated)
-const CHITRAGUPTA_STATIC = {
-  intro:         { en: '/game-voices/cg-intro-en.mp3',        hi: '/game-voices/cg-intro-hi.mp3' },
-  ladder:        { en: '/game-voices/cg-ladder-en.mp3',       hi: '/game-voices/cg-ladder-hi.mp3' },
-  snake:         { en: '/game-voices/cg-snake-en.mp3',        hi: '/game-voices/cg-snake-hi.mp3' },
-  dharma_punya:  { en: '/game-voices/cg-dharma-punya-en.mp3', hi: '/game-voices/cg-dharma-punya-hi.mp3' },
-  dharma_papa:   { en: '/game-voices/cg-dharma-papa-en.mp3',  hi: '/game-voices/cg-dharma-papa-hi.mp3' },
-  ashtanga:      { en: '/game-voices/cg-ashtanga-en.mp3',     hi: '/game-voices/cg-ashtanga-hi.mp3' },
-  balance:       { en: '/game-voices/cg-balance-en.mp3',      hi: '/game-voices/cg-balance-hi.mp3' },
-  rejected:      { en: '/game-voices/cg-rejected-en.mp3',     hi: '/game-voices/cg-rejected-hi.mp3' },
-  karma_win:     { en: '/game-voices/cg-karma-win-en.mp3',    hi: '/game-voices/cg-karma-win-hi.mp3' },
-  shield:        { en: '/game-voices/cg-shield-en.mp3',       hi: '/game-voices/cg-shield-hi.mp3' },
-  seeker:        { en: '/game-voices/cg-seeker-en.mp3',       hi: '/game-voices/cg-seeker-hi.mp3' },
-};
+// ═══ YAMA TAUNTS — spoken when snake bites or wrong answers ═══
 const YAMA_TAUNTS_SNAKE=[
   "Ha ha ha! The serpent devours another soul! Did you think virtue would protect you here? I warned you!",
   "Delicious! Another mortal falls! The Nagas serve me well. Your karma crumbles!",
@@ -1122,119 +1062,7 @@ const VoiceEngine = {
     }
   },
 
-  // ═══ CHITRAGUPTA VOICE — Celestial, all-knowing, resonant calm ═══
-  // Audio signature: bright upper harmonics + heavenly chorus shimmer + subtle reverb
-  // Completely distinct from Yama (dark/rumbling) and Narrator (warm/earthy)
-  async speakChitragupta(lang, staticKey) {
-    this.stop();
-    const myToken = this._stopToken;
-    const langKey = lang === 'hi' ? 'hi' : 'en';
-    const sv = CHITRAGUPTA_STATIC[staticKey];
-    const staticUrl = sv ? sv[langKey] : null;
-    const text = CHITRAGUPTA_LINES[`${staticKey}_${langKey}`] || CHITRAGUPTA_LINES[`${staticKey}_en`];
-    if (!text) return;
-
-    // Resolve audio URL: static file → IndexedDB → API
-    let audioUrl = null;
-    if (staticUrl) {
-      try {
-        const r = await fetch(staticUrl, { method: 'HEAD' });
-        if (r.ok) { audioUrl = staticUrl; }
-      } catch(e) {}
-    }
-    if (!audioUrl) {
-      const isLocal = ['localhost','127.0.0.1',''].includes(window.location.hostname);
-      if (!isLocal) {
-        audioUrl = AudioCache.get(text);
-        if (!audioUrl) {
-          try { audioUrl = await AudioCache.fetchTTS(text, lang); } catch(e) {}
-        }
-      }
-    }
-    if (this._stopToken !== myToken) return;
-    if (!audioUrl) { this._browserSpeak(text, lang); return; }
-
-    try {
-      const resp = await fetch(audioUrl);
-      const blob = await resp.blob();
-      const arrayBuf = await blob.arrayBuffer();
-      if (this._stopToken !== myToken) return;
-
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      if (ctx.state === 'suspended') await ctx.resume();
-      this._yamaCtx = ctx;
-
-      const buffer = await ctx.decodeAudioData(arrayBuf);
-      if (this._stopToken !== myToken) { try{ctx.close()}catch(e){} return; }
-
-      const source = ctx.createBufferSource();
-      source.buffer = buffer;
-      source.playbackRate.value = 0.94; // Slightly slower — divine gravitas
-
-      // ── CELESTIAL CHAIN ──────────────────────────────────────────
-      // 1. Presence boost (3kHz +4dB) — cuts through like a divine voice
-      const presence = ctx.createBiquadFilter();
-      presence.type = 'peaking'; presence.frequency.value = 3000;
-      presence.Q.value = 0.8; presence.gain.value = 4;
-
-      // 2. Air (8kHz +3dB) — ethereal shimmer, feels "above" the room
-      const air = ctx.createBiquadFilter();
-      air.type = 'highshelf'; air.frequency.value = 8000; air.gain.value = 3;
-
-      // 3. Sub-bass cut (80Hz) — removes earthiness, keeps it celestial
-      const subcut = ctx.createBiquadFilter();
-      subcut.type = 'highpass'; subcut.frequency.value = 80;
-
-      // 4. Chorus shimmer — two detuned copies create divine "many voices" feel
-      const delay1 = ctx.createDelay(0.5); delay1.delayTime.value = 0.022;
-      const delay2 = ctx.createDelay(0.5); delay2.delayTime.value = 0.035;
-      const chorusMix = ctx.createGain(); chorusMix.gain.value = 0.18;
-
-      // 5. Long reverb (4s decay — heavenly hall)
-      const rvLen = 4.0 * ctx.sampleRate;
-      const rvBuf = ctx.createBuffer(2, rvLen, ctx.sampleRate);
-      for (let ch = 0; ch < 2; ch++) {
-        const d = rvBuf.getChannelData(ch);
-        for (let i = 0; i < rvLen; i++) d[i] = (Math.random()*2-1) * Math.pow(1-i/rvLen, 1.5) * (i < ctx.sampleRate*0.05 ? i/(ctx.sampleRate*0.05) : 1);
-      }
-      const conv = ctx.createConvolver(); conv.buffer = rvBuf;
-      const rvMix = ctx.createGain(); rvMix.gain.value = 0.30; // More reverb than narrator
-
-      // 6. Celestial tone — high sine shimmer (like a singing bowl harmonic)
-      const shimmer = ctx.createOscillator();
-      shimmer.type = 'sine'; shimmer.frequency.value = 528; // 528Hz — "miracle tone"
-      const shimmerGain = ctx.createGain(); shimmerGain.gain.value = 0.015;
-      const shimmerFilter = ctx.createBiquadFilter();
-      shimmerFilter.type = 'bandpass'; shimmerFilter.frequency.value = 528; shimmerFilter.Q.value = 8;
-      shimmer.connect(shimmerFilter); shimmerFilter.connect(shimmerGain);
-
-      // ── ROUTING ──────────────────────────────────────────────────
-      const master = ctx.createGain(); master.gain.value = 1.05;
-
-      source.connect(subcut);
-      subcut.connect(presence);
-      presence.connect(air);
-      air.connect(master);
-      air.connect(delay1); delay1.connect(chorusMix);
-      air.connect(delay2); delay2.connect(chorusMix);
-      chorusMix.connect(master);
-      air.connect(conv); conv.connect(rvMix); rvMix.connect(master);
-      shimmerGain.connect(master);
-      master.connect(ctx.destination);
-
-      this.speaking = true;
-      source.onended = () => {
-        this.speaking = false;
-        shimmerGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 2);
-        setTimeout(()=>{try{shimmer.stop();ctx.close()}catch(e){}this._yamaCtx=null}, 2500);
-      };
-      source.start(0);
-      shimmer.start(0);
-    } catch(e) {
-      console.warn('[Chitragupta] Audio processing failed:', e.message);
-      this._browserSpeak(text, lang);
-    }
-  },
+  // ═══ NARRATOR VOICE — Vedic temple processing for story onboarding ═══
   // staticUrl: pre-generated /onboarding/story-N-lang.mp3 (zero API cost)
   // onAudioStart: fires the MOMENT audio begins playing (used for UI sync)
   async speakNarrator(text, lang, staticUrl, onAudioStart) {
@@ -2963,10 +2791,8 @@ export default function MokshaPatam108(){
   const[gameVoicesLoading,setGameVoicesLoading]=useState(false);
   const[gameVoicesPct,setGameVoicesPct]=useState(0);
   const[gameVoicesReady,setGameVoicesReady]=useState(false);
-  const[yamaPhase,setYamaPhase]=useState(0);
-  const[narrateStartedAt,setNarrateStartedAt]=useState(null);
-  const[cgMsg,setCgMsg]=useState(null); // Chitragupta ledger message shown in panel
-  const cgTimerRef=useRef(null);
+  const[yamaPhase,setYamaPhase]=useState(0); // 0=intro speaking, 1=who are you?, 2=go to setup // tracks which players are CPU
+  const[narrateStartedAt,setNarrateStartedAt]=useState(null); // timestamp when narrator audio actually begins — used for DiceStage graha sync
 
   const sfx=useSound();
   const ambient=useAmbient();
@@ -2980,23 +2806,7 @@ export default function MokshaPatam108(){
     });
   },[ambient]);
 
-  // Chitragupta speaks — shows ledger entry + plays celestial voice
-  const speakCG = useCallback((key, delayMs=600) => {
-    if(muted) return;
-    const lang = chosenLang==='hi'?'hi':'en';
-    const text = CHITRAGUPTA_LINES[`${key}_${lang}`] || CHITRAGUPTA_LINES[`${key}_en`];
-    if(!text) return;
-    // Show ledger message in panel
-    if(cgTimerRef.current) clearTimeout(cgTimerRef.current);
-    setCgMsg({text, key});
-    cgTimerRef.current = setTimeout(()=>setCgMsg(null), 7000);
-    // Play voice after delay (after popup voice finishes)
-    setTimeout(()=>{
-      if(!muted) VoiceEngine.speakChitragupta(chosenLang, key);
-    }, delayMs);
-  }, [muted, chosenLang]);
-
-
+  const eventCallback=useRef(null);
   const voiceTimerRef=useRef(null);
   const showEvent = useCallback((popup, onDismiss) => {
     // Kill ANY pending or playing voice
@@ -3079,24 +2889,6 @@ export default function MokshaPatam108(){
     }
     return()=>VoiceEngine.stop();
   },[screen,storyPage,muted]);
-
-  // Chitragupta speaks on setup screen (first player selection only)
-  useEffect(()=>{
-    if(screen!=="setup"||players.length>0||muted)return;
-    const t=setTimeout(()=>{
-      VoiceEngine.speakChitragupta(chosenLang,'seeker');
-    },1200);
-    return()=>clearTimeout(t);
-  },[screen,players.length,muted]);
-
-  // Chitragupta opens the ledger when game starts
-  useEffect(()=>{
-    if(screen!=="game"||players.length===0)return;
-    const t=setTimeout(()=>{
-      if(!muted) VoiceEngine.speakChitragupta(chosenLang,'intro');
-    },2500);
-    return()=>clearTimeout(t);
-  },[screen]); // only fires on screen change to game
 
   const startGame=(pList)=>{
     const n=pList.length;
@@ -3222,14 +3014,14 @@ export default function MokshaPatam108(){
           };
 
           if(SNAKES[p]){const sn=SNAKES[p];if(nShield[cur]){nShield[cur]=false;eMsg=`𓆙 ${sn.skt} — Shield!`;play("ladder");
-            showEvent({icon:"🛡",title:`Shield Saved ${pName}!`,subtitle:`The serpent ${sn.skt} (${sn.en}) struck — but Shukra's shield absorbed the venom! Shield is now gone.`,color:"#d0a0c0",staticKey:"shield_save"},()=>{speakCG('shield',200);finishTurn(true)});
+            showEvent({icon:"🛡",title:`Shield Saved ${pName}!`,subtitle:`The serpent ${sn.skt} (${sn.en}) struck — but Shukra's shield absorbed the venom! Shield is now gone.`,color:"#d0a0c0",staticKey:"shield_save"},()=>finishTurn(true));
           }else{const o=p;p=sn.to;eMsg=`𓆙 ${o}→${p}`;nPapa[cur]+=2;gameStats.current.snakes++;play("snake");play("yamaLaugh");
             // Yama taunts the player with voice
             if(!muted){setTimeout(()=>VoiceEngine.playYamaTaunt("snake",chosenLang),800)}
-            showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} caught you! ${sn.tale} Dragged from ${o} to ${p}. +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`,staticKey:"snake_hit"},()=>{speakCG('snake',3500);finishTurn(true)});
+            showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} caught you! ${sn.tale} Dragged from ${o} to ${p}. +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`,staticKey:"snake_hit"},()=>finishTurn(true));
           }}
           else if(LADDERS[p]){const ld=LADDERS[p];const o=p;p=ld.to;eMsg=`🪔 ${o}→${p}`;nPunya[cur]+=1;gameStats.current.ladders++;play("ladder");
-            showEvent({icon:"🪔",title:`${ld.skt} — ${ld.en}`,subtitle:`${pName}, the virtue of ${ld.en} lifts you! ${ld.tale} Rise from ${o} to ${p}. +1 PUNYA.`,color:"#f0d050",extra:`${o} → ${p}`,staticKey:"ladder_rise"},()=>{speakCG('ladder',200);finishTurn(true)});
+            showEvent({icon:"🪔",title:`${ld.skt} — ${ld.en}`,subtitle:`${pName}, the virtue of ${ld.en} lifts you! ${ld.tale} Rise from ${o} to ${p}. +1 PUNYA.`,color:"#f0d050",extra:`${o} → ${p}`,staticKey:"ladder_rise"},()=>finishTurn(true));
           }
           else if(DLM_SQ.includes(p)){
             // No-repeat dharma: pick from unused pool, reset if all used
@@ -3256,7 +3048,6 @@ export default function MokshaPatam108(){
             const ashtangaStaticKey=`ashtanga_step_${stepNum}`;
             eMsg=`${sq.icon} ${sq.skt} — Step ${stepNum}/7`;play("dilemma");
             showEvent({icon:sq.icon,title:`अष्टांग मार्ग · Step ${stepNum}`,subtitle:introText,color:"#f0d050",staticKey:ashtangaStaticKey},()=>{
-              speakCG('ashtanga',3500);
               // Pick random riddle for this step
               const pool=ASHTANGA_RIDDLES[p]||ASHTANGA_RIDDLES[101];
               const riddle=pool[Math.floor(Math.random()*pool.length)];
@@ -3277,10 +3068,10 @@ export default function MokshaPatam108(){
             });
           }
           else if(p===108){if(nPunya[cur]>=nPapa[cur]){setWin(cur);eMsg=`ॐ MOKSHA!`;play("victory");
-            showEvent({icon:"ॐ",title:"मोक्ष प्राप्त — MOKSHA!",subtitle:`${pName} reached Square 108 — Moksha! Punya (${nPunya[cur]}) ≥ Papa (${nPapa[cur]}). Liberation! The cycle of Samsara ends.`,color:"#f0d050",staticKey:"moksha_gate"},()=>{speakCG('karma_win',3000);finishTurn()});
+            showEvent({icon:"ॐ",title:"मोक्ष प्राप्त — MOKSHA!",subtitle:`${pName} reached Square 108 — Moksha! Punya (${nPunya[cur]}) ≥ Papa (${nPapa[cur]}). Liberation! The cycle of Samsara ends.`,color:"#f0d050",staticKey:"moksha_gate"},finishTurn);
           }else{p=67;eMsg="Impure → 67";play("snake");play("yamaLaugh");
             if(!muted)setTimeout(()=>VoiceEngine.playYamaTaunt("reject",chosenLang),800);
-            showEvent({icon:"⚠",title:"Gates of Moksha REJECT You!",subtitle:`${pName}, your soul is impure! Punya (${nPunya[cur]}) < Papa (${nPapa[cur]}). Cast back to 67.`,color:"#e06030"},()=>{speakCG('rejected',3500);finishTurn()});
+            showEvent({icon:"⚠",title:"Gates of Moksha REJECT You!",subtitle:`${pName}, your soul is impure! Punya (${nPunya[cur]}) < Papa (${nPapa[cur]}). Cast back to 67.`,color:"#e06030"},finishTurn);
           }}
           else{finishTurn()}
         }
@@ -3347,7 +3138,7 @@ export default function MokshaPatam108(){
     setPunya(np);setPapa(npa);setSkipA(nsk);setPos(npos);setShieldA(nsh);
     const parts=[];if(fx.punya)parts.push(`+${fx.punya} Punya`);if(fx.papa)parts.push(`+${fx.papa} Papa`);if(fx.move)parts.push(fx.move>0?`advance ${fx.move}`:`back ${Math.abs(fx.move)}`);if(fx.skip)parts.push("skip next");if(fx.loseShield)parts.push("lost Shield");if(fx.giveShield)parts.push("gained Shield");
     setMsg(parts.join(", ")||"Balanced.");
-    if(ch.k==="punya"){play("chime");gameStats.current.riddlesC++;speakCG('dharma_punya',4000);}else if(ch.k==="papa"){play("yamaLaugh");gameStats.current.riddlesW++;speakCG('dharma_papa',4000);}
+    if(ch.k==="punya"){play("chime");gameStats.current.riddlesC++}else if(ch.k==="papa"){play("yamaLaugh");gameStats.current.riddlesW++}
     if(np[dil.pi]>=30&&!win){setWin(dil.pi);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory")}
     setDil(null);setCur(c=>(c+1)%nP);
   };
@@ -4236,20 +4027,6 @@ export default function MokshaPatam108(){
             <button onClick={()=>{VoiceEngine.stop();setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("pickcount")}} style={{position:"absolute",top:20,left:20,background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#8a7a50",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
             <div style={{fontSize:10,opacity:.3,letterSpacing:5}}>SEEKER {pidx+1} OF {nP}</div>
             <h2 style={{fontSize:"clamp(20px,4vw,30px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"8px 0"}}>Choose Your Identity</h2>
-            {/* Chitragupta seal — watching from above */}
-            {pidx===0&&<div style={{
-              display:"inline-flex",alignItems:"center",gap:8,
-              padding:"6px 14px",marginTop:4,
-              background:"linear-gradient(135deg,rgba(200,180,100,.06),rgba(200,180,100,.02))",
-              border:"1px solid rgba(200,180,100,.15)",borderRadius:20,
-              animation:"fadeIn 1.2s ease .5s both",
-            }}>
-              <span style={{fontSize:14}}>🪶</span>
-              <span style={{fontSize:9,color:"rgba(200,180,100,.5)",letterSpacing:2,fontFamily:"'Cinzel',serif",fontStyle:"italic"}}>
-                Chitragupta opens the Agrasandhani
-              </span>
-              <span style={{fontSize:14}}>📜</span>
-            </div>}
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(clamp(140px,30vw,200px),1fr))",gap:10,marginBottom:20}}>
             {CHARS.map((ch,i)=>{const used=usedChars.includes(i);const sel=tempChar===i;
@@ -4546,30 +4323,6 @@ export default function MokshaPatam108(){
               <div style={{textAlign:"center",marginTop:14,fontSize:9,opacity:.25,letterSpacing:2}}>CHOOSE YOUR PATH WISELY</div>
             </div>
           </div>}
-          {/* ═══ CHITRAGUPTA LEDGER PANEL ═══ */}
-          <div style={{background:"linear-gradient(180deg,rgba(200,180,120,.05),rgba(10,8,5,.6))",border:"1px solid rgba(200,180,100,.18)",borderRadius:6,padding:"10px 12px",position:"relative",overflow:"hidden",minHeight:64}}>
-            {/* Quill watermark */}
-            <div style={{position:"absolute",right:8,top:8,fontSize:28,opacity:.06,pointerEvents:"none",userSelect:"none"}}>🪶</div>
-            {/* Header */}
-            <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:cgMsg?8:0}}>
-              <span style={{fontSize:13}}>🪶</span>
-              <div>
-                <div style={{fontSize:8,letterSpacing:3,color:"rgba(200,180,100,.6)",fontFamily:"'Cinzel',serif",fontWeight:700}}>CHITRAGUPTA</div>
-                <div style={{fontSize:7,color:"rgba(200,180,100,.35)",letterSpacing:2}}>DIVINE LEDGER</div>
-              </div>
-              {cgMsg&&<div style={{marginLeft:"auto",width:6,height:6,borderRadius:"50%",background:"rgba(200,180,100,.8)",animation:"pulse 1.5s ease infinite"}}/>}
-            </div>
-            {/* Message */}
-            {cgMsg?(
-              <div style={{fontSize:10,color:"rgba(220,200,140,.75)",lineHeight:1.7,fontStyle:"italic",borderLeft:"2px solid rgba(200,180,100,.25)",paddingLeft:8,animation:"fadeIn .4s ease"}}>
-                "{cgMsg.text}"
-              </div>
-            ):(
-              <div style={{fontSize:9,color:"rgba(200,180,100,.25)",letterSpacing:1,fontStyle:"italic"}}>
-                The ledger watches in silence...
-              </div>
-            )}
-          </div>
           <div style={{background:"linear-gradient(180deg,#1e1810,#14100a)",border:"1px solid rgba(200,160,60,.2)",padding:12,borderRadius:4}}>
             <div onClick={(e)=>{
               // ═══ HIDDEN DEV PANEL: Triple-click to toggle ═══
