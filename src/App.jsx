@@ -3997,18 +3997,14 @@ export default function MokshaPatam108(){
           </div>}
           <div style={{textAlign:"center",marginTop:12}}><div style={{display:"flex",gap:10,justifyContent:"center",marginBottom:8,flexWrap:"wrap"}}><button onClick={()=>setShowGuide(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📜 How to Play</button><button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📖 Encyclopaedia</button></div><InstaBadge/></div>
         </div>
+        {/* Footer */}
+        <div style={{textAlign:"center",padding:"16px 0 10px",width:"100%"}}>
+          <div style={{fontSize:10,color:"#6a5a38",letterSpacing:1}}>© {new Date().getFullYear()} RasaVisio · All rights reserved</div>
+          <div style={{fontSize:9,color:"#4a3a28",letterSpacing:1,marginTop:2}}>Inspired by the ancient game of Moksha Patam · Created in India 🇮🇳</div>
+        </div>
       </div>
-      {/* Footer */}
-      <div style={{textAlign:"center",padding:"16px 0 10px",position:"relative",zIndex:1}}>
-        <div style={{fontSize:10,color:"#6a5a38",letterSpacing:1}}>© {new Date().getFullYear()} RasaVisio · All rights reserved</div>
-        <div style={{fontSize:9,color:"#4a3a28",letterSpacing:1,marginTop:2}}>Inspired by the ancient game of Moksha Patam · Created in India 🇮🇳</div>
-      </div>
-    </div>
     );
   }
-
-  // ═══ INFO ═══
-  // ═══ GAME ═══
   if(screen!=="game"||players.length===0)return null;
   const cp=players[cur]||players[0];
   const hd=hov?(SNAKES[hov]?{type:"𓆙 NĀGA",label:`${SNAKES[hov].skt} — ${SNAKES[hov].en}`,desc:SNAKES[hov].tale,to:`Falls to ${SNAKES[hov].to}`,cl:"#e08040"}:LADDERS[hov]?{type:"🪔 VIRTUE",label:`${LADDERS[hov].skt} — ${LADDERS[hov].en}`,desc:LADDERS[hov].tale,to:`Rises to ${LADDERS[hov].to}`,cl:"#f0d050"}:DLM_SQ.includes(hov)?{type:"⚖ DHARMA",label:"Moral crossroads",desc:"A dilemma from the Mahābhārata.",cl:"#d0b870"}:hov===108?{type:"ॐ MOKSHA",label:"Square 108 — Liberation",desc:"The 108th square. Punya must ≥ Papa. The sacred number of the cosmos.",cl:"#f0d050"}:hov>100?{type:`${SACRED_PATH[hov-101]?.icon} ${SACRED_PATH[hov-101]?.en}`,label:`${SACRED_PATH[hov-101]?.skt} — ${SACRED_PATH[hov-101]?.desc}`,desc:"The Ashtanga Marga — 8-fold path of Patanjali. Only the purest souls walk here.",cl:"#f0d050"}:null):null;
