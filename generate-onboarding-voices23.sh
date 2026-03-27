@@ -122,40 +122,40 @@ count_file; tts "$OUT_DIR/story-3-hi.mp3" "$VOICE_NARRATOR" "$HI_INSTRUCTIONS" \
 "दस विशाल नाग इस पट पर कुंडली मारे बैठे हैं। ये सिर्फ सांप नहीं हैं। ये जीवित दुःस्वप्न हैं। हर एक तुम्हारी आत्मा के अंदर की काली शक्ति का रूप। क्रोध। लोभ। मोह। जब कोई सांप पकड़ता है, तुम्हें चीखते हुए गहराइयों में खींचता है। खाने खोते हो, और 2 पाप मिलता है। लेकिन हर सांप के लिए एक सीढ़ी है, एक गुण। दया। सत्य। सेवा। भक्ति। जब सीढ़ी उठाती है, 1 पुण्य मिलता है। सांपों के बीच धर्म दुविधाएं आती हैं। महाकाव्यों से प्राचीन नैतिक चुनाव। समझदारी से चुनो, तुम्हारे चुनाव तुम्हारा कर्म बनाते हैं।"
 
 # ══════════════════════════════════════════════════════════════════════════════
-# STORY PAGE 4 — Dharma Dilemma
+# STORY PAGE 4 — Yama Awaits
 # ══════════════════════════════════════════════════════════════════════════════
 count_file; tts "$OUT_DIR/story-4-en.mp3" "$VOICE_NARRATOR" "$EN_INSTRUCTIONS" \
-"Every few squares, life stops you. A Dharma Dilemma appears. An ancient crossroads. These are not simple questions. They are the same moral choices that destroyed kings and elevated sages. Karna gave away his divine armour to a beggar. Knowing it would kill him. Eklavya cut off his own thumb for his guru. Yudhishthira told a half-truth to win a war. These choices are yours now. Choose Punya, the righteous path, and move back but grow purer. Choose Papa, the easy path, advance faster but sin accumulates. The board does not care about your intentions. Only your karma matters at the final gate."
+"In solo mode, you do not play alone. You play against Yama. The God of Death. Lord of the Underworld. Judge of all souls. He is not a computer opponent. He is a cosmic force who has been judging souls since the dawn of creation. Yama plays by different rules. He cannot be reasoned with. He cannot be bribed. And when his serpents catch you, he laughs. Oh, how he laughs. You will hear him. His voice echoes through the board like thunder through an empty temple. Every move you make, he watches. Every mistake, he remembers. You may choose to face Yama alone, or bring companions. 2, 3, or 4 seekers can walk this path together. But remember, only one soul achieves Moksha first."
 
 count_file; tts "$OUT_DIR/story-4-hi.mp3" "$VOICE_NARRATOR" "$HI_INSTRUCTIONS" \
+"अकेले खेलते हो तो खाली बोर्ड नहीं मिलता। तुम्हारा सामना होता है यमराज से। मृत्यु के देवता। पाताल के स्वामी। सभी आत्माओं के न्यायाधीश। वो कंप्यूटर प्रतिद्वंद्वी नहीं है। वो ब्रह्मांडीय शक्ति है जो सृष्टि के आरम्भ से आत्माओं का न्याय कर रहा है। यमराज अलग नियमों से खेलता है। उससे तर्क नहीं किया जा सकता। उसे रिश्वत नहीं दी जा सकती। और जब उसके सांप तुम्हें पकड़ते हैं, वो हंसता है। कैसे हंसता है। तुम सुनोगे। उसकी आवाज़ पट पर गूंजती है जैसे खाली मंदिर में गरज। तुम यमराज का अकेले सामना कर सकते हो, या साथी ला सकते हो। 2, 3, या 4 साधक साथ चल सकते हैं। लेकिन याद रखो, मोक्ष पहले एक ही पाएगा।"
+
+# ══════════════════════════════════════════════════════════════════════════════
+# STORY PAGE 5 — The Path to Moksha
+# ══════════════════════════════════════════════════════════════════════════════
+count_file; tts "$OUT_DIR/story-5-en.mp3" "$VOICE_NARRATOR" "$EN_INSTRUCTIONS" \
+"Two paths to escape the wheel of Samsara. The First Path, reach Square 108 with an exact roll. But even if you arrive, the gates will not open for a tainted soul. Your Punya must equal or exceed your Papa. If impure, you are cast back to Square 67. To suffer again. The Second Path, far rarer, far more beautiful. Accumulate 30 Punya at any moment during your journey. The board itself dissolves beneath you. Instant Moksha. This is the ancient truth the sages encoded. A truly pure soul can break free from any square. The dice are ready. The serpents can smell your fear. Step onto the board."
+
+count_file; tts "$OUT_DIR/story-5-hi.mp3" "$VOICE_NARRATOR" "$HI_INSTRUCTIONS" \
+"संसार के चक्र से बचने के दो रास्ते। पहला, खाना 108 पर सटीक पासे से पहुंचो। लेकिन पहुंच भी गए तो दूषित आत्मा के लिए द्वार नहीं खुलेंगे। पुण्य, पाप से ज़्यादा होना चाहिए। अशुद्ध हो तो खाना 67 पर वापस। फिर से कष्ट भोगने। दूसरा रास्ता, बहुत दुर्लभ और सुंदर। यात्रा में 30 पुण्य इकट्ठा करो किसी भी खाने से। पट विलीन हो जाता है। तुरंत मोक्ष। यही प्राचीन सत्य है जो ऋषियों ने संकेतित किया। सच्ची शुद्ध आत्मा किसी भी खाने से मुक्त हो सकती है। पासे तैयार हैं। सांप तुम्हारे डर की गंध सूंघ रहे हैं। कदम रखो पट पर।"
+
+# ══════════════════════════════════════════════════════════════════════════════
+# STORY PAGE 6 — Dharma Dilemma
+# ══════════════════════════════════════════════════════════════════════════════
+count_file; tts "$OUT_DIR/story-6-en.mp3" "$VOICE_NARRATOR" "$EN_INSTRUCTIONS" \
+"Every few squares, life stops you. A Dharma Dilemma appears. An ancient crossroads. These are not simple questions. They are the same moral choices that destroyed kings and elevated sages. Karna gave away his divine armour to a beggar. Knowing it would kill him. Eklavya cut off his own thumb for his guru. Yudhishthira told a half-truth to win a war. These choices are yours now. Choose Punya, the righteous path, and move back but grow purer. Choose Papa, the easy path, advance faster but sin accumulates. The board does not care about your intentions. Only your karma matters at the final gate."
+
+count_file; tts "$OUT_DIR/story-6-hi.mp3" "$VOICE_NARRATOR" "$HI_INSTRUCTIONS" \
 "हर कुछ खानों पर, जीवन तुम्हें रोकता है। एक धर्म दुविधा प्रकट होती है। एक प्राचीन चौराहा। ये सरल प्रश्न नहीं हैं। ये वही नैतिक चुनाव हैं जिन्होंने राजाओं को नष्ट किया और ऋषियों को ऊपर उठाया। कर्ण ने अपना दिव्य कवच एक भिखारी को दिया। जानते हुए कि इससे मृत्यु होगी। एकलव्य ने गुरु के लिए अपना अंगूठा काटा। ये चुनाव अब तुम्हारे हैं। पुण्य चुनो — धर्म का मार्ग। पाप चुनो — आसान मार्ग। पट तुम्हारे इरादों की परवाह नहीं करता।"
 
 # ══════════════════════════════════════════════════════════════════════════════
-# STORY PAGE 5 — The 8-Fold Sacred Path
-# ══════════════════════════════════════════════════════════════════════════════
-count_file; tts "$OUT_DIR/story-5-en.mp3" "$VOICE_NARRATOR" "$EN_INSTRUCTIONS" \
-"Past square 100, the rules change. You have transcended the material world. The Navagraha cannot touch you. You move one step at a time along the Ashtanga Marga — the eight-fold path of Patanjali. Yama, self-restraint. Niyama, discipline. Asana, steadiness. Pranayama, the expansion of life-force. Pratyahara, withdrawal of the senses. Dharana, single-pointed concentration. Dhyana, deep meditation. And finally, Moksha at square 108, liberation from the cycle of birth and death. But at square 107, the Dhyana gate demands exactness. You must roll a one. Only perfect surrender opens the final door."
-
-count_file; tts "$OUT_DIR/story-5-hi.mp3" "$VOICE_NARRATOR" "$HI_INSTRUCTIONS" \
-"खाना 100 के बाद, नियम बदल जाते हैं। तुम भौतिक संसार को पार कर चुके हो। नवग्रह तुम्हें नहीं छू सकते। अष्टांग मार्ग पर एक-एक कदम चलते हो। यम, नियम, आसन, प्राणायाम, प्रत्याहार, धारणा, ध्यान। और अंत में, खाना 108 पर मोक्ष। लेकिन खाना 107 पर, ध्यान का द्वार सटीकता मांगता है। सटीक 1 फेंकना होगा। केवल पूर्ण समर्पण अंतिम द्वार खोलता है।"
-
-# ══════════════════════════════════════════════════════════════════════════════
-# STORY PAGE 6 — Yama Awaits
-# ══════════════════════════════════════════════════════════════════════════════
-count_file; tts "$OUT_DIR/story-6-en.mp3" "$VOICE_NARRATOR" "$EN_INSTRUCTIONS" \
-"In solo mode, you do not play alone. You play against Yama. The God of Death. Lord of the Underworld. Judge of all souls. He is not a computer opponent. He is a cosmic force who has been judging souls since the dawn of creation. Yama plays by different rules. He cannot be reasoned with. He cannot be bribed. And when his serpents catch you, he laughs. Oh, how he laughs. You will hear him. His voice echoes through the board like thunder through an empty temple. Every move you make, he watches. Every mistake, he remembers. You may choose to face Yama alone, or bring companions. 2, 3, or 4 seekers can walk this path together. But remember, only one soul achieves Moksha first."
-
-count_file; tts "$OUT_DIR/story-6-hi.mp3" "$VOICE_NARRATOR" "$HI_INSTRUCTIONS" \
-"अकेले खेलते हो तो खाली बोर्ड नहीं मिलता। तुम्हारा सामना होता है यमराज से। मृत्यु के देवता। पाताल के स्वामी। सभी आत्माओं के न्यायाधीश। वो कंप्यूटर प्रतिद्वंद्वी नहीं है। वो ब्रह्मांडीय शक्ति है जो सृष्टि के आरम्भ से आत्माओं का न्याय कर रहा है। यमराज अलग नियमों से खेलता है। उससे तर्क नहीं किया जा सकता। उसे रिश्वत नहीं दी जा सकती। और जब उसके सांप तुम्हें पकड़ते हैं, वो हंसता है। तुम यमराज का अकेले सामना कर सकते हो, या साथी ला सकते हो। लेकिन याद रखो, मोक्ष पहले एक ही पाएगा।"
-
-# ══════════════════════════════════════════════════════════════════════════════
-# STORY PAGE 7 — The Path to Moksha
+# STORY PAGE 7 — The 8-Fold Sacred Path
 # ══════════════════════════════════════════════════════════════════════════════
 count_file; tts "$OUT_DIR/story-7-en.mp3" "$VOICE_NARRATOR" "$EN_INSTRUCTIONS" \
-"Two paths to escape the wheel of Samsara. The First Path, reach Square 108 with an exact roll. But even if you arrive, the gates will not open for a tainted soul. Your Punya must equal or exceed your Papa. If impure, you are cast back to Square 67. To suffer again. The Second Path, far rarer, far more beautiful. Accumulate 30 Punya at any moment during your journey. The board itself dissolves beneath you. Instant Moksha. This is the ancient truth the sages encoded. A truly pure soul can break free from any square. The dice are ready. The serpents can smell your fear. Step onto the board."
+"Past square 100, the rules change. You have transcended the material world. The Navagraha cannot touch you. You move one step at a time along the Ashtanga Marga — the eight-fold path of Patanjali. Yama, self-restraint. Niyama, discipline. Asana, steadiness. Pranayama, the expansion of life-force. Pratyahara, withdrawal of the senses. Dharana, single-pointed concentration. Dhyana, deep meditation. And finally, Moksha at square 108, liberation from the cycle of birth and death. But at square 107, the Dhyana gate demands exactness. You must roll a one. Only perfect surrender opens the final door."
 
 count_file; tts "$OUT_DIR/story-7-hi.mp3" "$VOICE_NARRATOR" "$HI_INSTRUCTIONS" \
-"संसार के चक्र से बचने के दो रास्ते। पहला, खाना 108 पर सटीक पासे से। लेकिन दूषित आत्मा के लिए द्वार नहीं। पुण्य पाप से ज़्यादा होना चाहिए। अशुद्ध हो तो 67 पर वापस। दूसरा रास्ता, 30 पुण्य। पट विलीन। तुरंत मोक्ष। पासे तैयार हैं। सांप तुम्हारे डर की गंध सूंघ रहे हैं।"
+"खाना 100 के बाद, नियम बदल जाते हैं। तुम भौतिक संसार को पार कर चुके हो। नवग्रह तुम्हें नहीं छू सकते। अष्टांग मार्ग पर एक-एक कदम चलते हो। यम, नियम, आसन, प्राणायाम, प्रत्याहार, धारणा, ध्यान। और अंत में, खाना 108 पर मोक्ष। लेकिन खाना 107 पर, ध्यान का द्वार सटीकता मांगता है। सटीक 1 फेंकना होगा। केवल पूर्ण समर्पण अंतिम द्वार खोलता है।"
 # ══════════════════════════════════════════════════════════════════════════════
 echo ""
 echo "══════════════════════════════════════════════════════"
