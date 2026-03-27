@@ -751,36 +751,11 @@ const STATIC_VOICES = {
   dancer: { en: '/char-dancer-en.mp3', hi: '/char-dancer-hi.mp3' },
   merchant: { en: '/char-merchant-en.mp3', hi: '/char-merchant-hi.mp3' },
   ascetic: { en: '/char-ascetic-en.mp3', hi: '/char-ascetic-hi.mp3' },
-  // ── Graha effects (9 planets × 2 languages = 18 files) ──
-  // Generate with: bash generate-game-voices.sh
-  graha_sun:     { en: '/game-voices/graha-sun-en.mp3',     hi: '/game-voices/graha-sun-hi.mp3' },
-  graha_moon:    { en: '/game-voices/graha-moon-en.mp3',    hi: '/game-voices/graha-moon-hi.mp3' },
-  graha_mars:    { en: '/game-voices/graha-mars-en.mp3',    hi: '/game-voices/graha-mars-hi.mp3' },
-  graha_mercury: { en: '/game-voices/graha-mercury-en.mp3', hi: '/game-voices/graha-mercury-hi.mp3' },
-  graha_jupiter: { en: '/game-voices/graha-jupiter-en.mp3', hi: '/game-voices/graha-jupiter-hi.mp3' },
-  graha_venus:   { en: '/game-voices/graha-venus-en.mp3',   hi: '/game-voices/graha-venus-hi.mp3' },
-  graha_saturn:  { en: '/game-voices/graha-saturn-en.mp3',  hi: '/game-voices/graha-saturn-hi.mp3' },
-  graha_rahu:    { en: '/game-voices/graha-rahu-en.mp3',    hi: '/game-voices/graha-rahu-hi.mp3' },
-  graha_ketu:    { en: '/game-voices/graha-ketu-en.mp3',    hi: '/game-voices/graha-ketu-hi.mp3' },
-  // ── Snake & ladder reactions ──
-  snake_hit:   { en: '/game-voices/snake-hit-en.mp3',   hi: '/game-voices/snake-hit-hi.mp3' },
-  ladder_rise: { en: '/game-voices/ladder-rise-en.mp3', hi: '/game-voices/ladder-rise-hi.mp3' },
-  moksha_gate: { en: '/game-voices/moksha-gate-en.mp3', hi: '/game-voices/moksha-gate-hi.mp3' },
-  karma_win:   { en: '/game-voices/karma-win-en.mp3',   hi: '/game-voices/karma-win-hi.mp3' },
-  shield_save: { en: '/game-voices/shield-save-en.mp3', hi: '/game-voices/shield-save-hi.mp3' },
-};
-
-// Map graha fx key → STATIC_VOICES key
-const GRAHA_STATIC_KEY = {
-  sun:'graha_sun', moon:'graha_moon', mars:'graha_mars', mercury:'graha_mercury',
-  jupiter:'graha_jupiter', venus:'graha_venus', saturn:'graha_saturn',
-  rahu:'graha_rahu', ketu:'graha_ketu',
 };
 
 const VoiceEngine = {
   audio: null,
   speaking: false,
-  _stopToken: 0, // incremented on every stop() — lets async fetches detect they've been cancelled
 
   // Play a static MP3 file — instant, zero API cost
   playStatic(url) {
@@ -824,14 +799,12 @@ const VoiceEngine = {
     // Force stop any existing voice first — prevents overlap
     this.stop();
     if (!text) return;
-    const myToken = this._stopToken; // capture before any await
 
     const isLocal = ['localhost','127.0.0.1',''].includes(window.location.hostname);
 
     if (!isLocal) {
       const cached = AudioCache.get(text);
       if (cached) {
-        if (this._stopToken !== myToken) return; // dismissed while checking cache
         const audio = new Audio(cached);
         audio.volume=1.0;
         this.audio = audio;
@@ -841,10 +814,9 @@ const VoiceEngine = {
         return;
       }
 
-      // Not cached — fetch from OpenAI (1-3s). Check token after await.
+      // Not cached — fetch now (will cache for next time)
       try {
         const url = await AudioCache.fetchTTS(text, lang);
-        if (this._stopToken !== myToken) return; // user dismissed while fetching — discard
         if (url) {
           const audio = new Audio(url);
           audio.volume=1.0;
@@ -857,13 +829,11 @@ const VoiceEngine = {
       } catch (e) {}
     }
 
-    if (this._stopToken !== myToken) return; // check before browser fallback too
     // Fallback: browser speech
     this._browserSpeak(text, lang);
   },
 
   stop() {
-    this._stopToken++; // invalidate any in-flight TTS fetch
     if (this.audio) { try { this.audio.pause(); this.audio.currentTime = 0; } catch (e) {} this.audio = null; }
     if (this._yamaCtx) { try { this._yamaCtx.close(); } catch(e){} this._yamaCtx = null; }
     if (this._yamaSource) { try { this._yamaSource.stop(); } catch(e){} this._yamaSource = null; }
@@ -1060,7 +1030,6 @@ const VoiceEngine = {
   async speakNarrator(text, lang, staticUrl, onAudioStart) {
     this.stop();
     if (!text) return;
-    const myToken = this._stopToken;
 
     let audioUrl = null;
 
@@ -1071,8 +1040,6 @@ const VoiceEngine = {
         if (r.ok) { audioUrl = staticUrl; console.log('[Voice] Static:', staticUrl); }
       } catch(e) {}
     }
-
-    if (this._stopToken !== myToken) return;
 
     // 2. IndexedDB / OpenAI API (fallback if static not deployed yet)
     if (!audioUrl) {
@@ -1085,7 +1052,6 @@ const VoiceEngine = {
       }
     }
 
-    if (this._stopToken !== myToken) return;
     if (!audioUrl) { this._browserSpeak(text, lang); onAudioStart && onAudioStart(); return; }
 
     try {
@@ -1199,7 +1165,6 @@ const VoiceEngine = {
       master.connect(ctx.destination);
 
       // ═══ PLAY ═══
-      if (this._stopToken !== myToken) { try{osc1.stop();osc2.stop();osc3.stop();ctx.close()}catch(e){} return; }
       this.speaking = true;
       source.onended = () => {
         this.speaking = false;
@@ -2809,31 +2774,7 @@ export default function MokshaPatam108(){
     eventCallback.current=onDismiss||null;
     if(!muted&&popup.subtitle){
       ambient.duck();
-      // Try static file first (zero API cost, instant playback)
-      const lang=chosenLang==='hi'?'hi':'en';
-      const tryStatic=()=>{
-        // Graha events — play fixed planet description
-        if(popup.type==='graha'&&popup.staticKey){
-          const sv=STATIC_VOICES[popup.staticKey];
-          if(sv&&sv[lang]){
-            VoiceEngine.playStatic(sv[lang]);
-            return true;
-          }
-        }
-        // Snake/ladder/shield/win events
-        if(popup.staticKey){
-          const sv=STATIC_VOICES[popup.staticKey];
-          if(sv&&sv[lang]){VoiceEngine.playStatic(sv[lang]);return true;}
-        }
-        return false;
-      };
-      voiceTimerRef.current=setTimeout(()=>{
-        voiceTimerRef.current=null;
-        if(!tryStatic()){
-          // Fall back to dynamic TTS (cached in IndexedDB after first play)
-          VoiceEngine.speak(popup.subtitle,chosenLang);
-        }
-      },200);
+      voiceTimerRef.current=setTimeout(()=>{voiceTimerRef.current=null;VoiceEngine.speak(popup.subtitle,chosenLang)},200);
     }
   }, [muted,chosenLang,ambient]);
   const dismissEvent = useCallback(() => {
@@ -3012,14 +2953,14 @@ export default function MokshaPatam108(){
           };
 
           if(SNAKES[p]){const sn=SNAKES[p];if(nShield[cur]){nShield[cur]=false;eMsg=`𓆙 ${sn.skt} — Shield!`;play("ladder");
-            showEvent({icon:"🛡",title:`Shield Saved ${pName}!`,subtitle:`The serpent ${sn.skt} (${sn.en}) struck — but Shukra's shield absorbed the venom! Shield is now gone.`,color:"#d0a0c0",staticKey:"shield_save"},()=>finishTurn(true));
+            showEvent({icon:"🛡",title:`Shield Saved ${pName}!`,subtitle:`The serpent ${sn.skt} (${sn.en}) struck — but Shukra's shield absorbed the venom! Shield is now gone.`,color:"#d0a0c0"},()=>finishTurn(true));
           }else{const o=p;p=sn.to;eMsg=`𓆙 ${o}→${p}`;nPapa[cur]+=2;gameStats.current.snakes++;play("snake");play("yamaLaugh");
             // Yama taunts the player with voice
             if(!muted){setTimeout(()=>VoiceEngine.playYamaTaunt("snake",chosenLang),800)}
-            showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} caught you! ${sn.tale} Dragged from ${o} to ${p}. +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`,staticKey:"snake_hit"},()=>finishTurn(true));
+            showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} caught you! ${sn.tale} Dragged from ${o} to ${p}. +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`},()=>finishTurn(true));
           }}
           else if(LADDERS[p]){const ld=LADDERS[p];const o=p;p=ld.to;eMsg=`🪔 ${o}→${p}`;nPunya[cur]+=1;gameStats.current.ladders++;play("ladder");
-            showEvent({icon:"🪔",title:`${ld.skt} — ${ld.en}`,subtitle:`${pName}, the virtue of ${ld.en} lifts you! ${ld.tale} Rise from ${o} to ${p}. +1 PUNYA.`,color:"#f0d050",extra:`${o} → ${p}`,staticKey:"ladder_rise"},()=>finishTurn(true));
+            showEvent({icon:"🪔",title:`${ld.skt} — ${ld.en}`,subtitle:`${pName}, the virtue of ${ld.en} lifts you! ${ld.tale} Rise from ${o} to ${p}. +1 PUNYA.`,color:"#f0d050",extra:`${o} → ${p}`},()=>finishTurn(true));
           }
           else if(DLM_SQ.includes(p)){
             // No-repeat dharma: pick from unused pool, reset if all used
@@ -3064,7 +3005,7 @@ export default function MokshaPatam108(){
             });
           }
           else if(p===108){if(nPunya[cur]>=nPapa[cur]){setWin(cur);eMsg=`ॐ MOKSHA!`;play("victory");
-            showEvent({icon:"ॐ",title:"मोक्ष प्राप्त — MOKSHA!",subtitle:`${pName} reached Square 108 — Moksha! Punya (${nPunya[cur]}) ≥ Papa (${nPapa[cur]}). Liberation! The cycle of Samsara ends.`,color:"#f0d050",staticKey:"moksha_gate"},finishTurn);
+            showEvent({icon:"ॐ",title:"मोक्ष प्राप्त — MOKSHA!",subtitle:`${pName} reached Square 108 — Moksha! Punya (${nPunya[cur]}) ≥ Papa (${nPapa[cur]}). Liberation! The cycle of Samsara ends.`,color:"#f0d050"},finishTurn);
           }else{p=67;eMsg="Impure → 67";play("snake");play("yamaLaugh");
             if(!muted)setTimeout(()=>VoiceEngine.playYamaTaunt("reject",chosenLang),800);
             showEvent({icon:"⚠",title:"Gates of Moksha REJECT You!",subtitle:`${pName}, your soul is impure! Punya (${nPunya[cur]}) < Papa (${nPapa[cur]}). Cast back to 67.`,color:"#e06030"},finishTurn);
@@ -3077,7 +3018,7 @@ export default function MokshaPatam108(){
     // Show graha popup — user dismisses, then movement begins
     // On sacred path: skip graha popup entirely
     if(onSacredPath){startMovement()}
-    else{showEvent({icon:g.icon,title:`${g.n} · ${g.en}`,subtitle:grahaStory,color:g.color,type:"graha",staticKey:GRAHA_STATIC_KEY[g.fx]},startMovement)}
+    else{showEvent({icon:g.icon,title:`${g.n} · ${g.en}`,subtitle:grahaStory,color:g.color,type:"graha"},startMovement)}
   },[cur,nP,dil,win,busy,punya,papa,pos,shieldA,skipA,play,players,showEvent,chosenLang,muted]);
 
   const solvD=(ci)=>{
