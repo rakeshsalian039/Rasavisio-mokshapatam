@@ -1484,6 +1484,24 @@ export default function MokshaPatam108(){
   const[tempChar,setTempChar]=useState(-1);
   const[usedChars,setUsedChars]=useState([]);
   const[storyPage,setStoryPage]=useState(0);
+  const[activeGraha,setActiveGraha]=useState(0);
+  const[diceAnim,setDiceAnim]=useState(false);
+  const[diceVal,setDiceVal]=useState(4);
+
+  // Auto-cycle graha slideshow on story page 2
+  useEffect(()=>{if(screen!=="story"||storyPage!==2)return;const iv=setInterval(()=>setActiveGraha(g=>(g+1)%9),2500);return()=>clearInterval(iv)},[screen,storyPage]);
+
+  const GRAHA_INFO=[
+    {icon:"☀",skt:"सूर्य",name:"Surya — The Sun",effect:"You get +2 extra steps forward",color:"#f0b840",type:"blessing"},
+    {icon:"☾",skt:"चन्द्र",name:"Chandra — The Moon",effect:"Purifies your soul: +1 Punya",color:"#a0c8e0",type:"blessing"},
+    {icon:"♂",skt:"मंगल",name:"Mangal — Mars",effect:"Nearest rival pushed back 3 squares, you get +1 Papa",color:"#e07050",type:"mixed"},
+    {icon:"☿",skt:"बुध",name:"Budh — Mercury",effect:"Your position swaps with the nearest seeker",color:"#80c080",type:"chaos"},
+    {icon:"♃",skt:"बृहस्पति",name:"Brihaspati — Jupiter",effect:"All seekers on the board gain +1 Punya",color:"#f0d060",type:"blessing"},
+    {icon:"♀",skt:"शुक्र",name:"Shukra — Venus",effect:"Grants a divine Shield — blocks the next snake bite",color:"#d0a0c0",type:"blessing"},
+    {icon:"♄",skt:"शनि",name:"Shani — Saturn",effect:"Pushed back 3 squares + 1 Papa. No one escapes Saturn.",color:"#8080a0",type:"curse"},
+    {icon:"☊",skt:"राहु",name:"Rahu — The Shadow",effect:"Steals 1 Punya from leader, gives to trailing seeker",color:"#6050a0",type:"chaos"},
+    {icon:"☋",skt:"केतु",name:"Ketu — The Tail",effect:"All shields destroyed. Closest to 108 gets +1 Punya.",color:"#a06060",type:"mixed"},
+  ];
 
   const[pos,setPos]=useState([]);
   const[cur,setCur]=useState(0);
@@ -2367,22 +2385,6 @@ export default function MokshaPatam108(){
   // ═══ STORY ═══
   if(screen==="story"){
     const pg=STORY_PAGES[storyPage];
-    const [activeGraha,setActiveGraha]=useState(0);
-    const [diceAnim,setDiceAnim]=useState(false);
-    const [diceVal,setDiceVal]=useState(4);
-    // Auto-cycle graha on page 2 (dice page)
-    useEffect(()=>{if(storyPage!==2)return;const iv=setInterval(()=>setActiveGraha(g=>(g+1)%9),2500);return()=>clearInterval(iv)},[storyPage]);
-    const GRAHA_INFO=[
-      {icon:"☀",skt:"सूर्य",name:"Surya — The Sun",effect:"You get +2 extra steps forward",color:"#f0b840",type:"blessing"},
-      {icon:"☾",skt:"चन्द्र",name:"Chandra — The Moon",effect:"Purifies your soul: +1 Punya",color:"#a0c8e0",type:"blessing"},
-      {icon:"♂",skt:"मंगल",name:"Mangal — Mars",effect:"Nearest rival pushed back 3 squares, you get +1 Papa",color:"#e07050",type:"mixed"},
-      {icon:"☿",skt:"बुध",name:"Budh — Mercury",effect:"Your position swaps with the nearest seeker",color:"#80c080",type:"chaos"},
-      {icon:"♃",skt:"बृहस्पति",name:"Brihaspati — Jupiter",effect:"All seekers on the board gain +1 Punya",color:"#f0d060",type:"blessing"},
-      {icon:"♀",skt:"शुक्र",name:"Shukra — Venus",effect:"Grants a divine Shield — blocks the next snake bite",color:"#d0a0c0",type:"blessing"},
-      {icon:"♄",skt:"शनि",name:"Shani — Saturn",effect:"Pushed back 3 squares + 1 Papa. No one escapes Saturn.",color:"#8080a0",type:"curse"},
-      {icon:"☊",skt:"राहु",name:"Rahu — The Shadow",effect:"Steals 1 Punya from leader, gives to trailing seeker",color:"#6050a0",type:"chaos"},
-      {icon:"☋",skt:"केतु",name:"Ketu — The Tail",effect:"All shields destroyed. Closest to 108 gets +1 Punya.",color:"#a06060",type:"mixed"},
-    ];
     const renderVisuals=(vis)=>{
       if(!vis)return null;
       return vis.map((v,vi)=>{
