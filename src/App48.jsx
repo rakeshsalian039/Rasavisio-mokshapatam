@@ -2171,75 +2171,6 @@ function YamaIcon({size=80}){
 }
 
 
-// ═══ SINE WAVE BACKGROUND — animated sacred geometry waves ═══
-function SineWaveBackground() {
-  const canvasRef = useRef(null);
-  const rafRef = useRef(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    let t = 0;
-
-    const resize = () => {
-      canvas.width  = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resize();
-    window.addEventListener('resize', resize);
-
-    const WAVES = [
-      { amp: 38, freq: 0.012, speed: 0.018, phase: 0,    color: 'rgba(200,160,60,.10)',  width: 1.5, yOff: 0.35 },
-      { amp: 22, freq: 0.018, speed: 0.026, phase: 1.2,  color: 'rgba(200,160,60,.07)',  width: 1.0, yOff: 0.45 },
-      { amp: 50, freq: 0.008, speed: 0.012, phase: 2.4,  color: 'rgba(160,120,60,.06)',  width: 2.0, yOff: 0.55 },
-      { amp: 28, freq: 0.022, speed: 0.032, phase: 3.6,  color: 'rgba(240,200,80,.05)',  width: 0.8, yOff: 0.65 },
-      { amp: 60, freq: 0.006, speed: 0.008, phase: 4.8,  color: 'rgba(180,140,60,.04)',  width: 2.5, yOff: 0.50 },
-      // Subtle Om-like circular resonance wave
-      { amp: 15, freq: 0.030, speed: 0.045, phase: 0.8,  color: 'rgba(240,200,80,.06)',  width: 0.6, yOff: 0.38 },
-    ];
-
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      t += 1;
-
-      WAVES.forEach(w => {
-        const y0 = canvas.height * w.yOff;
-        ctx.beginPath();
-        ctx.strokeStyle = w.color;
-        ctx.lineWidth = w.width;
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = 'rgba(200,160,60,.12)';
-
-        for (let x = 0; x <= canvas.width; x += 2) {
-          // Layered sine: primary + harmonic for organic feel
-          const y = y0
-            + Math.sin(x * w.freq + t * w.speed + w.phase) * w.amp
-            + Math.sin(x * w.freq * 2.1 + t * w.speed * 1.4 + w.phase) * (w.amp * 0.3);
-          x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-        }
-        ctx.stroke();
-        ctx.shadowBlur = 0;
-      });
-
-      rafRef.current = requestAnimationFrame(draw);
-    };
-    draw();
-
-    return () => {
-      cancelAnimationFrame(rafRef.current);
-      window.removeEventListener('resize', resize);
-    };
-  }, []);
-
-  return (
-    <canvas ref={canvasRef} style={{
-      position: 'fixed', inset: 0, width: '100%', height: '100%',
-      pointerEvents: 'none', zIndex: 0, opacity: 0.8,
-    }}/>
-  );
-}
-
 function InstaBadge(){
   return(
     <a href="https://www.instagram.com/india.rasavisio/" target="_blank" rel="noopener noreferrer"
@@ -3769,33 +3700,30 @@ export default function MokshaPatam108(){
         </div>
 
         {/* ── Fixed bottom navigation ── */}
-        <div style={{position:"fixed",bottom:0,left:0,right:0,padding:"8px 20px 10px",background:"linear-gradient(0deg,rgba(12,10,7,.98) 60%,rgba(12,10,7,0))",display:"flex",flexDirection:"column",alignItems:"center",gap:4,zIndex:20}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",width:"100%",maxWidth:700,gap:12}}>
-            <button onClick={()=>{VoiceEngine.stop();setScreen("pickcount")}}
-              style={{background:"transparent",border:"none",color:"rgba(90,74,48,.5)",fontSize:9,cursor:"pointer",letterSpacing:2,fontFamily:"'Cinzel',serif",flexShrink:0}}>
-              SKIP →
-            </button>
-            <div style={{display:"flex",gap:12,flex:1,justifyContent:"flex-end"}}>
-              {storyPage>0&&(
-                <button className="gb" onClick={()=>{VoiceEngine.stop();setStoryPage(storyPage-1)}}
-                  style={{padding:"10px 22px",fontSize:11,letterSpacing:2}}>
-                  ← Prev
-                </button>
-              )}
-              {storyPage<STORY_PAGES.length-1?(
-                <button className="gb gp" onClick={()=>{VoiceEngine.stop();setStoryPage(storyPage+1)}}
-                  style={{padding:"10px 28px",fontSize:12,letterSpacing:3}}>
-                  Next →
-                </button>
-              ):(
-                <button className="gb gp" onClick={()=>{VoiceEngine.stop();setScreen("pickcount")}}
-                  style={{padding:"10px 28px",fontSize:12,letterSpacing:3,animation:"pulse 2s ease infinite"}}>
-                  ⚡ Play Now
-                </button>
-              )}
-            </div>
+        <div style={{position:"fixed",bottom:0,left:0,right:0,padding:"12px 20px",background:"linear-gradient(0deg,rgba(12,10,7,.98) 60%,rgba(12,10,7,0))",display:"flex",justifyContent:"space-between",alignItems:"center",zIndex:20,gap:12}}>
+          <button onClick={()=>{VoiceEngine.stop();setScreen("pickcount")}}
+            style={{background:"transparent",border:"none",color:"rgba(90,74,48,.5)",fontSize:9,cursor:"pointer",letterSpacing:2,fontFamily:"'Cinzel',serif",flexShrink:0}}>
+            SKIP →
+          </button>
+          <div style={{display:"flex",gap:12,flex:1,justifyContent:"flex-end"}}>
+            {storyPage>0&&(
+              <button className="gb" onClick={()=>{VoiceEngine.stop();setStoryPage(storyPage-1)}}
+                style={{padding:"10px 22px",fontSize:11,letterSpacing:2}}>
+                ← Prev
+              </button>
+            )}
+            {storyPage<STORY_PAGES.length-1?(
+              <button className="gb gp" onClick={()=>{VoiceEngine.stop();setStoryPage(storyPage+1)}}
+                style={{padding:"10px 28px",fontSize:12,letterSpacing:3}}>
+                Next →
+              </button>
+            ):(
+              <button className="gb gp" onClick={()=>{VoiceEngine.stop();setScreen("pickcount")}}
+                style={{padding:"10px 28px",fontSize:12,letterSpacing:3,animation:"pulse 2s ease infinite"}}>
+                ⚡ Play Now
+              </button>
+            )}
           </div>
-          <div style={{fontSize:9,color:"#4a3a28",letterSpacing:1}}>© {new Date().getFullYear()} RasaVisio · All rights reserved · Inspired by the ancient game of Moksha Patam · Created in India 🇮🇳</div>
         </div>
       </div>
     );
@@ -3803,99 +3731,23 @@ export default function MokshaPatam108(){
 
   // ═══ PICK COUNT ═══
   if(screen==="pickcount")return(
-    <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"100vh",padding:"20px 20px 80px",overflow:"hidden",position:"relative"}}>
+    <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20}}>
       {globalOverlays}
-
-      {/* ── Animated sine wave canvas ── */}
-      <SineWaveBackground/>
-
-      {/* Back */}
-      <button onClick={()=>{VoiceEngine.stop();setScreen("title")}} style={{position:"fixed",top:20,left:20,background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#8a7a50",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
-
-      <div style={{position:"relative",zIndex:2,display:"flex",flexDirection:"column",alignItems:"center",width:"100%",maxWidth:560,animation:"slideUp .8s ease"}}>
-
-        {/* Header */}
-        <div style={{fontSize:40,marginBottom:10,filter:"drop-shadow(0 0 20px rgba(240,200,80,.35))",animation:"pulse 3s ease infinite"}}>🔱</div>
-        <div style={{fontSize:9,letterSpacing:6,color:"#5a4a30",marginBottom:6,fontFamily:"'Cinzel',serif"}}>CHOOSE YOUR PATH</div>
-        <h2 style={{fontSize:"clamp(24px,5vw,38px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"0 0 4px",textAlign:"center",textShadow:"0 0 30px rgba(240,200,80,.25)"}}>How Many Seekers?</h2>
-        <p style={{fontSize:12,opacity:.3,marginBottom:32,letterSpacing:4,fontFamily:"'Cinzel',serif",textAlign:"center"}}>Each soul walks a different path</p>
-
-        {/* Mode cards */}
-        <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:12,width:"100%",marginBottom:14}}>
-
-          {/* 1 vs Yama — full width, special */}
-          <div onClick={()=>{setNP(2);setIsCPU([false,true]);setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("yama")}}
-            style={{
-              gridColumn:"1 / -1",
-              background:"linear-gradient(135deg,rgba(160,40,40,.18),rgba(80,20,20,.25))",
-              border:"1.5px solid rgba(180,50,50,.35)",
-              borderRadius:14,padding:"22px 24px",
-              cursor:"pointer",display:"flex",alignItems:"center",gap:20,
-              transition:"all .3s cubic-bezier(.34,1.56,.64,1)",
-              boxShadow:"0 0 40px rgba(160,40,40,.08),inset 0 0 30px rgba(0,0,0,.2)",
-              position:"relative",overflow:"hidden",
-            }}
-            onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow="0 8px 40px rgba(160,40,40,.2),inset 0 0 30px rgba(0,0,0,.2)";e.currentTarget.style.borderColor="rgba(200,60,60,.6)"}}
-            onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="0 0 40px rgba(160,40,40,.08),inset 0 0 30px rgba(0,0,0,.2)";e.currentTarget.style.borderColor="rgba(180,50,50,.35)"}}>
-            {/* Radial glow */}
-            <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 20% 50%,rgba(160,40,40,.15),transparent 60%)",pointerEvents:"none"}}/>
-            <div style={{fontSize:52,filter:"drop-shadow(0 0 16px rgba(200,40,40,.6))",flexShrink:0,animation:"pulse 3s ease infinite"}}>☠️</div>
-            <div style={{flex:1}}>
-              <div style={{fontSize:18,fontFamily:"'Yatra One',serif",color:"#e08080",letterSpacing:2,marginBottom:4}}>1 vs Yama</div>
-              <div style={{fontSize:11,color:"#906060",lineHeight:1.7}}>Face the God of Death alone. Yama plays every turn — cold, karmic, inevitable. Can your dharma outlast Death?</div>
-              <div style={{display:"flex",gap:8,marginTop:10,flexWrap:"wrap"}}>
-                {["☠️ CPU opponent","⚡ Instant start","🎲 Hardest karma test"].map((t,i)=>(
-                  <span key={i} style={{fontSize:9,padding:"2px 8px",borderRadius:10,background:"rgba(160,40,40,.12)",border:"1px solid rgba(160,40,40,.2)",color:"#c07070",letterSpacing:1}}>{t}</span>
-                ))}
-              </div>
-            </div>
-            <div style={{fontSize:20,color:"rgba(200,80,80,.4)",flexShrink:0}}>▸</div>
-          </div>
-
-          {/* 2, 3, 4 player cards */}
-          {[
-            {n:2,icon:"👥",label:"2 Players",desc:"Sacred duel. Two souls, one board, one Moksha.",tags:["⚔️ Head to head","🔱 Classic"]},
-            {n:3,icon:"🧘",label:"3 Players",desc:"The dharmic triangle. Alliance and betrayal.",tags:["🌌 3-way","⚖ Complex"]},
-            {n:4,icon:"🕉",label:"4 Players",desc:"Four cardinal paths. Maximum chaos and karma.",tags:["🎭 Full house","🔱 Epic"]}
-          ].map(({n,icon,label,desc,tags})=>(
-            <div key={n}
-              onClick={()=>{setNP(n);setIsCPU(Array(n).fill(false));setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("setup")}}
-              style={{
-                background:"linear-gradient(135deg,rgba(30,24,14,.7),rgba(20,16,10,.8))",
-                border:"1px solid rgba(200,160,60,.18)",
-                borderRadius:12,padding:"18px 16px",
-                cursor:"pointer",display:"flex",flexDirection:"column",gap:8,
-                transition:"all .3s cubic-bezier(.34,1.56,.64,1)",
-                boxShadow:"inset 0 0 20px rgba(0,0,0,.2)",
-                position:"relative",overflow:"hidden",
-              }}
-              onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px) scale(1.01)";e.currentTarget.style.borderColor="rgba(240,200,80,.45)";e.currentTarget.style.background="linear-gradient(135deg,rgba(40,32,18,.8),rgba(30,24,14,.9))";e.currentTarget.style.boxShadow="0 8px 30px rgba(200,160,60,.1),inset 0 0 20px rgba(0,0,0,.2)"}}
-              onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.borderColor="rgba(200,160,60,.18)";e.currentTarget.style.background="linear-gradient(135deg,rgba(30,24,14,.7),rgba(20,16,10,.8))";e.currentTarget.style.boxShadow="inset 0 0 20px rgba(0,0,0,.2)"}}>
-              <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 50% 0%,rgba(200,160,60,.04),transparent 60%)",pointerEvents:"none"}}/>
-              <div style={{fontSize:32,filter:"drop-shadow(0 0 10px rgba(240,200,80,.3))"}}>{icon}</div>
-              <div style={{fontSize:15,fontFamily:"'Cinzel',serif",color:"#e8c850",letterSpacing:1,fontWeight:700}}>{label}</div>
-              <div style={{fontSize:10,color:"#8a7a50",lineHeight:1.6}}>{desc}</div>
-              <div style={{display:"flex",gap:5,flexWrap:"wrap",marginTop:2}}>
-                {tags.map((t,i)=>(
-                  <span key={i} style={{fontSize:9,padding:"1px 7px",borderRadius:8,background:"rgba(200,160,60,.06)",border:"1px solid rgba(200,160,60,.12)",color:"rgba(200,160,60,.6)",letterSpacing:1}}>{t}</span>
-                ))}
-              </div>
-            </div>
-          ))}
+      <div style={{animation:"slideUp .8s ease",textAlign:"center"}}>
+        <button onClick={()=>{VoiceEngine.stop();setScreen("title")}} style={{position:"absolute",top:20,left:20,background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#8a7a50",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
+        <div style={{fontSize:32,marginBottom:12}}>🔱</div>
+        <h2 style={{fontSize:"clamp(20px,4vw,32px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"0 0 8px"}}>How Many Seekers?</h2>
+        <p style={{fontSize:13,opacity:.4,marginBottom:12,letterSpacing:3}}>Each soul walks a different path</p>
+        <div style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap"}}>
+          <button className="gb gp" onClick={()=>{
+            setNP(2);setIsCPU([false,true]);setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);
+            setScreen("yama");
+          }} style={{padding:"18px 36px",fontSize:16}}>
+            <div style={{fontSize:22,marginBottom:4}}>☠️</div>1 vs Yama
+          </button>
+          {[2,3,4].map(n=><button key={n} className="gb" onClick={()=>{setNP(n);setIsCPU(Array(n).fill(false));setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("setup")}} style={{padding:"18px 36px",fontSize:16}}>{n} Players</button>)}
         </div>
-
-        {/* Utility links */}
-        <div style={{display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap",marginBottom:8}}>
-          <button onClick={()=>setShowGuide(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.15)",color:"#8a7a50",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.6}}>📜 How to Play</button>
-          <button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.15)",color:"#8a7a50",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.6}}>📖 Encyclopaedia</button>
-        </div>
-        <InstaBadge/>
-      </div>
-
-      {/* Footer */}
-      <div style={{position:"fixed",bottom:0,left:0,right:0,textAlign:"center",padding:"10px 0 12px",background:"linear-gradient(0deg,rgba(12,10,7,.9),transparent)",zIndex:2}}>
-        <div style={{fontSize:10,color:"#6a5a38",letterSpacing:1}}>© {new Date().getFullYear()} RasaVisio · All rights reserved</div>
-        <div style={{fontSize:9,color:"#4a3a28",letterSpacing:1,marginTop:2}}>Inspired by the ancient game of Moksha Patam · Created in India 🇮🇳</div>
+        <div style={{marginTop:16}}><div style={{display:"flex",gap:10,justifyContent:"center",marginBottom:8,flexWrap:"wrap"}}><button onClick={()=>setShowGuide(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📜 How to Play</button><button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📖 Encyclopaedia</button></div><InstaBadge/></div>
       </div>
     </div>
   );
@@ -3998,12 +3850,6 @@ export default function MokshaPatam108(){
           <div style={{textAlign:"center",marginTop:12}}><div style={{display:"flex",gap:10,justifyContent:"center",marginBottom:8,flexWrap:"wrap"}}><button onClick={()=>setShowGuide(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📜 How to Play</button><button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📖 Encyclopaedia</button></div><InstaBadge/></div>
         </div>
       </div>
-      {/* Footer */}
-      <div style={{textAlign:"center",padding:"16px 0 10px",position:"relative",zIndex:1}}>
-        <div style={{fontSize:10,color:"#6a5a38",letterSpacing:1}}>© {new Date().getFullYear()} RasaVisio · All rights reserved</div>
-        <div style={{fontSize:9,color:"#4a3a28",letterSpacing:1,marginTop:2}}>Inspired by the ancient game of Moksha Patam · Created in India 🇮🇳</div>
-      </div>
-    </div>
     );
   }
 
