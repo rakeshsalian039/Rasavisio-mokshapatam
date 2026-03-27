@@ -1081,68 +1081,18 @@ function useAuth(){
         if(data&&data.length>0){
           setProfile(data[0]);
           console.log("Auth: Profile loaded ✓",data[0].display_name);
-          // Sync birth_date from DB
-          if(data[0].birth_date){
-            localStorage.setItem("mp108_birth",data[0].birth_date);
-          }
         }else{console.log("Auth: No profile found for",uid)}
       }else{console.error("Auth: Profile load failed:",res.status)}
     }catch(e){console.error("Auth: Profile load error:",e)}
   };
   useEffect(()=>{
     if(!supabase){setLoading(false);return}
-
-    let resolved=false;
-    const done=(u)=>{if(resolved)return;resolved=true;setLoading(false);if(u){setUser(u);loadProfile(u.id)}};
-
-    // Timeout: if nothing works in 3s, proceed without auth
-    const timeout=setTimeout(()=>{
-      if(!resolved){
-        console.warn("Auth: Timeout — trying to recover session from storage...");
-        // Try to recover user from supabase's localStorage
-        try{
-          const storageKey=Object.keys(localStorage).find(k=>k.includes("supabase")&&k.includes("auth"));
-          if(storageKey){
-            const stored=JSON.parse(localStorage.getItem(storageKey));
-            const u=stored?.user||stored?.currentSession?.user;
-            if(u&&u.id){
-              console.log("Auth: Recovered user from localStorage:",u.email);
-              done(u);
-              return;
-            }
-          }
-        }catch(e){}
-        console.warn("Auth: No session found, proceeding as guest");
-        done(null);
-      }
-    },3000);
-
-    // Primary: try getSession
+    // Timeout: if getSession hangs for 3s, force loading=false
+    const timeout=setTimeout(()=>{console.warn("Auth: getSession timeout, proceeding without auth");setLoading(false)},3000);
     supabase.auth.getSession()
-      .then(({data:{session}})=>{
-        clearTimeout(timeout);
-        console.log("Auth: getSession",session?"✓ found user":"— no session");
-        done(session?.user||null);
-      })
-      .catch(e=>{
-        clearTimeout(timeout);
-        console.error("Auth: getSession error:",e);
-        done(null);
-      });
-
-    // Also listen for auth changes (fires on OAuth redirect)
-    const{data:{subscription}}=supabase.auth.onAuthStateChange(async(event,session)=>{
-      console.log("Auth: onAuthStateChange",event,session?.user?.email||"no user");
-      clearTimeout(timeout);
-      if(session?.user){
-        setUser(session.user);
-        setLoading(false);
-        await loadProfile(session.user.id);
-      }else if(event==="SIGNED_OUT"){
-        setUser(null);setProfile(null);setLoading(false);
-      }
-    });
-
+      .then(({data:{session}})=>{clearTimeout(timeout);setUser(session?.user??null);if(session?.user)loadProfile(session.user.id);setLoading(false)})
+      .catch(e=>{clearTimeout(timeout);console.error("Auth getSession error:",e);setLoading(false)});
+    const{data:{subscription}}=supabase.auth.onAuthStateChange(async(_,session)=>{setUser(session?.user??null);if(session?.user)await loadProfile(session.user.id);else setProfile(null);setLoading(false)});
     return()=>{clearTimeout(timeout);subscription.unsubscribe()};
   },[]);
   const signInGoogle=useCallback(async()=>{
@@ -1332,28 +1282,6 @@ export default function MokshaPatam108(){
   const[leaderboard,setLeaderboard]=useState([]);
   const[histLoading,setHistLoading]=useState(false);
   const[birthDate,setBirthDate]=useState(localStorage.getItem("mp108_birth")||"");
-  const[editingBirth,setEditingBirth]=useState(false);
-
-  // Sync birth_date from DB profile when it loads
-  useEffect(()=>{
-    if(auth.profile?.birth_date&&!birthDate){
-      setBirthDate(auth.profile.birth_date);
-      localStorage.setItem("mp108_birth",auth.profile.birth_date);
-    }
-  },[auth.profile]);
-
-  // Save birth_date to database
-  const saveBirthDate=(dateStr)=>{
-    setBirthDate(dateStr);
-    setEditingBirth(false);
-    localStorage.setItem("mp108_birth",dateStr);
-    // Save to Supabase via REST
-    if(auth.user&&sbUrl&&sbKey){
-      GameDB._patch(`profiles?id=eq.${auth.user.id}`,{birth_date:dateStr})
-        .then(r=>console.log("Birth date saved to DB:",r.error?"ERROR "+r.error.message:"✓"))
-        .catch(e=>console.error("Birth date save failed:",e));
-    }
-  };
   // Game tracking stats (reset each game)
   const gameStats=useRef({startTime:0,turns:0,snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0,grahaHits:{sun:0,moon:0,mars:0,mercury:0,jupiter:0,venus:0,saturn:0,rahu:0,ketu:0}});
 
@@ -1850,14 +1778,11 @@ export default function MokshaPatam108(){
       </svg>
     </div>
     {/* ═══ PROFILE BUTTON — visible on ALL screens (top-right) ═══ */}
-    <div style={{position:"fixed",top:10,right:10,zIndex:250,pointerEvents:"auto"}}>
-      {auth.user?<button onClick={()=>{setShowProfile(true);setProfileTab("overview")}} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 14px 6px 6px",background:"rgba(12,10,7,.9)",border:"1.5px solid rgba(200,160,60,.25)",borderRadius:22,cursor:"pointer",color:"#e8c850",fontSize:12,fontFamily:"'Cinzel',serif",backdropFilter:"blur(8px)",boxShadow:"0 2px 12px rgba(0,0,0,.4), 0 0 20px rgba(200,160,60,.05)",transition:"all .2s"}}>
-        {auth.profile?.avatar_url?<img src={auth.profile.avatar_url} alt="" style={{width:32,height:32,borderRadius:"50%",border:"2px solid rgba(240,200,80,.3)",boxShadow:"0 0 8px rgba(240,200,80,.15)"}} referrerPolicy="no-referrer"/>:<div style={{width:32,height:32,borderRadius:"50%",background:"linear-gradient(135deg,rgba(240,200,80,.2),rgba(200,160,60,.1))",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,color:"#f0d050",border:"2px solid rgba(240,200,80,.2)"}}>🪷</div>}
-        <div style={{display:"flex",flexDirection:"column",alignItems:"flex-start"}}>
-          <span style={{fontSize:12,fontWeight:700,lineHeight:1.2,maxWidth:90,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{(auth.profile?.display_name||auth.user?.user_metadata?.full_name||"").split(" ")[0]||"Profile"}</span>
-          {auth.profile?.total_games>0&&<span style={{fontSize:9,color:(auth.profile.total_punya_earned-auth.profile.total_papa_earned)>=0?"#80c080":"#e08060",lineHeight:1}}>{(auth.profile.total_punya_earned-auth.profile.total_papa_earned)>=0?"+":""}{(auth.profile.total_punya_earned||0)-(auth.profile.total_papa_earned||0)} karma</span>}
-        </div>
-      </button>:<button onClick={auth.signInGoogle} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 16px",background:"rgba(12,10,7,.9)",border:"1.5px solid rgba(200,160,60,.2)",borderRadius:22,cursor:"pointer",color:"#c0b080",fontSize:12,fontFamily:"'Cinzel',serif",backdropFilter:"blur(8px)",boxShadow:"0 2px 12px rgba(0,0,0,.4)",transition:"all .2s"}}><GoogleIcon/><span>Sign In</span></button>}
+    <div style={{position:"fixed",top:12,right:12,zIndex:250,pointerEvents:"auto"}}>
+      {auth.user?<button onClick={()=>{setShowProfile(true);setProfileTab("overview")}} style={{display:"flex",alignItems:"center",gap:5,padding:"4px 10px 4px 4px",background:"rgba(12,10,7,.8)",border:"1px solid rgba(200,160,60,.15)",borderRadius:16,cursor:"pointer",color:"#c0b080",fontSize:10,fontFamily:"'Cinzel',serif",backdropFilter:"blur(8px)"}}>
+        {auth.profile?.avatar_url?<img src={auth.profile.avatar_url} alt="" style={{width:20,height:20,borderRadius:"50%",border:"1px solid rgba(240,200,80,.2)"}} referrerPolicy="no-referrer"/>:<span style={{fontSize:14}}>🪷</span>}
+        <span style={{maxWidth:70,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{(auth.profile?.display_name||auth.user?.user_metadata?.full_name||"").split(" ")[0]||"Profile"}</span>
+      </button>:<button onClick={auth.signInGoogle} style={{display:"flex",alignItems:"center",gap:5,padding:"4px 10px",background:"rgba(12,10,7,.8)",border:"1px solid rgba(200,160,60,.12)",borderRadius:16,cursor:"pointer",color:"#8a7a50",fontSize:10,fontFamily:"'Cinzel',serif",backdropFilter:"blur(8px)"}}><GoogleIcon/>Sign In</button>}
     </div>
     {showInfo&&<div key="info-panel" style={{position:"fixed",inset:0,background:"rgba(6,5,3,.95)",zIndex:300,overflowY:"auto",padding:"clamp(12px,3vw,24px)",animation:"fadeIn .3s ease"}}>
       <div style={{maxWidth:700,margin:"0 auto"}}>
@@ -1996,55 +1921,24 @@ export default function MokshaPatam108(){
               {/* ═══ VEDIC ZODIAC — Birth date + Rashi ═══ */}
               <div style={{background:"rgba(20,16,10,.6)",border:"1px solid rgba(200,160,60,.1)",borderRadius:8,padding:16,marginTop:12}}>
                 <div style={{fontSize:12,color:"#f0d050",letterSpacing:2,marginBottom:10,fontWeight:700}}>VEDIC RASHI · YOUR COSMIC IDENTITY</div>
-                {(!birthDate||editingBirth)?(()=>{
-                  // Pre-fill dropdowns if editing existing date
-                  const existing=birthDate?new Date(birthDate):null;
-                  const exDay=existing?existing.getDate():"";
-                  const exMonth=existing?existing.getMonth()+1:"";
-                  const exYear=existing?existing.getFullYear():"";
-                  return<div style={{textAlign:"center",padding:"10px 0"}}>
-                    <div style={{fontSize:11,color:"#8a7a50",marginBottom:12}}>{editingBirth?"Update your birth date":"Select your birth date to discover your Vedic Rashi"}</div>
-                    <div style={{display:"flex",gap:8,justifyContent:"center",alignItems:"center",flexWrap:"wrap"}}>
-                      <select id="bd-day" defaultValue={exDay} style={{background:"rgba(240,200,80,.06)",border:"1px solid rgba(200,160,60,.2)",borderRadius:6,padding:"8px 10px",color:"#e8c850",fontSize:13,fontFamily:"'Cinzel',serif",cursor:"pointer",appearance:"auto"}}>
-                        <option value="" disabled>Day</option>
-                        {Array.from({length:31},(_,i)=><option key={i+1} value={i+1} style={{background:"#1a1408",color:"#e8c850"}}>{i+1}</option>)}
-                      </select>
-                      <select id="bd-month" defaultValue={exMonth} style={{background:"rgba(240,200,80,.06)",border:"1px solid rgba(200,160,60,.2)",borderRadius:6,padding:"8px 10px",color:"#e8c850",fontSize:13,fontFamily:"'Cinzel',serif",cursor:"pointer",appearance:"auto"}}>
-                        <option value="" disabled>Month</option>
-                        {["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].map((m,i)=><option key={i} value={i+1} style={{background:"#1a1408",color:"#e8c850"}}>{m}</option>)}
-                      </select>
-                      <select id="bd-year" defaultValue={exYear} style={{background:"rgba(240,200,80,.06)",border:"1px solid rgba(200,160,60,.2)",borderRadius:6,padding:"8px 10px",color:"#e8c850",fontSize:13,fontFamily:"'Cinzel',serif",cursor:"pointer",appearance:"auto"}}>
-                        <option value="" disabled>Year</option>
-                        {Array.from({length:80},(_,i)=><option key={i} value={2010-i} style={{background:"#1a1408",color:"#e8c850"}}>{2010-i}</option>)}
-                      </select>
-                    </div>
-                    <div style={{display:"flex",gap:8,justifyContent:"center",marginTop:12}}>
-                      <button onClick={()=>{
-                        const day=document.getElementById("bd-day")?.value;
-                        const month=document.getElementById("bd-month")?.value;
-                        const year=document.getElementById("bd-year")?.value;
-                        if(!day||!month||!year){alert("Please select day, month, and year");return}
-                        saveBirthDate(`${year}-${String(month).padStart(2,"0")}-${String(day).padStart(2,"0")}`);
-                      }} style={{background:"rgba(240,200,80,.08)",border:"1px solid rgba(200,160,60,.25)",borderRadius:6,padding:"8px 20px",color:"#e8c850",fontSize:12,fontFamily:"'Cinzel',serif",cursor:"pointer",letterSpacing:2}}>
-                        {editingBirth?"UPDATE ✦":"REVEAL MY RASHI ✦"}
-                      </button>
-                      {editingBirth&&<button onClick={()=>setEditingBirth(false)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.15)",borderRadius:6,padding:"8px 16px",color:"#8a7a50",fontSize:11,cursor:"pointer",fontFamily:"'Cinzel',serif"}}>Cancel</button>}
-                    </div>
+                {!birthDate?(
+                  <div style={{textAlign:"center",padding:"10px 0"}}>
+                    <div style={{fontSize:11,color:"#8a7a50",marginBottom:10}}>Enter your birth date to discover your Vedic Rashi</div>
+                    <input type="date" value={birthDate} onChange={e=>{setBirthDate(e.target.value);localStorage.setItem("mp108_birth",e.target.value)}} style={{background:"rgba(240,200,80,.06)",border:"1px solid rgba(200,160,60,.2)",borderRadius:6,padding:"8px 14px",color:"#e8c850",fontSize:13,fontFamily:"'Cinzel',serif",cursor:"pointer"}}/>
                   </div>
-                })():(()=>{
+                ):(()=>{
                   const d=new Date(birthDate);
-                  if(isNaN(d.getTime()))return<div style={{textAlign:"center",padding:10}}><div style={{color:"#e08060",fontSize:11}}>Invalid date</div><button onClick={()=>{setBirthDate("");localStorage.removeItem("mp108_birth");setEditingBirth(true)}} style={{marginTop:8,background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#8a7a50",padding:"4px 12px",fontSize:10,cursor:"pointer",borderRadius:3}}>Reset</button></div>;
                   const rashi=getZodiac(d.getMonth()+1,d.getDate());
                   if(!rashi)return null;
                   return<div>
                     <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:12}}>
                       <div style={{fontSize:36,minWidth:44,textAlign:"center"}}>{rashi.icon}</div>
-                      <div style={{flex:1}}>
+                      <div>
                         <div style={{fontSize:16,color:"#f0d050",fontWeight:700,fontFamily:"'Cinzel',serif"}}>{rashi.skt} · {rashi.en}</div>
                         <div style={{fontSize:11,color:"#8a7a50"}}>{rashi.name} · {rashi.element} · Ruled by {rashi.planet}</div>
                         <div style={{fontSize:10,color:"#6a5a38"}}>{rashi.dates} · Born: {d.toLocaleDateString("en-IN",{day:"numeric",month:"long",year:"numeric"})}</div>
                       </div>
-                      <button onClick={()=>setEditingBirth(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.15)",color:"#8a7a50",padding:"4px 10px",fontSize:10,cursor:"pointer",borderRadius:4,fontFamily:"'Cinzel',serif"}}>Edit</button>
+                      <button onClick={()=>{setBirthDate("");localStorage.removeItem("mp108_birth")}} style={{marginLeft:"auto",background:"transparent",border:"none",color:"#5a4a30",fontSize:10,cursor:"pointer"}}>✕</button>
                     </div>
                     <div style={{background:"rgba(240,200,80,.03)",border:"1px solid rgba(200,160,60,.06)",borderRadius:6,padding:12,marginBottom:10}}>
                       <div style={{fontSize:10,letterSpacing:2,color:"#8a7a50",marginBottom:6}}>VEDIC MEANING</div>
