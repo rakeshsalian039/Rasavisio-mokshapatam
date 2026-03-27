@@ -229,38 +229,6 @@ const STORY_PAGES=[
   en:"Ten colossal Nagas coil around this board. They are not just snakes. They are living nightmares. Each one a manifestation of the darkest force inside every human soul. Krodh, Wrath. Lobh, Greed. Moh, Delusion. When a serpent catches you, it drags you screaming into the depths. You lose squares, and gain 2 Papa, sin karma. But for every serpent, there is a ladder, a virtue. Daya, Compassion. Satya, Truth. Seva, Service. Bhakti, Devotion. When a ladder lifts you, you gain 1 Punya, sacred merit. Between the serpents, Dharma Dilemmas appear. Ancient moral choices from the epics. Choose wisely, for your choices shape your karma.",
   hi:"दस विशाल नाग इस पट पर कुंडली मारे बैठे हैं। ये सिर्फ सांप नहीं हैं। ये जीवित दुःस्वप्न हैं। क्रोध। लोभ। मोह। जब कोई सांप पकड़ता है, 2 पाप मिलता है। लेकिन हर सांप के लिए एक सीढ़ी है। दया। सत्य। सेवा। भक्ति। जब सीढ़ी उठाती है, 1 पुण्य मिलता है।",
   visuals:[{type:"animatedBoard",mode:"snakeladder"}]},
-  {title:"Dharma Dilemma",icon:"⚖",
-  bullets_en:[
-    {icon:"⚖",accent:"#a0c8e0",title:"21 Moral Crossroads",text:"From the Mahabharata and real life. Ancient dilemmas that kings, sages, and warriors faced — now yours to answer."},
-    {icon:"🙏",accent:"#80c080",title:"Choose Punya — The Righteous Path",text:"Harder. Costlier. Sometimes you move back. But your soul grows lighter. Karma accumulates."},
-    {icon:"💀",accent:"#e06030",title:"Choose Papa — The Dark Path",text:"Easier. You advance faster. But sin accumulates. And the gates of Moksha may reject you."},
-    {icon:"⚡",accent:"#f0d050",title:"Balance is Everything",text:"30 Punya anywhere = instant Moksha. But Papa can undo lifetimes of Punya. Every choice is permanent."},
-  ],
-  bullets_hi:[
-    {icon:"⚖",accent:"#a0c8e0",title:"21 नैतिक चौराहे",text:"महाभारत और असल जीवन से। राजाओं, ऋषियों और योद्धाओं के सामने आए प्राचीन प्रश्न — अब तुम्हारे सामने।"},
-    {icon:"🙏",accent:"#80c080",title:"पुण्य चुनो — धर्म का मार्ग",text:"कठिन। महंगा। कभी-कभी पीछे जाते हो। लेकिन आत्मा हल्की होती है। कर्म जमा होता है।"},
-    {icon:"💀",accent:"#e06030",title:"पाप चुनो — अधर्म का मार्ग",text:"आसान। तेज़ आगे बढ़ते हो। लेकिन पाप जमा होता है। और मोक्ष के द्वार बंद हो सकते हैं।"},
-    {icon:"⚡",accent:"#f0d050",title:"संतुलन सब कुछ है",text:"30 पुण्य कहीं से भी = तुरंत मोक्ष। लेकिन पाप जन्मों का पुण्य मिटा सकता है। हर चुनाव स्थायी है।"},
-  ],
-  en:"Every few squares, life stops you. A Dharma Dilemma appears. An ancient crossroads. These are not simple questions. They are the same moral choices that destroyed kings and elevated sages. Karna gave away his divine armour to a beggar. Knowing it would kill him. Eklavya cut off his own thumb for his guru. Yudhishthira told a half-truth to win a war. These choices are yours now. Choose Punya, the righteous path, and move back but grow purer. Choose Papa, the easy path, advance faster but sin accumulates. The board does not care about your intentions. Only your karma matters at the final gate.",
-  hi:"हर कुछ खानों पर, जीवन तुम्हें रोकता है। एक धर्म दुविधा प्रकट होती है। एक प्राचीन चौराहा। ये सरल प्रश्न नहीं हैं। ये वही नैतिक चुनाव हैं जिन्होंने राजाओं को नष्ट किया और ऋषियों को ऊपर उठाया। कर्ण ने अपना दिव्य कवच एक भिखारी को दिया। जानते हुए कि इससे मृत्यु होगी। एकलव्य ने गुरु के लिए अपना अंगूठा काटा। युधिष्ठिर ने युद्ध जीतने के लिए आधा सच बोला। ये चुनाव अब तुम्हारे हैं।",
-  visuals:[{type:"dharmaStage"}]},
-  {title:"The 8-Fold Sacred Path",icon:"🪷",
-  bullets_en:[
-    {icon:"🪷",accent:"#f0d050",title:"Above Square 100 — A Different World",text:"Once you pass square 100, dice rolls no longer matter. You move exactly ONE step per turn."},
-    {icon:"📖",accent:"#c0a0e0",title:"Patanjali's Ashtanga Yoga",text:"Each of the 8 steps tests your knowledge of yoga and dharma. Answer correctly — gain Punya. Fail — gain Papa and fall back."},
-    {icon:"🚪",accent:"#f0b840",title:"The Final Gate at 107",text:"At Dhyana (square 107), you need an exact roll of 1. Only absolute surrender opens the gate to Moksha."},
-    {icon:"ॐ",accent:"#80c080",title:"The Navagraha Cannot Touch You",text:"On the Sacred Path, no planet effects apply. No swapping. No pushing. You are beyond the material world."},
-  ],
-  bullets_hi:[
-    {icon:"🪷",accent:"#f0d050",title:"खाना 100 के ऊपर — एक अलग दुनिया",text:"खाना 100 पार करने के बाद, पासे से कोई फर्क नहीं। हर बारी एक ही कदम चलते हो।"},
-    {icon:"📖",accent:"#c0a0e0",title:"पतंजलि का अष्टांग योग",text:"8 में से हर कदम योग और धर्म ज्ञान की परीक्षा लेता है। सही उत्तर दो — पुण्य मिलता है। गलत — पाप और वापस।"},
-    {icon:"🚪",accent:"#f0b840",title:"खाना 107 पर अंतिम द्वार",text:"ध्यान पर, सटीक 1 चाहिए। केवल पूर्ण समर्पण मोक्ष का द्वार खोलता है।"},
-    {icon:"ॐ",accent:"#80c080",title:"नवग्रह तुम्हें नहीं छू सकते",text:"पवित्र मार्ग पर कोई ग्रह प्रभाव नहीं। अदला-बदली नहीं। धक्का नहीं। तुम भौतिक संसार से परे हो।"},
-  ],
-  en:"Past square 100, the rules change. You have transcended the material world. The Navagraha cannot touch you. You move one step at a time along the Ashtanga Marga — the eight-fold path of Patanjali. Yama, self-restraint. Niyama, discipline. Asana, steadiness. Pranayama, the expansion of life-force. Pratyahara, withdrawal of the senses. Dharana, single-pointed concentration. Dhyana, deep meditation. And finally, Moksha at square 108, liberation from the cycle of birth and death. But at square 107, the Dhyana gate demands exactness. You must roll a one. Only perfect surrender, no grasping, no eagerness, opens the final door.",
-  hi:"खाना 100 के बाद, नियम बदल जाते हैं। तुम भौतिक संसार को पार कर चुके हो। नवग्रह तुम्हें नहीं छू सकते। अष्टांग मार्ग पर एक-एक कदम चलते हो। यम, नियम, आसन, प्राणायाम, प्रत्याहार, धारणा, ध्यान। और अंत में, खाना 108 पर मोक्ष — जन्म और मृत्यु के चक्र से मुक्ति। लेकिन खाना 107 पर, ध्यान का द्वार सटीकता मांगता है। सटीक 1 फेंकना होगा। केवल पूर्ण समर्पण अंतिम द्वार खोलता है।",
-  visuals:[{type:"sacredPathStage"}]},
   {title:"Yama Awaits",icon:"💀",
   bullets_en:[
     {icon:"☠️",accent:"#e06060",title:"Not a Computer — A Cosmic Force",text:"In solo mode, you face Yama. The God of Death. He has judged souls since the dawn of creation."},
@@ -292,7 +260,39 @@ const STORY_PAGES=[
   ],
   en:"Two paths to escape the wheel of Samsara. The First Path, reach Square 108 with an exact roll. But even if you arrive, the gates will not open for a tainted soul. Your Punya must equal or exceed your Papa. If impure, you are cast back to Square 67. To suffer again. The Second Path, far rarer, far more beautiful. Accumulate 30 Punya at any moment during your journey. The board itself dissolves beneath you. Instant Moksha. This is the ancient truth the sages encoded. A truly pure soul can break free from any square. The dice are ready. The serpents can smell your fear. Step onto the board.",
   hi:"संसार के चक्र से बचने के दो रास्ते। पहला, खाना 108 पर सटीक पासे से। लेकिन दूषित आत्मा के लिए द्वार नहीं। पुण्य पाप से ज़्यादा होना चाहिए। अशुद्ध हो तो 67 पर वापस। दूसरा रास्ता, 30 पुण्य। पट विलीन। तुरंत मोक्ष। पासे तैयार हैं। सांप तुम्हारे डर की गंध सूंघ रहे हैं।",
-  visuals:[{type:"animatedBoard",mode:"intro"}]}
+  visuals:[{type:"animatedBoard",mode:"intro"}]},
+  {title:"Dharma Dilemma",icon:"⚖",
+  bullets_en:[
+    {icon:"⚖",accent:"#a0c8e0",title:"21 Moral Crossroads",text:"From the Mahabharata and real life. Ancient dilemmas that kings, sages, and warriors faced — now yours to answer."},
+    {icon:"🙏",accent:"#80c080",title:"Choose Punya — The Righteous Path",text:"Harder. Costlier. Sometimes you move back. But your soul grows lighter. Karma accumulates."},
+    {icon:"💀",accent:"#e06030",title:"Choose Papa — The Dark Path",text:"Easier. You advance faster. But sin accumulates. And the gates of Moksha may reject you."},
+    {icon:"⚡",accent:"#f0d050",title:"Balance is Everything",text:"30 Punya anywhere = instant Moksha. But Papa can undo lifetimes of Punya. Every choice is permanent."},
+  ],
+  bullets_hi:[
+    {icon:"⚖",accent:"#a0c8e0",title:"21 नैतिक चौराहे",text:"महाभारत और असल जीवन से। राजाओं, ऋषियों और योद्धाओं के सामने आए प्राचीन प्रश्न — अब तुम्हारे सामने।"},
+    {icon:"🙏",accent:"#80c080",title:"पुण्य चुनो — धर्म का मार्ग",text:"कठिन। महंगा। कभी-कभी पीछे जाते हो। लेकिन आत्मा हल्की होती है। कर्म जमा होता है।"},
+    {icon:"💀",accent:"#e06030",title:"पाप चुनो — अधर्म का मार्ग",text:"आसान। तेज़ आगे बढ़ते हो। लेकिन पाप जमा होता है। और मोक्ष के द्वार बंद हो सकते हैं।"},
+    {icon:"⚡",accent:"#f0d050",title:"संतुलन सब कुछ है",text:"30 पुण्य कहीं से भी = तुरंत मोक्ष। लेकिन पाप जन्मों का पुण्य मिटा सकता है। हर चुनाव स्थायी है।"},
+  ],
+  en:"Every few squares, life stops you. A Dharma Dilemma appears. An ancient crossroads. These are not simple questions. They are the same moral choices that destroyed kings and elevated sages. Karna gave away his divine armour to a beggar. Knowing it would kill him. Eklavya cut off his own thumb for his guru. Yudhishthira told a half-truth to win a war. These choices are yours now. Choose Punya, the righteous path, and move back but grow purer. Choose Papa, the easy path, advance faster but sin accumulates. The board does not care about your intentions. Only your karma matters at the final gate.",
+  hi:"हर कुछ खानों पर, जीवन तुम्हें रोकता है। एक धर्म दुविधा प्रकट होती है। एक प्राचीन चौराहा। ये सरल प्रश्न नहीं हैं। ये वही नैतिक चुनाव हैं जिन्होंने राजाओं को नष्ट किया और ऋषियों को ऊपर उठाया। कर्ण ने अपना दिव्य कवच एक भिखारी को दिया। जानते हुए कि इससे मृत्यु होगी। एकलव्य ने गुरु के लिए अपना अंगूठा काटा। युधिष्ठिर ने युद्ध जीतने के लिए आधा सच बोला। ये चुनाव अब तुम्हारे हैं।",
+  visuals:[{type:"dharmaStage"}]},
+  {title:"The 8-Fold Sacred Path",icon:"🪷",
+  bullets_en:[
+    {icon:"🪷",accent:"#f0d050",title:"Above Square 100 — A Different World",text:"Once you pass square 100, dice rolls no longer matter. You move exactly ONE step per turn."},
+    {icon:"📖",accent:"#c0a0e0",title:"Patanjali's Ashtanga Yoga",text:"Each of the 8 steps tests your knowledge of yoga and dharma. Answer correctly — gain Punya. Fail — gain Papa and fall back."},
+    {icon:"🚪",accent:"#f0b840",title:"The Final Gate at 107",text:"At Dhyana (square 107), you need an exact roll of 1. Only absolute surrender opens the gate to Moksha."},
+    {icon:"ॐ",accent:"#80c080",title:"The Navagraha Cannot Touch You",text:"On the Sacred Path, no planet effects apply. No swapping. No pushing. You are beyond the material world."},
+  ],
+  bullets_hi:[
+    {icon:"🪷",accent:"#f0d050",title:"खाना 100 के ऊपर — एक अलग दुनिया",text:"खाना 100 पार करने के बाद, पासे से कोई फर्क नहीं। हर बारी एक ही कदम चलते हो।"},
+    {icon:"📖",accent:"#c0a0e0",title:"पतंजलि का अष्टांग योग",text:"8 में से हर कदम योग और धर्म ज्ञान की परीक्षा लेता है। सही उत्तर दो — पुण्य मिलता है। गलत — पाप और वापस।"},
+    {icon:"🚪",accent:"#f0b840",title:"खाना 107 पर अंतिम द्वार",text:"ध्यान पर, सटीक 1 चाहिए। केवल पूर्ण समर्पण मोक्ष का द्वार खोलता है।"},
+    {icon:"ॐ",accent:"#80c080",title:"नवग्रह तुम्हें नहीं छू सकते",text:"पवित्र मार्ग पर कोई ग्रह प्रभाव नहीं। अदला-बदली नहीं। धक्का नहीं। तुम भौतिक संसार से परे हो।"},
+  ],
+  en:"Past square 100, the rules change. You have transcended the material world. The Navagraha cannot touch you. You move one step at a time along the Ashtanga Marga — the eight-fold path of Patanjali. Yama, self-restraint. Niyama, discipline. Asana, steadiness. Pranayama, the expansion of life-force. Pratyahara, withdrawal of the senses. Dharana, single-pointed concentration. Dhyana, deep meditation. And finally, Moksha at square 108, liberation from the cycle of birth and death. But at square 107, the Dhyana gate demands exactness. You must roll a one. Only perfect surrender, no grasping, no eagerness, opens the final door.",
+  hi:"खाना 100 के बाद, नियम बदल जाते हैं। तुम भौतिक संसार को पार कर चुके हो। नवग्रह तुम्हें नहीं छू सकते। अष्टांग मार्ग पर एक-एक कदम चलते हो। यम, नियम, आसन, प्राणायाम, प्रत्याहार, धारणा, ध्यान। और अंत में, खाना 108 पर मोक्ष — जन्म और मृत्यु के चक्र से मुक्ति। लेकिन खाना 107 पर, ध्यान का द्वार सटीकता मांगता है। सटीक 1 फेंकना होगा। केवल पूर्ण समर्पण अंतिम द्वार खोलता है।",
+  visuals:[{type:"sacredPathStage"}]}
 ];
 
 function sqP(n){
@@ -3504,11 +3504,17 @@ export default function MokshaPatam108(){
 
             {/* Action buttons */}
             <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
-              <button className="gb gp" onClick={()=>{
+              <button className="gb gp" disabled={preloading} onClick={()=>{
                 ambient.start();
-                setScreen("story"); setStoryPage(0);
+                const isLocal = ['localhost','127.0.0.1',''].includes(window.location.hostname);
+                if (isLocal) { setScreen("story"); setStoryPage(0); return; }
+                setPreloading(true); setPreloadPct(0);
+                const { promise, progress } = AudioCache.preloadAll(chosenLang);
+                const iv = setInterval(() => setPreloadPct(progress()), 300);
+                promise.then(() => { clearInterval(iv); setPreloadPct(100); setCacheCount(AudioCache.count()); setPreloading(false); setScreen("story"); setStoryPage(0); })
+                  .catch(() => { clearInterval(iv); setPreloading(false); setScreen("story"); setStoryPage(0); });
               }} style={{fontSize:13,padding:"12px 28px",letterSpacing:2}}>
-                📜 BEGIN STORY
+                {preloading ? `📜 LOADING... ${preloadPct}%` : "📜 BEGIN STORY"}
               </button>
               <button className="gb" onClick={()=>{ambient.start();setScreen("pickcount")}} style={{fontSize:13,padding:"12px 28px",letterSpacing:2,opacity:.5}}>⚡ PLAY</button>
             </div>
