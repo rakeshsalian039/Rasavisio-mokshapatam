@@ -165,71 +165,20 @@ tts "$OUT_DIR/karma-win-hi.mp3" "$VOICE" "$HI_INSTR" \
 "कर्म विजय! तीस पुण्य इकट्ठे हो गए। पट तुम्हारे नीचे से विलीन हो जाता है। सच्ची शुद्ध आत्मा किसी भी खाने से मुक्त हो सकती है। तुरंत मोक्ष।"
 
 echo ""
-echo "── ASHTANGA MARGA — 7 SACRED STEPS ──────────────────"
-
-# Step 1 — Yama (Self-restraint) — entry to sacred path
-tts "$OUT_DIR/ashtanga-1-en.mp3" "$VOICE" "$EN_INSTR" \
-"You have entered the Ashtanga Marga — the eight-fold sacred path of Patanjali. From here, you move only one step per turn. Each step tests your soul. There are no dice shortcuts. Only dharma. Step one of seven: Yama. Self-restraint."
-
-tts "$OUT_DIR/ashtanga-1-hi.mp3" "$VOICE" "$HI_INSTR" \
-"तुमने अष्टांग मार्ग में प्रवेश किया है — पतंजलि का आठ-सूत्री पवित्र मार्ग। अब हर बारी केवल एक कदम चलते हो। हर कदम तुम्हारी आत्मा की परीक्षा है। कोई पासे का शॉर्टकट नहीं। केवल धर्म। पहला कदम: यम। आत्म-संयम।"
-
-# Step 2 — Niyama (Discipline)
-tts "$OUT_DIR/ashtanga-2-en.mp3" "$VOICE" "$EN_INSTR" \
-"Step two of seven on the Sacred Path. Niyama. Discipline. The soul that cannot discipline itself cannot ascend. A test of your wisdom awaits."
-
-tts "$OUT_DIR/ashtanga-2-hi.mp3" "$VOICE" "$HI_INSTR" \
-"पवित्र मार्ग पर दूसरा कदम। नियम। अनुशासन। जो आत्मा खुद को अनुशासित नहीं कर सकती, वह ऊपर नहीं जा सकती। तुम्हारे ज्ञान की परीक्षा सामने है।"
-
-# Step 3 — Asana (Steadiness)
-tts "$OUT_DIR/ashtanga-3-en.mp3" "$VOICE" "$EN_INSTR" \
-"Step three of seven on the Sacred Path. Asana. Steadiness. The body is the temple of the soul. Still the vessel, and the soul rises. A test of your wisdom awaits."
-
-tts "$OUT_DIR/ashtanga-3-hi.mp3" "$VOICE" "$HI_INSTR" \
-"पवित्र मार्ग पर तीसरा कदम। आसन। स्थिरता। शरीर आत्मा का मंदिर है। पात्र को स्थिर करो, और आत्मा ऊपर उठती है। तुम्हारे ज्ञान की परीक्षा सामने है।"
-
-# Step 4 — Pranayama (Life-force)
-tts "$OUT_DIR/ashtanga-4-en.mp3" "$VOICE" "$EN_INSTR" \
-"Step four of seven on the Sacred Path. Pranayama. The expansion of life-force. Breath is the bridge between body and soul. Master the breath, master existence. A test of your wisdom awaits."
-
-tts "$OUT_DIR/ashtanga-4-hi.mp3" "$VOICE" "$HI_INSTR" \
-"पवित्र मार्ग पर चौथा कदम। प्राणायाम। जीवन-शक्ति का विस्तार। श्वास शरीर और आत्मा के बीच का सेतु है। श्वास पर नियंत्रण, अस्तित्व पर नियंत्रण। तुम्हारे ज्ञान की परीक्षा सामने है।"
-
-# Step 5 — Pratyahara (Withdrawal)
-tts "$OUT_DIR/ashtanga-5-en.mp3" "$VOICE" "$EN_INSTR" \
-"Step five of seven on the Sacred Path. Pratyahara. Withdrawal of the senses. The world calls, but the soul must turn inward. Silence the noise. A test of your wisdom awaits."
-
-tts "$OUT_DIR/ashtanga-5-hi.mp3" "$VOICE" "$HI_INSTR" \
-"पवित्र मार्ग पर पांचवां कदम। प्रत्याहार। इंद्रियों का निग्रह। दुनिया बुलाती है, लेकिन आत्मा को अंतर्मुखी होना होगा। शोर को शांत करो। तुम्हारे ज्ञान की परीक्षा सामने है।"
-
-# Step 6 — Dharana (Concentration)
-tts "$OUT_DIR/ashtanga-6-en.mp3" "$VOICE" "$EN_INSTR" \
-"Step six of seven on the Sacred Path. Dharana. Single-pointed concentration. The laser of consciousness. Point it at truth. A test of your wisdom awaits."
-
-tts "$OUT_DIR/ashtanga-6-hi.mp3" "$VOICE" "$HI_INSTR" \
-"पवित्र मार्ग पर छठा कदम। धारणा। एकाग्रता। चेतना की लेज़र। इसे सत्य पर केंद्रित करो। तुम्हारे ज्ञान की परीक्षा सामने है।"
-
-# Step 7 — Dhyana (Meditation) — final gate
-tts "$OUT_DIR/ashtanga-7-en.mp3" "$VOICE" "$EN_INSTR" \
-"The final step. Dhyana. Deep meditation. After this test, you must roll exact one to enter Moksha. The dice do not matter here. Only the purity of your surrender. Step seven of seven."
-
-tts "$OUT_DIR/ashtanga-7-hi.mp3" "$VOICE" "$HI_INSTR" \
-"अंतिम कदम। ध्यान। गहरी समाधि। इस परीक्षा के बाद, मोक्ष में प्रवेश के लिए सटीक एक पासा फेंकना होगा। यहाँ पासे का महत्व नहीं। केवल तुम्हारे समर्पण की शुद्धता। सातवां कदम, सातवें में से।"
-
-echo ""
 echo "══════════════════════════════════════════════════════"
 echo "  Done!  Generated: $DONE  |  Skipped: $SKIP  |  Total: $TOTAL"
 echo ""
 echo "  Files saved to: $OUT_DIR/"
 echo "  Deploy at: /public/game-voices/*.mp3"
 echo ""
-echo "  Files generated:"
-echo "  · 9 graha effects × 2 langs  = 18 files"
-echo "  · 5 game events × 2 langs    = 10 files"
-echo "  · 7 Ashtanga steps × 2 langs = 14 files"
-echo "  · Total: 42 files"
+echo "  Cost summary:"
+echo "  · tts-1 model: \$0.015 per 1K chars"
+echo "  · ~28 files × ~120 chars avg = ~3,360 chars ≈ \$0.05 one-time"
+echo "  · After deploy: \$0 per user forever"
 echo ""
-echo "  Cost: tts-1-hd @ \$0.030/1K chars × ~300 chars avg × 42 ≈ \$0.38 one-time"
-echo "  After deploy: \$0 per user, per game, forever"
+echo "  What this replaces (per game session, per user):"
+echo "  · 9 graha popups × TTS fetch = ~9 API calls saved"
+echo "  · Snake/ladder/events = ~5 more calls saved"
+echo "  · At 1000 games/day = ~14,000 API calls/day saved"
 echo "══════════════════════════════════════════════════════"
 echo ""

@@ -768,14 +768,6 @@ const STATIC_VOICES = {
   moksha_gate: { en: '/game-voices/moksha-gate-en.mp3', hi: '/game-voices/moksha-gate-hi.mp3' },
   karma_win:   { en: '/game-voices/karma-win-en.mp3',   hi: '/game-voices/karma-win-hi.mp3' },
   shield_save: { en: '/game-voices/shield-save-en.mp3', hi: '/game-voices/shield-save-hi.mp3' },
-  // ── Ashtanga Marga step intros (7 steps × 2 langs = 14 files) ──
-  ashtanga_step_1: { en: '/game-voices/ashtanga-1-en.mp3', hi: '/game-voices/ashtanga-1-hi.mp3' },
-  ashtanga_step_2: { en: '/game-voices/ashtanga-2-en.mp3', hi: '/game-voices/ashtanga-2-hi.mp3' },
-  ashtanga_step_3: { en: '/game-voices/ashtanga-3-en.mp3', hi: '/game-voices/ashtanga-3-hi.mp3' },
-  ashtanga_step_4: { en: '/game-voices/ashtanga-4-en.mp3', hi: '/game-voices/ashtanga-4-hi.mp3' },
-  ashtanga_step_5: { en: '/game-voices/ashtanga-5-en.mp3', hi: '/game-voices/ashtanga-5-hi.mp3' },
-  ashtanga_step_6: { en: '/game-voices/ashtanga-6-en.mp3', hi: '/game-voices/ashtanga-6-hi.mp3' },
-  ashtanga_step_7: { en: '/game-voices/ashtanga-7-en.mp3', hi: '/game-voices/ashtanga-7-hi.mp3' },
 };
 
 // Map graha fx key → STATIC_VOICES key
@@ -3039,15 +3031,13 @@ export default function MokshaPatam108(){
             const sq=SACRED_PATH[p-101];
             const stepNum=p-100;
             const isFirstStep=p===101;
-            // Static text per step (no player name — pre-cacheable as MP3)
             const introText=isFirstStep
-              ?`You have entered the Ashtanga Marga — the 8-fold sacred path of Patanjali. From here, you move only one step per turn. Each step tests your soul. There are no dice shortcuts. Only dharma. Step one of seven: ${sq.en}. ${sq.desc}.`
+              ?`${pName}, you have ENTERED THE ASHTANGA MARGA — the 8-fold sacred path of Patanjali! From here, you move only ONE STEP per turn. Each step tests your soul. There are no dice shortcuts. Only dharma. Step ${stepNum} of 7: ${sq.en} (${sq.desc}).`
               :p===107
-              ?`You have reached the final step — Dhyana, Meditation. After this test, you must roll exact one to enter Moksha. Only absolute surrender opens the final gate. Step seven of seven.`
-              :`Step ${stepNum} of 7 on the Sacred Path: ${sq.skt} — ${sq.en}. ${sq.desc}. A test of your soul awaits.`;
-            const ashtangaStaticKey=`ashtanga_step_${stepNum}`;
+              ?`${pName}, you have reached the FINAL STEP — ध्यान Dhyana, Meditation. After this test, you must roll EXACT 1 to enter Moksha. Only absolute surrender opens the final gate. Step 7 of 7.`
+              :`${pName}, Step ${stepNum} of 7 on the Sacred Path: ${sq.skt} — ${sq.en} (${sq.desc}). A test of your soul awaits.`;
             eMsg=`${sq.icon} ${sq.skt} — Step ${stepNum}/7`;play("dilemma");
-            showEvent({icon:sq.icon,title:`अष्टांग मार्ग · Step ${stepNum}`,subtitle:introText,color:"#f0d050",staticKey:ashtangaStaticKey},()=>{
+            showEvent({icon:sq.icon,title:`अष्टांग मार्ग · Step ${stepNum}`,subtitle:introText,color:"#f0d050"},()=>{
               // Pick random riddle for this step
               const pool=ASHTANGA_RIDDLES[p]||ASHTANGA_RIDDLES[101];
               const riddle=pool[Math.floor(Math.random()*pool.length)];
