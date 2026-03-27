@@ -1148,7 +1148,7 @@ const GameDB={
         final_square:d.square||1,final_punya:d.punya||0,final_papa:d.papa||0,
         snakes_hit:d.snakes||0,ladders_climbed:d.ladders||0,dharma_cards_faced:0,
         riddles_correct:d.riddlesC||0,riddles_wrong:d.riddlesW||0,
-        highest_square:d.highest||1,graha_effects:JSON.stringify({players:d.allPlayers||[],grahaHits:d.grahaHits||{}}),
+        highest_square:d.highest||1,graha_effects:{},
         ashtanga_reached:d.ashtanga||false,moksha_rejected:d.rejected||0
       });
       console.log("GameDB: Step 1",res.error?"ERROR: "+res.error.message:"✓ INSERTED");
@@ -1228,51 +1228,6 @@ const GameDB={
 function GoogleIcon(){return <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>}
 function AppleIcon(){return <svg width="18" height="18" viewBox="0 0 24 24" fill="#e8c850"><path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>}
 
-// ═══ VEDIC ASTROLOGY — Rashi (Sun Sign) + Nakshatra data ═══
-const RASHI=[
-  {name:"Mesha",en:"Aries",skt:"मेष",icon:"♈",element:"Fire",planet:"Mars",dates:"Mar 21 – Apr 19",
-    meaning:"The ram who leaps fearlessly. In Vedic science, Mesha represents the spark of creation — pure kinetic energy. Like the first cell dividing, Aries energy is about initiation. Mars governs adrenal response and iron in blood.",
-    advice:"Channel your fire into dharmic action. Practice patience through Pranayama. Your Mars energy heals when directed at service, burns when directed at ego."},
-  {name:"Vrishabha",en:"Taurus",skt:"वृषभ",icon:"♉",element:"Earth",planet:"Venus",dates:"Apr 20 – May 20",
-    meaning:"The sacred bull — Nandi, Shiva's mount. Vrishabha represents material stability and sensory experience. Venus governs the throat chakra, taste, and aesthetic appreciation. Earth signs ground cosmic energy into form.",
-    advice:"Build lasting foundations but avoid attachment. Practice Aparigraha (non-possessiveness). Your Venus gifts shine in art, music, and creating beauty that serves others."},
-  {name:"Mithuna",en:"Gemini",skt:"मिथुन",icon:"♊",element:"Air",planet:"Mercury",dates:"May 21 – Jun 20",
-    meaning:"The divine twins — duality in unity. Mercury governs the neural pathways, the speed of thought, and the bridge between logic and intuition. Air carries prana — the breath of intelligence.",
-    advice:"Use your dual nature to see both sides of every dharma dilemma. Practice Dharana (concentration) to focus your scattered brilliance into a single flame."},
-  {name:"Karka",en:"Cancer",skt:"कर्क",icon:"♋",element:"Water",planet:"Moon",dates:"Jun 21 – Jul 22",
-    meaning:"The crab carries its home — the shell of emotional memory. The Moon governs tides, menstrual cycles, and the unconscious mind. Water signs process karma through feeling.",
-    advice:"Your emotional depth is a superpower, not a weakness. Practice Pratyahara (withdrawal of senses) during full moons. Nurture without drowning in attachment."},
-  {name:"Simha",en:"Leo",skt:"सिंह",icon:"♌",element:"Fire",planet:"Sun",dates:"Jul 23 – Aug 22",
-    meaning:"The lion — Narasimha, Vishnu's fierce avatar. The Sun is the Atman, the true self. Leo energy is the soul recognizing its own divinity. Solar plexus governs willpower and digestion.",
-    advice:"Lead with generosity, not pride. The Sun shines on all equally. Practice Seva (selfless service) — true kings serve their people."},
-  {name:"Kanya",en:"Virgo",skt:"कन्या",icon:"♍",element:"Earth",planet:"Mercury",dates:"Aug 23 – Sep 22",
-    meaning:"The maiden — Shakti in her analytical form. Mercury here governs discrimination (Viveka), the ability to separate truth from illusion. The digestive fire of the mind.",
-    advice:"Your precision is sacred but perfectionism is Maya. Practice Santosha (contentment). Serve through healing, teaching, and bringing order to chaos."},
-  {name:"Tula",en:"Libra",skt:"तुला",icon:"♎",element:"Air",planet:"Venus",dates:"Sep 23 – Oct 22",
-    meaning:"The scales of Ma'at — cosmic balance. Venus here governs justice, partnership, and the harmony of opposites. The heart chakra seeks equilibrium between giving and receiving.",
-    advice:"Your quest for balance IS your dharma. Practice Ahimsa in relationships. Make decisions from wisdom, not people-pleasing."},
-  {name:"Vrishchika",en:"Scorpio",skt:"वृश्चिक",icon:"♏",element:"Water",planet:"Mars",dates:"Oct 23 – Nov 21",
-    meaning:"The scorpion transforms into the eagle — death and rebirth. Mars here drives transformation at the cellular level. Kundalini energy coils at the base, waiting to rise.",
-    advice:"Embrace transformation — you are built for it. Practice Tapas (austerity) to transmute intensity into spiritual power. Your depth sees through all illusion."},
-  {name:"Dhanu",en:"Sagittarius",skt:"धनु",icon:"♐",element:"Fire",planet:"Jupiter",dates:"Nov 22 – Dec 21",
-    meaning:"The archer — Arjuna's focus on the fish's eye. Jupiter expands consciousness, governs the liver (seat of righteous anger in Ayurveda), and the quest for truth.",
-    advice:"Aim your arrow at Moksha, not just knowledge. Practice Svadhyaya (self-study). Travel expands you, but the ultimate journey is inward."},
-  {name:"Makara",en:"Capricorn",skt:"मकर",icon:"♑",element:"Earth",planet:"Saturn",dates:"Dec 22 – Jan 19",
-    meaning:"The sea-monster — ancient, patient, climbing from ocean depths to mountain peaks. Saturn teaches through time, discipline, and karma. Bones and teeth — the structures that endure.",
-    advice:"Your patience is your greatest asset. Shani rewards those who persist through darkness. Practice Niyama (discipline) — slow, steady karma yields the deepest liberation."},
-  {name:"Kumbha",en:"Aquarius",skt:"कुम्भ",icon:"♒",element:"Air",planet:"Saturn",dates:"Jan 20 – Feb 18",
-    meaning:"The water-bearer — pouring knowledge for humanity. Saturn here governs collective karma, the nervous system, and circulation. The Kumbh Mela is named for this sign.",
-    advice:"Your vision sees what others cannot. Practice community dharma. Your detachment is not coldness — it is the ability to love without chains."},
-  {name:"Meena",en:"Pisces",skt:"मीन",icon:"♓",element:"Water",planet:"Jupiter",dates:"Feb 19 – Mar 20",
-    meaning:"Two fish swimming in opposite directions — the soul between worlds. Jupiter here dissolves boundaries between self and cosmos. The final sign — closest to Moksha.",
-    advice:"You feel everything because you ARE everything. Practice Dhyana (meditation) — you are naturally close to the divine. Set boundaries to protect your gift of empathy."}
-];
-function getZodiac(month,day){
-  const dates=[[1,20,"♑"],[2,19,"♒"],[3,20,"♓"],[4,20,"♈"],[5,21,"♉"],[6,21,"♊"],[7,22,"♋"],[8,23,"♌"],[9,23,"♍"],[10,23,"♎"],[11,22,"♏"],[12,22,"♐"],[12,31,"♑"]];
-  for(let i=0;i<dates.length;i++){if(month<dates[i][0]||(month===dates[i][0]&&day<=dates[i][1]))return RASHI.find(r=>r.icon===dates[i][2])}
-  return RASHI[9]; // Capricorn default
-}
-
 export default function MokshaPatam108(){
   const auth=useAuth();
   const[showProfile,setShowProfile]=useState(false);
@@ -1281,9 +1236,8 @@ export default function MokshaPatam108(){
   const[gameHistory,setGameHistory]=useState([]);
   const[leaderboard,setLeaderboard]=useState([]);
   const[histLoading,setHistLoading]=useState(false);
-  const[birthDate,setBirthDate]=useState(localStorage.getItem("mp108_birth")||"");
   // Game tracking stats (reset each game)
-  const gameStats=useRef({startTime:0,turns:0,snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0,grahaHits:{sun:0,moon:0,mars:0,mercury:0,jupiter:0,venus:0,saturn:0,rahu:0,ketu:0}});
+  const gameStats=useRef({startTime:0,turns:0,snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0});
 
   // Auto-load profile data when profile panel opens
   useEffect(()=>{
@@ -1412,7 +1366,7 @@ export default function MokshaPatam108(){
     setShieldA(Array(n).fill(false));setSkipA(Array(n).fill(false));
     setCur(0);setWin(null);setHist([]);setRv(null);setGv(null);setBusy(false);setDil(null);setUsedDharma([]);
     setMsg(`${pList[0].name} the ${pList[0].char.name} — your journey begins.`);
-    gameStats.current={startTime:Date.now(),turns:0,snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0,grahaHits:{sun:0,moon:0,mars:0,mercury:0,jupiter:0,venus:0,saturn:0,rahu:0,ketu:0}};
+    gameStats.current={startTime:Date.now(),turns:0,snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0};
     setScreen("game");
   };
 
@@ -1451,8 +1405,6 @@ export default function MokshaPatam108(){
     const extras=[];const nPunya=[...punya];const nPapa=[...papa];const nShield=[...shieldA];const nPos=[...pos];const nSkip=[...skipA];
     let grahaStory="";
     const onSacredPath=oldP>=101;
-    // Track graha hit
-    if(g.fx&&gameStats.current.grahaHits){gameStats.current.grahaHits[g.fx]=(gameStats.current.grahaHits[g.fx]||0)+1}
     if(onSacredPath){
       grahaStory=`${pName}, the Navagraha have no power on the Sacred Path. Only your dharma matters here.`;
       setGv(null); // Don't show graha die result
@@ -1655,6 +1607,7 @@ export default function MokshaPatam108(){
     if(win===null)return;
     if(!auth.user){console.log("Auto-save: No auth user, skipping");return}
     if(!players[win]){console.log("Auto-save: No player at win index",win);return}
+    // Delay slightly to ensure punya/papa/pos state has settled after the winning move
     const timer=setTimeout(()=>{
       console.log("Auto-save: TRIGGERED for player",win,"punya:",punya[win],"papa:",papa[win],"pos:",pos[win]);
       const gs=gameStats.current;
@@ -1662,20 +1615,7 @@ export default function MokshaPatam108(){
       const pa=papa[win]||0;
       const sq=pos[win]||1;
       const isKarma=p>=30;
-
-      // Collect ALL players' data for history
-      const allPlayers=players.map((pl,i)=>({
-        name:pl.name,
-        icon:pl.char?.icon||"🔱",
-        character:pl.char?.name||"Seeker",
-        color:pl.char?.color||"#e8c850",
-        cpu:!!pl.cpu,
-        punya:punya[i]||0,
-        papa:papa[i]||0,
-        square:pos[i]||1,
-        isWinner:i===win
-      }));
-
+      const isMoksha=sq>=108&&p>=pa;
       GameDB.saveGame(auth.user.id,{
         duration:Math.floor((Date.now()-(gs.startTime||Date.now()))/1000),
         turns:gs.turns||0,
@@ -1687,9 +1627,7 @@ export default function MokshaPatam108(){
         punya:p,papa:pa,
         snakes:gs.snakes||0,ladders:gs.ladders||0,
         dharma:gs.dharma||0,riddlesC:gs.riddlesC||0,riddlesW:gs.riddlesW||0,
-        highest:Math.max(gs.highest||1,sq),ashtanga:gs.ashtanga||(sq>=101),rejected:gs.rejected||0,
-        allPlayers:allPlayers,
-        grahaHits:gs.grahaHits||{}
+        highest:Math.max(gs.highest||1,sq),ashtanga:gs.ashtanga||(sq>=101),rejected:gs.rejected||0
       }).then(()=>{
         console.log("Auto-save: ✓ Complete! Refreshing profile...");
         auth.refresh();
@@ -1918,101 +1856,19 @@ export default function MokshaPatam108(){
                 </div>
                 <div style={{textAlign:"center",fontSize:10,color:"#8a7a50",marginTop:6}}>{ks>0?"Your soul leans toward liberation ☀":ks<0?"Darkness clouds your path 🌑":"Perfectly balanced ⚖"}</div>
               </div>
-              {/* ═══ VEDIC ZODIAC — Birth date + Rashi ═══ */}
-              <div style={{background:"rgba(20,16,10,.6)",border:"1px solid rgba(200,160,60,.1)",borderRadius:8,padding:16,marginTop:12}}>
-                <div style={{fontSize:12,color:"#f0d050",letterSpacing:2,marginBottom:10,fontWeight:700}}>VEDIC RASHI · YOUR COSMIC IDENTITY</div>
-                {!birthDate?(
-                  <div style={{textAlign:"center",padding:"10px 0"}}>
-                    <div style={{fontSize:11,color:"#8a7a50",marginBottom:10}}>Enter your birth date to discover your Vedic Rashi</div>
-                    <input type="date" value={birthDate} onChange={e=>{setBirthDate(e.target.value);localStorage.setItem("mp108_birth",e.target.value)}} style={{background:"rgba(240,200,80,.06)",border:"1px solid rgba(200,160,60,.2)",borderRadius:6,padding:"8px 14px",color:"#e8c850",fontSize:13,fontFamily:"'Cinzel',serif",cursor:"pointer"}}/>
-                  </div>
-                ):(()=>{
-                  const d=new Date(birthDate);
-                  const rashi=getZodiac(d.getMonth()+1,d.getDate());
-                  if(!rashi)return null;
-                  return<div>
-                    <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:12}}>
-                      <div style={{fontSize:36,minWidth:44,textAlign:"center"}}>{rashi.icon}</div>
-                      <div>
-                        <div style={{fontSize:16,color:"#f0d050",fontWeight:700,fontFamily:"'Cinzel',serif"}}>{rashi.skt} · {rashi.en}</div>
-                        <div style={{fontSize:11,color:"#8a7a50"}}>{rashi.name} · {rashi.element} · Ruled by {rashi.planet}</div>
-                        <div style={{fontSize:10,color:"#6a5a38"}}>{rashi.dates} · Born: {d.toLocaleDateString("en-IN",{day:"numeric",month:"long",year:"numeric"})}</div>
-                      </div>
-                      <button onClick={()=>{setBirthDate("");localStorage.removeItem("mp108_birth")}} style={{marginLeft:"auto",background:"transparent",border:"none",color:"#5a4a30",fontSize:10,cursor:"pointer"}}>✕</button>
-                    </div>
-                    <div style={{background:"rgba(240,200,80,.03)",border:"1px solid rgba(200,160,60,.06)",borderRadius:6,padding:12,marginBottom:10}}>
-                      <div style={{fontSize:10,letterSpacing:2,color:"#8a7a50",marginBottom:6}}>VEDIC MEANING</div>
-                      <div style={{fontSize:11,color:"#c0b080",lineHeight:1.8}}>{rashi.meaning}</div>
-                    </div>
-                    <div style={{background:"rgba(100,200,100,.03)",border:"1px solid rgba(100,200,100,.06)",borderRadius:6,padding:12}}>
-                      <div style={{fontSize:10,letterSpacing:2,color:"#80c080",marginBottom:6}}>DHARMIC GUIDANCE</div>
-                      <div style={{fontSize:11,color:"#a0c0a0",lineHeight:1.8}}>{rashi.advice}</div>
-                    </div>
-                  </div>
-                })()}
-              </div>
             </>}
             {/* History */}
-            {profileTab==="history"&&<>{histLoading?<div style={{textAlign:"center",padding:40,color:"#5a4a30",fontSize:12}}>Loading past lives...</div>:gameHistory.length===0?<div style={{textAlign:"center",padding:40,color:"#5a4a30",fontSize:12,fontStyle:"italic"}}>No games yet. Your journey begins with the first roll.</div>:gameHistory.map(g=>{
-              // Parse players data from graha_effects
-              let gamePlayers=[];let grahaHits={};
-              try{const ge=typeof g.graha_effects==="string"?JSON.parse(g.graha_effects):g.graha_effects;gamePlayers=ge?.players||[];grahaHits=ge?.grahaHits||{}}catch(e){}
-              const duration=g.duration_seconds?`${Math.floor(g.duration_seconds/60)}m ${g.duration_seconds%60}s`:"—";
-              return<div key={g.id} style={{background:"rgba(20,16,10,.6)",border:"1px solid rgba(200,160,60,.1)",borderRadius:8,padding:14,marginBottom:12}}>
-              {/* Header row */}
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
-                <div style={{display:"flex",alignItems:"center",gap:8}}>
-                  <span style={{fontSize:22}}>{g.character_icon||"🔱"}</span>
-                  <div>
-                    <div style={{fontSize:13,color:"#f0d050",fontWeight:700,fontFamily:"'Cinzel',serif"}}>{g.character_name}</div>
-                    <div style={{fontSize:10,color:"#8a7a50"}}>{g.opponent_type==="yama"?"vs Yama":"Multiplayer"} · {g.total_turns} turns · {duration}</div>
-                  </div>
+            {profileTab==="history"&&<>{histLoading?<div style={{textAlign:"center",padding:40,color:"#5a4a30",fontSize:12}}>Loading past lives...</div>:gameHistory.length===0?<div style={{textAlign:"center",padding:40,color:"#5a4a30",fontSize:12,fontStyle:"italic"}}>No games yet. Your journey begins with the first roll.</div>:gameHistory.map(g=><div key={g.id} style={{background:"rgba(20,16,10,.6)",border:"1px solid rgba(200,160,60,.1)",borderRadius:8,padding:14,marginBottom:10,display:"flex",gap:12,alignItems:"flex-start"}}>
+              <div style={{fontSize:24,minWidth:36,textAlign:"center"}}>{g.character_icon||"🔱"}</div>
+              <div style={{flex:1}}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}><span style={{fontSize:13,color:"#f0d050",fontWeight:700,fontFamily:"'Cinzel',serif"}}>{g.character_name}</span><span style={{fontSize:10,color:"#8a7a50"}}>{new Date(g.played_at).toLocaleDateString("en-IN",{day:"numeric",month:"short"})}</span></div>
+                <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:6}}>
+                  <span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:g.result==="moksha_win"?"rgba(240,200,80,.12)":g.result==="karma_win"?"rgba(100,200,100,.12)":g.result==="loss"?"rgba(200,80,60,.12)":"rgba(100,100,100,.12)",color:g.result==="moksha_win"?"#f0d050":g.result==="karma_win"?"#80c080":g.result==="loss"?"#e08060":"#8a7a50",border:`1px solid ${g.result==="moksha_win"?"rgba(240,200,80,.2)":g.result==="karma_win"?"rgba(100,200,100,.2)":"rgba(200,80,60,.2)"}`}}>{g.result==="moksha_win"?"ॐ MOKSHA":g.result==="karma_win"?"☀ KARMA WIN":g.result==="loss"?"🌑 LOSS":"⏸ QUIT"}</span>
+                  <span style={{fontSize:10,color:"#8a7a50"}}>Sq {g.final_square} · {g.total_turns} turns</span>
                 </div>
-                <div style={{textAlign:"right"}}>
-                  <span style={{fontSize:10,padding:"3px 10px",borderRadius:10,background:g.result==="moksha_win"?"rgba(240,200,80,.12)":g.result==="karma_win"?"rgba(100,200,100,.12)":"rgba(200,80,60,.12)",color:g.result==="moksha_win"?"#f0d050":g.result==="karma_win"?"#80c080":"#e08060",border:`1px solid ${g.result==="moksha_win"?"rgba(240,200,80,.2)":g.result==="karma_win"?"rgba(100,200,100,.2)":"rgba(200,80,60,.2)"}`}}>{g.result==="moksha_win"?"ॐ MOKSHA":g.result==="karma_win"?"☀ KARMA WIN":"🌑 LOSS"}</span>
-                  <div style={{fontSize:9,color:"#5a4a30",marginTop:4}}>{new Date(g.played_at).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})}</div>
-                </div>
+                <div style={{display:"flex",gap:12,fontSize:10,color:"#8a7a50"}}><span style={{color:"#80c080"}}>+{g.final_punya} punya</span><span style={{color:"#e08060"}}>+{g.final_papa} papa</span>{g.riddles_correct>0&&<span>🪷 {g.riddles_correct}/{g.riddles_correct+g.riddles_wrong}</span>}{g.ashtanga_reached&&<span style={{color:"#f0d050"}}>⚡ Ashtanga</span>}</div>
               </div>
-              {/* All players scoreboard */}
-              {gamePlayers.length>0&&<div style={{background:"rgba(10,8,5,.4)",border:"1px solid rgba(200,160,60,.06)",borderRadius:6,overflow:"hidden",marginBottom:8}}>
-                <div style={{fontSize:9,letterSpacing:2,color:"#5a4a30",padding:"6px 10px",borderBottom:"1px solid rgba(200,160,60,.06)"}}>ALL PLAYERS</div>
-                {gamePlayers.map((pl,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"7px 10px",borderBottom:i<gamePlayers.length-1?"1px solid rgba(200,160,60,.04)":"none",background:pl.isWinner?"rgba(240,200,80,.04)":"transparent"}}>
-                  <span style={{fontSize:16,minWidth:22}}>{pl.icon}</span>
-                  <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontSize:11,color:pl.isWinner?"#f0d050":"#c0b080",fontWeight:pl.isWinner?700:400,display:"flex",alignItems:"center",gap:4}}>
-                      <span style={{overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{pl.name}</span>
-                      {pl.cpu&&<span style={{fontSize:8,color:"#806060",border:"1px solid rgba(160,64,64,.2)",padding:"0 4px",borderRadius:3}}>CPU</span>}
-                      {pl.isWinner&&<span style={{fontSize:8,color:"#f0d050",border:"1px solid rgba(240,200,80,.3)",padding:"0 4px",borderRadius:3}}>WINNER</span>}
-                    </div>
-                    <div style={{fontSize:10,color:"#6a5a38"}}>{pl.character} · Sq {pl.square}</div>
-                  </div>
-                  <div style={{display:"flex",gap:8,fontSize:10}}>
-                    <span style={{color:"#80c080"}}>{pl.punya}P</span>
-                    <span style={{color:"#e08060"}}>{pl.papa}Pa</span>
-                  </div>
-                </div>)}
-              </div>}
-              {/* Game stats row */}
-              <div style={{display:"flex",gap:10,fontSize:10,color:"#8a7a50",flexWrap:"wrap"}}>
-                <span style={{color:"#80c080"}}>+{g.final_punya} punya</span>
-                <span style={{color:"#e08060"}}>+{g.final_papa} papa</span>
-                <span>Sq {g.final_square}</span>
-                {g.snakes_hit>0&&<span>🐍 {g.snakes_hit}</span>}
-                {g.ladders_climbed>0&&<span>🪔 {g.ladders_climbed}</span>}
-                {g.riddles_correct>0&&<span>🪷 {g.riddles_correct}/{g.riddles_correct+g.riddles_wrong}</span>}
-                {g.ashtanga_reached&&<span style={{color:"#f0d050"}}>⚡ Ashtanga</span>}
-              </div>
-              {/* Graha effects breakdown */}
-              {Object.values(grahaHits).some(v=>v>0)&&<div style={{marginTop:8,padding:"8px 10px",background:"rgba(10,8,5,.4)",border:"1px solid rgba(200,160,60,.06)",borderRadius:6}}>
-                <div style={{fontSize:9,letterSpacing:2,color:"#5a4a30",marginBottom:6}}>GRAHA INFLUENCES</div>
-                <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-                  {[["☀","sun","#f0b840"],["☾","moon","#a0c8e0"],["♂","mars","#e07050"],["☿","mercury","#80c080"],["♃","jupiter","#f0d060"],["♀","venus","#d0a0c0"],["♄","saturn","#8080a0"],["☊","rahu","#6050a0"],["☋","ketu","#a06060"]].map(([icon,key,color])=>grahaHits[key]>0&&<span key={key} style={{fontSize:10,padding:"2px 6px",background:`${color}15`,border:`1px solid ${color}30`,borderRadius:8,color:color,display:"flex",alignItems:"center",gap:3}}>
-                    <span style={{fontSize:12}}>{icon}</span>{grahaHits[key]}
-                  </span>)}
-                </div>
-                {(()=>{const max=Object.entries(grahaHits).reduce((a,b)=>b[1]>a[1]?b:a,["",0]);const grNames={sun:"Surya ☀",moon:"Chandra ☾",mars:"Mangal ♂",mercury:"Budh ☿",jupiter:"Brihaspati ♃",venus:"Shukra ♀",saturn:"Shani ♄",rahu:"Rahu ☊",ketu:"Ketu ☋"};return max[1]>1?<div style={{fontSize:9,color:"#8a7a50",marginTop:4,fontStyle:"italic"}}>{grNames[max[0]]||max[0]} influenced you most ({max[1]} times)</div>:null})()}
-              </div>}
-            </div>})}</>}
+            </div>)}</>}
             {/* Leaderboard */}
             {profileTab==="leaderboard"&&<div style={{background:"rgba(20,16,10,.6)",border:"1px solid rgba(200,160,60,.1)",borderRadius:8,overflow:"hidden"}}>{leaderboard.length===0?<div style={{textAlign:"center",padding:30,color:"#5a4a30",fontSize:12}}>The sacred ledger is empty.</div>:leaderboard.map((lb,i)=>{const isMe=auth.user&&lb.id===auth.user.id;const lks=(lb.total_punya_earned||0)-(lb.total_papa_earned||0);return<div key={lb.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",borderBottom:"1px solid rgba(200,160,60,.06)",background:isMe?"rgba(240,200,80,.06)":"transparent"}}>
               <div style={{width:28,textAlign:"center",fontSize:i<3?16:12,color:i===0?"#f0d050":i===1?"#c0c0c0":i===2?"#cd7f32":"#8a7a50",fontWeight:700}}>{i===0?"🥇":i===1?"🥈":i===2?"🥉":i+1}</div>
