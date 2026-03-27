@@ -2809,15 +2809,21 @@ export default function MokshaPatam108(){
     eventCallback.current=onDismiss||null;
     if(!muted&&popup.subtitle){
       ambient.duck();
+      // Try static file first (zero API cost, instant playback)
       const lang=chosenLang==='hi'?'hi':'en';
       const tryStatic=()=>{
-        if(popup.staticKey){
+        // Graha events — play fixed planet description
+        if(popup.type==='graha'&&popup.staticKey){
           const sv=STATIC_VOICES[popup.staticKey];
           if(sv&&sv[lang]){
-            // Use speakNarrator with the static URL — same bass+reverb+drone processing as onboarding
-            VoiceEngine.speakNarrator(popup.subtitle,chosenLang,sv[lang]);
+            VoiceEngine.playStatic(sv[lang]);
             return true;
           }
+        }
+        // Snake/ladder/shield/win events
+        if(popup.staticKey){
+          const sv=STATIC_VOICES[popup.staticKey];
+          if(sv&&sv[lang]){VoiceEngine.playStatic(sv[lang]);return true;}
         }
         return false;
       };
@@ -2825,7 +2831,7 @@ export default function MokshaPatam108(){
         voiceTimerRef.current=null;
         if(!tryStatic()){
           // Fall back to dynamic TTS (cached in IndexedDB after first play)
-          VoiceEngine.speakNarrator(popup.subtitle,chosenLang,null);
+          VoiceEngine.speak(popup.subtitle,chosenLang);
         }
       },200);
     }
@@ -3090,7 +3096,7 @@ export default function MokshaPatam108(){
         play("chime");
         if(!muted){
           ambient.duck();
-          setTimeout(()=>VoiceEngine.speakNarrator(`Well done ${pName}! You answered correctly. Your soul grows purer.`,chosenLang,null),300);
+          setTimeout(()=>VoiceEngine.speak(`Well done ${pName}! You answered correctly. Your soul grows purer.`,chosenLang),300);
           setTimeout(()=>ambient.unduck(),4000);
         }
       }else{
@@ -3219,7 +3225,7 @@ export default function MokshaPatam108(){
       const voiceText=dil.ashtanga
         ?`Riddle of ${dil.en}. ${dil.txt}. Option one: ${dil.c[0].l}. Option two: ${dil.c[1].l}.`
         :`Dharma Dilemma. ${dil.en}. ${dil.txt}. Your choices are: ${dil.c.map((c,i)=>c.l).join('. Or. ')}`;
-      VoiceEngine.speakNarrator(voiceText,chosenLang,null);
+      VoiceEngine.speak(voiceText,chosenLang);
     },500);
     // Only clear timer on cleanup, DON'T stop voice - let it finish naturally after card closes
     return()=>{clearTimeout(timer)};

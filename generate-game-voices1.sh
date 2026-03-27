@@ -17,15 +17,12 @@ set -euo pipefail
 
 API_KEY="${OPENAI_API_KEY:?Please set OPENAI_API_KEY}"
 OUT_DIR="${1:-./public/game-voices}"
-MODEL="tts-1-hd"        # Match onboarding quality
-VOICE="ash"             # Same voice as onboarding narrator
+MODEL="tts-1"           # tts-1 is fine for short game events (cheaper than hd)
+VOICE="ash"             # warm, clear narrator
 TOTAL=0; DONE=0; SKIP=0
 
-# ── CRITICAL: Same instructions as onboarding speakNarrator ──
-# The app runs this through the same audio chain (bass+reverb+drone)
-# so the raw TTS must match the onboarding character: slow, gravitas, sage-like
-EN_INSTR="You are an ancient Indian sage narrating a sacred epic in English. Speak slowly, with deep gravitas and reverence. Pause dramatically between sentences. Your voice should feel like it resonates from stone temple walls."
-HI_INSTR="You are an ancient Indian storyteller narrating in Hindi. Speak slowly, mysteriously, with deep emotion. Pause dramatically between sentences. Your voice should feel timeless and sacred."
+EN_INSTR="You are the narrator of an ancient Indian karma board game. Speak with mystical authority — warm, resonant, slightly dramatic. Short sentences. Pause naturally. Never rushed."
+HI_INSTR="तुम एक प्राचीन भारतीय कर्म खेल के सूत्रधार हो। रहस्यमय अधिकार से बोलो — गर्म, गूंजती, थोड़ी नाटकीय। छोटे वाक्य। स्वाभाविक ठहराव।"
 
 mkdir -p "$OUT_DIR"
 
