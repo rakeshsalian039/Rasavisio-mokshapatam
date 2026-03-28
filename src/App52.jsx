@@ -785,69 +785,6 @@ const GRAHA_STATIC_KEY = {
   rahu:'graha_rahu', ketu:'graha_ketu',
 };
 
-// ══════════════════════════════════════════════════════════════════════
-// 🪶 CHITRAGUPTA — The Divine Scribe. He didn't just record this game.
-//    He WROTE it. Every number on this board is his handwriting.
-//    Every snake name — his Sanskrit. Every virtue — his ink.
-//    The Agrasandhani (cosmic ledger) updates in real-time.
-// ══════════════════════════════════════════════════════════════════════
-const CG_LINES = {
-  en: {
-    open:     "I am Chitragupta. Since the first soul drew breath, I have kept the record. I wrote every number on this board. Every serpent's name — my Sanskrit. Every virtue ladder — my ink. I open a new page today. I am watching.",
-    punya:    "Noted. Punya recorded. The ledger grows lighter.",
-    papa:     "Recorded. Papa entered. Without judgment. The ledger simply sees what is true.",
-    snake:    "This serpent was already written here. I placed it where weakness would catch a soul. Your fall was always in the ledger.",
-    ladder:   "This virtue was written here by me. I placed each ladder exactly where a pure act could lift a soul. You found it.",
-    dharma_p: "Righteous. Written in gold. Every dharmic act, however costly, is inscribed differently. I use a finer quill.",
-    dharma_x: "Recorded without judgment. Only Yama reads the final tally. And he always does.",
-    sacred:   "You have entered the Ashtanga Marga. From this point, I set down my quill. Only the soul itself writes what happens here.",
-    moksha:   "The page is complete. I seal it. In all the ages I have kept this record, few pages end this way. Go. You are free.",
-    reject:   "The ledger speaks plainly. Papa exceeds Punya. Return. Purify. The board is still here. So am I.",
-    balance:  "I note this carefully. Your Punya and Papa are nearly equal. What you do in these next squares — I will write with extraordinary attention.",
-    seeker:   "I have watched every seeker who has walked this board. I know how each story ends. I say nothing. I only write.",
-    judgment: "The game is over. I close the Agrasandhani. The pure soul has been liberated. For those who remain — Yama awaits. As he always does.",
-  },
-  hi: {
-    open:     "मैं चित्रगुप्त हूँ। जब से पहली आत्मा ने श्वास लिया, मैं अभिलेख रखता आया हूँ। इस पट का हर अंक मेरी लिखावट है। हर सांप का नाम — मेरी संस्कृत। हर सीढ़ी — मेरी स्याही। आज नया पृष्ठ खोलता हूँ। मैं देख रहा हूँ।",
-    punya:    "दर्ज। पुण्य अंकित। खाता हल्का होता है।",
-    papa:     "दर्ज। पाप अंकित। बिना निर्णय के। खाता केवल सत्य देखता है।",
-    snake:    "यह सांप यहाँ पहले से लिखा था। मैंने इसे वहाँ रखा जहाँ कमज़ोरी आत्मा को पकड़े। यह गिरावट हमेशा खाते में थी।",
-    ladder:   "यह सीढ़ी मैंने लिखी थी। हर सीढ़ी ठीक वहाँ रखी जहाँ पुण्य कर्म आत्मा को उठा सके। तुमने इसे पाया।",
-    dharma_p: "धर्मिक। सोने में लिखा गया। हर धर्मिक कार्य मैं अलग तरीके से लिखता हूँ।",
-    dharma_x: "निर्णय के बिना दर्ज। केवल यमराज अंतिम गणना पढ़ते हैं।",
-    sacred:   "तुम अष्टांग मार्ग में प्रवेश कर चुके हो। यहाँ मैं कलम रख देता हूँ। आत्मा ही लिखती है।",
-    moksha:   "पृष्ठ पूर्ण हुआ। मैं मुहर लगाता हूँ। बहुत कम पृष्ठ इस तरह समाप्त होते हैं। जाओ। तुम मुक्त हो।",
-    reject:   "खाता स्पष्ट बोलता है। पाप, पुण्य से अधिक है। लौटो। शुद्ध हो। पट यहाँ है। मैं भी।",
-    balance:  "मैं इसे ध्यान से नोट करता हूँ। पुण्य और पाप लगभग बराबर हैं। इन अगले खानों में मैं असाधारण ध्यान से लिखूँगा।",
-    seeker:   "मैंने हर उस साधक को देखा है जो इस पट पर चला है। मुझे पता है हर कहानी कैसे समाप्त होती है। केवल लिखता हूँ।",
-    judgment: "खेल समाप्त हुआ। अग्रसंधानी बंद करता हूँ। जो शुद्ध था, मुक्त हुआ। जो शेष हैं — यमराज प्रतीक्षा करते हैं। जैसा हमेशा होता है।",
-  }
-};
-
-// Static CG voice files (pre-generated with onyx voice + celestial processing)
-const CG_STATIC = {
-  open:'/game-voices/cg-open', punya:'/game-voices/cg-punya', papa:'/game-voices/cg-papa',
-  snake:'/game-voices/cg-snake', ladder:'/game-voices/cg-ladder',
-  dharma_p:'/game-voices/cg-dharmap', dharma_x:'/game-voices/cg-dharmapap',
-  sacred:'/game-voices/cg-sacred', moksha:'/game-voices/cg-moksha',
-  reject:'/game-voices/cg-reject', balance:'/game-voices/cg-balance',
-  seeker:'/game-voices/cg-seeker', judgment:'/game-voices/cg-judgment',
-};
-
-// Entry type visual styles for the ledger
-const CG_ENTRY_TYPES = {
-  punya:    {icon:'✦',color:'#f0d050',bg:'rgba(240,200,80,.08)',label:'पुण्य'},
-  papa:     {icon:'✦',color:'#e06030',bg:'rgba(200,80,40,.08)',label:'पाप'},
-  snake:    {icon:'𓆙',color:'#e06030',bg:'rgba(200,80,40,.10)',label:'पाप'},
-  ladder:   {icon:'🪔',color:'#80d080',bg:'rgba(80,200,80,.08)',label:'पुण्य'},
-  dharma_p: {icon:'⚖',color:'#80c0a0',bg:'rgba(80,180,120,.08)',label:'धर्म'},
-  dharma_x: {icon:'⚖',color:'#c08060',bg:'rgba(180,100,60,.08)',label:'अधर्म'},
-  sacred:   {icon:'🪷',color:'#c0a0f0',bg:'rgba(160,120,220,.08)',label:'मार्ग'},
-  moksha:   {icon:'ॐ', color:'#f0d050',bg:'rgba(240,200,80,.15)',label:'मोक्ष'},
-  reject:   {icon:'⚠', color:'#e06060',bg:'rgba(200,60,60,.10)',label:'अशुद्ध'},
-  balance:  {icon:'⚖',color:'#a0c8e0',bg:'rgba(120,160,200,.08)',label:'तुला'},
-};
-
 const VoiceEngine = {
   audio: null,
   speaking: false,
@@ -934,91 +871,13 @@ const VoiceEngine = {
   },
 
   stop() {
-    this._stopToken++;
+    this._stopToken++; // invalidate any in-flight TTS fetch
     if (this.audio) { try { this.audio.pause(); this.audio.currentTime = 0; } catch (e) {} this.audio = null; }
     if (this._yamaCtx) { try { this._yamaCtx.close(); } catch(e){} this._yamaCtx = null; }
     if (this._yamaSource) { try { this._yamaSource.stop(); } catch(e){} this._yamaSource = null; }
     if (this._yamaSource2) { try { this._yamaSource2.stop(); } catch(e){} this._yamaSource2 = null; }
-    if (this._cgCtx) { try { this._cgCtx.close(); } catch(e){} this._cgCtx = null; }
     try { window.speechSynthesis.cancel(); } catch (e) {}
     this.speaking = false;
-  },
-
-  // ═══ CHITRAGUPTA VOICE — Celestial scribe, absolute calm ═══
-  // Audio chain: presence (2.5kHz +5dB) + air shimmer (10kHz +4dB)
-  //   + 5s heavenly reverb + 528Hz singing bowl — never interrupts other voices
-  _cgCtx: null,
-  async speakChitragupta(key, lang) {
-    // Chitragupta waits — he never interrupts
-    if (this.speaking) return;
-    const l = (lang==='hi') ? 'hi' : 'en';
-    const text = CG_LINES[l]?.[key];
-    if (!text) return;
-    const staticBase = CG_STATIC[key];
-    const staticUrl = staticBase ? `${staticBase}-${l}.mp3` : null;
-    const myToken = this._stopToken;
-
-    let audioUrl = null;
-    // 1. Try static file (instant, zero cost)
-    if (staticUrl) {
-      try { const r=await fetch(staticUrl,{method:'HEAD'}); if(r.ok) audioUrl=staticUrl; } catch(e){}
-    }
-    if (this._stopToken !== myToken || this.speaking) return;
-    // 2. Fallback: browser speech (always instant)
-    if (!audioUrl) { this._browserSpeak(text, lang); return; }
-
-    try {
-      const resp = await fetch(audioUrl);
-      const arrayBuf = await resp.arrayBuffer();
-      if (this._stopToken !== myToken || this.speaking) return;
-      const ctx = new (window.AudioContext||window.webkitAudioContext)();
-      if (ctx.state==='suspended') await ctx.resume();
-      this._cgCtx = ctx;
-      const buf = await ctx.decodeAudioData(arrayBuf);
-      if (this._stopToken !== myToken) { try{ctx.close()}catch(e){}; return; }
-
-      const src = ctx.createBufferSource();
-      src.buffer = buf;
-      src.playbackRate.value = 0.93; // Weight of eternity
-
-      // Presence (2.5kHz) — divine authority
-      const pres = ctx.createBiquadFilter();
-      pres.type='peaking'; pres.frequency.value=2500; pres.Q.value=0.9; pres.gain.value=5;
-      // Air shimmer (10kHz) — ethereal, above the world
-      const air = ctx.createBiquadFilter();
-      air.type='highshelf'; air.frequency.value=10000; air.gain.value=4;
-      // Cut muddy low-mids (400Hz)
-      const cut = ctx.createBiquadFilter();
-      cut.type='peaking'; cut.frequency.value=400; cut.Q.value=1; cut.gain.value=-3;
-      // 5-second heavenly reverb (longer than narrator's 2s)
-      const rvLen = Math.floor(5*ctx.sampleRate);
-      const rvBuf = ctx.createBuffer(2,rvLen,ctx.sampleRate);
-      for(let ch=0;ch<2;ch++){
-        const d=rvBuf.getChannelData(ch);
-        for(let i=0;i<rvLen;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/rvLen,1.4)*(i<ctx.sampleRate*.03?i/(ctx.sampleRate*.03):1);
-      }
-      const conv = ctx.createConvolver(); conv.buffer=rvBuf;
-      const rvMix = ctx.createGain(); rvMix.gain.value=0.32;
-      // 528Hz "miracle tone" — unique signature of Chitragupta's voice
-      const bowl = ctx.createOscillator(); bowl.type='sine'; bowl.frequency.value=528;
-      const bowlG = ctx.createGain(); bowlG.gain.value=0.016;
-      const bowlF = ctx.createBiquadFilter(); bowlF.type='bandpass'; bowlF.frequency.value=528; bowlF.Q.value=12;
-      bowl.connect(bowlF); bowlF.connect(bowlG);
-      // Route
-      const master = ctx.createGain(); master.gain.value=1.0;
-      src.connect(cut); cut.connect(pres); pres.connect(air);
-      air.connect(master); air.connect(conv); conv.connect(rvMix); rvMix.connect(master);
-      bowlG.connect(master); master.connect(ctx.destination);
-      this.speaking = true;
-      src.onended = () => {
-        this.speaking = false;
-        bowlG.gain.linearRampToValueAtTime(0, ctx.currentTime+2.5);
-        setTimeout(()=>{try{bowl.stop();ctx.close()}catch(e){}this._cgCtx=null;},3000);
-      };
-      src.start(0); bowl.start(0);
-    } catch(e) {
-      this._browserSpeak(text, lang);
-    }
   },
 
   // ═══ YAMA VOICE — Full audio processing for Thanos-like sound ═══
@@ -2347,546 +2206,6 @@ function SacredPathStage({SACRED_PATH}) {
   );
 }
 
-// ══════════════════════════════════════════════════════════════════════
-// 🪶 CHITRAGUPTA'S AGRASANDHANI — The Living Cosmic Ledger
-//    Real-time balance scale + quill-written entries + soul purity ring
-// ══════════════════════════════════════════════════════════════════════
-function ChitraguptaPanel({ entries, players, punya, papa, cur, win }) {
-  const nP = players.length;
-  // Compute aggregate punya/papa for balance scale
-  const totalPunya = punya.reduce((a,b)=>a+b,0);
-  const totalPapa  = papa.reduce((a,b)=>a+b,0);
-  const total      = Math.max(totalPunya+totalPapa, 1);
-  const balance    = (totalPunya-totalPapa); // positive = purer, negative = more sin
-  // Scale tilt angle: max ±28deg
-  const tiltDeg    = Math.max(-28, Math.min(28, -(balance/Math.max(total*.5,1))*28));
-  const isShaking  = Math.abs(balance) < 3 && total > 4;
-  const recent     = entries.slice(-6);
-
-  const et = CG_ENTRY_TYPES;
-
-  return (
-    <div style={{
-      background:'linear-gradient(160deg,rgba(26,18,8,.98),rgba(14,10,4,.99))',
-      border:'1px solid rgba(200,175,90,.18)',borderRadius:8,
-      overflow:'hidden',position:'relative',
-    }}>
-      {/* Parchment ruled lines */}
-      <div style={{position:'absolute',inset:0,backgroundImage:'repeating-linear-gradient(0deg,transparent,transparent 20px,rgba(200,175,90,.022) 20px,rgba(200,175,90,.022) 21px)',pointerEvents:'none'}}/>
-
-      {/* ── Header ── */}
-      <div style={{padding:'8px 12px 6px',borderBottom:'1px solid rgba(200,175,90,.1)',display:'flex',alignItems:'center',gap:8,position:'relative'}}>
-        {/* Quill SVG */}
-        <svg width={16} height={20} viewBox="0 0 16 20" style={{flexShrink:0,filter:'drop-shadow(0 0 4px rgba(200,175,90,.6))'}}>
-          <path d="M8 1 Q13 0 14 4 Q16 9 11 13 Q9 15 8 18 Q7 15 8 13 Q3 9 2 5 Q3 1 8 1Z" fill="rgba(200,175,90,.2)" stroke="rgba(200,175,90,.55)" strokeWidth=".6"/>
-          <path d="M8 18 L8 13 Q11 10 12 7" fill="none" stroke="rgba(200,175,90,.6)" strokeWidth=".6"/>
-          <circle cx={8} cy={18.5} r={1.3} fill="rgba(200,175,90,.7)">
-            <animate attributeName="opacity" values=".4;1;.4" dur="2.2s" repeatCount="indefinite"/>
-          </circle>
-        </svg>
-        <div style={{flex:1}}>
-          <div style={{fontSize:8,letterSpacing:3,color:'rgba(200,175,90,.6)',fontFamily:"'Cinzel',serif",fontWeight:700}}>CHITRAGUPTA</div>
-          <div style={{fontSize:6,color:'rgba(200,175,90,.3)',letterSpacing:2}}>अग्रसंधानी · AGRASANDHANI</div>
-        </div>
-        {entries.length>0&&<div style={{fontSize:7,color:'rgba(200,175,90,.2)',fontFamily:"'Cinzel',serif"}}>{entries.length} entries</div>}
-      </div>
-
-      {/* ── Balance Scale ── */}
-      <div style={{padding:'10px 12px 6px',borderBottom:'1px solid rgba(200,175,90,.06)'}}>
-        <div style={{display:'flex',alignItems:'flex-end',gap:10}}>
-          {/* Scale SVG */}
-          <div style={{flexShrink:0,animation:isShaking?'cgScaleShake 0.3s ease infinite':'none'}}>
-            <svg width={80} height={60} viewBox="0 0 80 60" style={{overflow:'visible'}}>
-              {/* Fulcrum post */}
-              <line x1={40} y1={10} x2={40} y2={52} stroke="rgba(200,175,90,.4)" strokeWidth={1.5}/>
-              <polygon points="33,52 47,52 40,56" fill="rgba(200,175,90,.3)"/>
-              {/* Top pivot circle */}
-              <circle cx={40} cy={10} r={3} fill="rgba(200,175,90,.35)" stroke="rgba(200,175,90,.5)" strokeWidth=".8"/>
-              {/* Beam — tilts dynamically */}
-              <g style={{transformOrigin:'40px 10px',transform:`rotate(${tiltDeg}deg)`,transition:'transform 1.2s cubic-bezier(.34,1.56,.64,1)'}}>
-                <line x1={4} y1={10} x2={76} y2={10} stroke={balance>=0?'rgba(80,200,80,.7)':'rgba(200,80,60,.7)'} strokeWidth={2} style={{transition:'stroke 0.8s'}}/>
-                {/* Left string */}
-                <line x1={4} y1={10} x2={4} y2={24} stroke="rgba(200,175,90,.35)" strokeWidth={.8}/>
-                {/* Right string */}
-                <line x1={76} y1={10} x2={76} y2={24} stroke="rgba(200,175,90,.35)" strokeWidth={.8}/>
-                {/* Left pan (Punya) */}
-                <ellipse cx={4} cy={26} rx={10} ry={3} fill="rgba(80,200,80,.15)" stroke="rgba(80,200,80,.5)" strokeWidth={.8}/>
-                <text x={4} y={29.5} textAnchor="middle" fontSize={5} fill="rgba(80,200,80,.7)" fontFamily="Cinzel">पुण्य</text>
-                {/* Right pan (Papa) */}
-                <ellipse cx={76} cy={26} rx={10} ry={3} fill="rgba(200,80,60,.12)" stroke="rgba(200,80,60,.5)" strokeWidth={.8}/>
-                <text x={76} y={29.5} textAnchor="middle" fontSize={5} fill="rgba(200,80,60,.7)" fontFamily="Cinzel">पाप</text>
-              </g>
-              {/* Punya weight stack */}
-              {[...Array(Math.min(totalPunya,8))].map((_,i)=>(
-                <rect key={i} x={-6+40-36} y={36+i*-3} width={16} height={2.5} rx={1}
-                  fill={`rgba(240,200,80,${0.3+i*0.08})`}
-                  style={{transformOrigin:'40px 10px',transform:`rotate(${tiltDeg}deg)`,transition:'transform 1.2s cubic-bezier(.34,1.56,.64,1)'}}/>
-              ))}
-              {/* Papa weight stack */}
-              {[...Array(Math.min(totalPapa,8))].map((_,i)=>(
-                <rect key={i} x={70} y={36+i*-3} width={16} height={2.5} rx={1}
-                  fill={`rgba(200,80,60,${0.25+i*0.08})`}
-                  style={{transformOrigin:'40px 10px',transform:`rotate(${tiltDeg}deg)`,transition:'transform 1.2s cubic-bezier(.34,1.56,.64,1)'}}/>
-              ))}
-            </svg>
-          </div>
-          {/* Balance readout */}
-          <div style={{flex:1,paddingBottom:4}}>
-            <div style={{display:'flex',gap:10,marginBottom:4}}>
-              <div style={{flex:1}}>
-                <div style={{fontSize:7,color:'rgba(80,200,80,.5)',letterSpacing:1,marginBottom:2}}>पुण्य</div>
-                <div style={{height:4,background:'rgba(80,200,80,.08)',borderRadius:2,overflow:'hidden'}}>
-                  <div style={{height:'100%',width:`${(totalPunya/Math.max(totalPunya+totalPapa,1))*100}%`,background:'linear-gradient(90deg,rgba(80,200,80,.4),rgba(80,200,80,.7))',borderRadius:2,transition:'width 1s cubic-bezier(.4,0,.2,1)'}}/>
-                </div>
-                <div style={{fontSize:9,color:'rgba(80,200,80,.7)',fontWeight:700,marginTop:1}}>{totalPunya}</div>
-              </div>
-              <div style={{flex:1}}>
-                <div style={{fontSize:7,color:'rgba(200,80,60,.5)',letterSpacing:1,marginBottom:2}}>पाप</div>
-                <div style={{height:4,background:'rgba(200,80,60,.08)',borderRadius:2,overflow:'hidden'}}>
-                  <div style={{height:'100%',width:`${(totalPapa/Math.max(totalPunya+totalPapa,1))*100}%`,background:'linear-gradient(90deg,rgba(200,80,60,.4),rgba(200,80,60,.7))',borderRadius:2,transition:'width 1s cubic-bezier(.4,0,.2,1)'}}/>
-                </div>
-                <div style={{fontSize:9,color:'rgba(200,80,60,.7)',fontWeight:700,marginTop:1}}>{totalPapa}</div>
-              </div>
-            </div>
-            <div style={{fontSize:8,color:balance>=0?'rgba(80,200,80,.5)':'rgba(200,80,60,.5)',letterSpacing:1,textAlign:'center',transition:'color 0.8s'}}>
-              {isShaking?'⚖ तुला — The scales are even':balance>0?`✦ +${balance} Punya favoured`:`✦ ${Math.abs(balance)} Papa favoured`}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Ledger Entries (last 5, most recent at bottom) ── */}
-      <div style={{padding:'6px 10px',minHeight:40}}>
-        {entries.length===0?(
-          <div style={{fontSize:8,color:'rgba(200,175,90,.18)',fontStyle:'italic',letterSpacing:1,padding:'4px 2px'}}>
-            The page is open. The ink waits...
-          </div>
-        ):(
-          <div style={{display:'flex',flexDirection:'column',gap:3}}>
-            {recent.map((e,i)=>{
-              const t=et[e.type]||{icon:'·',color:'#a09060',bg:'rgba(200,160,60,.05)',label:'—'};
-              const isNewest=i===recent.length-1;
-              return(
-                <div key={e.id} style={{
-                  display:'flex',alignItems:'center',gap:6,
-                  padding:'3px 6px',borderRadius:4,
-                  background:isNewest?t.bg:'transparent',
-                  border:isNewest?`1px solid ${t.color}18`:'1px solid transparent',
-                  opacity:isNewest?1:0.3+(i/recent.length)*0.5,
-                  animation:isNewest?'cgEntry .4s ease both':'none',
-                  transition:'opacity .6s',
-                }}>
-                  <span style={{fontSize:9,color:t.color,flexShrink:0,filter:isNewest?`drop-shadow(0 0 3px ${t.color})`:'none'}}>{t.icon}</span>
-                  <div style={{flex:1,minWidth:0,display:'flex',alignItems:'center',justifyContent:'space-between',gap:4}}>
-                    <span style={{fontSize:8,color:t.color,fontFamily:"'Cinzel',serif",letterSpacing:.5,fontWeight:isNewest?700:400}}>{t.label}</span>
-                    <span style={{fontSize:7,color:'rgba(200,175,90,.3)',whiteSpace:'nowrap'}}>sq {e.sq}</span>
-                    <span style={{fontSize:7,color:'rgba(200,160,90,.4)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',maxWidth:70,fontStyle:'italic'}}>{e.detail}</span>
-                  </div>
-                  {/* Ink-weight bar */}
-                  <div style={{width:2,height:12,borderRadius:1,background:t.color,opacity:isNewest?.6:.2,flexShrink:0}}/>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// ══════════════════════════════════════════════════════════════════════
-// ✨ MOKSHA SCREEN — Full-screen canvas ascension cinematic
-//    Winner's soul ascends through all three realms to Swarga.
-//    2000 golden particles, lotus bloom, Chitragupta seals the ledger.
-// ══════════════════════════════════════════════════════════════════════
-function MokshaScreen({ winner, players, punya, papa, onClose, muted }) {
-  const canvasRef = useRef(null);
-  const rafRef    = useRef(null);
-  const [phase, setPhase] = useState(0); // 0=ascend 1=swarga 2=judgment
-  const [showJudge, setShowJudge] = useState(false);
-  // Find loser with most papa (for judgment)
-  const loserIdx = useMemo(()=>{
-    let mi=-1;
-    players.forEach((_,i)=>{
-      if(i!==winner&&(mi<0||papa[i]>papa[mi])) mi=i;
-    });
-    return mi;
-  },[players, winner, papa]);
-  const wPunya = punya[winner]||0;
-  const wPapa  = papa[winner]||0;
-  const wp = players[winner];
-  const lp = loserIdx>=0 ? players[loserIdx] : null;
-
-  useEffect(()=>{
-    const canvas=canvasRef.current; if(!canvas) return;
-    const ctx=canvas.getContext('2d');
-    let t=0;
-    const resize=()=>{ canvas.width=window.innerWidth; canvas.height=window.innerHeight; };
-    resize(); window.addEventListener('resize',resize);
-
-    // ── Particle system ──
-    const PARTICLE_COUNT=1800;
-    const particles=[];
-    for(let i=0;i<PARTICLE_COUNT;i++){
-      const angle=(Math.random()*Math.PI*2);
-      const radius=Math.random()*canvas.width*0.3;
-      particles.push({
-        x: canvas.width/2 + Math.cos(angle)*radius*Math.random(),
-        y: canvas.height*0.8 + Math.random()*canvas.height*0.3,
-        vx: (Math.random()-0.5)*1.2,
-        vy: -(0.8+Math.random()*3.5),
-        size: 0.8+Math.random()*3.5,
-        opacity: 0.4+Math.random()*0.6,
-        hue: 30+Math.random()*30, // gold range
-        life: 0,
-        maxLife: 120+Math.random()*180,
-        delay: Math.random()*60,
-        spiral: (Math.random()-0.5)*0.04,
-      });
-    }
-    // Realm labels  
-    const REALMS=[
-      {y:0.75,label:'भूलोक',color:'rgba(160,120,60,.4)'},
-      {y:0.45,label:'अन्तर्लोक',color:'rgba(80,120,160,.4)'},
-      {y:0.18,label:'स्वर्गलोक',color:'rgba(160,120,220,.4)'},
-      {y:0.02,label:'परमधाम',color:'rgba(240,200,80,.5)'},
-    ];
-
-    const draw=()=>{
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      t++;
-
-      // Background gradient
-      const grad=ctx.createLinearGradient(0,canvas.height,0,0);
-      grad.addColorStop(0,'rgba(8,5,2,.95)');
-      grad.addColorStop(0.4,'rgba(10,8,20,.9)');
-      grad.addColorStop(0.75,'rgba(15,10,35,.85)');
-      grad.addColorStop(1,'rgba(30,20,60,.8)');
-      ctx.fillStyle=grad;
-      ctx.fillRect(0,0,canvas.width,canvas.height);
-
-      // Realm boundary lines
-      REALMS.forEach(r=>{
-        const y=r.y*canvas.height;
-        ctx.strokeStyle=r.color;
-        ctx.lineWidth=.8;
-        ctx.setLineDash([4,8]);
-        ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke();
-        ctx.setLineDash([]);
-        ctx.fillStyle=r.color;
-        ctx.font=`${Math.max(10,canvas.width*0.018)}px Cinzel,serif`;
-        ctx.textAlign='right';
-        ctx.fillText(r.label, canvas.width-16, y-6);
-      });
-
-      // Light beam from center bottom
-      const beamCx=canvas.width/2;
-      if(t>20){
-        const beamGrad=ctx.createLinearGradient(beamCx,canvas.height,beamCx,0);
-        beamGrad.addColorStop(0,'rgba(240,200,80,0)');
-        beamGrad.addColorStop(0.3,'rgba(240,200,80,.06)');
-        beamGrad.addColorStop(0.7,'rgba(200,180,240,.08)');
-        beamGrad.addColorStop(1,'rgba(255,255,255,.12)');
-        const bw=Math.min(t*3,canvas.width*0.4);
-        ctx.fillStyle=beamGrad;
-        ctx.beginPath();
-        ctx.moveTo(beamCx-20,canvas.height);
-        ctx.lineTo(beamCx-bw,0);
-        ctx.lineTo(beamCx+bw,0);
-        ctx.lineTo(beamCx+20,canvas.height);
-        ctx.fill();
-      }
-
-      // Particles
-      particles.forEach(p=>{
-        if(t<p.delay) return;
-        p.life++;
-        if(p.life>p.maxLife){ p.life=0; p.y=canvas.height*0.9+Math.random()*canvas.height*.2; p.x=canvas.width/2+(Math.random()-0.5)*canvas.width*.4; p.vy=-(0.8+Math.random()*3.5); }
-        p.x+=p.vx+Math.sin(t*0.02+p.spiral*100)*p.spiral*60;
-        p.y+=p.vy;
-        p.vy*=0.998;
-        const lifeRatio=p.life/p.maxLife;
-        const alpha=p.opacity*(1-Math.pow(lifeRatio,2));
-        ctx.beginPath();
-        ctx.arc(p.x,p.y,p.size*(1-lifeRatio*.5),0,Math.PI*2);
-        ctx.fillStyle=`hsla(${p.hue},80%,${50+lifeRatio*30}%,${alpha})`;
-        ctx.fill();
-        // Sparkle cross
-        if(p.size>2.5){
-          ctx.strokeStyle=`hsla(${p.hue},90%,80%,${alpha*.4})`;
-          ctx.lineWidth=.5;
-          ctx.beginPath(); ctx.moveTo(p.x-p.size*1.5,p.y); ctx.lineTo(p.x+p.size*1.5,p.y); ctx.stroke();
-          ctx.beginPath(); ctx.moveTo(p.x,p.y-p.size*1.5); ctx.lineTo(p.x,p.y+p.size*1.5); ctx.stroke();
-        }
-      });
-
-      // Pulsing OM at top
-      if(t>40){
-        const omAlpha=Math.min((t-40)/60, 1);
-        const omScale=1+Math.sin(t*.02)*.06;
-        ctx.save();
-        ctx.globalAlpha=omAlpha;
-        ctx.translate(canvas.width/2, canvas.height*0.08);
-        ctx.scale(omScale,omScale);
-        ctx.font=`${Math.max(48,canvas.width*0.08)}px serif`;
-        ctx.textAlign='center';
-        ctx.textBaseline='middle';
-        ctx.fillStyle='rgba(240,200,80,.9)';
-        ctx.shadowBlur=30; ctx.shadowColor='rgba(240,200,80,.6)';
-        ctx.fillText('ॐ',0,0);
-        ctx.restore();
-      }
-
-      // Expanding light rings from top
-      if(t>60){
-        for(let ring=0;ring<4;ring++){
-          const rAge=((t-60)+ring*40)%160;
-          const rAlpha=Math.max(0,(1-rAge/160)*.15);
-          ctx.strokeStyle=`rgba(240,200,80,${rAlpha})`;
-          ctx.lineWidth=1.5;
-          ctx.beginPath();
-          ctx.arc(canvas.width/2,canvas.height*.08,rAge*3,0,Math.PI*2);
-          ctx.stroke();
-        }
-      }
-
-      rafRef.current=requestAnimationFrame(draw);
-    };
-    draw();
-
-    // Phase progression
-    const t1=setTimeout(()=>setPhase(1),3500);
-    const t2=setTimeout(()=>setPhase(2),5500);
-    const t3=setTimeout(()=>setShowJudge(true),7000);
-
-    return()=>{
-      cancelAnimationFrame(rafRef.current);
-      window.removeEventListener('resize',resize);
-      clearTimeout(t1); clearTimeout(t2); clearTimeout(t3);
-    };
-  },[]);
-
-  const isMulti = players.length>2 || (players.length===2&&!players[1]?.cpu);
-
-  return(
-    <div style={{position:'fixed',inset:0,zIndex:600,overflow:'hidden'}}>
-      <canvas ref={canvasRef} style={{position:'absolute',inset:0,width:'100%',height:'100%'}}/>
-
-      {/* Winner card — ascends over time */}
-      <div style={{
-        position:'absolute',left:'50%',bottom:'15%',transform:'translateX(-50%)',
-        textAlign:'center',
-        animation:'mokshaAscend 8s ease 1.5s both',
-        filter:'drop-shadow(0 0 40px rgba(240,200,80,.6))',
-      }}>
-        <div style={{fontSize:'clamp(52px,10vw,80px)',marginBottom:8,animation:'cgGoldPulse 2s ease infinite'}}>{wp?.char?.icon}</div>
-        <div style={{fontSize:'clamp(18px,4vw,28px)',fontFamily:"'Yatra One',serif",color:'#f0d050',letterSpacing:3,textShadow:'0 0 30px rgba(240,200,80,.6)'}}>{wp?.name}</div>
-        <div style={{fontSize:'clamp(10px,2vw,13px)',color:'rgba(240,200,80,.6)',letterSpacing:4,fontFamily:"'Cinzel',serif",marginTop:4}}>मोक्ष प्राप्त · LIBERATED</div>
-      </div>
-
-      {/* Chitragupta seal — appears after ascension */}
-      {phase>=1&&(
-        <div style={{
-          position:'absolute',left:'50%',top:'50%',transform:'translate(-50%,-50%)',
-          textAlign:'center',animation:'fadeIn 1.5s ease',
-          background:'linear-gradient(135deg,rgba(14,10,4,.95),rgba(20,14,6,.98))',
-          border:'1px solid rgba(200,175,90,.25)',borderRadius:12,
-          padding:'clamp(16px,3vw,28px) clamp(20px,4vw,40px)',
-          maxWidth:'min(420px,90vw)',backdropFilter:'blur(10px)',
-        }}>
-          {/* Quill SVG above text */}
-          <div style={{fontSize:20,marginBottom:8,animation:'pulse 2s ease infinite',opacity:.6}}>🪶</div>
-          <div style={{fontSize:8,letterSpacing:4,color:'rgba(200,175,90,.5)',fontFamily:"'Cinzel',serif",marginBottom:10}}>CHITRAGUPTA SEALS THE LEDGER</div>
-          <div style={{width:80,height:1,background:'linear-gradient(90deg,transparent,rgba(200,175,90,.4),transparent)',margin:'0 auto 16px'}}/>
-
-          {/* Stats */}
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:16}}>
-            <div style={{padding:'8px',background:'rgba(80,200,80,.06)',border:'1px solid rgba(80,200,80,.12)',borderRadius:6,textAlign:'center'}}>
-              <div style={{fontSize:7,color:'rgba(80,200,80,.5)',letterSpacing:2,marginBottom:4}}>पुण्य EARNED</div>
-              <div style={{fontSize:22,fontWeight:900,color:'#80c080',fontFamily:"'Cinzel',serif"}}>{wPunya}</div>
-            </div>
-            <div style={{padding:'8px',background:'rgba(200,80,60,.05)',border:'1px solid rgba(200,80,60,.1)',borderRadius:6,textAlign:'center'}}>
-              <div style={{fontSize:7,color:'rgba(200,80,60,.45)',letterSpacing:2,marginBottom:4}}>पाप CARRIED</div>
-              <div style={{fontSize:22,fontWeight:900,color:'#e08060',fontFamily:"'Cinzel',serif"}}>{wPapa}</div>
-            </div>
-          </div>
-
-          {/* CG quote */}
-          <div style={{fontSize:'clamp(10px,1.8vw,13px)',color:'rgba(200,175,120,.55)',fontStyle:'italic',lineHeight:1.8,marginBottom:16,letterSpacing:.5}}>
-            "The page is complete. I seal it. In all the ages I have kept this record, few pages end this way."
-          </div>
-          <div style={{fontSize:8,color:'rgba(200,175,90,.3)',letterSpacing:3,marginBottom:16}}>— चित्रगुप्त</div>
-        </div>
-      )}
-
-      {/* Yama judgment for losers — appears last */}
-      {showJudge&&lp&&isMulti&&(
-        <YamaJudgment loser={lp} papa={papa[loserIdx]} punya={punya[loserIdx]}/>
-      )}
-
-      {/* Close button */}
-      {phase>=2&&(
-        <div style={{position:'absolute',bottom:24,left:'50%',transform:'translateX(-50%)',display:'flex',gap:12,animation:'fadeIn 1s ease'}}>
-          <button onClick={onClose} style={{
-            background:'linear-gradient(180deg,rgba(200,160,60,.2),rgba(200,160,60,.08))',
-            border:'1px solid rgba(200,160,60,.4)',color:'#e8c850',
-            padding:'10px 28px',fontSize:11,fontFamily:"'Cinzel',serif",
-            cursor:'pointer',borderRadius:4,letterSpacing:3,
-          }}>नया जन्म · NEW JOURNEY</button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ══════════════════════════════════════════════════════════════════════
-// 💀 YAMA JUDGMENT — Canvas fire + chains for the most-sinful player
-// ══════════════════════════════════════════════════════════════════════
-function YamaJudgment({ loser, papa, punya }) {
-  const canvasRef = useRef(null);
-  const rafRef    = useRef(null);
-
-  useEffect(()=>{
-    const canvas=canvasRef.current; if(!canvas) return;
-    const W=canvas.width=360, H=canvas.height=280;
-    const ctx=canvas.getContext('2d');
-    let t=0;
-
-    // Flame particles
-    const flames=[];
-    for(let i=0;i<120;i++){
-      flames.push({
-        x:W/2+(Math.random()-.5)*W*.7,
-        y:H*.85+Math.random()*H*.2,
-        vx:(Math.random()-.5)*.8,
-        vy:-(0.5+Math.random()*2),
-        size:4+Math.random()*14,
-        life:0, maxLife:30+Math.random()*50,
-        hue:Math.random()<.7?10+Math.random()*20:30+Math.random()*20,
-        delay:Math.random()*30,
-      });
-    }
-
-    const draw=()=>{
-      ctx.clearRect(0,0,W,H);
-      t++;
-      // Dark background
-      ctx.fillStyle='rgba(8,3,2,.92)';
-      ctx.fillRect(0,0,W,H);
-
-      // Glow from bottom
-      const grd=ctx.createRadialGradient(W/2,H,10,W/2,H,W*.6);
-      grd.addColorStop(0,'rgba(200,40,10,.25)');
-      grd.addColorStop(.5,'rgba(150,20,5,.08)');
-      grd.addColorStop(1,'transparent');
-      ctx.fillStyle=grd; ctx.fillRect(0,0,W,H);
-
-      // Flames
-      flames.forEach(f=>{
-        if(t<f.delay) return;
-        f.life++;
-        if(f.life>f.maxLife){f.life=0;f.y=H*.85+Math.random()*H*.2;f.x=W/2+(Math.random()-.5)*W*.65;f.vy=-(0.5+Math.random()*2);}
-        f.x+=f.vx+Math.sin(t*.05+f.x*.01)*.5;
-        f.y+=f.vy;
-        f.vy*=0.995;
-        const lr=f.life/f.maxLife;
-        const alpha=(1-lr)*(0.5+Math.random()*.3);
-        ctx.beginPath();
-        ctx.arc(f.x,f.y,f.size*(1-lr*.6),0,Math.PI*2);
-        ctx.fillStyle=`hsla(${f.hue+lr*20},90%,${35+lr*25}%,${alpha})`;
-        ctx.fill();
-      });
-
-      // Smoke particles
-      if(t%3===0){
-        ctx.beginPath();
-        const sx=W/2+(Math.random()-.5)*W*.5;
-        const sy=H*.55;
-        ctx.arc(sx,sy,3+Math.random()*8,0,Math.PI*2);
-        ctx.fillStyle=`rgba(40,20,10,${0.1+Math.random()*.1})`;
-        ctx.fill();
-      }
-
-      // SVG-like Yama silhouette (buffalo + figure)
-      const yamaY=H*.55-Math.min(t*1.5,H*.25); // rises from flames
-      const yamaAlpha=Math.min(t/40,1);
-      ctx.save();
-      ctx.globalAlpha=yamaAlpha;
-      ctx.fillStyle='rgba(60,10,10,.9)';
-      // Body
-      ctx.beginPath(); ctx.ellipse(W/2,yamaY,20,28,0,0,Math.PI*2); ctx.fill();
-      // Head
-      ctx.beginPath(); ctx.arc(W/2,yamaY-32,14,0,Math.PI*2); ctx.fill();
-      // Crown (trident-like)
-      ctx.strokeStyle='rgba(200,40,10,.8)'; ctx.lineWidth=3; ctx.lineCap='round';
-      for(let spike=-1;spike<=1;spike++){
-        ctx.beginPath();
-        ctx.moveTo(W/2+spike*8,yamaY-44);
-        ctx.lineTo(W/2+spike*8,yamaY-64-Math.abs(spike)*6);
-        ctx.stroke();
-      }
-      // Arms raised
-      ctx.strokeStyle='rgba(60,10,10,.9)'; ctx.lineWidth=8;
-      ctx.beginPath(); ctx.moveTo(W/2-18,yamaY-10); ctx.lineTo(W/2-50,yamaY-35); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(W/2+18,yamaY-10); ctx.lineTo(W/2+50,yamaY-35); ctx.stroke();
-      ctx.restore();
-
-      // Animated chains
-      if(t>30){
-        const chainAlpha=Math.min((t-30)/40,1);
-        ctx.save();
-        ctx.globalAlpha=chainAlpha;
-        ctx.strokeStyle='rgba(180,140,60,.6)';
-        ctx.lineWidth=2.5;
-        ctx.setLineDash([4,3]);
-        ctx.lineDashOffset=-t*.5;
-        // Left chain
-        ctx.beginPath();
-        ctx.moveTo(30,H*.3);
-        ctx.bezierCurveTo(W*.2,H*.35+Math.sin(t*.04)*8,W*.35,H*.5,W*.38,H*.7);
-        ctx.stroke();
-        // Right chain
-        ctx.beginPath();
-        ctx.moveTo(W-30,H*.3);
-        ctx.bezierCurveTo(W*.8,H*.35+Math.sin(t*.04+1)*8,W*.65,H*.5,W*.62,H*.7);
-        ctx.stroke();
-        ctx.setLineDash([]);
-        ctx.restore();
-      }
-
-      rafRef.current=requestAnimationFrame(draw);
-    };
-    draw();
-    return()=>{ cancelAnimationFrame(rafRef.current); };
-  },[]);
-
-  return(
-    <div style={{
-      position:'fixed',bottom:20,right:20,
-      background:'rgba(8,3,2,.95)',
-      border:'1.5px solid rgba(180,40,20,.35)',
-      borderRadius:10,overflow:'hidden',
-      animation:'yamaRise .8s cubic-bezier(.34,1.56,.64,1)',
-      boxShadow:'0 0 40px rgba(180,40,20,.2)',
-      width:'min(360px,90vw)',
-    }}>
-      <canvas ref={canvasRef} width={360} height={280} style={{display:'block',width:'100%'}}/>
-      <div style={{padding:'10px 14px',background:'linear-gradient(0deg,rgba(8,3,2,.98),rgba(8,3,2,.85))'}}>
-        <div style={{fontSize:10,color:'rgba(200,60,30,.7)',letterSpacing:2,fontFamily:"'Cinzel',serif",fontWeight:700,marginBottom:4}}>
-          ☠️ YAMA'S JUDGMENT
-        </div>
-        <div style={{fontSize:9,color:'rgba(200,80,60,.6)',marginBottom:6,lineHeight:1.6}}>
-          {loser.char.icon} <strong style={{color:loser.char.color}}>{loser.name}</strong> — {papa} Papa, {punya} Punya
-        </div>
-        <div style={{fontSize:8,color:'rgba(180,60,40,.45)',fontStyle:'italic',lineHeight:1.7}}>
-          "The ledger has spoken. {papa} Papa cannot be hidden from Yama's gaze. The soul must return — to learn, to suffer, to try again."
-        </div>
-        <div style={{fontSize:7,color:'rgba(160,40,20,.4)',marginTop:4,letterSpacing:2}}>— CHITRAGUPTA'S FINAL ENTRY</div>
-      </div>
-    </div>
-  );
-}
-
 /* Yama Image — put yama.png in /public folder */
 function YamaIcon({size=80}){
   return <div style={{width:size,height:size*1.3,display:"flex",alignItems:"center",justifyContent:"center"}}>
@@ -3091,16 +2410,6 @@ const CSS=`
 @keyframes yamaTextReveal{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
 @keyframes waveBar{0%,100%{height:8px}50%{height:28px}}
 @keyframes cymaticPulse{0%{transform:scale(.97);opacity:.08}50%{transform:scale(1.03);opacity:.2}100%{transform:scale(.97);opacity:.08}}
-@keyframes cgWrite{from{stroke-dashoffset:1000}to{stroke-dashoffset:0}}
-@keyframes cgEntry{0%{opacity:0;transform:translateX(-10px)}100%{opacity:1;transform:translateX(0)}}
-@keyframes cgScaleShake{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-1.5deg)}75%{transform:rotate(1.5deg)}}
-@keyframes cgGoldPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.6) drop-shadow(0 0 6px rgba(240,200,80,.8))}}
-@keyframes mokshaAscend{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-120vh) scale(0.1);opacity:0}}
-@keyframes mokshaLotus{0%{transform:scale(0) rotate(-180deg);opacity:0}60%{transform:scale(1.15) rotate(10deg);opacity:1}100%{transform:scale(1) rotate(0deg);opacity:1}}
-@keyframes mokshaBeam{0%{transform:scaleY(0);opacity:0;transform-origin:bottom}100%{transform:scaleY(1);opacity:1;transform-origin:bottom}}
-@keyframes yamaRise{0%{transform:translateY(100%) scale(0.5);opacity:0}100%{transform:translateY(0) scale(1);opacity:1}}
-@keyframes yamaFlame{0%,100%{transform:scaleY(1) skewX(0deg)}33%{transform:scaleY(1.1) skewX(-3deg)}66%{transform:scaleY(.95) skewX(2deg)}}
-@keyframes yamaChain{0%{stroke-dashoffset:200}100%{stroke-dashoffset:0}}
 @keyframes cymaticRotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
 @keyframes diceRoll{0%{transform:rotate(0deg) scale(1)}25%{transform:rotate(90deg) scale(1.2)}50%{transform:rotate(180deg) scale(.9)}75%{transform:rotate(270deg) scale(1.1)}100%{transform:rotate(360deg) scale(1)}}
 @keyframes cymaticFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
@@ -3463,10 +2772,6 @@ export default function MokshaPatam108(){
   const[msg,setMsg]=useState("");
   const[dil,setDil]=useState(null);
   const[win,setWin]=useState(null);
-  // ── Chitragupta state ──
-  const[cgEntries,setCgEntries]=useState([]);
-  const[showMoksha,setShowMoksha]=useState(false);
-  const cgEntryId=useRef(0);
   const[busy,setBusy]=useState(false);
   const[hist,setHist]=useState([]);
   const[shI,setShI]=useState(0);
@@ -3500,19 +2805,6 @@ export default function MokshaPatam108(){
       return !m;
     });
   },[ambient]);
-
-  // ── Chitragupta helpers ──
-  const addCGEntry=useCallback((type,sq,detail)=>{
-    const id=++cgEntryId.current;
-    setCgEntries(e=>[...e.slice(-29),{id,type,sq,detail,ts:Date.now()}]);
-  },[]);
-
-  const speakCG=useCallback((key,delayMs=600)=>{
-    if(muted)return;
-    setTimeout(()=>{
-      if(!VoiceEngine.speaking) VoiceEngine.speakChitragupta(key,chosenLang);
-    },delayMs);
-  },[muted,chosenLang]);
 
   const eventCallback=useRef(null);
   const voiceTimerRef=useRef(null);
@@ -3603,11 +2895,9 @@ export default function MokshaPatam108(){
     setPos(Array(n).fill(1));setPunya(Array(n).fill(0));setPapa(Array(n).fill(0));
     setShieldA(Array(n).fill(false));setSkipA(Array(n).fill(false));
     setCur(0);setWin(null);setHist([]);setRv(null);setGv(null);setBusy(false);setDil(null);setUsedDharma([]);
-    setCgEntries([]);setShowMoksha(false);
     setMsg(`${pList[0].name} the ${pList[0].char.name} — your journey begins.`);
     gameStats.current={startTime:Date.now(),turns:0,snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0,grahaHits:{sun:0,moon:0,mars:0,mercury:0,jupiter:0,venus:0,saturn:0,rahu:0,ketu:0}};
     setScreen("game");
-    setTimeout(()=>{ if(!muted) VoiceEngine.speakChitragupta('open',chosenLang); },2800);
   };
 
   const addPlayer=()=>{
@@ -3712,32 +3002,26 @@ export default function MokshaPatam108(){
           // ═══ STEP 3: Check landing — show popup, wait for dismiss ═══
           const finishTurn=(skipDharmaCheck)=>{
             nPos[cur]=p;setPos([...nPos]);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setSkipA(nSkip);
+            // Track highest square reached
             if(p>(gameStats.current.highest||1))gameStats.current.highest=p;
             setMsg([eMsg,...extras].filter(Boolean).join(" · ")||`Moved to ${p}.`);
             setHist(h=>[...h.slice(-12),`${pName}→${p}`]);
             if(nPunya[cur]>=30&&!win){setWin(cur);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory");
-              addCGEntry('moksha',p,`30 पुण्य · कर्म विजय`);
-              showEvent({icon:"ॐ",title:"KARMA VICTORY!",subtitle:`${pName} has accumulated 30 Punya! The board dissolves. Instant Moksha!`,color:"#f0d050"},()=>{speakCG('moksha',300);setTimeout(()=>setShowMoksha(true),1200);});
-            }
-            // Balance warning — Chitragupta watches when it's knife-edge
-            const pu=nPunya[cur],pa=nPapa[cur];
-            if(pu>0&&pa>0&&Math.abs(pu-pa)<=2&&p<100&&!win){
-              addCGEntry('balance',p,`${pu}P·${pa}X तुला`);
-              speakCG('balance',5500);
+              showEvent({icon:"ॐ",title:"KARMA VICTORY!",subtitle:`${pName} has accumulated 30 Punya! The board dissolves. Instant Moksha!`,color:"#f0d050"});
             }
             if(skipDharmaCheck||(!DLM_SQ.includes(p)&&!(p>100&&p<108)))setCur(c=>(c+1)%nP);
             setBusy(false);
           };
 
           if(SNAKES[p]){const sn=SNAKES[p];if(nShield[cur]){nShield[cur]=false;eMsg=`𓆙 ${sn.skt} — Shield!`;play("ladder");
-            showEvent({icon:"🛡",title:`Shield Saved ${pName}!`,subtitle:`The serpent ${sn.skt} (${sn.en}) struck — but Shukra's shield absorbed the venom! Shield is now gone.`,color:"#d0a0c0",staticKey:"shield_save"},()=>{addCGEntry('punya',p,`${sn.skt} — shield`);speakCG('punya',500);finishTurn(true)});
+            showEvent({icon:"🛡",title:`Shield Saved ${pName}!`,subtitle:`The serpent ${sn.skt} (${sn.en}) struck — but Shukra's shield absorbed the venom! Shield is now gone.`,color:"#d0a0c0",staticKey:"shield_save"},()=>finishTurn(true));
           }else{const o=p;p=sn.to;eMsg=`𓆙 ${o}→${p}`;nPapa[cur]+=2;gameStats.current.snakes++;play("snake");play("yamaLaugh");
             // Yama taunts the player with voice
             if(!muted){setTimeout(()=>VoiceEngine.playYamaTaunt("snake",chosenLang),800)}
-            showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} caught you! ${sn.tale} Dragged from ${o} to ${p}. +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`,staticKey:"snake_hit"},()=>{addCGEntry('snake',p,`${sn.skt} · ${o}→${p}`);speakCG('snake',4000);finishTurn(true)});
+            showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} caught you! ${sn.tale} Dragged from ${o} to ${p}. +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`,staticKey:"snake_hit"},()=>finishTurn(true));
           }}
           else if(LADDERS[p]){const ld=LADDERS[p];const o=p;p=ld.to;eMsg=`🪔 ${o}→${p}`;nPunya[cur]+=1;gameStats.current.ladders++;play("ladder");
-            showEvent({icon:"🪔",title:`${ld.skt} — ${ld.en}`,subtitle:`${pName}, the virtue of ${ld.en} lifts you! ${ld.tale} Rise from ${o} to ${p}. +1 PUNYA.`,color:"#f0d050",extra:`${o} → ${p}`,staticKey:"ladder_rise"},()=>{addCGEntry('ladder',p,`${ld.skt} · ${o}→${p}`);speakCG('ladder',500);finishTurn(true)});
+            showEvent({icon:"🪔",title:`${ld.skt} — ${ld.en}`,subtitle:`${pName}, the virtue of ${ld.en} lifts you! ${ld.tale} Rise from ${o} to ${p}. +1 PUNYA.`,color:"#f0d050",extra:`${o} → ${p}`,staticKey:"ladder_rise"},()=>finishTurn(true));
           }
           else if(DLM_SQ.includes(p)){
             // No-repeat dharma: pick from unused pool, reset if all used
@@ -3764,8 +3048,6 @@ export default function MokshaPatam108(){
             const ashtangaStaticKey=`ashtanga_step_${stepNum}`;
             eMsg=`${sq.icon} ${sq.skt} — Step ${stepNum}/7`;play("dilemma");
             showEvent({icon:sq.icon,title:`अष्टांग मार्ग · Step ${stepNum}`,subtitle:introText,color:"#f0d050",staticKey:ashtangaStaticKey},()=>{
-              addCGEntry('sacred',p,`${sq.skt} · ${sq.en}`);
-              if(stepNum===1) speakCG('sacred',500);
               // Pick random riddle for this step
               const pool=ASHTANGA_RIDDLES[p]||ASHTANGA_RIDDLES[101];
               const riddle=pool[Math.floor(Math.random()*pool.length)];
@@ -3786,10 +3068,10 @@ export default function MokshaPatam108(){
             });
           }
           else if(p===108){if(nPunya[cur]>=nPapa[cur]){setWin(cur);eMsg=`ॐ MOKSHA!`;play("victory");
-            showEvent({icon:"ॐ",title:"मोक्ष प्राप्त — MOKSHA!",subtitle:`${pName} reached Square 108 — Moksha! Punya (${nPunya[cur]}) ≥ Papa (${nPapa[cur]}). Liberation! The cycle of Samsara ends.`,color:"#f0d050",staticKey:"moksha_gate"},()=>{addCGEntry('moksha',108,`${nPunya[cur]} पुण्य · मुक्ति`);speakCG('moksha',600);setTimeout(()=>setShowMoksha(true),1200);finishTurn()});
+            showEvent({icon:"ॐ",title:"मोक्ष प्राप्त — MOKSHA!",subtitle:`${pName} reached Square 108 — Moksha! Punya (${nPunya[cur]}) ≥ Papa (${nPapa[cur]}). Liberation! The cycle of Samsara ends.`,color:"#f0d050",staticKey:"moksha_gate"},finishTurn);
           }else{p=67;eMsg="Impure → 67";play("snake");play("yamaLaugh");
             if(!muted)setTimeout(()=>VoiceEngine.playYamaTaunt("reject",chosenLang),800);
-            showEvent({icon:"⚠",title:"Gates of Moksha REJECT You!",subtitle:`${pName}, your soul is impure! Punya (${nPunya[cur]}) < Papa (${nPapa[cur]}). Cast back to 67.`,color:"#e06030"},()=>{addCGEntry('reject',67,`${nPunya[cur]}P < ${nPapa[cur]}X`);speakCG('reject',600);finishTurn()});
+            showEvent({icon:"⚠",title:"Gates of Moksha REJECT You!",subtitle:`${pName}, your soul is impure! Punya (${nPunya[cur]}) < Papa (${nPapa[cur]}). Cast back to 67.`,color:"#e06030"},finishTurn);
           }}
           else{finishTurn()}
         }
@@ -3856,8 +3138,7 @@ export default function MokshaPatam108(){
     setPunya(np);setPapa(npa);setSkipA(nsk);setPos(npos);setShieldA(nsh);
     const parts=[];if(fx.punya)parts.push(`+${fx.punya} Punya`);if(fx.papa)parts.push(`+${fx.papa} Papa`);if(fx.move)parts.push(fx.move>0?`advance ${fx.move}`:`back ${Math.abs(fx.move)}`);if(fx.skip)parts.push("skip next");if(fx.loseShield)parts.push("lost Shield");if(fx.giveShield)parts.push("gained Shield");
     setMsg(parts.join(", ")||"Balanced.");
-    if(ch.k==="punya"){play("chime");gameStats.current.riddlesC++;addCGEntry('dharma_p',npos[dil.pi]||1,dil.en||'');speakCG('dharma_p',600);}
-    else if(ch.k==="papa"){play("yamaLaugh");gameStats.current.riddlesW++;addCGEntry('dharma_x',npos[dil.pi]||1,dil.en||'');speakCG('dharma_x',4000);}
+    if(ch.k==="punya"){play("chime");gameStats.current.riddlesC++}else if(ch.k==="papa"){play("yamaLaugh");gameStats.current.riddlesW++}
     if(np[dil.pi]>=30&&!win){setWin(dil.pi);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory")}
     setDil(null);setCur(c=>(c+1)%nP);
   };
@@ -3961,17 +3242,6 @@ export default function MokshaPatam108(){
   // ═══ GLOBAL OVERLAYS — rendered on every screen ═══
   const globalOverlays=<>
     <style>{CSS}</style>
-    {/* ═══ MOKSHA CINEMATIC — appears full-screen when win triggers ═══ */}
-    {showMoksha&&win!==null&&(
-      <MokshaScreen
-        winner={win}
-        players={players}
-        punya={punya}
-        papa={papa}
-        muted={muted}
-        onClose={()=>{setShowMoksha(false);setScreen("title");setWin(null);setPlayers([]);ambient.stop();}}
-      />
-    )}
     {/* ═══ SACRED BACKGROUND — visible on ALL screens ═══ */}
     <div style={{position:"fixed",inset:0,pointerEvents:"none",overflow:"hidden",zIndex:0}}>
       <div style={{position:"fixed",inset:0,background:"radial-gradient(ellipse at center,transparent 40%,rgba(6,5,3,.85) 100%)"}}/>
@@ -4757,23 +4027,6 @@ export default function MokshaPatam108(){
             <button onClick={()=>{VoiceEngine.stop();setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("pickcount")}} style={{position:"absolute",top:20,left:20,background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#8a7a50",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
             <div style={{fontSize:10,opacity:.3,letterSpacing:5}}>SEEKER {pidx+1} OF {nP}</div>
             <h2 style={{fontSize:"clamp(20px,4vw,30px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"8px 0"}}>Choose Your Identity</h2>
-            {pidx===0&&<div
-              onClick={()=>!muted&&VoiceEngine.speakChitragupta('seeker',chosenLang)}
-              style={{
-                display:"inline-flex",alignItems:"center",gap:8,cursor:"pointer",
-                padding:"5px 14px",marginTop:2,
-                background:"linear-gradient(135deg,rgba(200,175,90,.06),rgba(200,175,90,.02))",
-                border:"1px solid rgba(200,175,90,.14)",borderRadius:20,
-                animation:"fadeIn 1.5s ease .8s both",
-              }}>
-              <svg width={11} height={14} viewBox="0 0 11 14" style={{opacity:.65}}>
-                <path d="M5.5 1Q8.5 0 10 3Q11 7 7 9Q5.5 11 5.5 13Q4.5 11 4.5 9Q1 7 1 4Q2.5 1 5.5 1Z" fill="rgba(200,175,90,.25)" stroke="rgba(200,175,90,.5)" strokeWidth=".5"/>
-                <path d="M5.5 13L5.5 9Q7.5 7 8.5 5" fill="none" stroke="rgba(200,175,90,.55)" strokeWidth=".5"/>
-              </svg>
-              <span style={{fontSize:8,color:"rgba(200,175,90,.4)",letterSpacing:2,fontFamily:"'Cinzel',serif",fontStyle:"italic"}}>
-                Chitragupta watches · He already knows your choice
-              </span>
-            </div>}
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(clamp(140px,30vw,200px),1fr))",gap:10,marginBottom:20}}>
             {CHARS.map((ch,i)=>{const used=usedChars.includes(i);const sel=tempChar===i;
@@ -5024,22 +4277,20 @@ export default function MokshaPatam108(){
               {busy?"Rolling...":"Roll Dice"}
             </button>
           </div>}
-          {win!==null&&<div style={{background:"radial-gradient(circle,rgba(240,200,80,.1),rgba(12,10,7,.95))",border:"2px solid rgba(240,200,80,.5)",padding:20,textAlign:"center",borderRadius:6,animation:"fadeIn .5s ease"}}>
-            <div style={{fontSize:44,animation:"mp 2s ease infinite",filter:"drop-shadow(0 0 20px rgba(240,200,80,.6))"}}>ॐ</div>
-            <div style={{fontSize:18,fontFamily:"'Yatra One',serif",margin:"8px 0",color:"#f0d050",letterSpacing:3}}>मोक्ष प्राप्त</div>
-            <div style={{fontSize:13,color:players[win]?.char?.color,marginBottom:4}}>{players[win]?.char?.icon} {players[win]?.name}</div>
-            <div style={{fontSize:10,opacity:.5,marginBottom:14}}>{players[win]?.char?.name} · Liberation achieved</div>
-            {auth.user&&<div style={{fontSize:10,color:"#80c080",marginBottom:10}}>✓ Game saved to profile</div>}
-            <button onClick={()=>setShowMoksha(true)} style={{
-              background:"linear-gradient(180deg,rgba(240,200,80,.25),rgba(240,200,80,.1))",
-              border:"1.5px solid rgba(240,200,80,.5)",color:"#f0d050",
-              padding:"10px 20px",fontSize:11,fontFamily:"'Cinzel',serif",
-              cursor:"pointer",borderRadius:4,letterSpacing:2,marginBottom:8,
-              display:"block",width:"100%",animation:"pulse 2s ease infinite",
-            }}>✨ View Moksha Ceremony</button>
-            <div style={{display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap"}}>
-              <button onClick={()=>{setScreen("title");setWin(null);setPlayers([]);ambient.stop()}} className="gb" style={{padding:"6px 16px",fontSize:10,marginTop:0}}>New Journey</button>
-              {auth.user&&<button onClick={()=>{setShowProfile(true);setProfileTab("history")}} className="gb" style={{padding:"6px 16px",fontSize:10,marginTop:0,opacity:.7}}>📊 Stats</button>}
+          {win!==null&&<div style={{background:"radial-gradient(circle,rgba(240,200,80,.08),#12100a)",border:"2px solid rgba(240,200,80,.4)",padding:22,textAlign:"center"}}>
+            <div style={{fontSize:40,animation:"mp 2s ease infinite"}}>ॐ</div>
+            <div style={{fontSize:20,fontFamily:"'Yatra One',serif",margin:"6px 0",color:"#f0d050"}}>मोक्ष प्राप्त</div>
+            <div style={{fontSize:15,color:players[win]?.char?.color}}>{players[win]?.char?.icon} {players[win]?.name}</div>
+            <div style={{fontSize:12,opacity:.6,marginBottom:8}}>{players[win]?.char?.name} is liberated</div>
+            <div style={{display:"flex",gap:12,justifyContent:"center",fontSize:11,opacity:.5,marginBottom:12}}>
+              <span style={{color:"#80c080"}}>Punya: {punya[win]}</span>
+              <span style={{color:"#e08060"}}>Papa: {papa[win]}</span>
+              <span>Sq: {pos[win]}</span>
+            </div>
+            {auth.user&&<div style={{fontSize:11,color:"#80c080",marginBottom:8}}>✓ Game saved to your profile</div>}
+            <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
+              <button onClick={()=>{setScreen("title");setWin(null);setPlayers([]);ambient.stop()}} className="gb" style={{marginTop:4}}>New Journey</button>
+              {auth.user&&<button onClick={()=>{setShowProfile(true);setProfileTab("history")}} className="gb" style={{marginTop:4,opacity:.7}}>📊 View Stats</button>}
             </div>
           </div>}
           {dil&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.85)",zIndex:250,display:"flex",alignItems:"center",justifyContent:"center",padding:16,overflowY:"auto"}}>
@@ -5072,15 +4323,6 @@ export default function MokshaPatam108(){
               <div style={{textAlign:"center",marginTop:14,fontSize:9,opacity:.25,letterSpacing:2}}>CHOOSE YOUR PATH WISELY</div>
             </div>
           </div>}
-          {/* ══ CHITRAGUPTA'S AGRASANDHANI — the living ledger ══ */}
-          <ChitraguptaPanel
-            entries={cgEntries}
-            players={players}
-            punya={punya}
-            papa={papa}
-            cur={cur}
-            win={win}
-          />
           <div style={{background:"linear-gradient(180deg,#1e1810,#14100a)",border:"1px solid rgba(200,160,60,.2)",padding:12,borderRadius:4}}>
             <div onClick={(e)=>{
               // ═══ HIDDEN DEV PANEL: Triple-click to toggle ═══
