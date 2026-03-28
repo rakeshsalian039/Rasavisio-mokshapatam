@@ -2900,290 +2900,545 @@ function YamaJudgment({ loser, papa, punya, isYama }) {
 //    Story lines reveal themselves one by one. Quill draws across the top.
 //    Skippable at any time.
 // ══════════════════════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════════════════════
+// 🪶 CHITRAGUPTA INTRO — 3D Particle Deity + Cinematic Story
+//
+// A full-screen 3D canvas scene:
+//   · Chitragupta built from ~1400 glowing gold particles
+//   · 4-armed deity silhouette: head, body, arms, halo, lotus throne
+//   · Particles spawn from center and fly to their positions (2s burst)
+//   · Figure rotates slowly on Y-axis (real 3D perspective projection)
+//   · Sanskrit characters orbit him in 3D ellipses at varying inclinations
+//   · Stars parallax in the background
+//   · Story lines appear ONE AT A TIME (cinematic, not a list)
+//   · "BEGIN" triggers particle explosion outward
+// ══════════════════════════════════════════════════════════════════════
 function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip }) {
-  const [lineIdx, setLineIdx] = useState(0);
-  const [done, setDone] = useState(false);
-  const [quillX, setQuillX] = useState(0);
-  const canvasRef = useRef(null);
-  const rafRef    = useRef(null);
-  const timerRef  = useRef(null);
+  const canvasRef  = useRef(null);
+  const stateRef   = useRef({ lineIdx:0, explode:false, t:0, particles:[], orbiters:[], stars:[] });
+  const rafRef     = useRef(null);
+  const timerRef   = useRef(null);
+  const [lineIdx,  setLineIdx]  = useState(0);
+  const [done,     setDone]     = useState(false);
+  const [exploding,setExploding]= useState(false);
 
   const LINES_EN = [
-    { text: "Before the game begins — a word from its keeper.", accent: '#c0b080', delay: 1200 },
-    { text: "I am Chitragupta.", accent: '#f0d050', delay: 900 },
-    { text: "I was created by Brahma himself — carved from his own body, born fully formed, holding a pen.", accent: '#c0b080', delay: 2200 },
-    { text: "My task: to record every deed of every soul born in the universe.", accent: '#c0b080', delay: 2000 },
-    { text: "Every Punya. Every Papa. Every thought that became action.", accent: '#e0c870', delay: 1800 },
-    { text: "I keep the Agrasandhani — the cosmic ledger that never sleeps.", accent: '#c0a860', delay: 1800 },
-    { text: "When a soul stands before Yama for judgment, it is I who reads the account aloud.", accent: '#c0b080', delay: 2400 },
-    { text: "Yama cannot see what I have not written.", accent: '#f0d050', delay: 1600 },
-    { text: "I wrote this board.", accent: '#c0a860', delay: 1000 },
-    { text: "Every snake's name — my Sanskrit. Every virtue ladder — my ink.", accent: '#c0b080', delay: 2000 },
-    { text: "I placed each serpent exactly where weakness would catch a soul.", accent: '#e08060', delay: 2000 },
-    { text: "I placed each ladder exactly where a pure act could lift one.", accent: '#80c080', delay: 2000 },
-    { text: "I know how your story ends.", accent: '#c0b080', delay: 1400 },
-    { text: "I say nothing. I only write.", accent: '#f0d050', delay: 1200 },
-    { text: "Begin.", accent: '#f0d050', delay: 800 },
+    { text:"I am Chitragupta.",                                              accent:'#f0d050', delay:1400 },
+    { text:"Brahma carved me from his own body —",                           accent:'#c0b080', delay:1600 },
+    { text:"born fully formed, holding a quill.",                             accent:'#c0b080', delay:1400 },
+    { text:"My task: to record every deed of every soul\nin the universe.",   accent:'#c0b080', delay:2200 },
+    { text:"Every Punya. Every Papa.",                                        accent:'#e0c870', delay:1400 },
+    { text:"Every whisper of virtue.\nEvery shadow of vice.",                accent:'#c0a860', delay:1800 },
+    { text:"When a soul stands before Yama for judgment —",                  accent:'#c0b080', delay:1800 },
+    { text:"it is I who reads the account aloud.",                            accent:'#f0d050', delay:1400 },
+    { text:"Yama cannot see what I have not written.",                        accent:'#f0d050', delay:1600 },
+    { text:"I wrote this board.",                                             accent:'#c0a060', delay:1200 },
+    { text:"Every serpent's name — my Sanskrit.",                            accent:'#e08060', delay:1400 },
+    { text:"Every virtue ladder — my ink.",                                   accent:'#80c080', delay:1200 },
+    { text:"I know how your story ends.",                                     accent:'#c0b080', delay:1400 },
+    { text:"I say nothing.",                                                  accent:'#f0d050', delay:900  },
+    { text:"I only write.",                                                   accent:'#f0d050', delay:900  },
   ];
   const LINES_HI = [
-    { text: "खेल शुरू होने से पहले — इसके रक्षक की एक बात सुनो।", accent: '#c0b080', delay: 1200 },
-    { text: "मैं चित्रगुप्त हूँ।", accent: '#f0d050', delay: 900 },
-    { text: "ब्रह्मा ने मुझे स्वयं अपने शरीर से बनाया — हाथ में कलम लिए, पूर्ण रूप से जन्मा।", accent: '#c0b080', delay: 2400 },
-    { text: "मेरा कार्य: ब्रह्मांड में जन्म लेने वाली हर आत्मा के हर कर्म को दर्ज करना।", accent: '#c0b080', delay: 2400 },
-    { text: "हर पुण्य। हर पाप। हर विचार जो कर्म बना।", accent: '#e0c870', delay: 1800 },
-    { text: "मैं अग्रसंधानी रखता हूँ — वह ब्रह्मांडीय खाता जो कभी सोता नहीं।", accent: '#c0a860', delay: 2000 },
-    { text: "जब कोई आत्मा यमराज के सामने खड़ी होती है, मैं खाता पढ़ता हूँ।", accent: '#c0b080', delay: 2400 },
-    { text: "यमराज वह नहीं देख सकते जो मैंने नहीं लिखा।", accent: '#f0d050', delay: 1800 },
-    { text: "मैंने यह पट लिखा।", accent: '#c0a860', delay: 1000 },
-    { text: "हर सांप का नाम — मेरी संस्कृत। हर सीढ़ी — मेरी स्याही।", accent: '#c0b080', delay: 2000 },
-    { text: "हर सांप ठीक वहाँ रखा जहाँ कमज़ोरी आत्मा को पकड़े।", accent: '#e08060', delay: 2000 },
-    { text: "हर सीढ़ी ठीक वहाँ रखी जहाँ पुण्य कर्म आत्मा को उठा सके।", accent: '#80c080', delay: 2000 },
-    { text: "मुझे पता है तुम्हारी कहानी कैसे समाप्त होती है।", accent: '#c0b080', delay: 1600 },
-    { text: "मैं कुछ नहीं कहता। केवल लिखता हूँ।", accent: '#f0d050', delay: 1400 },
-    { text: "आरंभ।", accent: '#f0d050', delay: 800 },
+    { text:"मैं चित्रगुप्त हूँ।",                                            accent:'#f0d050', delay:1400 },
+    { text:"ब्रह्मा ने मुझे स्वयं अपने शरीर से बनाया —",                    accent:'#c0b080', delay:1800 },
+    { text:"हाथ में कलम लिए, पूर्ण रूप से जन्मा।",                         accent:'#c0b080', delay:1600 },
+    { text:"मेरा कार्य: ब्रह्मांड में हर आत्मा के\nहर कर्म को दर्ज करना।", accent:'#c0b080', delay:2400 },
+    { text:"हर पुण्य। हर पाप।",                                              accent:'#e0c870', delay:1400 },
+    { text:"पुण्य की हर फुसफुसाहट।\nपाप की हर छाया।",                      accent:'#c0a860', delay:1800 },
+    { text:"जब कोई आत्मा यमराज के सामने खड़ी होती है —",                    accent:'#c0b080', delay:2000 },
+    { text:"मैं खाता पढ़ता हूँ।",                                            accent:'#f0d050', delay:1200 },
+    { text:"यमराज वह नहीं देख सकते जो मैंने नहीं लिखा।",                   accent:'#f0d050', delay:1800 },
+    { text:"मैंने यह पट लिखा।",                                              accent:'#c0a060', delay:1200 },
+    { text:"हर सांप का नाम — मेरी संस्कृत।",                               accent:'#e08060', delay:1400 },
+    { text:"हर सीढ़ी — मेरी स्याही।",                                       accent:'#80c080', delay:1200 },
+    { text:"मुझे पता है तुम्हारी कहानी कैसे समाप्त होती है।",               accent:'#c0b080', delay:1800 },
+    { text:"मैं कुछ नहीं कहता।",                                             accent:'#f0d050', delay:1000 },
+    { text:"केवल लिखता हूँ।",                                                accent:'#f0d050', delay:900  },
   ];
+  const LINES = chosenLang==='hi' ? LINES_HI : LINES_EN;
 
-  const LINES = chosenLang === 'hi' ? LINES_HI : LINES_EN;
-  const isHi  = chosenLang === 'hi';
+  // ── Build particle positions for Chitragupta's 3D figure ──
+  const buildFigure = () => {
+    const pts = [];
+    const add = (x,y,z,type,col) => pts.push({
+      // target position
+      tx:x, ty:y, tz:z,
+      // current position (start at center, burst out)
+      x:(Math.random()-0.5)*20, y:(Math.random()-0.5)*20, z:(Math.random()-0.5)*20,
+      vx:0, vy:0, vz:0,
+      color:col||'gold', type, size:1+Math.random()*1.5,
+      baseOpacity:0.6+Math.random()*0.4, phase:Math.random()*Math.PI*2,
+    });
+    const rand = (s=1) => (Math.random()-0.5)*s;
 
-  // Auto-advance lines
-  useEffect(()=>{
-    if(lineIdx >= LINES.length){ setDone(true); return; }
-    const delay = LINES[lineIdx]?.delay || 1500;
-    timerRef.current = setTimeout(()=>{
-      setLineIdx(i=>i+1);
-    }, delay);
-    return ()=>clearTimeout(timerRef.current);
-  },[lineIdx]);
+    // ── HEAD (sphere) ──
+    for(let i=0;i<120;i++){
+      const φ=Math.acos(2*Math.random()-1), θ=Math.random()*Math.PI*2, r=28+rand(4);
+      add(r*Math.sin(φ)*Math.cos(θ), -155+r*Math.cos(φ), r*Math.sin(φ)*Math.sin(θ), 'head', '#f0d080');
+    }
+    // FACE glow (dense front)
+    for(let i=0;i<40;i++){
+      add(rand(16), -150+rand(20), 24+rand(8), 'face', '#ffe080');
+    }
 
-  // Quill animation — moves right across top as story progresses
-  useEffect(()=>{
-    const pct = Math.min(lineIdx / LINES.length, 1);
-    setQuillX(pct * 100);
-  },[lineIdx]);
+    // ── CROWN (5 spikes + circle) ──
+    for(let spike=0;spike<5;spike++){
+      const a = (spike/5)*Math.PI*2;
+      const cx=22*Math.cos(a), cz=22*Math.sin(a);
+      for(let j=0;j<10;j++){
+        const t2=j/10;
+        add(cx*(1-t2*0.4), -183-j*7+rand(4), cz*(1-t2*0.4), 'crown', '#ffe040');
+      }
+    }
+    // Crown base ring
+    for(let i=0;i<50;i++){
+      const a=(i/50)*Math.PI*2;
+      add(24*Math.cos(a)+rand(3), -183+rand(4), 24*Math.sin(a)+rand(3), 'crown', '#f0c830');
+    }
 
-  // Canvas particle background
+    // ── HALO (glowing ring behind head) ──
+    for(let i=0;i<90;i++){
+      const a=(i/90)*Math.PI*2;
+      const r=55+rand(6);
+      add(r*Math.cos(a)+rand(4), -155+rand(6), -8+r*Math.sin(a)*0.25, 'halo', '#f0d050');
+    }
+
+    // ── BODY (ellipsoid torso) ──
+    for(let i=0;i<160;i++){
+      const t2=Math.random(), a=Math.random()*Math.PI*2;
+      const y=-125+t2*100;
+      const rx=28*(1-Math.pow((t2-0.5)*2,2)*0.4);
+      add(rx*Math.cos(a)+rand(5), y+rand(6), rx*0.5*Math.sin(a)+rand(4), 'body', '#e0c060');
+    }
+
+    // ── 4 ARMS ──
+    // Arm 1: upper-right (holding quill upward)
+    for(let i=0;i<80;i++){
+      const t2=i/80;
+      add(28+t2*70+rand(6), -115-t2*60+rand(6), t2*20+rand(6), 'arm', '#d0b050');
+    }
+    // Arm 2: lower-right (holding scroll downward)
+    for(let i=0;i<80;i++){
+      const t2=i/80;
+      add(25+t2*65+rand(6), -100+t2*55+rand(6), t2*15+rand(6), 'arm', '#d0b050');
+    }
+    // Arm 3: upper-left (palm outward, blessing)
+    for(let i=0;i<80;i++){
+      const t2=i/80;
+      add(-28-t2*65+rand(6), -115-t2*50+rand(6), t2*15+rand(6), 'arm', '#d0b050');
+    }
+    // Arm 4: lower-left (holding ledger)
+    for(let i=0;i<80;i++){
+      const t2=i/80;
+      add(-25-t2*60+rand(6), -95+t2*50+rand(6), t2*10+rand(6), 'arm', '#d0b050');
+    }
+
+    // ── HANDS (clusters at arm tips) ──
+    const hands = [[98,-175,20],[90,-45,15],[-93,-165,15],[-85,-45,10]];
+    hands.forEach(([hx,hy,hz],hi)=>{
+      for(let i=0;i<20;i++) add(hx+rand(12), hy+rand(12), hz+rand(8), 'hand', hi<2?'#ffe080':'#ffe080');
+    });
+
+    // ── QUILL (tip of upper-right hand) ──
+    for(let i=0;i<30;i++){
+      const t2=i/30;
+      add(100+t2*30+rand(5), -178-t2*40+rand(5), 22+t2*5+rand(4), 'quill', '#ffffff');
+    }
+    // Quill feather barbs
+    for(let i=0;i<25;i++){
+      add(105+i*1.2+rand(4), -184-i*1.5+rand(4), 24+rand(4), 'quill', '#f0e080');
+    }
+
+    // ── SCROLL in lower-right hand ──
+    for(let i=0;i<35;i++){
+      const a=(i/35)*Math.PI;
+      add(92+15*Math.cos(a)+rand(4), -38+8*Math.sin(a)+rand(4), 16+rand(4), 'scroll', '#e8d080');
+    }
+
+    // ── LEDGER in lower-left hand ──
+    for(let i=0;i<40;i++){
+      add(-88+rand(18), -40+rand(20), 12+rand(6), 'ledger', '#d4b860');
+    }
+
+    // ── LEGS (cross-legged lotus) ──
+    // Right leg
+    for(let i=0;i<60;i++){
+      const t2=i/60;
+      add(10+t2*45+rand(8), -20+t2*30+rand(8), -10+t2*5+rand(8), 'leg', '#c8a840');
+    }
+    // Left leg
+    for(let i=0;i<60;i++){
+      const t2=i/60;
+      add(-10-t2*40+rand(8), -20+t2*28+rand(8), -10+t2*5+rand(8), 'leg', '#c8a840');
+    }
+
+    // ── LOTUS THRONE ──
+    for(let petal=0;petal<12;petal++){
+      const pa=(petal/12)*Math.PI*2;
+      for(let j=0;j<18;j++){
+        const t2=j/18;
+        const pr=45+t2*25;
+        add(pr*Math.cos(pa)+rand(6), 20+t2*20+rand(5), pr*Math.sin(pa)*0.5+rand(5), 'lotus',
+          petal%2===0?'#f090b0':'#e070a0');
+      }
+    }
+    // Inner lotus glow
+    for(let i=0;i<40;i++){
+      const a=Math.random()*Math.PI*2, r=Math.random()*30;
+      add(r*Math.cos(a)+rand(4), 22+rand(6), r*Math.sin(a)*0.5+rand(4), 'lotus', '#ffb0c8');
+    }
+
+    // ── SACRED THREAD / ORNAMENTATION ──
+    for(let i=0;i<30;i++){
+      const t2=i/30, a=t2*Math.PI;
+      add(28*Math.cos(a)-5, -125+t2*60+rand(4), 28*Math.cos(a)*0.3+rand(3), 'ornament', '#f0d060');
+    }
+
+    // ── AURA PARTICLES ──
+    for(let i=0;i<120;i++){
+      const a=Math.random()*Math.PI*2, r=80+Math.random()*60;
+      const y=-80+rand(200);
+      add(r*Math.cos(a)+rand(15), y, r*Math.sin(a)*0.6+rand(15), 'aura', '#f0d05040');
+    }
+
+    return pts;
+  };
+
+  // ── Build orbiting Sanskrit characters ──
+  const buildOrbiters = () => {
+    const chars = ['ॐ','पु','पा','कर्','म','श्री','अ','ग्र','सं','धा','नी','✦','◈','⚬'];
+    return chars.map((ch,i)=>{
+      const inclination = (i/chars.length)*Math.PI*0.8 - 0.4;
+      return {
+        ch, inclination,
+        radius: 140+Math.random()*60,
+        speed:  0.004+Math.random()*0.006,
+        phase:  (i/chars.length)*Math.PI*2,
+        size:   10+Math.random()*8,
+        color:  i<9?'rgba(240,200,80,0.7)':'rgba(200,175,90,0.35)',
+        yOff:   -70+Math.random()*60,
+      };
+    });
+  };
+
+  // ── Build stars ──
+  const buildStars = (W,H) => Array.from({length:200},()=>({
+    x:Math.random()*W, y:Math.random()*H,
+    z:200+Math.random()*600,
+    r:0.4+Math.random()*1.2, opacity:0.2+Math.random()*0.5,
+  }));
+
+  // ── Canvas draw loop ──
   useEffect(()=>{
     const canvas = canvasRef.current; if(!canvas) return;
-    const ctx = canvas.getContext('2d');
-    let t = 0;
-    const resize=()=>{ canvas.width=window.innerWidth; canvas.height=window.innerHeight; };
+    const ctx    = canvas.getContext('2d');
+    const resize = ()=>{ canvas.width=window.innerWidth; canvas.height=window.innerHeight; };
     resize(); window.addEventListener('resize',resize);
 
-    // Floating ink droplet particles
-    const drops = Array.from({length:60},()=>({
-      x: Math.random()*canvas.width,
-      y: Math.random()*canvas.height,
-      vy: -(0.1+Math.random()*.3),
-      vx: (Math.random()-.5)*.2,
-      size: .5+Math.random()*2,
-      opacity: .05+Math.random()*.12,
-      drift: Math.random()*Math.PI*2,
-    }));
+    const s = stateRef.current;
+    s.particles = buildFigure();
+    s.orbiters  = buildOrbiters();
+    s.stars     = buildStars(canvas.width, canvas.height);
+    s.t = 0;
+    s.explode = false;
 
-    const draw=()=>{
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      t++;
-      // Parchment gradient bg
-      const grad=ctx.createRadialGradient(canvas.width/2,canvas.height*.4,50,canvas.width/2,canvas.height*.4,canvas.width*.8);
-      grad.addColorStop(0,'rgba(28,20,8,.97)');
-      grad.addColorStop(.6,'rgba(16,12,5,.99)');
-      grad.addColorStop(1,'rgba(8,6,2,1)');
-      ctx.fillStyle=grad; ctx.fillRect(0,0,canvas.width,canvas.height);
+    const FOV    = 500;   // perspective focal length
+    const ROTY   = 0.004; // rotation speed around Y axis
 
-      // Ruled lines (parchment)
-      for(let y=80;y<canvas.height;y+=22){
-        ctx.strokeStyle=`rgba(200,175,90,${.012+Math.sin(y*.1+t*.005)*.006})`;
-        ctx.lineWidth=.5;
-        ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke();
-      }
+    const project = (x,y,z, rotY, cx,cy) => {
+      // Rotate around Y
+      const rx = x*Math.cos(rotY) - z*Math.sin(rotY);
+      const rz = x*Math.sin(rotY) + z*Math.cos(rotY);
+      // Perspective project
+      const scale = FOV / (FOV + rz + 300);
+      return { sx: cx + rx*scale, sy: cy + y*scale, scale, rz };
+    };
 
-      // Vertical margin line (left)
-      ctx.strokeStyle='rgba(200,80,60,.08)';
-      ctx.lineWidth=1;
-      ctx.beginPath(); ctx.moveTo(canvas.width*.08,0); ctx.lineTo(canvas.width*.08,canvas.height); ctx.stroke();
+    const SPAWN_FRAMES = 90; // particles travel to positions over 90 frames
 
-      // Floating ink drops
-      drops.forEach(d=>{
-        d.x+=d.vx+Math.sin(t*.008+d.drift)*.15;
-        d.y+=d.vy;
-        if(d.y<-10){ d.y=canvas.height+10; d.x=Math.random()*canvas.width; }
-        ctx.beginPath(); ctx.arc(d.x,d.y,d.size,0,Math.PI*2);
-        ctx.fillStyle=`rgba(200,175,90,${d.opacity})`; ctx.fill();
+    const draw = ()=>{
+      const W = canvas.width, H = canvas.height;
+      const CX = W * 0.38, CY = H * 0.48; // figure center (left of center)
+      s.t++;
+      const rotY = s.t * ROTY;
+      const exploding = s.explode;
+
+      // ── Background ──
+      ctx.fillStyle = 'rgba(6,4,2,1)';
+      ctx.fillRect(0,0,W,H);
+
+      // Radial glow behind figure
+      const grd = ctx.createRadialGradient(CX,CY,20,CX,CY,280);
+      grd.addColorStop(0,'rgba(200,175,90,.07)');
+      grd.addColorStop(0.5,'rgba(200,160,60,.03)');
+      grd.addColorStop(1,'transparent');
+      ctx.fillStyle=grd; ctx.fillRect(0,0,W,H);
+
+      // ── Stars (parallax depth) ──
+      s.stars.forEach(st=>{
+        const scale = FOV/(FOV+st.z);
+        const sx = W/2+(st.x-W/2)*scale;
+        const sy = H/2+(st.y-H/2)*scale;
+        ctx.beginPath(); ctx.arc(sx,sy,st.r*scale,0,Math.PI*2);
+        ctx.fillStyle=`rgba(255,255,220,${st.opacity*scale})`; ctx.fill();
       });
 
-      // Subtle glow around center
-      const glow=ctx.createRadialGradient(canvas.width/2,canvas.height*.4,0,canvas.width/2,canvas.height*.4,300);
-      glow.addColorStop(0,'rgba(200,175,90,.04)');
-      glow.addColorStop(1,'rgba(200,175,90,0)');
-      ctx.fillStyle=glow; ctx.fillRect(0,0,canvas.width,canvas.height);
+      // ── Particles — animate toward target ──
+      // Sort by depth (painter's algorithm)
+      const projected = s.particles.map(p=>{
+        // Move toward target
+        if(exploding){
+          p.vx += (p.x-CX)*0.03 + (Math.random()-0.5)*3;
+          p.vy += (p.y-CY)*0.03 + (Math.random()-0.5)*3;
+          p.x+=p.vx; p.y+=p.vy; p.z+=p.vz;
+        } else if(s.t < SPAWN_FRAMES){
+          // Spawn: fly from center to target
+          const ease = s.t/SPAWN_FRAMES;
+          const curve = ease*ease*(3-2*ease); // smoothstep
+          p.x = p.x + (p.tx-p.x)*0.08;
+          p.y = p.y + (p.ty-p.y)*0.08;
+          p.z = p.z + (p.tz-p.z)*0.08;
+        } else {
+          // Settled: slight organic drift around target
+          const drift = Math.sin(s.t*0.02+p.phase)*1.5;
+          p.x = p.tx + drift*Math.cos(p.phase) + (Math.random()-0.5)*0.2;
+          p.y = p.ty + drift*Math.sin(p.phase)*0.5 + (Math.random()-0.5)*0.2;
+          p.z = p.tz + Math.sin(s.t*0.015+p.phase*1.3)*3;
+        }
+        const pr = project(p.x, p.y, p.z, rotY, CX, CY);
+        return { p, ...pr };
+      });
+      projected.sort((a,b)=>a.rz-b.rz);
 
-      rafRef.current=requestAnimationFrame(draw);
+      projected.forEach(({p,sx,sy,scale})=>{
+        if(sx<-50||sx>W+50||sy<-50||sy>H+50) return;
+        const r = p.size*scale;
+        const opacity = p.baseOpacity * Math.min(1, s.t/30) * scale * 1.2;
+        const pulse = 1 + Math.sin(s.t*0.04+p.phase)*0.12;
+
+        // Glow for bright parts
+        if(p.type==='quill'||p.type==='face'||p.type==='crown'||p.type==='halo'){
+          ctx.beginPath(); ctx.arc(sx,sy,r*3*pulse,0,Math.PI*2);
+          ctx.fillStyle=`rgba(240,210,80,${opacity*0.15})`; ctx.fill();
+        }
+        // Core particle
+        ctx.beginPath(); ctx.arc(sx,sy,r*pulse,0,Math.PI*2);
+        ctx.fillStyle=p.color==='gold'?`rgba(240,200,80,${opacity})`:
+          p.color.startsWith('#')?hexAlpha(p.color,opacity):p.color;
+        ctx.fill();
+      });
+
+      // ── Orbiting Sanskrit characters ──
+      if(s.t>60){
+        const alpha = Math.min((s.t-60)/40,1);
+        s.orbiters.forEach(orb=>{
+          const angle = orb.phase + s.t*orb.speed;
+          // 3D orbit: x=r*cos(a), y=r*sin(a)*sin(incl), z=r*sin(a)*cos(incl)
+          const ox = orb.radius * Math.cos(angle);
+          const oy = orb.yOff + orb.radius * Math.sin(angle)*Math.sin(orb.inclination);
+          const oz = orb.radius * Math.sin(angle)*Math.cos(orb.inclination);
+          const pr = project(ox,oy,oz,rotY,CX,CY);
+          const opacity = alpha * pr.scale * 0.9;
+          if(opacity<0.05) return;
+          ctx.font=`${orb.size*pr.scale}px 'Noto Serif Devanagari',serif`;
+          ctx.textAlign='center'; ctx.textBaseline='middle';
+          const orbOpacity=orb.color.includes('0.7')?opacity:opacity*0.5; ctx.fillStyle='rgba(240,200,80,'+orbOpacity+')';
+          ctx.shadowBlur=12; ctx.shadowColor=`rgba(240,200,80,${opacity*0.6})`;
+          ctx.fillText(orb.ch, pr.sx, pr.sy);
+          ctx.shadowBlur=0;
+        });
+      }
+
+      // ── Ink droplet particles falling from quill tip ──
+      if(s.t>80&&!exploding){
+        const inkAlpha=Math.min((s.t-80)/40,1);
+        for(let i=0;i<3;i++){
+          const pr=project(100+Math.random()*20, -180+Math.random()*10, 22, rotY, CX,CY);
+          ctx.beginPath(); ctx.arc(pr.sx,pr.sy,1.5*pr.scale,0,Math.PI*2);
+          ctx.fillStyle=`rgba(240,210,80,${inkAlpha*0.5*Math.random()})`;
+          ctx.fill();
+        }
+      }
+
+      rafRef.current = requestAnimationFrame(draw);
     };
     draw();
     return()=>{ cancelAnimationFrame(rafRef.current); window.removeEventListener('resize',resize); };
   },[]);
 
-  // Speak intro on mount
+  // Helper: hex color + alpha
+  const hexAlpha = (hex, a) => {
+    const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+    return `rgba(${r},${g},${b},${a})`;
+  };
+
+  // ── Auto-advance story lines ──
   useEffect(()=>{
-    if(!muted) setTimeout(()=>VoiceEngine.speakChitragupta('open', chosenLang), 600);
+    if(lineIdx>=LINES.length){ setDone(true); return; }
+    timerRef.current=setTimeout(()=>setLineIdx(i=>i+1), LINES[lineIdx]?.delay||1500);
+    return()=>clearTimeout(timerRef.current);
+  },[lineIdx]);
+
+  // Sync lineIdx to ref for canvas
+  useEffect(()=>{ stateRef.current.lineIdx=lineIdx; },[lineIdx]);
+
+  // Speak CG voice on mount
+  useEffect(()=>{
+    if(!muted) setTimeout(()=>VoiceEngine.speakChitragupta('open',chosenLang),800);
     return()=>VoiceEngine.stop();
   },[]);
 
+  const handleBegin = ()=>{
+    stateRef.current.explode=true;
+    setExploding(true);
+    setTimeout(onBegin, 900);
+  };
+
+  const cur = LINES[lineIdx-1];
+  const prev= LINES[lineIdx-2];
+  const isHi= chosenLang==='hi';
+
   return(
-    <div style={{position:'fixed',inset:0,zIndex:100,overflow:'hidden'}}>
+    <div style={{position:'fixed',inset:0,zIndex:100,overflow:'hidden',background:'#060402'}}>
       <canvas ref={canvasRef} style={{position:'absolute',inset:0,width:'100%',height:'100%'}}/>
 
-      {/* Skip button */}
+      {/* Skip */}
       <button onClick={onSkip} style={{
-        position:'fixed',top:20,right:20,zIndex:10,
+        position:'fixed',top:20,right:20,zIndex:20,
         background:'transparent',border:'1px solid rgba(200,175,90,.2)',
-        color:'rgba(200,175,90,.4)',padding:'5px 16px',fontSize:10,
+        color:'rgba(200,175,90,.35)',padding:'5px 16px',fontSize:10,
         fontFamily:"'Cinzel',serif",cursor:'pointer',borderRadius:3,letterSpacing:2,
-      }}>SKIP ▸</button>
+        transition:'all .2s',
+      }}
+      onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(200,175,90,.5)';e.currentTarget.style.color='rgba(200,175,90,.7)'}}
+      onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(200,175,90,.2)';e.currentTarget.style.color='rgba(200,175,90,.35)'}}>
+        SKIP ▸
+      </button>
 
-      {/* Quill progress bar across top */}
-      <div style={{position:'fixed',top:0,left:0,right:0,height:3,background:'rgba(200,175,90,.06)',zIndex:10}}>
-        <div style={{
-          height:'100%',width:`${quillX}%`,
-          background:'linear-gradient(90deg,rgba(200,175,90,.3),rgba(200,175,90,.7))',
-          transition:'width 0.8s ease',position:'relative',
-        }}>
-          {/* Quill tip at leading edge */}
-          <div style={{
-            position:'absolute',right:-8,top:'50%',transform:'translateY(-50%)',
-            fontSize:14,lineHeight:1,filter:'drop-shadow(0 0 6px rgba(200,175,90,.8))',
-          }}>🪶</div>
-        </div>
-      </div>
-
-      {/* Main content */}
+      {/* Right side — Text panel */}
       <div style={{
-        position:'relative',zIndex:2,
-        display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
-        minHeight:'100vh',padding:'60px 20px 80px',
+        position:'absolute', right:0, top:0, bottom:0,
+        width:'clamp(300px,42%,520px)',
+        display:'flex',flexDirection:'column',justifyContent:'center',
+        padding:'40px clamp(20px,4vw,48px) 100px clamp(16px,3vw,32px)',
+        background:'linear-gradient(90deg,transparent 0%,rgba(6,4,2,.7) 25%,rgba(6,4,2,.92) 60%)',
+        zIndex:5,
       }}>
-        <div style={{maxWidth:620,width:'100%'}}>
-
-          {/* Header */}
-          <div style={{textAlign:'center',marginBottom:40,animation:'fadeIn 1s ease'}}>
-            {/* Chitragupta seal / quill icon */}
-            <svg width={52} height={64} viewBox="0 0 52 64" style={{filter:'drop-shadow(0 0 12px rgba(200,175,90,.5))',marginBottom:16}}>
-              <path d="M26 2 Q40 0 46 12 Q52 28 38 42 Q30 52 26 62 Q22 52 22 42 Q8 28 6 12 Q12 0 26 2Z"
-                fill="rgba(200,175,90,.15)" stroke="rgba(200,175,90,.5)" strokeWidth="1.2"/>
-              <path d="M26 62 L26 42 Q36 34 40 22" fill="none" stroke="rgba(200,175,90,.65)" strokeWidth="1.2"/>
-              <circle cx={26} cy={62} r={3} fill="rgba(200,175,90,.75)">
-                <animate attributeName="opacity" values=".4;1;.4" dur="1.8s" repeatCount="indefinite"/>
+        {/* Top identifier */}
+        <div style={{marginBottom:28}}>
+          <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:12}}>
+            <svg width={20} height={26} viewBox="0 0 20 26" style={{flexShrink:0,filter:'drop-shadow(0 0 6px rgba(200,175,90,.6))'}}>
+              <path d="M10 1Q16 0 18 5Q20 12 14 18Q11 21 10 25Q9 21 10 18Q4 12 2 5Q4 0 10 1Z"
+                fill="rgba(200,175,90,.2)" stroke="rgba(200,175,90,.6)" strokeWidth="1"/>
+              <path d="M10 25L10 18Q14 14 16 10" fill="none" stroke="rgba(200,175,90,.6)" strokeWidth=".8"/>
+              <circle cx={10} cy={25} r={2} fill="rgba(200,175,90,.8)">
+                <animate attributeName="opacity" values=".3;1;.3" dur="1.6s" repeatCount="indefinite"/>
               </circle>
-              {/* Ink lines on feather */}
-              {[14,20,26,32,38].map((y,i)=>(
-                <line key={i} x1={26-8+i*2} y1={y} x2={26+6-i} y2={y+4} stroke="rgba(200,175,90,.2)" strokeWidth=".6"/>
-              ))}
             </svg>
-            <div style={{fontSize:8,letterSpacing:6,color:'rgba(200,175,90,.4)',fontFamily:"'Cinzel',serif",marginBottom:8}}>
-              THE DIVINE SCRIBE
-            </div>
-            <div style={{fontSize:'clamp(24px,5vw,36px)',fontFamily:"'Yatra One',serif",color:'#f0d050',
-              textShadow:'0 0 30px rgba(200,175,90,.3)',letterSpacing:4,marginBottom:4}}>
-              {isHi ? 'चित्रगुप्त' : 'Chitragupta'}
-            </div>
-            <div style={{fontSize:11,color:'rgba(200,175,90,.35)',letterSpacing:4,fontFamily:"'Cinzel',serif"}}>
-              KEEPER OF THE AGRASANDHANI
-            </div>
-            <div style={{width:80,height:1,background:'linear-gradient(90deg,transparent,rgba(200,175,90,.3),transparent)',margin:'16px auto 0'}}/>
-          </div>
-
-          {/* Story lines — reveal one at a time */}
-          <div style={{display:'flex',flexDirection:'column',gap:16,minHeight:280}}>
-            {LINES.slice(0,lineIdx).map((line,i)=>{
-              const isLatest = i===lineIdx-1;
-              const isFinal  = line.text.trim()==='Begin.'||line.text.trim()==='आरंभ।';
-              return(
-                <div key={i} style={{
-                  display:'flex',gap:14,alignItems:'flex-start',
-                  animation:'cgEntry .5s ease both',
-                  opacity: isLatest ? 1 : Math.max(0.18, 1-(lineIdx-1-i)*0.15),
-                  transition:'opacity .8s',
-                }}>
-                  {/* Left ink mark */}
-                  <div style={{
-                    width:2,minHeight:20,borderRadius:1,flexShrink:0,marginTop:3,
-                    background:`linear-gradient(180deg,${line.accent},${line.accent}40)`,
-                    opacity: isLatest ? 1 : .4,
-                    boxShadow: isLatest ? `0 0 6px ${line.accent}60` : 'none',
-                  }}/>
-                  <div style={{
-                    fontSize: isFinal ? 'clamp(18px,3.5vw,26px)' : 'clamp(13px,2.5vw,17px)',
-                    color: line.accent,
-                    lineHeight: 1.75,
-                    fontFamily: isHi ? "'Noto Serif Devanagari',serif" : "'Cinzel',serif",
-                    fontWeight: isLatest ? 700 : 400,
-                    letterSpacing: isHi ? 0 : isFinal ? 4 : .5,
-                    textShadow: isLatest ? `0 0 20px ${line.accent}50` : 'none',
-                    transition:'all .5s',
-                    fontStyle: (!isHi && !isFinal && i>1) ? 'italic' : 'normal',
-                  }}>
-                    {line.text}
-                  </div>
-                </div>
-              );
-            })}
-
-            {/* Blinking cursor while typing */}
-            {!done&&(
-              <div style={{display:'flex',gap:14,alignItems:'center',opacity:.6}}>
-                <div style={{width:2,height:20,borderRadius:1,background:'rgba(200,175,90,.3)'}}/>
-                <div style={{width:8,height:20,borderRadius:1,background:'rgba(200,175,90,.4)',animation:'pulse 1s ease infinite'}}/>
+            <div>
+              <div style={{fontSize:8,letterSpacing:5,color:'rgba(200,175,90,.45)',fontFamily:"'Cinzel',serif",fontWeight:700}}>THE DIVINE SCRIBE</div>
+              <div style={{fontSize:'clamp(18px,3vw,26px)',fontFamily:"'Yatra One',serif",color:'#f0d050',
+                textShadow:'0 0 20px rgba(200,175,90,.4)',letterSpacing:2,lineHeight:1.2}}>
+                {isHi?'चित्रगुप्त':'Chitragupta'}
               </div>
-            )}
+            </div>
           </div>
-
+          <div style={{width:'100%',height:1,background:'linear-gradient(90deg,transparent,rgba(200,175,90,.2),transparent)'}}/>
         </div>
-      </div>
 
-      {/* Bottom — Begin button appears when done */}
-      <div style={{
-        position:'fixed',bottom:0,left:0,right:0,
-        padding:'16px 20px 20px',
-        background:'linear-gradient(0deg,rgba(8,6,2,.98) 60%,transparent)',
-        display:'flex',flexDirection:'column',alignItems:'center',gap:10,zIndex:10,
-      }}>
-        {/* Players chosen indicator */}
-        <div style={{display:'flex',gap:12,justifyContent:'center',marginBottom:4,flexWrap:'wrap'}}>
+        {/* Story text — show current and fading previous */}
+        <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'center',gap:16,position:'relative'}}>
+          {/* Previous line — fading out */}
+          {prev&&(
+            <div key={`prev-${lineIdx}`} style={{
+              fontSize:'clamp(11px,1.8vw,14px)',
+              color:'rgba(200,175,90,.2)',
+              lineHeight:1.85,
+              fontFamily:isHi?"'Noto Serif Devanagari',serif":"'Cinzel',serif",
+              fontStyle:isHi?'normal':'italic',
+              letterSpacing:isHi?0:.5,
+              whiteSpace:'pre-line',
+              transition:'opacity .8s',
+            }}>
+              {prev.text}
+            </div>
+          )}
+          {/* Current line — bold and bright */}
+          {cur&&(
+            <div key={`cur-${lineIdx}`} style={{
+              fontSize:'clamp(14px,2.4vw,20px)',
+              color:cur.accent,
+              lineHeight:1.85,
+              fontFamily:isHi?"'Noto Serif Devanagari',serif":"'Cinzel',serif",
+              fontStyle:isHi?'normal':'italic',
+              letterSpacing:isHi?0:1,
+              fontWeight:700,
+              whiteSpace:'pre-line',
+              animation:'fadeIn .5s ease',
+              textShadow:`0 0 30px ${cur.accent}50`,
+            }}>
+              {cur.text}
+            </div>
+          )}
+          {/* Blinking quill cursor */}
+          {!done&&(
+            <div style={{display:'flex',alignItems:'center',gap:8,opacity:.5}}>
+              <div style={{fontSize:14,animation:'pulse 1.2s ease infinite'}}>🪶</div>
+              <div style={{fontSize:8,color:'rgba(200,175,90,.4)',letterSpacing:3,fontFamily:"'Cinzel',serif"}}>
+                {isHi?'लिख रहे हैं...':'WRITING...'}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Progress dots */}
+        <div style={{display:'flex',gap:5,marginBottom:20,marginTop:16}}>
+          {LINES.map((_,i)=>(
+            <div key={i} style={{
+              height:2, flex:1, borderRadius:1,
+              background:i<lineIdx?'rgba(200,175,90,.6)':'rgba(200,175,90,.12)',
+              transition:'background .4s',
+            }}/>
+          ))}
+        </div>
+
+        {/* Players */}
+        <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:16}}>
           {players.filter(p=>!p.cpu).map((p,i)=>(
             <div key={i} style={{display:'flex',alignItems:'center',gap:6,padding:'3px 10px',
-              background:'rgba(200,175,90,.06)',border:'1px solid rgba(200,175,90,.12)',borderRadius:14}}>
+              background:'rgba(200,175,90,.05)',border:'1px solid rgba(200,175,90,.12)',borderRadius:14}}>
               <span style={{fontSize:14}}>{p.char.icon}</span>
-              <span style={{fontSize:9,color:'rgba(200,175,90,.5)',fontFamily:"'Cinzel',serif",letterSpacing:1}}>{p.name}</span>
+              <span style={{fontSize:9,color:'rgba(200,175,90,.45)',fontFamily:"'Cinzel',serif"}}>{p.name}</span>
             </div>
           ))}
         </div>
 
-        {done ? (
-          <button onClick={onBegin} style={{
-            background:'linear-gradient(180deg,rgba(200,175,90,.25),rgba(200,175,90,.1))',
+        {/* Begin button */}
+        {done?(
+          <button onClick={handleBegin} disabled={exploding} style={{
+            background:exploding?'transparent':'linear-gradient(180deg,rgba(200,175,90,.22),rgba(200,175,90,.08))',
             border:'1.5px solid rgba(200,175,90,.5)',color:'#f0d050',
-            padding:'12px 40px',fontSize:13,fontFamily:"'Cinzel',serif",
-            cursor:'pointer',borderRadius:4,letterSpacing:4,
-            animation:'pulse 2s ease infinite',
-            boxShadow:'0 0 30px rgba(200,175,90,.1)',
+            padding:'13px 0',fontSize:12,fontFamily:"'Cinzel',serif",
+            cursor:exploding?'default':'pointer',borderRadius:4,letterSpacing:4,
+            width:'100%',animation:exploding?'none':'pulse 2.5s ease infinite',
+            boxShadow:'0 0 24px rgba(200,175,90,.08)',
+            transition:'all .3s',
           }}>
-            {isHi ? 'खेल आरंभ करो ▸' : 'BEGIN THE GAME ▸'}
+            {exploding?'✨ ...':'▸ '+(isHi?'खेल आरंभ करो':'BEGIN THE GAME')}
           </button>
-        ) : (
-          <div style={{fontSize:9,color:'rgba(200,175,90,.25)',letterSpacing:3,fontFamily:"'Cinzel',serif"}}>
-            {isHi ? 'चित्रगुप्त लिख रहे हैं...' : 'CHITRAGUPTA IS WRITING...'}
+        ):(
+          <div style={{height:46,display:'flex',alignItems:'center',justifyContent:'center',
+            border:'1px solid rgba(200,175,90,.08)',borderRadius:4,
+            color:'rgba(200,175,90,.2)',fontSize:9,letterSpacing:3,fontFamily:"'Cinzel',serif"}}>
+            {isHi?'अग्रसंधानी खुल रही है...':'AGRASANDHANI OPENS...'}
           </div>
         )}
-
-        <div style={{fontSize:8,color:'rgba(200,175,90,.2)',letterSpacing:2}}>
-          © {new Date().getFullYear()} RasaVisio · Inspired by the ancient game of Moksha Patam
-        </div>
       </div>
     </div>
   );
 }
-
 /* Yama Image — put yama.png in /public folder */
 function YamaIcon({size=80}){
   return <div style={{width:size,height:size*1.3,display:"flex",alignItems:"center",justifyContent:"center"}}>
