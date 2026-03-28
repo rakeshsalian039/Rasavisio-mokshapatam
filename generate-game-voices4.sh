@@ -218,103 +218,80 @@ tts "$OUT_DIR/ashtanga-7-hi.mp3" "$VOICE" "$HI_INSTR" \
 
 echo ""
 echo "── CHITRAGUPTA — DIVINE SCRIBE ───────────────────────"
-echo "   Voice: onyx · celestial calm · 13 keys × 2 langs = 26 files"
-echo "   Filenames match CG_STATIC map in App.jsx exactly."
+echo "   Voice: onyx (deep, resonant, celestial, all-knowing)"
+echo "   These lines are narrated AFTER key game events."
 
+# Chitragupta uses a different voice — onyx is deeper, more divine
+# Instructions: absolute calm, measured, ancient authority, no emotion
 CG_VOICE="onyx"
 CG_EN="You are Chitragupta, the divine scribe of Yama and keeper of the Agrasandhani — the cosmic ledger of all karma. You have recorded every soul's deeds since the beginning of time. Speak with absolute calm and measured authority. Deep. Resonant. Unhurried. You do not judge — you simply record what is true. Your voice carries the weight of eternity. Never emotional. Never rushed. Sacred and precise as the words you inscribe."
 CG_HI="तुम चित्रगुप्त हो, यमराज के दिव्य लेखक और अग्रसंधानी के रक्षक। सृष्टि के आरम्भ से हर आत्मा का कर्म तुमने लिखा है। पूर्ण शांति और मापे अधिकार से बोलो। गहरे। गूंजती। अविचलित। तुम न्याय नहीं करते — केवल सत्य लिखते हो। तुम्हारी आवाज़ अनंत काल का भार वहन करती है।"
 
-# cg-open — spoken when game starts (2.8s delay)
-tts "$OUT_DIR/cg-open-en.mp3" "$CG_VOICE" "$CG_EN" \
+tts "$OUT_DIR/cg-intro-en.mp3"       "$CG_VOICE" "$CG_EN" \
 "I am Chitragupta. The divine scribe of Yama. Since the first soul drew breath, I have kept the record. Every thought. Every deed. Every whisper of virtue and shadow of vice. Today I open a new page in the Agrasandhani — the book of all karma. Let the game begin. I am watching."
 
-tts "$OUT_DIR/cg-open-hi.mp3" "$CG_VOICE" "$CG_HI" \
+tts "$OUT_DIR/cg-intro-hi.mp3"       "$CG_VOICE" "$CG_HI" \
 "मैं चित्रगुप्त हूँ। यमराज का दिव्य लेखक। जब से पहली आत्मा ने श्वास लिया, मैं अभिलेख रखता आया हूँ। हर विचार। हर कर्म। पुण्य की हर फुसफुसाहट और पाप की हर छाया। आज मैं अग्रसंधानी में नया पृष्ठ खोलता हूँ। खेल आरंभ हो। मैं देख रहा हूँ।"
 
-# cg-punya — generic punya gained (shield save etc.)
-tts "$OUT_DIR/cg-punya-en.mp3" "$CG_VOICE" "$CG_EN" \
-"Noted. Punya recorded. The ledger grows lighter."
-
-tts "$OUT_DIR/cg-punya-hi.mp3" "$CG_VOICE" "$CG_HI" \
-"दर्ज। पुण्य अंकित। खाता हल्का होता है।"
-
-# cg-papa — generic papa gained
-tts "$OUT_DIR/cg-papa-en.mp3" "$CG_VOICE" "$CG_EN" \
-"Recorded. Papa entered. Without judgment. The ledger simply sees what is true."
-
-tts "$OUT_DIR/cg-papa-hi.mp3" "$CG_VOICE" "$CG_HI" \
-"दर्ज। पाप अंकित। बिना निर्णय के। खाता केवल सत्य देखता है।"
-
-# cg-snake — snake bite specifically
-tts "$OUT_DIR/cg-snake-en.mp3" "$CG_VOICE" "$CG_EN" \
-"Recorded. Two Papa. The serpent of vice claims its price. The ledger does not judge — it simply records what is true."
-
-tts "$OUT_DIR/cg-snake-hi.mp3" "$CG_VOICE" "$CG_HI" \
-"दर्ज किया गया। दो पाप। दुर्गुण का सांप अपना मूल्य लेता है। खाता न्याय नहीं करता — केवल सत्य लिखता है।"
-
-# cg-ladder — ladder specifically
-tts "$OUT_DIR/cg-ladder-en.mp3" "$CG_VOICE" "$CG_EN" \
-"Noted. One Punya recorded. The virtue of compassion does not go unseen. The ledger grows lighter."
-
-tts "$OUT_DIR/cg-ladder-hi.mp3" "$CG_VOICE" "$CG_HI" \
-"दर्ज किया गया। एक पुण्य। करुणा का गुण अनदेखा नहीं जाता। खाता हल्का होता है।"
-
-# cg-dharmap — dharma punya choice
-tts "$OUT_DIR/cg-dharmap-en.mp3" "$CG_VOICE" "$CG_EN" \
-"A righteous choice. Punya entered in the sacred ledger. Know that every dharmic act, however costly, is written in gold."
-
-tts "$OUT_DIR/cg-dharmap-hi.mp3" "$CG_VOICE" "$CG_HI" \
-"धर्मिक चुनाव। पुण्य पवित्र खाते में दर्ज किया गया। जानो कि हर धर्मिक कार्य, चाहे कितना भी कठिन हो, सोने में लिखा जाता है।"
-
-# cg-dharmapap — dharma papa choice
-tts "$OUT_DIR/cg-dharmapap-en.mp3" "$CG_VOICE" "$CG_EN" \
-"Recorded without judgment. Papa entered in the ledger. The book never forgets. But it never condemns either. Only Yama reads the final tally."
-
-tts "$OUT_DIR/cg-dharmapap-hi.mp3" "$CG_VOICE" "$CG_HI" \
-"निर्णय के बिना दर्ज किया गया। पाप खाते में लिखा गया। पुस्तक कभी नहीं भूलती। लेकिन निंदा भी नहीं करती। केवल यमराज अंतिम गणना पढ़ते हैं।"
-
-# cg-sacred — entering Ashtanga Marga (step 1 only)
-tts "$OUT_DIR/cg-sacred-en.mp3" "$CG_VOICE" "$CG_EN" \
-"The Ashtanga Marga. I have been waiting to write this entry. From this point, I watch each step with particular attention. The sacred path is where souls reveal what they truly are."
-
-tts "$OUT_DIR/cg-sacred-hi.mp3" "$CG_VOICE" "$CG_HI" \
-"अष्टांग मार्ग। मैं इस प्रविष्टि को लिखने की प्रतीक्षा कर रहा था। इस बिंदु से, मैं हर कदम पर विशेष ध्यान देता हूँ। पवित्र मार्ग वह है जहाँ आत्माएं प्रकट करती हैं कि वे वास्तव में क्या हैं।"
-
-# cg-moksha — moksha achieved / karma victory
-tts "$OUT_DIR/cg-moksha-en.mp3" "$CG_VOICE" "$CG_EN" \
-"The page is complete. I seal it. In all the ages I have kept this record, few pages end this way. Go. You are free."
-
-tts "$OUT_DIR/cg-moksha-hi.mp3" "$CG_VOICE" "$CG_HI" \
-"पृष्ठ पूर्ण हुआ। मैं मुहर लगाता हूँ। इन युगों में जो मैंने अभिलेख रखा है, बहुत कम पृष्ठ इस तरह समाप्त होते हैं। जाओ। तुम मुक्त हो।"
-
-# cg-reject — moksha gate rejection
-tts "$OUT_DIR/cg-reject-en.mp3" "$CG_VOICE" "$CG_EN" \
-"The ledger speaks plainly. Papa exceeds Punya. I cannot alter what is written. The gate cannot open for an impure soul. Return. Purify. Try again."
-
-tts "$OUT_DIR/cg-reject-hi.mp3" "$CG_VOICE" "$CG_HI" \
-"खाता स्पष्ट बोलता है। पाप, पुण्य से अधिक है। जो लिखा है उसे मैं नहीं बदल सकता। अशुद्ध आत्मा के लिए द्वार नहीं खुल सकता। लौटो। शुद्ध हो। फिर प्रयास करो।"
-
-# cg-balance — warning when punya ≈ papa (spoken quietly, 5s after event)
-tts "$OUT_DIR/cg-balance-en.mp3" "$CG_VOICE" "$CG_EN" \
-"I note this carefully. Your Punya and Papa stand nearly equal. The gate of Moksha watches. What you do in these next moments will determine everything."
-
-tts "$OUT_DIR/cg-balance-hi.mp3" "$CG_VOICE" "$CG_HI" \
-"मैं इसे ध्यान से नोट करता हूँ। तुम्हारे पुण्य और पाप लगभग बराबर हैं। मोक्ष का द्वार देख रहा है। इन अगले क्षणों में तुम जो करोगे, वह सब कुछ तय करेगा।"
-
-# cg-seeker — setup screen cameo (click the quill seal)
-tts "$OUT_DIR/cg-seeker-en.mp3" "$CG_VOICE" "$CG_EN" \
+tts "$OUT_DIR/cg-seeker-en.mp3"      "$CG_VOICE" "$CG_EN" \
 "I have watched every seeker who has walked this board. Choose your identity wisely. The character you choose shapes the karma you will carry."
 
-tts "$OUT_DIR/cg-seeker-hi.mp3" "$CG_VOICE" "$CG_HI" \
+tts "$OUT_DIR/cg-seeker-hi.mp3"      "$CG_VOICE" "$CG_HI" \
 "मैंने हर उस साधक को देखा है जो इस पट पर चला है। अपनी पहचान बुद्धिमानी से चुनो। तुम जो पात्र चुनते हो, वह उस कर्म को आकार देता है जो तुम वहन करोगे।"
 
-# cg-judgment — Chitragupta's final entry at game end (Yama judgment screen)
-tts "$OUT_DIR/cg-judgment-en.mp3" "$CG_VOICE" "$CG_EN" \
-"The game is over. I close the Agrasandhani. The pure soul has been liberated. For those who remain — the ledger has already been read. Yama has the account. As he always does."
+tts "$OUT_DIR/cg-ladder-en.mp3"      "$CG_VOICE" "$CG_EN" \
+"Noted. One Punya recorded. The virtue of compassion does not go unseen. The ledger grows lighter."
 
-tts "$OUT_DIR/cg-judgment-hi.mp3" "$CG_VOICE" "$CG_HI" \
-"खेल समाप्त हुआ। अग्रसंधानी बंद करता हूँ। जो शुद्ध था, मुक्त हुआ। जो शेष हैं — खाता पहले ही पढ़ा जा चुका है। यमराज के पास हिसाब है। जैसा हमेशा होता है।"
+tts "$OUT_DIR/cg-ladder-hi.mp3"      "$CG_VOICE" "$CG_HI" \
+"दर्ज किया गया। एक पुण्य। करुणा का गुण अनदेखा नहीं जाता। खाता हल्का होता है।"
+
+tts "$OUT_DIR/cg-snake-en.mp3"       "$CG_VOICE" "$CG_EN" \
+"Recorded. Two Papa. The serpent of vice claims its price. The ledger does not judge — it simply records what is true."
+
+tts "$OUT_DIR/cg-snake-hi.mp3"       "$CG_VOICE" "$CG_HI" \
+"दर्ज किया गया। दो पाप। दुर्गुण का सांप अपना मूल्य लेता है। खाता न्याय नहीं करता — केवल सत्य लिखता है।"
+
+tts "$OUT_DIR/cg-dharma-punya-en.mp3" "$CG_VOICE" "$CG_EN" \
+"A righteous choice. Punya entered in the sacred ledger. Know that every dharmic act, however costly, is written in gold."
+
+tts "$OUT_DIR/cg-dharma-punya-hi.mp3" "$CG_VOICE" "$CG_HI" \
+"धर्मिक चुनाव। पुण्य पवित्र खाते में दर्ज किया गया। जानो कि हर धर्मिक कार्य, चाहे कितना भी कठिन हो, सोने में लिखा जाता है।"
+
+tts "$OUT_DIR/cg-dharma-papa-en.mp3"  "$CG_VOICE" "$CG_EN" \
+"Recorded without judgment. Papa entered in the ledger. The book never forgets. But it never condemns either. Only Yama reads the final tally."
+
+tts "$OUT_DIR/cg-dharma-papa-hi.mp3"  "$CG_VOICE" "$CG_HI" \
+"निर्णय के बिना दर्ज किया गया। पाप खाते में लिखा गया। पुस्तक कभी नहीं भूलती। लेकिन निंदा भी नहीं करती। केवल यमराज अंतिम गणना पढ़ते हैं।"
+
+tts "$OUT_DIR/cg-ashtanga-en.mp3"    "$CG_VOICE" "$CG_EN" \
+"The Ashtanga Marga. I have been waiting to write this entry. From this point, I watch each step with particular attention. The sacred path is where souls reveal what they truly are."
+
+tts "$OUT_DIR/cg-ashtanga-hi.mp3"    "$CG_VOICE" "$CG_HI" \
+"अष्टांग मार्ग। मैं इस प्रविष्टि को लिखने की प्रतीक्षा कर रहा था। इस बिंदु से, मैं हर कदम पर विशेष ध्यान देता हूँ। पवित्र मार्ग वह है जहाँ आत्माएं प्रकट करती हैं कि वे वास्तव में क्या हैं।"
+
+tts "$OUT_DIR/cg-balance-en.mp3"     "$CG_VOICE" "$CG_EN" \
+"I note this carefully. Your Punya and Papa stand nearly equal. The gate of Moksha watches. What you do in these next moments will determine everything."
+
+tts "$OUT_DIR/cg-balance-hi.mp3"     "$CG_VOICE" "$CG_HI" \
+"मैं इसे ध्यान से नोट करता हूँ। तुम्हारे पुण्य और पाप लगभग बराबर हैं। मोक्ष का द्वार देख रहा है। इन अगले क्षणों में तुम जो करोगे, वह सब कुछ तय करेगा।"
+
+tts "$OUT_DIR/cg-rejected-en.mp3"    "$CG_VOICE" "$CG_EN" \
+"The ledger speaks plainly. Papa exceeds Punya. I cannot alter what is written. The gate cannot open for an impure soul. Return. Purify. Try again."
+
+tts "$OUT_DIR/cg-rejected-hi.mp3"    "$CG_VOICE" "$CG_HI" \
+"खाता स्पष्ट बोलता है। पाप, पुण्य से अधिक है। जो लिखा है उसे मैं नहीं बदल सकता। अशुद्ध आत्मा के लिए द्वार नहीं खुल सकता। लौटो। शुद्ध हो। फिर प्रयास करो।"
+
+tts "$OUT_DIR/cg-karma-win-en.mp3"   "$CG_VOICE" "$CG_EN" \
+"Thirty Punya. In all the ages I have kept this record, few souls accumulate such merit so swiftly. I close the page. The book seals itself. You are free."
+
+tts "$OUT_DIR/cg-karma-win-hi.mp3"   "$CG_VOICE" "$CG_HI" \
+"तीस पुण्य। जब से मैं यह अभिलेख रखता आया हूँ, बहुत कम आत्माएं इतनी तेज़ी से इतना पुण्य इकट्ठा करती हैं। मैं पृष्ठ बंद करता हूँ। पुस्तक स्वयं मुहर लगाती है। तुम मुक्त हो।"
+
+tts "$OUT_DIR/cg-shield-en.mp3"      "$CG_VOICE" "$CG_EN" \
+"Noted. Shukra's protection absorbed the venom. One less Papa in the account. Even the planets intervene in karma's unfolding."
+
+tts "$OUT_DIR/cg-shield-hi.mp3"      "$CG_VOICE" "$CG_HI" \
+"दर्ज किया गया। शुक्र की सुरक्षा ने विष सोख लिया। खाते में एक कम पाप। यहाँ तक कि ग्रह भी कर्म के प्रकटीकरण में हस्तक्षेप करते हैं।"
 
 echo ""
 echo "══════════════════════════════════════════════════════"
@@ -327,8 +304,8 @@ echo "  Files generated:"
 echo "  · 9 graha effects × 2 langs          = 18 files"
 echo "  · 5 game events × 2 langs             = 10 files"
 echo "  · 7 Ashtanga steps × 2 langs          = 14 files"
-echo "  · 13 Chitragupta lines × 2 langs      = 26 files"
-echo "  · Total: 68 files"
+echo "  · 11 Chitragupta lines × 2 langs      = 22 files"
+echo "  · Total: 64 files"
 echo ""
 echo "  Cost estimate:"
 echo "  · tts-1-hd (narrator/ashtanga): \$0.030/1K chars"
