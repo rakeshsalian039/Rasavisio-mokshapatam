@@ -2941,230 +2941,207 @@ function YamaJudgment({ loser, papa, punya, isYama }) {
 //   The character is ॐ — the answer was always there.
 //   The riddle: "Which symbol in this universe knows the number 108?"
 // ══════════════════════════════════════════════════════════════════════════════
-// ══════════════════════════════════════════════════════════════════════════════
-// 🪶 CHITRAGUPTA INTRO — Full canvas. No text. Only his voice.
-//
-// THREE ORBITAL RINGS:
-//   Ring I   r=190  9 Navagraha drawn as real planets (Saturn has rings, etc)
-//   Ring II  r=310  Science + Vedic symbols, slow drift
-//   Ring III r=430  SECRET — OM orbits at 2π/(108×3). Returns to apex every 324 frames.
-//
-// THE HIDDEN RIDDLE:
-//   Ring III orbits at exactly 2π/(108×3) rad/frame.
-//   OM (ॐ) starts at the 12-o-clock apex.
-//   Every 324 frames it returns. The ring pulses gold.
-//   A single Sanskrit whisper appears bottom-left — no explanation.
-//   Those who watch understand. Those who understand, know why 108 matters.
-// ══════════════════════════════════════════════════════════════════════════════
 function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip }) {
-  const canvasRef    = useRef(null);
-  const stateRef     = useRef({ t:0, explode:false, alignFlash:0, alignment:false });
-  const rafRef       = useRef(null);
-  const [done,        setDone]        = useState(false);
-  const [exploding,   setExploding]   = useState(false);
-  const [showWhisper, setShowWhisper] = useState(false);
+  const canvasRef  = useRef(null);
+  const stateRef   = useRef({ t:0, explode:false, alignment:false, alignFlash:0 });
+  const rafRef     = useRef(null);
+  const timerRef   = useRef(null);
+  const [lineIdx,  setLineIdx]  = useState(0);
+  const [done,     setDone]     = useState(false);
+  const [exploding,setExploding]= useState(false);
+  const [showRiddle,setShowRiddle] = useState(false);
 
-  // Auto-done after ~30s (voice finishes)
-  useEffect(()=>{ const t=setTimeout(()=>setDone(true),30000); return()=>clearTimeout(t); },[]);
+  // ── THE COSMOLOGICAL STORY — Lucy + Vedic Science ──
+  const LINES_EN = [
+    { text:"I am Chitragupta.",                                          accent:'#f0d050', delay:1600 },
+    { text:"The universe is 13.8 billion years old.",                    accent:'#a0c8e0', delay:1800 },
+    { text:"I have been writing since the first moment.",                accent:'#c0b080', delay:1600 },
+    { text:"Every atom in your body was forged inside a dying star.",    accent:'#c0a060', delay:2000 },
+    { text:"You are not in the universe.",                               accent:'#e0c870', delay:1400 },
+    { text:"The universe is in you.",                                    accent:'#f0d050', delay:1200 },
+    { text:"Physics established in 1961: information cannot be destroyed.", accent:'#a0d0a0', delay:2200 },
+    { text:"Every deed you commit is written into the fabric of spacetime.", accent:'#c0b080', delay:2000 },
+    { text:"I am that fabric.",                                          accent:'#f0d050', delay:1000 },
+    { text:"In quantum mechanics, the observer changes what is observed.", accent:'#a0c8e0', delay:2200 },
+    { text:"I am the observer.",                                         accent:'#f0d050', delay:1000 },
+    { text:"Your DNA contains 3 billion letters. Your body is already a ledger.", accent:'#a0d0a0', delay:2400 },
+    { text:"The Agrasandhani is older than your DNA.",                   accent:'#c0a060', delay:1800 },
+    { text:"I wrote every snake on this board. Every virtue. Every number.", accent:'#c0b080', delay:2200 },
+    { text:"The number 108 appears in 12 places in this room.",          accent:'#f0d050', delay:2000 },
+    { text:"Find them.",                                                  accent:'#f0d050', delay:900  },
+  ];
+  const LINES_HI = [
+    { text:"मैं चित्रगुप्त हूँ।",                                       accent:'#f0d050', delay:1600 },
+    { text:"ब्रह्मांड 13.8 अरब वर्ष पुराना है।",                       accent:'#a0c8e0', delay:1800 },
+    { text:"मैं पहले क्षण से लिख रहा हूँ।",                            accent:'#c0b080', delay:1600 },
+    { text:"तुम्हारे शरीर का हर परमाणु एक मरते तारे में बना था।",      accent:'#c0a060', delay:2200 },
+    { text:"तुम ब्रह्मांड में नहीं हो।",                               accent:'#e0c870', delay:1400 },
+    { text:"ब्रह्मांड तुममें है।",                                       accent:'#f0d050', delay:1200 },
+    { text:"1961 में भौतिकी ने सिद्ध किया: सूचना नष्ट नहीं होती।",     accent:'#a0d0a0', delay:2400 },
+    { text:"तुम्हारा हर कर्म अंतरिक्ष-काल के कपड़े में लिखा जाता है।", accent:'#c0b080', delay:2400 },
+    { text:"मैं वही कपड़ा हूँ।",                                        accent:'#f0d050', delay:1000 },
+    { text:"क्वांटम भौतिकी: प्रेक्षक जो देखता है उसे बदल देता है।",   accent:'#a0c8e0', delay:2400 },
+    { text:"मैं वह प्रेक्षक हूँ।",                                      accent:'#f0d050', delay:1000 },
+    { text:"DNA में 3 अरब अक्षर हैं। तुम्हारा शरीर पहले से एक खाता है।", accent:'#a0d0a0', delay:2600 },
+    { text:"अग्रसंधानी तुम्हारे DNA से भी पुरानी है।",                  accent:'#c0a060', delay:2000 },
+    { text:"इस पट का हर सांप, हर सीढ़ी, हर अंक मैंने लिखा।",          accent:'#c0b080', delay:2200 },
+    { text:"इस कमरे में 12 जगह 108 है।",                               accent:'#f0d050', delay:2000 },
+    { text:"ढूंढो।",                                                     accent:'#f0d050', delay:900  },
+  ];
+  const LINES = chosenLang==='hi' ? LINES_HI : LINES_EN;
+  const isHi  = chosenLang==='hi';
 
-  // Play CG opening voice
-  useEffect(()=>{
-    if(!muted) setTimeout(()=>VoiceEngine.speakChitragupta('open',chosenLang),900);
-    return()=>VoiceEngine.stop();
-  },[]);
-
-  // ── PARTICLE FIGURE (scale 3.2) ──────────────────────────────────────────
-  const buildFigure=()=>{
-    const pts=[], S=3.2;
-    const add=(x,y,z,type,col)=>pts.push({
-      tx:x*S,ty:y*S,tz:z*S,
-      x:(Math.random()-.5)*10,y:(Math.random()-.5)*10,z:(Math.random()-.5)*10,
-      color:col,type,size:1.2+Math.random()*2.2,
-      baseOpacity:.5+Math.random()*.5,phase:Math.random()*Math.PI*2,
+  // ── Build ~1600 particle figure (1.6× larger than before) ──
+  const buildFigure = () => {
+    const pts = [];
+    const S = 1.6; // scale factor
+    const add = (x,y,z,type,col) => pts.push({
+      tx:x*S, ty:y*S, tz:z*S,
+      x:(Math.random()-0.5)*15, y:(Math.random()-0.5)*15, z:(Math.random()-0.5)*15,
+      color:col, type, size:1+Math.random()*1.8,
+      baseOpacity:0.55+Math.random()*0.45, phase:Math.random()*Math.PI*2,
     });
-    const r=()=>(Math.random()-.5);
+    const r=()=>(Math.random()-0.5);
 
     // HEAD
-    for(let i=0;i<160;i++){
-      const phi=Math.acos(2*Math.random()-1),th=Math.random()*Math.PI*2,rv=27+r()*5;
-      add(rv*Math.sin(phi)*Math.cos(th),-154+rv*Math.cos(phi),rv*Math.sin(phi)*Math.sin(th),'head','#f0d880');
+    for(let i=0;i<140;i++){
+      const φ=Math.acos(2*Math.random()-1), θ=Math.random()*Math.PI*2, rv=28+r()*5;
+      add(rv*Math.sin(φ)*Math.cos(θ), -155+rv*Math.cos(φ), rv*Math.sin(φ)*Math.sin(θ), 'head', '#f0d880');
     }
-    for(let i=0;i<55;i++) add(r()*17,-150+r()*21,25+r()*9,'face','#fffce0');
+    // Face glow
+    for(let i=0;i<50;i++) add(r()*18, -150+r()*22, 26+r()*8, 'face', '#fff8d0');
 
     // CROWN — 5 trident spikes
     for(let s=0;s<5;s++){
-      const a=(s/5)*Math.PI*2,cx=22*Math.cos(a),cz=22*Math.sin(a);
-      for(let j=0;j<14;j++) add(cx*(1-j*.04),-182-j*9+r()*4,cz*(1-j*.04),'crown','#ffe040');
+      const a=(s/5)*Math.PI*2;
+      const cx=22*Math.cos(a), cz=22*Math.sin(a);
+      for(let j=0;j<12;j++) add(cx*(1-j*.04), -183-j*8+r()*4, cz*(1-j*.04), 'crown', '#ffe040');
     }
-    for(let i=0;i<70;i++){const a=(i/70)*Math.PI*2; add(27*Math.cos(a)+r()*3,-187+r()*4,27*Math.sin(a)+r()*3,'crown','#f0c820');}
+    for(let i=0;i<60;i++){const a=(i/60)*Math.PI*2; add(26*Math.cos(a)+r()*3,-186+r()*4,26*Math.sin(a)+r()*3,'crown','#f0c820');}
 
-    // HALO — wide
-    for(let i=0;i<150;i++){const a=(i/150)*Math.PI*2,rv=72+r()*10; add(rv*Math.cos(a)+r()*4,-154+r()*8,-4+rv*Math.sin(a)*.2,'halo','#f0d050');}
-    for(let i=0;i<55;i++){const a=(i/55)*Math.PI*2,rv=50+r()*10; add(rv*Math.cos(a),-154+r()*5,rv*Math.sin(a)*.16,'halo','rgba(240,208,80,0.5)');}
+    // HALO — large ring
+    for(let i=0;i<120;i++){
+      const a=(i/120)*Math.PI*2, rv=70+r()*8;
+      add(rv*Math.cos(a)+r()*4, -155+r()*8, -6+rv*Math.sin(a)*0.22, 'halo', '#f0d050');
+    }
+    // Inner halo glow
+    for(let i=0;i<40;i++){
+      const a=(i/40)*Math.PI*2, rv=50+r()*10;
+      add(rv*Math.cos(a), -155+r()*5, rv*Math.sin(a)*0.2, 'halo', '#f0d05060');
+    }
 
     // BODY
-    for(let i=0;i<230;i++){
-      const t=Math.random(),a=Math.random()*Math.PI*2,y=-120+t*100,rx=31*(1-Math.pow((t-.5)*2,2)*.45);
-      add(rx*Math.cos(a)+r()*6,y+r()*8,rx*.55*Math.sin(a)+r()*5,'body','#ddb84a');
+    for(let i=0;i<200;i++){
+      const t=Math.random(), a=Math.random()*Math.PI*2;
+      const y=-122+t*100; const rx=30*(1-Math.pow((t-.5)*2,2)*.45);
+      add(rx*Math.cos(a)+r()*6, y+r()*7, rx*.55*Math.sin(a)+r()*5, 'body', '#ddb84a');
     }
-    for(let i=0;i<40;i++){const t=i/40,a=t*Math.PI; add(31*Math.cos(a)-6,-120+t*62+r()*4,31*Math.cos(a)*.3+r()*3,'thread','#f0d060');}
 
-    // 4 ARMS
-    for(let i=0;i<115;i++){const t=i/115; add(28+t*84+r()*8,-110-t*74+r()*8,t*25+r()*8,'arm','#c8a840');}
-    for(let i=0;i<115;i++){const t=i/115; add(26+t*77+r()*8,-96+t*67+r()*8,t*18+r()*8,'arm','#c8a840');}
-    for(let i=0;i<115;i++){const t=i/115; add(-28-t*77+r()*8,-110-t*62+r()*8,t*18+r()*8,'arm','#c8a840');}
-    for(let i=0;i<115;i++){const t=i/115; add(-26-t*71+r()*8,-94+t*61+r()*8,t*12+r()*8,'arm','#c8a840');}
+    // SACRED THREAD
+    for(let i=0;i<35;i++){
+      const t=i/35, a=t*Math.PI;
+      add(30*Math.cos(a)-6, -122+t*62+r()*4, 30*Math.cos(a)*.3+r()*3, 'thread', '#f0d060');
+    }
 
-    // QUILL — upper right arm tip
-    for(let i=0;i<50;i++){const t=i/50; add(114+t*38+r()*5,-186-t*50+r()*5,25+t*7+r()*4,'quill','#ffffff');}
-    for(let i=0;i<34;i++) add(119+i*1.4+r()*5,-194-i*1.9+r()*5,27+r()*4,'quill','#f0e888');
+    // ARM 1 — upper-right → holds quill skyward
+    for(let i=0;i<100;i++){
+      const t=i/100;
+      add(28+t*80+r()*7, -112-t*72+r()*7, t*25+r()*7, 'arm', '#c8a840');
+    }
+    // ARM 2 — lower-right → holds scroll
+    for(let i=0;i<100;i++){
+      const t=i/100;
+      add(26+t*75+r()*7, -98+t*65+r()*7, t*18+r()*7, 'arm', '#c8a840');
+    }
+    // ARM 3 — upper-left → raised blessing
+    for(let i=0;i<100;i++){
+      const t=i/100;
+      add(-28-t*75+r()*7, -112-t*60+r()*7, t*18+r()*7, 'arm', '#c8a840');
+    }
+    // ARM 4 — lower-left → holds ledger
+    for(let i=0;i<100;i++){
+      const t=i/100;
+      add(-26-t*70+r()*7, -95+t*58+r()*7, t*12+r()*7, 'arm', '#c8a840');
+    }
 
-    // SCROLL — lower right
-    for(let i=0;i<52;i++){const a=(i/52)*Math.PI; add(102+18*Math.cos(a)+r()*4,-31+10*Math.sin(a)+r()*4,18+r()*4,'scroll','#e8d070');}
-    for(let i=0;i<25;i++) add(92+r()*24,-26+r()*19,18+r()*4,'scroll','#f0e060');
+    // QUILL (arm 1 tip)
+    for(let i=0;i<40;i++){const t=i/40; add(110+t*36+r()*5,-186-t*48+r()*5,24+t*6+r()*4,'quill','#ffffff');}
+    for(let i=0;i<30;i++) add(115+i*1.3+r()*5,-192-i*1.8+r()*5,26+r()*4,'quill','#f0e888');
 
-    // LEDGER — lower left
-    for(let i=0;i<62;i++) add(-99+r()*26,-36+r()*27,15+r()*7,'ledger','#c8aa50');
-    for(let ly=0;ly<6;ly++) for(let i=0;i<9;i++) add(-103+i*5,-46+ly*6+r()*2,14+r()*3,'ledger','#f0d050');
+    // SCROLL (arm 2 tip)
+    for(let i=0;i<45;i++){
+      const a=(i/45)*Math.PI;
+      add(100+18*Math.cos(a)+r()*4, -33+9*Math.sin(a)+r()*4, 18+r()*4, 'scroll', '#e8d070');
+    }
+    // Sanskrit on scroll
+    for(let i=0;i<20;i++) add(90+r()*22,-28+r()*18,18+r()*4,'scroll','#f0e060');
 
-    // LEGS cross-legged
-    for(let i=0;i<90;i++){const t=i/90; add(13+t*54+r()*10,-16+t*35+r()*10,-7+t*7+r()*10,'leg','#c0a030');}
-    for(let i=0;i<90;i++){const t=i/90; add(-13-t*50+r()*10,-16+t*33+r()*10,-7+t*7+r()*10,'leg','#c0a030');}
+    // LEDGER (arm 4 tip)
+    for(let i=0;i<55;i++) add(-96+r()*24,-38+r()*26,14+r()*7,'ledger','#c8aa50');
+    // Ledger ruled lines
+    for(let ly=0;ly<5;ly++) for(let i=0;i<8;i++) add(-100+i*5,-48+ly*6+r()*2,14+r()*3,'ledger','#f0d050');
 
-    // LOTUS throne — 16 petals
+    // LEGS
+    for(let i=0;i<80;i++){const t=i/80; add(12+t*52+r()*9,-18+t*34+r()*9,-8+t*6+r()*9,'leg','#c0a030');}
+    for(let i=0;i<80;i++){const t=i/80; add(-12-t*48+r()*9,-18+t*32+r()*9,-8+t*6+r()*9,'leg','#c0a030');}
+
+    // LOTUS THRONE — 16 petals
     for(let p=0;p<16;p++){
       const pa=(p/16)*Math.PI*2;
-      for(let j=0;j<24;j++){const t=j/24,rv=52+t*32; add(rv*Math.cos(pa)+r()*7,26+t*26+r()*6,rv*Math.sin(pa)*.55+r()*6,'lotus',p%3===0?'#ff90c0':p%3===1?'#e070a8':'#ff80b8');}
+      for(let j=0;j<22;j++){
+        const t=j/22, pr=50+t*30;
+        add(pr*Math.cos(pa)+r()*7,24+t*24+r()*6,pr*Math.sin(pa)*.55+r()*6,'lotus',
+          p%3===0?'#ff90c0':p%3===1?'#e070a8':'#ff80b8');
+      }
     }
-    for(let i=0;i<55;i++){const a=Math.random()*Math.PI*2,rv=Math.random()*38; add(rv*Math.cos(a)+r()*4,26+r()*8,rv*Math.sin(a)*.5+r()*4,'lotus','#ffb0d0');}
+    for(let i=0;i<50;i++){const a=Math.random()*Math.PI*2,rv=Math.random()*35; add(rv*Math.cos(a)+r()*4,24+r()*7,rv*Math.sin(a)*.5+r()*4,'lotus','#ffb0d0');}
 
-    // AURA outer glow
-    for(let i=0;i<160;i++){
-      const a=Math.random()*Math.PI*2,rv=92+Math.random()*85;
-      add(rv*Math.cos(a)+r()*22,-62+r()*225,rv*Math.sin(a)*.65+r()*22,'aura','#f0d050');
+    // AURA — outer glow particles
+    for(let i=0;i<140;i++){
+      const a=Math.random()*Math.PI*2, rv=90+Math.random()*80;
+      add(rv*Math.cos(a)+r()*20,-70+r()*220,rv*Math.sin(a)*.65+r()*20,'aura','#f0d050');
     }
+
     return pts;
   };
 
-  // ── DRAW A PLANET ────────────────────────────────────────────────────────
-  const drawPlanet=(ctx,x,y,sc,p)=>{
-    const rv=p.pr*sc;
-    if(rv<1) return;
-    // Rings behind (Saturn)
-    if(p.rings){
-      ctx.save(); ctx.translate(x,y); ctx.scale(1,0.28);
-      ctx.beginPath(); ctx.arc(0,0,rv*2.6,0,Math.PI*2);
-      ctx.strokeStyle='rgba(210,185,115,.5)'; ctx.lineWidth=rv*.85/0.28; ctx.stroke();
-      ctx.beginPath(); ctx.arc(0,0,rv*1.75,0,Math.PI*2);
-      ctx.strokeStyle='rgba(185,160,90,.38)'; ctx.lineWidth=rv*.42/0.28; ctx.stroke();
-      ctx.restore();
-    }
-    // Sphere
-    const g=ctx.createRadialGradient(x-rv*.38,y-rv*.38,0,x,y,rv);
-    g.addColorStop(0,p.hi); g.addColorStop(.65,p.col); g.addColorStop(1,p.sh);
-    ctx.beginPath(); ctx.arc(x,y,rv,0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
-    // Corona (Surya)
-    if(p.corona){
-      for(let ray=0;ray<8;ray++){
-        const ra=(ray/8)*Math.PI*2;
-        ctx.save(); ctx.globalAlpha=.28; ctx.strokeStyle='#f8d840'; ctx.lineWidth=rv*.22;
-        ctx.beginPath(); ctx.moveTo(x+Math.cos(ra)*rv,y+Math.sin(ra)*rv);
-        ctx.lineTo(x+Math.cos(ra)*rv*1.9,y+Math.sin(ra)*rv*1.9); ctx.stroke(); ctx.restore();
-      }
-      const cg=ctx.createRadialGradient(x,y,rv,x,y,rv*2.8);
-      cg.addColorStop(0,'rgba(255,200,50,.18)'); cg.addColorStop(1,'transparent');
-      ctx.beginPath(); ctx.arc(x,y,rv*2.8,0,Math.PI*2); ctx.fillStyle=cg; ctx.fill();
-    }
-    // Crescent shadow (Chandra)
-    if(p.crescent){
-      ctx.save();
-      ctx.beginPath(); ctx.arc(x,y,rv,0,Math.PI*2); ctx.clip();
-      ctx.beginPath(); ctx.arc(x+rv*.45,y,rv*.98,0,Math.PI*2);
-      ctx.fillStyle='rgba(20,30,55,.78)'; ctx.fill(); ctx.restore();
-    }
-    // Polar caps (Mangal)
-    if(p.polar){
-      ctx.save(); ctx.globalAlpha=.55;
-      ctx.beginPath(); ctx.arc(x,y-rv*.62,rv*.3,0,Math.PI*2); ctx.fillStyle='#fff8f0'; ctx.fill();
-      ctx.beginPath(); ctx.arc(x,y+rv*.62,rv*.2,0,Math.PI*2); ctx.fillStyle='#fff8f0'; ctx.fill();
-      ctx.restore();
-    }
-    // Bands (Brihaspati)
-    if(p.bands){
-      ctx.save();
-      ctx.beginPath(); ctx.arc(x,y,rv,0,Math.PI*2); ctx.clip();
-      for(let b=0;b<5;b++){
-        ctx.fillStyle=b%2===0?'rgba(160,75,15,.32)':'rgba(80,38,8,.22)';
-        ctx.fillRect(x-rv,-155+b*rv*.4,rv*2,rv*.35);
-      }
-      ctx.beginPath(); ctx.ellipse(x-rv*.08,y+rv*.17,rv*.32,rv*.16,0,0,Math.PI*2);
-      ctx.fillStyle='rgba(190,55,35,.48)'; ctx.fill();
-      ctx.restore();
-    }
-    // Redraw sphere on top of Saturn rings
-    if(p.rings){
-      const g2=ctx.createRadialGradient(x-rv*.38,y-rv*.38,0,x,y,rv);
-      g2.addColorStop(0,p.hi); g2.addColorStop(.65,p.col); g2.addColorStop(1,p.sh);
-      ctx.beginPath(); ctx.arc(x,y,rv,0,Math.PI*2); ctx.fillStyle=g2; ctx.fill();
-    }
-    // Shadow veil (Rahu)
-    if(p.shadow){
-      const sg=ctx.createRadialGradient(x,y,rv*.25,x,y,rv*2);
-      sg.addColorStop(0,'transparent'); sg.addColorStop(.55,'rgba(40,8,70,.14)'); sg.addColorStop(1,'rgba(70,18,110,.28)');
-      ctx.beginPath(); ctx.arc(x,y,rv*2,0,Math.PI*2); ctx.fillStyle=sg; ctx.fill();
-    }
-    // Comet tail (Ketu)
-    if(p.comet){
-      ctx.save(); ctx.globalAlpha=.38;
-      const tg=ctx.createLinearGradient(x,y,x-rv*5,y);
-      tg.addColorStop(0,'rgba(200,130,160,.7)'); tg.addColorStop(1,'transparent');
-      ctx.beginPath(); ctx.moveTo(x,y-rv*.65); ctx.lineTo(x-rv*5,y); ctx.lineTo(x,y+rv*.65); ctx.fill();
-      ctx.fillStyle=tg; ctx.restore();
-    }
-    // Skt label
-    ctx.save(); ctx.globalAlpha=Math.min(sc*.85,.75);
-    ctx.font=`${Math.max(6,8*sc)}px 'Noto Serif Devanagari',serif`;
-    ctx.textAlign='center'; ctx.textBaseline='top';
-    ctx.fillStyle='rgba(200,175,90,.6)';
-    ctx.fillText(p.skt,x,y+rv*(p.rings?2.2:1.55));
-    ctx.restore();
+  // ── 3 Orbital Rings ──
+  const buildRings = () => {
+    // RING 1 — inner (r=130): 9 Sanskrit numerals = 9 Grahas
+    const ring1 = ['१','२','३','४','५','६','७','८','९'].map((ch,i)=>({
+      ch, ring:1, radius:130, inclination:0.15,
+      speed: 0.008, phase:(i/9)*Math.PI*2,
+      size:13, color:'rgba(240,200,80,0.8)', yOff:-60,
+    }));
+
+    // RING 2 — middle (r=210): Science + philosophy — hidden secrets in plain sight
+    const ring2chars = ['∞','DNA','π','⚛','tat','tvam','asi','108','OM','∫','ħ','Δ','∇','Ψ','ॐ','∅'];
+    const ring2 = ring2chars.map((ch,i)=>({
+      ch, ring:2, radius:210, inclination:0.35,
+      speed:0.005, phase:(i/ring2chars.length)*Math.PI*2,
+      size:10, color:'rgba(160,200,220,0.65)', yOff:-40,
+    }));
+
+    // RING 3 — outer (r=310): THE SECRET RING
+    // Speed = 2π / (108×3) so OM returns to apex every 324 frames
+    // One character (ॐ at index 0) has phase=0 → starts at apex → returns every 324f
+    const ring3chars = ['ॐ','अ','ग्र','स','ध','नी','✦','❊','◈','⬡'];
+    const ring3 = ring3chars.map((ch,i)=>({
+      ch, ring:3,
+      radius:310,
+      inclination: 0.55,
+      // ALL at same speed so they maintain formation — OM is always at position 0
+      speed: (Math.PI*2)/(108*3),  // 2π/324 rad/frame
+      phase:(i/ring3chars.length)*Math.PI*2,
+      size:i===0?16:9,  // OM is larger
+      color:i===0?'rgba(240,200,80,0.9)':'rgba(200,175,90,0.4)',
+      yOff:-20, isOM: i===0,
+    }));
+
+    return [...ring1, ...ring2, ...ring3];
   };
 
-  // ── NAVAGRAHA definitions ─────────────────────────────────────────────────
-  const NAVAGRAHA=[
-    {name:'Surya',   skt:'☀ सूर्य',  pr:14,col:'#f0b020',hi:'#fff880',sh:'#b05800',corona:true,  speed:.0026,phase:0      },
-    {name:'Chandra', skt:'☽ चन्द्र', pr:9, col:'#c8d4e0',hi:'#f0f4ff',sh:'#506878',crescent:true,speed:.0020,phase:.70    },
-    {name:'Mangal',  skt:'♂ मंगल',   pr:8, col:'#c83020',hi:'#ff7060',sh:'#601010',polar:true,   speed:.0017,phase:1.40   },
-    {name:'Budh',    skt:'☿ बुध',    pr:6, col:'#7090a0',hi:'#a0c8d8',sh:'#304050',              speed:.0030,phase:2.10   },
-    {name:'Brihaspati',skt:'♃ बृहस्पति',pr:19,col:'#d08020',hi:'#f0c060',sh:'#804810',bands:true,speed:.0015,phase:2.80  },
-    {name:'Shukra',  skt:'♀ शुक्र',  pr:10,col:'#e8e098',hi:'#fffff8',sh:'#a09038',              speed:.0023,phase:3.50   },
-    {name:'Shani',   skt:'♄ शनि',    pr:13,col:'#c0a860',hi:'#e8d890',sh:'#7a6428',rings:true,   speed:.0011,phase:4.20   },
-    {name:'Rahu',    skt:'☊ राहु',   pr:10,col:'#302840',hi:'#604880',sh:'#100a18',shadow:true,  speed:.0009,phase:4.90   },
-    {name:'Ketu',    skt:'☋ केतु',   pr:8, col:'#805060',hi:'#c08090',sh:'#401020',comet:true,   speed:.0007,phase:5.60   },
-  ];
-
-  // ── RING II — science + Vedic, slow ──────────────────────────────────────
-  const RING2=[
-    '∞','DNA','π','⚛','tat','tvam','asi','ħ','Δ','∇','Ψ','∅',
-    'E=mc²','∫','☯','ॐ','108','◎','Ω','◇','∴','∵','lim','∑',
-  ].map((ch,i,a)=>({
-    ch, radius:310, inclination:.32, speed:.0014,
-    phase:(i/a.length)*Math.PI*2,
-    sz:ch.length>3?7:ch==='ॐ'?14:10,
-    col:'rgba(140,190,215,0.65)', yOff:-30,
-  }));
-
-  // ── RING III — SECRET. OM at pos 0, period = 108×3 frames ────────────────
-  const RING3=['ॐ','अ','ग्र','स','ध','नी','✦','❊','◈','⬡','∞','◯'].map((ch,i,a)=>({
-    ch, isOM:i===0, radius:430, inclination:.52,
-    speed:(Math.PI*2)/(108*3),   // ← THE SECRET: returns to apex every 324 frames
-    phase:(i/a.length)*Math.PI*2,
-    sz:i===0?22:9,
-    col:i===0?'rgba(240,200,80,0.95)':'rgba(200,175,90,0.30)',
-    yOff:0,
-  }));
-
-  // ── CANVAS LOOP ───────────────────────────────────────────────────────────
+  // ── Canvas loop ──
   useEffect(()=>{
     const canvas=canvasRef.current; if(!canvas) return;
     const ctx=canvas.getContext('2d');
@@ -3172,161 +3149,163 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
     resize(); window.addEventListener('resize',resize);
 
     const particles=buildFigure();
-    const stars=Array.from({length:320},()=>({
-      x:Math.random()*2400,y:Math.random()*1500,z:200+Math.random()*900,
-      r:.3+Math.random()*1.8,op:.12+Math.random()*.6,
+    const rings=buildRings();
+    const stars=Array.from({length:250},()=>({
+      x:Math.random()*2000, y:Math.random()*1200, z:300+Math.random()*700,
+      r:0.3+Math.random()*1.5, op:0.15+Math.random()*0.6,
     }));
-    const s=stateRef.current; s.t=0;
-    const FOV=680, ROTY=.0022, SPAWN=100;
 
-    const project=(x,y,z,ry,cx,cy)=>{
-      const rx=x*Math.cos(ry)-z*Math.sin(ry), rz=x*Math.sin(ry)+z*Math.cos(ry);
-      const sc=FOV/(FOV+rz+420);
-      return {sx:cx+rx*sc,sy:cy+y*sc,scale:sc,rz};
-    };
+    const FOV=600, ROTY=0.003;
+    const SPAWN=100; // frames to spawn
+    stateRef.current.t=0;
 
-    const hexA=(hex,a)=>{
-      const rv=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
-      return `rgba(${rv},${g},${b},${a})`;
+    const project=(x,y,z,rotY,cx,cy)=>{
+      const rx=x*Math.cos(rotY)-z*Math.sin(rotY);
+      const rz=x*Math.sin(rotY)+z*Math.cos(rotY);
+      const sc=FOV/(FOV+rz+400);
+      return {sx:cx+rx*sc, sy:cy+y*sc, scale:sc, rz};
     };
 
     const draw=()=>{
       const W=canvas.width, H=canvas.height;
-      const CX=W*.5, CY=H*.5;
+      const CX=W*0.36, CY=H*0.50;
+      const s=stateRef.current;
       s.t++;
       const rotY=s.t*ROTY;
 
-      // BG
-      ctx.fillStyle='rgba(4,2,1,1)'; ctx.fillRect(0,0,W,H);
-      const bg=ctx.createRadialGradient(CX,CY,50,CX,CY,Math.min(W,H)*.7);
-      bg.addColorStop(0,`rgba(200,175,90,${.045+s.alignFlash*.006})`);
-      bg.addColorStop(.7,'rgba(120,95,40,.01)'); bg.addColorStop(1,'transparent');
-      ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+      // ── Check 108 alignment ──
+      // OM (ring 3, i=0) is at apex when its angle = π/2 (12 o'clock position)
+      // angle = phase + t * speed = 0 + t * (2π/324) → apex when = π/2 + n*2π
+      // π/2 / (2π/324) = 324/4 = 81 frames → first apex
+      const omAngle = 0 + s.t * (Math.PI*2/(108*3));
+      const omAtApex = (omAngle % (Math.PI*2)) < 0.08; // within ~4.6 degrees of top
+      if(omAtApex && s.t > 60) {
+        s.alignFlash = 30; // glow for 30 frames
+        if(s.t > 80 && !s.alignment) { s.alignment=true; setShowRiddle(true); }
+      }
+      if(s.alignFlash>0) s.alignFlash--;
 
-      // Stars
+      // BG
+      ctx.fillStyle='rgba(5,3,1,1)'; ctx.fillRect(0,0,W,H);
+
+      // Radial glow
+      const grd=ctx.createRadialGradient(CX,CY,30,CX,CY,Math.min(W,H)*0.55);
+      grd.addColorStop(0,`rgba(200,175,90,${0.06+s.alignFlash*0.004})`);
+      grd.addColorStop(0.6,'rgba(160,130,60,.02)');
+      grd.addColorStop(1,'transparent');
+      ctx.fillStyle=grd; ctx.fillRect(0,0,W,H);
+
+      // Stars parallax
       stars.forEach(st=>{
         const sc=FOV/(FOV+st.z);
-        const sx=W*.5+(st.x-W*.5)*sc,sy=H*.5+(st.y-H*.5)*sc;
+        const sx=W*.5+(st.x-W*.5)*sc, sy=H*.5+(st.y-H*.5)*sc;
         ctx.beginPath(); ctx.arc(sx,sy,st.r*sc,0,Math.PI*2);
         ctx.fillStyle=`rgba(255,255,220,${st.op*sc})`; ctx.fill();
       });
 
-      // ── Alignment check ──
-      const omAngle=s.t*(Math.PI*2/(108*3));
-      const omAtApex=(omAngle%(Math.PI*2))<.065;
-      if(omAtApex&&s.t>80){ s.alignFlash=45; if(s.t>160&&!s.alignment){s.alignment=true;setShowWhisper(true);} }
-      if(s.alignFlash>0) s.alignFlash--;
-
-      // ── Particles ──
+      // Particles — depth sorted
       const proj=particles.map(p=>{
-        if(s.explode){p.x+=(p.x-CX%W)*.05+(Math.random()-.5)*5;p.y+=(p.y-H*.5)*.05+(Math.random()-.5)*5;p.z+=(Math.random()-.5)*7;}
-        else if(s.t<SPAWN){p.x+=(p.tx-p.x)*.065;p.y+=(p.ty-p.y)*.065;p.z+=(p.tz-p.z)*.065;}
-        else{const d=Math.sin(s.t*.016+p.phase)*2.4;p.x=p.tx+d*Math.cos(p.phase);p.y=p.ty+d*Math.sin(p.phase)*.5;p.z=p.tz+Math.sin(s.t*.013+p.phase*1.3)*3.8;}
-        return {...project(p.x,p.y,p.z,rotY,CX,CY),p};
+        if(s.explode){
+          p.x+=(p.x-CX%W)*.04+(Math.random()-.5)*4;
+          p.y+=(p.y-H*.5)*.04+(Math.random()-.5)*4;
+          p.z+=(Math.random()-.5)*6;
+        } else if(s.t<SPAWN){
+          p.x+=( p.tx-p.x)*0.07; p.y+=(p.ty-p.y)*0.07; p.z+=(p.tz-p.z)*0.07;
+        } else {
+          const drift=Math.sin(s.t*.018+p.phase)*2;
+          p.x=p.tx+drift*Math.cos(p.phase)+(Math.random()-.5)*.15;
+          p.y=p.ty+drift*Math.sin(p.phase)*.5+(Math.random()-.5)*.15;
+          p.z=p.tz+Math.sin(s.t*.014+p.phase*1.3)*3.5;
+        }
+        return {...project(p.x,p.y,p.z,rotY,CX,CY), p};
       });
       proj.sort((a,b)=>a.rz-b.rz);
+
       proj.forEach(({sx,sy,scale,p})=>{
-        if(sx<-100||sx>W+100||sy<-100||sy>H+100) return;
+        if(sx<-80||sx>W+80||sy<-80||sy>H+80) return;
         const rv=p.size*scale;
-        const al=p.baseOpacity*Math.min(1,s.t/55)*scale*1.5;
-        const pulse=1+Math.sin(s.t*.033+p.phase)*.1;
+        const alpha=p.baseOpacity*Math.min(1,s.t/50)*scale*1.3;
+        const pulse=1+Math.sin(s.t*.038+p.phase)*.1;
         if(['quill','face','crown','halo'].includes(p.type)){
-          ctx.beginPath();ctx.arc(sx,sy,rv*4*pulse,0,Math.PI*2);
-          ctx.fillStyle=`rgba(240,210,80,${al*.13})`;ctx.fill();
+          ctx.beginPath(); ctx.arc(sx,sy,rv*3.5*pulse,0,Math.PI*2);
+          ctx.fillStyle=`rgba(240,210,80,${alpha*.15})`; ctx.fill();
         }
         ctx.beginPath(); ctx.arc(sx,sy,rv*pulse,0,Math.PI*2);
-        ctx.fillStyle=hexA(p.color.startsWith('#')?p.color:'#d0b050',al);
-        ctx.fill();
+        const col=p.color.startsWith('#')?hexAlpha(p.color,alpha):p.color;
+        ctx.fillStyle=col; ctx.fill();
       });
 
-      // ── Ring I: Navagraha planets ──
-      if(s.t>30){
-        const ral=Math.min((s.t-30)/50,1);
-        NAVAGRAHA.forEach(pl=>{
-          const angle=pl.phase+s.t*pl.speed;
-          const ox=190*Math.cos(angle);
-          const oy=-80+190*Math.sin(angle)*Math.sin(.18);
-          const oz=190*Math.sin(angle)*Math.cos(.18);
-          const pr=project(ox,oy,oz,rotY,CX,CY);
-          if(pr.scale<.15) return;
-          ctx.save(); ctx.globalAlpha=ral*Math.min(pr.scale*1.8,1);
-          drawPlanet(ctx,pr.sx,pr.sy,pr.scale,pl);
-          ctx.restore();
-        });
-      }
+      // ── Draw 3 orbital rings ──
+      if(s.t>40){
+        const ringAlpha=Math.min((s.t-40)/50,1);
+        const flashBoost=s.alignFlash/30;
 
-      // ── Ring II: Science/Vedic chars ──
-      if(s.t>55){
-        const ral=Math.min((s.t-55)/50,1);
-        RING2.forEach(orb=>{
+        rings.forEach(orb=>{
           const angle=orb.phase+s.t*orb.speed;
           const ox=orb.radius*Math.cos(angle);
           const oy=orb.yOff+orb.radius*Math.sin(angle)*Math.sin(orb.inclination);
           const oz=orb.radius*Math.sin(angle)*Math.cos(orb.inclination);
           const pr=project(ox,oy,oz,rotY,CX,CY);
-          const al=ral*Math.min(pr.scale*1.6,.8);
-          if(al<.05) return;
+          const depth=Math.max(0.2, pr.scale);
+          let alpha=ringAlpha*depth;
+
+          // OM in outer ring — pulsing + extra glow when at apex
+          const isOM=orb.isOM;
+          if(isOM) alpha=Math.min(1, alpha*1.8+(flashBoost*.7));
+          if(alpha<0.06) return;
+
+          const sz=orb.size*depth*(isOM?1.3:1);
           ctx.save();
-          ctx.font=`${orb.sz*pr.scale}px 'Cinzel','Noto Serif Devanagari',serif`;
+          ctx.globalAlpha=alpha;
+          ctx.font=`${sz}px 'Noto Serif Devanagari',serif`;
           ctx.textAlign='center'; ctx.textBaseline='middle';
-          ctx.globalAlpha=al;
-          ctx.shadowBlur=7; ctx.shadowColor='rgba(140,190,215,.4)';
-          ctx.fillStyle='rgba(140,190,215,0.75)';
-          ctx.fillText(orb.ch,pr.sx,pr.sy);
-          ctx.restore();
-        });
-      }
 
-      // ── Ring III: SECRET ──
-      if(s.t>80){
-        const ral=Math.min((s.t-80)/60,1);
-        const flash=s.alignFlash/45;
-
-        // Draw orbit path hint when OM is near apex
-        if(flash>.3){
-          ctx.save(); ctx.globalAlpha=flash*.08;
-          ctx.strokeStyle='rgba(240,200,80,1)'; ctx.lineWidth=1.2; ctx.setLineDash([3,9]);
-          ctx.beginPath();
-          for(let i=0;i<72;i++){
-            const a2=(i/72)*Math.PI*2+s.t*RING3[0].speed;
-            const ox2=430*Math.cos(a2),oy2=430*Math.sin(a2)*Math.sin(.52),oz2=430*Math.sin(a2)*Math.cos(.52);
-            const pr2=project(ox2,oy2,oz2,rotY,CX,CY);
-            i===0?ctx.moveTo(pr2.sx,pr2.sy):ctx.lineTo(pr2.sx,pr2.sy);
-          }
-          ctx.stroke(); ctx.setLineDash([]); ctx.restore();
-        }
-
-        RING3.forEach(orb=>{
-          const angle=orb.phase+s.t*orb.speed;
-          const ox=orb.radius*Math.cos(angle);
-          const oy=orb.yOff+orb.radius*Math.sin(angle)*Math.sin(orb.inclination);
-          const oz=orb.radius*Math.sin(angle)*Math.cos(orb.inclination);
-          const pr=project(ox,oy,oz,rotY,CX,CY);
-          let al=ral*Math.min(pr.scale*1.8,.95);
-          if(orb.isOM) al=Math.min(1,al*1.6+flash*.8);
-          if(al<.04) return;
-          ctx.save(); ctx.globalAlpha=al;
-          ctx.font=`${orb.sz*Math.max(pr.scale,orb.isOM?.4:.25)}px 'Noto Serif Devanagari',serif`;
-          ctx.textAlign='center'; ctx.textBaseline='middle';
-          if(orb.isOM){
-            const nearApex=(omAngle%(Math.PI*2))<.2;
-            ctx.shadowBlur=nearApex?35:12; ctx.shadowColor='rgba(240,200,80,.9)';
-            ctx.fillStyle=nearApex?'rgba(255,225,60,1)':'rgba(240,200,80,.9)';
+          if(isOM){
+            // OM glows gold when near apex
+            const nearApex=(omAngle%(Math.PI*2))<0.3;
+            ctx.shadowBlur=nearApex?30:14;
+            ctx.shadowColor=nearApex?'rgba(240,200,80,.9)':'rgba(240,200,80,.5)';
+            ctx.fillStyle=nearApex?'rgba(255,220,60,1)':'rgba(240,200,80,0.9)';
+          } else if(orb.ring===2){
+            ctx.shadowBlur=8; ctx.shadowColor='rgba(160,200,220,.4)';
+            ctx.fillStyle='rgba(160,200,220,0.7)';
           } else {
-            ctx.fillStyle='rgba(200,175,90,0.38)';
+            ctx.shadowBlur=5; ctx.shadowColor='rgba(240,190,60,.3)';
+            ctx.fillStyle='rgba(240,190,60,0.75)';
           }
-          ctx.fillText(orb.ch,pr.sx,pr.sy);
+          ctx.fillText(orb.ch, pr.sx, pr.sy);
           ctx.restore();
+
+          // Ring orbit path hint — faint ellipse trace
+          if(orb.ring===3 && s.t>80 && isOM && s.alignFlash>0){
+            ctx.save();
+            ctx.globalAlpha=flashBoost*0.12;
+            ctx.strokeStyle='rgba(240,200,80,1)';
+            ctx.lineWidth=1.5;
+            ctx.setLineDash([4,8]);
+            // Draw partial arc hint
+            ctx.beginPath();
+            for(let i=0;i<60;i++){
+              const a2=(i/60)*Math.PI*2+s.t*orb.speed;
+              const ox2=orb.radius*Math.cos(a2);
+              const oy2=orb.yOff+orb.radius*Math.sin(a2)*Math.sin(orb.inclination);
+              const oz2=orb.radius*Math.sin(a2)*Math.cos(orb.inclination);
+              const pr2=project(ox2,oy2,oz2,rotY,CX,CY);
+              i===0?ctx.moveTo(pr2.sx,pr2.sy):ctx.lineTo(pr2.sx,pr2.sy);
+            }
+            ctx.stroke();
+            ctx.restore();
+          }
         });
       }
 
       // Ink drips from quill tip
-      if(s.t>90&&!s.explode){
-        const ia=Math.min((s.t-90)/40,1);
+      if(s.t>80&&!s.explode){
+        const inkA=Math.min((s.t-80)/40,1);
         for(let i=0;i<2;i++){
-          const pr=project(115+Math.random()*18,-190+Math.random()*10,24,rotY,CX,CY);
+          const pr=project(112+Math.random()*18,-190+Math.random()*10,24,rotY,CX,CY);
           ctx.beginPath(); ctx.arc(pr.sx,pr.sy,1.8*pr.scale,0,Math.PI*2);
-          ctx.fillStyle=`rgba(240,210,80,${ia*.4*Math.random()})`; ctx.fill();
+          ctx.fillStyle=`rgba(240,210,80,${inkA*.45*Math.random()})`; ctx.fill();
         }
       }
 
@@ -3336,99 +3315,202 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
     return()=>{ cancelAnimationFrame(rafRef.current); window.removeEventListener('resize',resize); };
   },[]);
 
+  const hexAlpha=(hex,a)=>{
+    const rv=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+    return `rgba(${rv},${g},${b},${a})`;
+  };
+
+  // Auto-advance lines
+  useEffect(()=>{
+    if(lineIdx>=LINES.length){setDone(true);return;}
+    timerRef.current=setTimeout(()=>setLineIdx(i=>i+1), LINES[lineIdx]?.delay||1600);
+    return()=>clearTimeout(timerRef.current);
+  },[lineIdx]);
+
+  useEffect(()=>{ stateRef.current.lineIdx=lineIdx; },[lineIdx]);
+
+  useEffect(()=>{
+    if(!muted) setTimeout(()=>VoiceEngine.speakChitragupta('open',chosenLang),900);
+    return()=>VoiceEngine.stop();
+  },[]);
+
   const handleBegin=()=>{
     stateRef.current.explode=true; setExploding(true);
     setTimeout(onBegin,900);
   };
 
-  const isHi=chosenLang==='hi';
+  const cur=LINES[lineIdx-1];
+  const prev=LINES[lineIdx-2];
 
   return(
-    <div style={{position:'fixed',inset:0,zIndex:100,overflow:'hidden',background:'#040201'}}>
+    <div style={{position:'fixed',inset:0,zIndex:100,overflow:'hidden',background:'#050301'}}>
       <canvas ref={canvasRef} style={{position:'absolute',inset:0,width:'100%',height:'100%'}}/>
 
       {/* Skip */}
       <button onClick={onSkip} style={{
         position:'fixed',top:20,right:20,zIndex:20,
-        background:'transparent',border:'1px solid rgba(200,175,90,.15)',
-        color:'rgba(200,175,90,.28)',padding:'5px 16px',fontSize:10,
+        background:'transparent',border:'1px solid rgba(200,175,90,.18)',
+        color:'rgba(200,175,90,.3)',padding:'5px 16px',fontSize:10,
         fontFamily:"'Cinzel',serif",cursor:'pointer',borderRadius:3,letterSpacing:2,
-        transition:'all .25s',
+        transition:'all .2s',
       }}
       onMouseEnter={e=>{e.currentTarget.style.color='rgba(200,175,90,.65)';e.currentTarget.style.borderColor='rgba(200,175,90,.5)'}}
-      onMouseLeave={e=>{e.currentTarget.style.color='rgba(200,175,90,.28)';e.currentTarget.style.borderColor='rgba(200,175,90,.15)'}}>
+      onMouseLeave={e=>{e.currentTarget.style.color='rgba(200,175,90,.3)';e.currentTarget.style.borderColor='rgba(200,175,90,.18)'}}>
         SKIP ▸
       </button>
 
-      {/* Ring legend — top left */}
-      <div style={{position:'fixed',top:22,left:22,zIndex:10,display:'flex',flexDirection:'column',gap:5}}>
-        {[
-          {col:'rgba(240,190,60,.65)', label:'Navagraha · 9 Planets'},
-          {col:'rgba(140,190,215,.6)', label:'Science · Vedic · Hidden'},
-          {col:'rgba(240,200,80,.9)',  label:'??? · Watch ॐ'},
-        ].map((r,i)=>(
-          <div key={i} style={{display:'flex',alignItems:'center',gap:7,opacity:.45+i*.08}}>
-            <div style={{width:5,height:5,borderRadius:'50%',background:r.col,boxShadow:`0 0 5px ${r.col}`,flexShrink:0}}/>
-            <span style={{fontSize:8,color:'rgba(200,175,90,.45)',fontFamily:"'Cinzel',serif",letterSpacing:1.5}}>{r.label}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* THE WHISPER — appears when OM first hits apex, no explanation */}
-      {showWhisper&&(
+      {/* Ring legend — top left, very subtle */}
+      {lineIdx>6&&(
         <div style={{
-          position:'fixed',bottom:100,left:24,
-          animation:'fadeIn 1.5s ease',zIndex:15,
-          maxWidth:240,
+          position:'fixed',top:20,left:20,zIndex:10,
+          animation:'fadeIn 1s ease',
+          display:'flex',flexDirection:'column',gap:4,
         }}>
-          <div style={{
-            fontSize:10,
-            color:'rgba(200,175,90,.4)',
-            fontFamily:isHi?"'Noto Serif Devanagari',serif":"'Cinzel',serif",
-            fontStyle:'italic',lineHeight:2,letterSpacing:isHi?0:.8,
-          }}>
-            {isHi
-              ?'"एक चिह्न 108 को जानता है।\nजो देखेगा — समझेगा।"'
-              :'"One symbol knows 108.\nThose who see — understand."'
-            }
-          </div>
-          <div style={{width:30,height:1,background:'linear-gradient(90deg,rgba(200,175,90,.25),transparent)',marginTop:6}}/>
+          {[
+            {col:'rgba(240,190,60,.7)',label:'Ring I — Navagraha · 9 planets'},
+            {col:'rgba(160,200,220,.65)',label:'Ring II — Science · hidden in plain sight'},
+            {col:'rgba(240,200,80,.85)',label:'Ring III — ??? · watch ॐ'},
+          ].map((r,i)=>(
+            <div key={i} style={{display:'flex',alignItems:'center',gap:6,opacity:.5}}>
+              <div style={{width:6,height:6,borderRadius:'50%',background:r.col,flexShrink:0}}/>
+              <span style={{fontSize:8,color:'rgba(200,175,90,.5)',fontFamily:"'Cinzel',serif",letterSpacing:1}}>{r.label}</span>
+            </div>
+          ))}
         </div>
       )}
 
-      {/* Bottom: players + begin */}
+      {/* THE RIDDLE — appears when OM first reaches apex */}
+      {showRiddle&&(
+        <div style={{
+          position:'fixed',bottom:80,left:20,
+          background:'linear-gradient(135deg,rgba(14,10,4,.92),rgba(20,14,6,.96))',
+          border:'1px solid rgba(200,175,90,.2)',borderRadius:8,
+          padding:'10px 16px',maxWidth:300,
+          animation:'fadeIn 1.2s ease',zIndex:15,
+        }}>
+          <div style={{fontSize:7,letterSpacing:4,color:'rgba(200,175,90,.3)',fontFamily:"'Cinzel',serif",marginBottom:6}}>
+            🪶 &nbsp;चित्रगुप्त
+          </div>
+          <div style={{fontSize:10,color:'rgba(200,175,90,.5)',lineHeight:1.9,fontStyle:'italic'}}>
+            {isHi
+              ?'"एक चिह्न इस कमरे में 108 को जानता है।\nजो देखेगा — वह जानेगा।"'
+              :'"One symbol in this room knows 108.\nThose who see — will know."'
+            }
+          </div>
+        </div>
+      )}
+
+      {/* Right panel — story text */}
       <div style={{
-        position:'fixed',bottom:0,left:0,right:0,
-        padding:'12px 24px 20px',
-        background:'linear-gradient(0deg,rgba(4,2,1,.92) 50%,transparent)',
-        display:'flex',alignItems:'center',justifyContent:'space-between',
-        flexWrap:'wrap',gap:12,zIndex:10,
+        position:'absolute',right:0,top:0,bottom:0,
+        width:'clamp(280px,40%,500px)',
+        display:'flex',flexDirection:'column',justifyContent:'center',
+        padding:'40px clamp(16px,3vw,44px) 100px clamp(12px,2vw,28px)',
+        background:'linear-gradient(90deg,transparent 0%,rgba(5,3,1,.6) 20%,rgba(5,3,1,.93) 55%)',
+        zIndex:5,
       }}>
-        {/* Player chips */}
-        <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+        {/* Header */}
+        <div style={{marginBottom:24}}>
+          <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:10}}>
+            <svg width={18} height={24} viewBox="0 0 18 24" style={{flexShrink:0,filter:'drop-shadow(0 0 6px rgba(200,175,90,.7))'}}>
+              <path d="M9 1Q14 0 16 5Q18 11 12 17Q10 20 9 24Q8 20 9 17Q3 11 2 5Q4 0 9 1Z"
+                fill="rgba(200,175,90,.2)" stroke="rgba(200,175,90,.6)" strokeWidth="1"/>
+              <path d="M9 24L9 17Q13 13 14 9" fill="none" stroke="rgba(200,175,90,.65)" strokeWidth=".8"/>
+              <circle cx={9} cy={23.5} r={1.8} fill="rgba(200,175,90,.85)">
+                <animate attributeName="opacity" values=".3;1;.3" dur="1.5s" repeatCount="indefinite"/>
+              </circle>
+            </svg>
+            <div>
+              <div style={{fontSize:7,letterSpacing:5,color:'rgba(200,175,90,.4)',fontFamily:"'Cinzel',serif",fontWeight:700,marginBottom:2}}>
+                DIVINE SCRIBE · चित्रगुप्त
+              </div>
+              <div style={{fontSize:'clamp(20px,3vw,28px)',fontFamily:"'Yatra One',serif",color:'#f0d050',
+                textShadow:'0 0 25px rgba(200,175,90,.5)',letterSpacing:3,lineHeight:1.1}}>
+                Chitragupta
+              </div>
+            </div>
+          </div>
+          <div style={{height:1,background:'linear-gradient(90deg,transparent,rgba(200,175,90,.22),transparent)'}}/>
+        </div>
+
+        {/* Story lines — cinematic one at a time */}
+        <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'center',gap:14}}>
+          {prev&&(
+            <div style={{
+              fontSize:'clamp(10px,1.6vw,13px)',
+              color:'rgba(200,175,90,.18)',
+              lineHeight:1.9,
+              fontFamily:isHi?"'Noto Serif Devanagari',serif":"'Cinzel',serif",
+              fontStyle:isHi?'normal':'italic',
+              letterSpacing:isHi?0:.4,
+              whiteSpace:'pre-line',
+            }}>
+              {prev.text}
+            </div>
+          )}
+          {cur&&(
+            <div key={lineIdx} style={{
+              fontSize:'clamp(13px,2.2vw,19px)',
+              color:cur.accent,
+              lineHeight:1.9,
+              fontFamily:isHi?"'Noto Serif Devanagari',serif":"'Cinzel',serif",
+              fontStyle:isHi?'normal':'italic',
+              letterSpacing:isHi?0:.8,
+              fontWeight:700,
+              whiteSpace:'pre-line',
+              animation:'fadeIn .45s ease',
+              textShadow:`0 0 28px ${cur.accent}55`,
+            }}>
+              {cur.text}
+            </div>
+          )}
+          {!done&&(
+            <div style={{display:'flex',alignItems:'center',gap:7,opacity:.45}}>
+              <div style={{fontSize:13,animation:'pulse 1.1s ease infinite'}}>🪶</div>
+              <span style={{fontSize:7,color:'rgba(200,175,90,.4)',letterSpacing:3,fontFamily:"'Cinzel',serif"}}>
+                {isHi?'लिख रहे हैं...':'WRITING...'}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Progress bar */}
+        <div style={{display:'flex',gap:3,marginBottom:16,marginTop:14}}>
+          {LINES.map((_,i)=>(
+            <div key={i} style={{height:2,flex:1,borderRadius:1,
+              background:i<lineIdx?'rgba(200,175,90,.65)':'rgba(200,175,90,.1)',
+              transition:'background .4s',
+            }}/>
+          ))}
+        </div>
+
+        {/* Players */}
+        <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:14}}>
           {players.filter(p=>!p.cpu).map((p,i)=>(
-            <div key={i} style={{display:'flex',alignItems:'center',gap:6,padding:'4px 12px',
-              background:'rgba(200,175,90,.05)',border:'1px solid rgba(200,175,90,.12)',borderRadius:16}}>
-              <span style={{fontSize:15}}>{p.char.icon}</span>
-              <span style={{fontSize:9,color:'rgba(200,175,90,.42)',fontFamily:"'Cinzel',serif",letterSpacing:1}}>{p.name}</span>
+            <div key={i} style={{display:'flex',alignItems:'center',gap:6,padding:'3px 10px',
+              background:'rgba(200,175,90,.04)',border:'1px solid rgba(200,175,90,.12)',borderRadius:14}}>
+              <span style={{fontSize:14}}>{p.char.icon}</span>
+              <span style={{fontSize:9,color:'rgba(200,175,90,.4)',fontFamily:"'Cinzel',serif"}}>{p.name}</span>
             </div>
           ))}
         </div>
 
-        {/* Begin / waiting */}
+        {/* Begin button */}
         {done?(
           <button onClick={handleBegin} disabled={exploding} style={{
             background:exploding?'transparent':'linear-gradient(180deg,rgba(200,175,90,.2),rgba(200,175,90,.07))',
-            border:'1.5px solid rgba(200,175,90,.45)',color:'#f0d050',
-            padding:'11px 32px',fontSize:12,fontFamily:"'Cinzel',serif",
+            border:'1.5px solid rgba(200,175,90,.48)',color:'#f0d050',
+            padding:'13px 0',fontSize:12,fontFamily:"'Cinzel',serif",
             cursor:exploding?'default':'pointer',borderRadius:4,letterSpacing:4,
-            animation:exploding?'none':'pulse 2.5s ease infinite',
-            boxShadow:'0 0 20px rgba(200,175,90,.07)',
+            width:'100%',animation:exploding?'none':'pulse 2.5s ease infinite',
+            boxShadow:'0 0 24px rgba(200,175,90,.07)',
           }}>
-            {exploding?'✦':'▸ '+(isHi?'खेल आरंभ':'BEGIN')}
+            {exploding?'✦ ...':'▸ '+(isHi?'खेल आरंभ करो':'BEGIN THE GAME')}
           </button>
         ):(
-          <div style={{fontSize:8,color:'rgba(200,175,90,.2)',letterSpacing:3,fontFamily:"'Cinzel',serif",animation:'pulse 3s ease infinite'}}>
+          <div style={{height:44,display:'flex',alignItems:'center',justifyContent:'center',
+            border:'1px solid rgba(200,175,90,.07)',borderRadius:4,
+            color:'rgba(200,175,90,.2)',fontSize:8,letterSpacing:3,fontFamily:"'Cinzel',serif"}}>
             {isHi?'अग्रसंधानी खुल रही है...':'AGRASANDHANI OPENS...'}
           </div>
         )}
