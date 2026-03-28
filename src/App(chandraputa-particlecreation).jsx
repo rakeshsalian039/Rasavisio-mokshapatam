@@ -229,6 +229,38 @@ const STORY_PAGES=[
   en:"Ten colossal Nagas coil around this board. They are not just snakes. They are living nightmares. Each one a manifestation of the darkest force inside every human soul. Krodh, Wrath. Lobh, Greed. Moh, Delusion. When a serpent catches you, it drags you screaming into the depths. You lose squares, and gain 2 Papa, sin karma. But for every serpent, there is a ladder, a virtue. Daya, Compassion. Satya, Truth. Seva, Service. Bhakti, Devotion. When a ladder lifts you, you gain 1 Punya, sacred merit. Between the serpents, Dharma Dilemmas appear. Ancient moral choices from the epics. Choose wisely, for your choices shape your karma.",
   hi:"दस विशाल नाग इस पट पर कुंडली मारे बैठे हैं। ये सिर्फ सांप नहीं हैं। ये जीवित दुःस्वप्न हैं। क्रोध। लोभ। मोह। जब कोई सांप पकड़ता है, 2 पाप मिलता है। लेकिन हर सांप के लिए एक सीढ़ी है। दया। सत्य। सेवा। भक्ति। जब सीढ़ी उठाती है, 1 पुण्य मिलता है।",
   visuals:[{type:"animatedBoard",mode:"snakeladder"}]},
+  {title:"Dharma Dilemma",icon:"⚖",
+  bullets_en:[
+    {icon:"⚖",accent:"#a0c8e0",title:"21 Moral Crossroads",text:"From the Mahabharata and real life. Ancient dilemmas that kings, sages, and warriors faced — now yours to answer."},
+    {icon:"🙏",accent:"#80c080",title:"Choose Punya — The Righteous Path",text:"Harder. Costlier. Sometimes you move back. But your soul grows lighter. Karma accumulates."},
+    {icon:"💀",accent:"#e06030",title:"Choose Papa — The Dark Path",text:"Easier. You advance faster. But sin accumulates. And the gates of Moksha may reject you."},
+    {icon:"⚡",accent:"#f0d050",title:"Balance is Everything",text:"30 Punya anywhere = instant Moksha. But Papa can undo lifetimes of Punya. Every choice is permanent."},
+  ],
+  bullets_hi:[
+    {icon:"⚖",accent:"#a0c8e0",title:"21 नैतिक चौराहे",text:"महाभारत और असल जीवन से। राजाओं, ऋषियों और योद्धाओं के सामने आए प्राचीन प्रश्न — अब तुम्हारे सामने।"},
+    {icon:"🙏",accent:"#80c080",title:"पुण्य चुनो — धर्म का मार्ग",text:"कठिन। महंगा। कभी-कभी पीछे जाते हो। लेकिन आत्मा हल्की होती है। कर्म जमा होता है।"},
+    {icon:"💀",accent:"#e06030",title:"पाप चुनो — अधर्म का मार्ग",text:"आसान। तेज़ आगे बढ़ते हो। लेकिन पाप जमा होता है। और मोक्ष के द्वार बंद हो सकते हैं।"},
+    {icon:"⚡",accent:"#f0d050",title:"संतुलन सब कुछ है",text:"30 पुण्य कहीं से भी = तुरंत मोक्ष। लेकिन पाप जन्मों का पुण्य मिटा सकता है। हर चुनाव स्थायी है।"},
+  ],
+  en:"Every few squares, life stops you. A Dharma Dilemma appears. An ancient crossroads. These are not simple questions. They are the same moral choices that destroyed kings and elevated sages. Karna gave away his divine armour to a beggar. Knowing it would kill him. Eklavya cut off his own thumb for his guru. Yudhishthira told a half-truth to win a war. These choices are yours now. Choose Punya, the righteous path, and move back but grow purer. Choose Papa, the easy path, advance faster but sin accumulates. The board does not care about your intentions. Only your karma matters at the final gate.",
+  hi:"हर कुछ खानों पर, जीवन तुम्हें रोकता है। एक धर्म दुविधा प्रकट होती है। एक प्राचीन चौराहा। ये सरल प्रश्न नहीं हैं। ये वही नैतिक चुनाव हैं जिन्होंने राजाओं को नष्ट किया और ऋषियों को ऊपर उठाया। कर्ण ने अपना दिव्य कवच एक भिखारी को दिया। जानते हुए कि इससे मृत्यु होगी। एकलव्य ने गुरु के लिए अपना अंगूठा काटा। युधिष्ठिर ने युद्ध जीतने के लिए आधा सच बोला। ये चुनाव अब तुम्हारे हैं।",
+  visuals:[{type:"dharmaStage"}]},
+  {title:"The 8-Fold Sacred Path",icon:"🪷",
+  bullets_en:[
+    {icon:"🪷",accent:"#f0d050",title:"Above Square 100 — A Different World",text:"Once you pass square 100, dice rolls no longer matter. You move exactly ONE step per turn."},
+    {icon:"📖",accent:"#c0a0e0",title:"Patanjali's Ashtanga Yoga",text:"Each of the 8 steps tests your knowledge of yoga and dharma. Answer correctly — gain Punya. Fail — gain Papa and fall back."},
+    {icon:"🚪",accent:"#f0b840",title:"The Final Gate at 107",text:"At Dhyana (square 107), you need an exact roll of 1. Only absolute surrender opens the gate to Moksha."},
+    {icon:"ॐ",accent:"#80c080",title:"The Navagraha Cannot Touch You",text:"On the Sacred Path, no planet effects apply. No swapping. No pushing. You are beyond the material world."},
+  ],
+  bullets_hi:[
+    {icon:"🪷",accent:"#f0d050",title:"खाना 100 के ऊपर — एक अलग दुनिया",text:"खाना 100 पार करने के बाद, पासे से कोई फर्क नहीं। हर बारी एक ही कदम चलते हो।"},
+    {icon:"📖",accent:"#c0a0e0",title:"पतंजलि का अष्टांग योग",text:"8 में से हर कदम योग और धर्म ज्ञान की परीक्षा लेता है। सही उत्तर दो — पुण्य मिलता है। गलत — पाप और वापस।"},
+    {icon:"🚪",accent:"#f0b840",title:"खाना 107 पर अंतिम द्वार",text:"ध्यान पर, सटीक 1 चाहिए। केवल पूर्ण समर्पण मोक्ष का द्वार खोलता है।"},
+    {icon:"ॐ",accent:"#80c080",title:"नवग्रह तुम्हें नहीं छू सकते",text:"पवित्र मार्ग पर कोई ग्रह प्रभाव नहीं। अदला-बदली नहीं। धक्का नहीं। तुम भौतिक संसार से परे हो।"},
+  ],
+  en:"Past square 100, the rules change. You have transcended the material world. The Navagraha cannot touch you. You move one step at a time along the Ashtanga Marga — the eight-fold path of Patanjali. Yama, self-restraint. Niyama, discipline. Asana, steadiness. Pranayama, the expansion of life-force. Pratyahara, withdrawal of the senses. Dharana, single-pointed concentration. Dhyana, deep meditation. And finally, Moksha at square 108, liberation from the cycle of birth and death. But at square 107, the Dhyana gate demands exactness. You must roll a one. Only perfect surrender, no grasping, no eagerness, opens the final door.",
+  hi:"खाना 100 के बाद, नियम बदल जाते हैं। तुम भौतिक संसार को पार कर चुके हो। नवग्रह तुम्हें नहीं छू सकते। अष्टांग मार्ग पर एक-एक कदम चलते हो। यम, नियम, आसन, प्राणायाम, प्रत्याहार, धारणा, ध्यान। और अंत में, खाना 108 पर मोक्ष — जन्म और मृत्यु के चक्र से मुक्ति। लेकिन खाना 107 पर, ध्यान का द्वार सटीकता मांगता है। सटीक 1 फेंकना होगा। केवल पूर्ण समर्पण अंतिम द्वार खोलता है।",
+  visuals:[{type:"sacredPathStage"}]},
   {title:"Yama Awaits",icon:"💀",
   bullets_en:[
     {icon:"☠️",accent:"#e06060",title:"Not a Computer — A Cosmic Force",text:"In solo mode, you face Yama. The God of Death. He has judged souls since the dawn of creation."},
@@ -719,11 +751,107 @@ const STATIC_VOICES = {
   dancer: { en: '/char-dancer-en.mp3', hi: '/char-dancer-hi.mp3' },
   merchant: { en: '/char-merchant-en.mp3', hi: '/char-merchant-hi.mp3' },
   ascetic: { en: '/char-ascetic-en.mp3', hi: '/char-ascetic-hi.mp3' },
+  // ── Graha effects (9 planets × 2 languages = 18 files) ──
+  // Generate with: bash generate-game-voices.sh
+  graha_sun:     { en: '/game-voices/graha-sun-en.mp3',     hi: '/game-voices/graha-sun-hi.mp3' },
+  graha_moon:    { en: '/game-voices/graha-moon-en.mp3',    hi: '/game-voices/graha-moon-hi.mp3' },
+  graha_mars:    { en: '/game-voices/graha-mars-en.mp3',    hi: '/game-voices/graha-mars-hi.mp3' },
+  graha_mercury: { en: '/game-voices/graha-mercury-en.mp3', hi: '/game-voices/graha-mercury-hi.mp3' },
+  graha_jupiter: { en: '/game-voices/graha-jupiter-en.mp3', hi: '/game-voices/graha-jupiter-hi.mp3' },
+  graha_venus:   { en: '/game-voices/graha-venus-en.mp3',   hi: '/game-voices/graha-venus-hi.mp3' },
+  graha_saturn:  { en: '/game-voices/graha-saturn-en.mp3',  hi: '/game-voices/graha-saturn-hi.mp3' },
+  graha_rahu:    { en: '/game-voices/graha-rahu-en.mp3',    hi: '/game-voices/graha-rahu-hi.mp3' },
+  graha_ketu:    { en: '/game-voices/graha-ketu-en.mp3',    hi: '/game-voices/graha-ketu-hi.mp3' },
+  // ── Snake & ladder reactions ──
+  snake_hit:   { en: '/game-voices/snake-hit-en.mp3',   hi: '/game-voices/snake-hit-hi.mp3' },
+  ladder_rise: { en: '/game-voices/ladder-rise-en.mp3', hi: '/game-voices/ladder-rise-hi.mp3' },
+  moksha_gate: { en: '/game-voices/moksha-gate-en.mp3', hi: '/game-voices/moksha-gate-hi.mp3' },
+  karma_win:   { en: '/game-voices/karma-win-en.mp3',   hi: '/game-voices/karma-win-hi.mp3' },
+  shield_save: { en: '/game-voices/shield-save-en.mp3', hi: '/game-voices/shield-save-hi.mp3' },
+  // ── Ashtanga Marga step intros (7 steps × 2 langs = 14 files) ──
+  ashtanga_step_1: { en: '/game-voices/ashtanga-1-en.mp3', hi: '/game-voices/ashtanga-1-hi.mp3' },
+  ashtanga_step_2: { en: '/game-voices/ashtanga-2-en.mp3', hi: '/game-voices/ashtanga-2-hi.mp3' },
+  ashtanga_step_3: { en: '/game-voices/ashtanga-3-en.mp3', hi: '/game-voices/ashtanga-3-hi.mp3' },
+  ashtanga_step_4: { en: '/game-voices/ashtanga-4-en.mp3', hi: '/game-voices/ashtanga-4-hi.mp3' },
+  ashtanga_step_5: { en: '/game-voices/ashtanga-5-en.mp3', hi: '/game-voices/ashtanga-5-hi.mp3' },
+  ashtanga_step_6: { en: '/game-voices/ashtanga-6-en.mp3', hi: '/game-voices/ashtanga-6-hi.mp3' },
+  ashtanga_step_7: { en: '/game-voices/ashtanga-7-en.mp3', hi: '/game-voices/ashtanga-7-hi.mp3' },
+};
+
+// Map graha fx key → STATIC_VOICES key
+const GRAHA_STATIC_KEY = {
+  sun:'graha_sun', moon:'graha_moon', mars:'graha_mars', mercury:'graha_mercury',
+  jupiter:'graha_jupiter', venus:'graha_venus', saturn:'graha_saturn',
+  rahu:'graha_rahu', ketu:'graha_ketu',
+};
+
+// ══════════════════════════════════════════════════════════════════════
+// 🪶 CHITRAGUPTA — The Divine Scribe. He didn't just record this game.
+//    He WROTE it. Every number on this board is his handwriting.
+//    Every snake name — his Sanskrit. Every virtue — his ink.
+//    The Agrasandhani (cosmic ledger) updates in real-time.
+// ══════════════════════════════════════════════════════════════════════
+const CG_LINES = {
+  en: {
+    open:     "I am Chitragupta. Since the first soul drew breath, I have kept the record. I wrote every number on this board. Every serpent's name — my Sanskrit. Every virtue ladder — my ink. I open a new page today. I am watching.",
+    punya:    "Noted. Punya recorded. The ledger grows lighter.",
+    papa:     "Recorded. Papa entered. Without judgment. The ledger simply sees what is true.",
+    snake:    "This serpent was already written here. I placed it where weakness would catch a soul. Your fall was always in the ledger.",
+    ladder:   "This virtue was written here by me. I placed each ladder exactly where a pure act could lift a soul. You found it.",
+    dharma_p: "Righteous. Written in gold. Every dharmic act, however costly, is inscribed differently. I use a finer quill.",
+    dharma_x: "Recorded without judgment. Only Yama reads the final tally. And he always does.",
+    sacred:   "You have entered the Ashtanga Marga. From this point, I set down my quill. Only the soul itself writes what happens here.",
+    moksha:   "The page is complete. I seal it. In all the ages I have kept this record, few pages end this way. Go. You are free.",
+    reject:   "The ledger speaks plainly. Papa exceeds Punya. Return. Purify. The board is still here. So am I.",
+    balance:  "I note this carefully. Your Punya and Papa are nearly equal. What you do in these next squares — I will write with extraordinary attention.",
+    seeker:   "I have watched every seeker who has walked this board. I know how each story ends. I say nothing. I only write.",
+    judgment: "The game is over. I close the Agrasandhani. The pure soul has been liberated. For those who remain — Yama awaits. As he always does.",
+  },
+  hi: {
+    open:     "मैं चित्रगुप्त हूँ। जब से पहली आत्मा ने श्वास लिया, मैं अभिलेख रखता आया हूँ। इस पट का हर अंक मेरी लिखावट है। हर सांप का नाम — मेरी संस्कृत। हर सीढ़ी — मेरी स्याही। आज नया पृष्ठ खोलता हूँ। मैं देख रहा हूँ।",
+    punya:    "दर्ज। पुण्य अंकित। खाता हल्का होता है।",
+    papa:     "दर्ज। पाप अंकित। बिना निर्णय के। खाता केवल सत्य देखता है।",
+    snake:    "यह सांप यहाँ पहले से लिखा था। मैंने इसे वहाँ रखा जहाँ कमज़ोरी आत्मा को पकड़े। यह गिरावट हमेशा खाते में थी।",
+    ladder:   "यह सीढ़ी मैंने लिखी थी। हर सीढ़ी ठीक वहाँ रखी जहाँ पुण्य कर्म आत्मा को उठा सके। तुमने इसे पाया।",
+    dharma_p: "धर्मिक। सोने में लिखा गया। हर धर्मिक कार्य मैं अलग तरीके से लिखता हूँ।",
+    dharma_x: "निर्णय के बिना दर्ज। केवल यमराज अंतिम गणना पढ़ते हैं।",
+    sacred:   "तुम अष्टांग मार्ग में प्रवेश कर चुके हो। यहाँ मैं कलम रख देता हूँ। आत्मा ही लिखती है।",
+    moksha:   "पृष्ठ पूर्ण हुआ। मैं मुहर लगाता हूँ। बहुत कम पृष्ठ इस तरह समाप्त होते हैं। जाओ। तुम मुक्त हो।",
+    reject:   "खाता स्पष्ट बोलता है। पाप, पुण्य से अधिक है। लौटो। शुद्ध हो। पट यहाँ है। मैं भी।",
+    balance:  "मैं इसे ध्यान से नोट करता हूँ। पुण्य और पाप लगभग बराबर हैं। इन अगले खानों में मैं असाधारण ध्यान से लिखूँगा।",
+    seeker:   "मैंने हर उस साधक को देखा है जो इस पट पर चला है। मुझे पता है हर कहानी कैसे समाप्त होती है। केवल लिखता हूँ।",
+    judgment: "खेल समाप्त हुआ। अग्रसंधानी बंद करता हूँ। जो शुद्ध था, मुक्त हुआ। जो शेष हैं — यमराज प्रतीक्षा करते हैं। जैसा हमेशा होता है।",
+  }
+};
+
+// Static CG voice files (pre-generated with onyx voice + celestial processing)
+const CG_STATIC = {
+  open:'/game-voices/cg-open', punya:'/game-voices/cg-punya', papa:'/game-voices/cg-papa',
+  snake:'/game-voices/cg-snake', ladder:'/game-voices/cg-ladder',
+  dharma_p:'/game-voices/cg-dharmap', dharma_x:'/game-voices/cg-dharmapap',
+  sacred:'/game-voices/cg-sacred', moksha:'/game-voices/cg-moksha',
+  reject:'/game-voices/cg-reject', balance:'/game-voices/cg-balance',
+  seeker:'/game-voices/cg-seeker', judgment:'/game-voices/cg-judgment',
+};
+
+// Entry type visual styles for the ledger
+const CG_ENTRY_TYPES = {
+  punya:    {icon:'✦',color:'#f0d050',bg:'rgba(240,200,80,.08)',label:'पुण्य'},
+  papa:     {icon:'✦',color:'#e06030',bg:'rgba(200,80,40,.08)',label:'पाप'},
+  snake:    {icon:'𓆙',color:'#e06030',bg:'rgba(200,80,40,.10)',label:'पाप'},
+  ladder:   {icon:'🪔',color:'#80d080',bg:'rgba(80,200,80,.08)',label:'पुण्य'},
+  dharma_p: {icon:'⚖',color:'#80c0a0',bg:'rgba(80,180,120,.08)',label:'धर्म'},
+  dharma_x: {icon:'⚖',color:'#c08060',bg:'rgba(180,100,60,.08)',label:'अधर्म'},
+  sacred:   {icon:'🪷',color:'#c0a0f0',bg:'rgba(160,120,220,.08)',label:'मार्ग'},
+  moksha:   {icon:'ॐ', color:'#f0d050',bg:'rgba(240,200,80,.15)',label:'मोक्ष'},
+  reject:   {icon:'⚠', color:'#e06060',bg:'rgba(200,60,60,.10)',label:'अशुद्ध'},
+  balance:  {icon:'⚖',color:'#a0c8e0',bg:'rgba(120,160,200,.08)',label:'तुला'},
 };
 
 const VoiceEngine = {
   audio: null,
   speaking: false,
+  _stopToken: 0, // incremented on every stop() — lets async fetches detect they've been cancelled
 
   // Play a static MP3 file — instant, zero API cost
   playStatic(url) {
@@ -767,12 +895,14 @@ const VoiceEngine = {
     // Force stop any existing voice first — prevents overlap
     this.stop();
     if (!text) return;
+    const myToken = this._stopToken; // capture before any await
 
     const isLocal = ['localhost','127.0.0.1',''].includes(window.location.hostname);
 
     if (!isLocal) {
       const cached = AudioCache.get(text);
       if (cached) {
+        if (this._stopToken !== myToken) return; // dismissed while checking cache
         const audio = new Audio(cached);
         audio.volume=1.0;
         this.audio = audio;
@@ -782,9 +912,10 @@ const VoiceEngine = {
         return;
       }
 
-      // Not cached — fetch now (will cache for next time)
+      // Not cached — fetch from OpenAI (1-3s). Check token after await.
       try {
         const url = await AudioCache.fetchTTS(text, lang);
+        if (this._stopToken !== myToken) return; // user dismissed while fetching — discard
         if (url) {
           const audio = new Audio(url);
           audio.volume=1.0;
@@ -797,17 +928,97 @@ const VoiceEngine = {
       } catch (e) {}
     }
 
+    if (this._stopToken !== myToken) return; // check before browser fallback too
     // Fallback: browser speech
     this._browserSpeak(text, lang);
   },
 
   stop() {
+    this._stopToken++;
     if (this.audio) { try { this.audio.pause(); this.audio.currentTime = 0; } catch (e) {} this.audio = null; }
     if (this._yamaCtx) { try { this._yamaCtx.close(); } catch(e){} this._yamaCtx = null; }
     if (this._yamaSource) { try { this._yamaSource.stop(); } catch(e){} this._yamaSource = null; }
     if (this._yamaSource2) { try { this._yamaSource2.stop(); } catch(e){} this._yamaSource2 = null; }
+    if (this._cgCtx) { try { this._cgCtx.close(); } catch(e){} this._cgCtx = null; }
     try { window.speechSynthesis.cancel(); } catch (e) {}
     this.speaking = false;
+  },
+
+  // ═══ CHITRAGUPTA VOICE — Celestial scribe, absolute calm ═══
+  // Audio chain: presence (2.5kHz +5dB) + air shimmer (10kHz +4dB)
+  //   + 5s heavenly reverb + 528Hz singing bowl — never interrupts other voices
+  _cgCtx: null,
+  async speakChitragupta(key, lang) {
+    // Chitragupta waits — he never interrupts
+    if (this.speaking) return;
+    const l = (lang==='hi') ? 'hi' : 'en';
+    const text = CG_LINES[l]?.[key];
+    if (!text) return;
+    const staticBase = CG_STATIC[key];
+    const staticUrl = staticBase ? `${staticBase}-${l}.mp3` : null;
+    const myToken = this._stopToken;
+
+    let audioUrl = null;
+    // 1. Try static file (instant, zero cost)
+    if (staticUrl) {
+      try { const r=await fetch(staticUrl,{method:'HEAD'}); if(r.ok) audioUrl=staticUrl; } catch(e){}
+    }
+    if (this._stopToken !== myToken || this.speaking) return;
+    // 2. Fallback: browser speech (always instant)
+    if (!audioUrl) { this._browserSpeak(text, lang); return; }
+
+    try {
+      const resp = await fetch(audioUrl);
+      const arrayBuf = await resp.arrayBuffer();
+      if (this._stopToken !== myToken || this.speaking) return;
+      const ctx = new (window.AudioContext||window.webkitAudioContext)();
+      if (ctx.state==='suspended') await ctx.resume();
+      this._cgCtx = ctx;
+      const buf = await ctx.decodeAudioData(arrayBuf);
+      if (this._stopToken !== myToken) { try{ctx.close()}catch(e){}; return; }
+
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.playbackRate.value = 0.93; // Weight of eternity
+
+      // Presence (2.5kHz) — divine authority
+      const pres = ctx.createBiquadFilter();
+      pres.type='peaking'; pres.frequency.value=2500; pres.Q.value=0.9; pres.gain.value=5;
+      // Air shimmer (10kHz) — ethereal, above the world
+      const air = ctx.createBiquadFilter();
+      air.type='highshelf'; air.frequency.value=10000; air.gain.value=4;
+      // Cut muddy low-mids (400Hz)
+      const cut = ctx.createBiquadFilter();
+      cut.type='peaking'; cut.frequency.value=400; cut.Q.value=1; cut.gain.value=-3;
+      // 5-second heavenly reverb (longer than narrator's 2s)
+      const rvLen = Math.floor(5*ctx.sampleRate);
+      const rvBuf = ctx.createBuffer(2,rvLen,ctx.sampleRate);
+      for(let ch=0;ch<2;ch++){
+        const d=rvBuf.getChannelData(ch);
+        for(let i=0;i<rvLen;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/rvLen,1.4)*(i<ctx.sampleRate*.03?i/(ctx.sampleRate*.03):1);
+      }
+      const conv = ctx.createConvolver(); conv.buffer=rvBuf;
+      const rvMix = ctx.createGain(); rvMix.gain.value=0.32;
+      // 528Hz "miracle tone" — unique signature of Chitragupta's voice
+      const bowl = ctx.createOscillator(); bowl.type='sine'; bowl.frequency.value=528;
+      const bowlG = ctx.createGain(); bowlG.gain.value=0.016;
+      const bowlF = ctx.createBiquadFilter(); bowlF.type='bandpass'; bowlF.frequency.value=528; bowlF.Q.value=12;
+      bowl.connect(bowlF); bowlF.connect(bowlG);
+      // Route
+      const master = ctx.createGain(); master.gain.value=1.0;
+      src.connect(cut); cut.connect(pres); pres.connect(air);
+      air.connect(master); air.connect(conv); conv.connect(rvMix); rvMix.connect(master);
+      bowlG.connect(master); master.connect(ctx.destination);
+      this.speaking = true;
+      src.onended = () => {
+        this.speaking = false;
+        bowlG.gain.linearRampToValueAtTime(0, ctx.currentTime+2.5);
+        setTimeout(()=>{try{bowl.stop();ctx.close()}catch(e){}this._cgCtx=null;},3000);
+      };
+      src.start(0); bowl.start(0);
+    } catch(e) {
+      this._browserSpeak(text, lang);
+    }
   },
 
   // ═══ YAMA VOICE — Full audio processing for Thanos-like sound ═══
@@ -993,20 +1204,38 @@ const VoiceEngine = {
   },
 
   // ═══ NARRATOR VOICE — Vedic temple processing for story onboarding ═══
-  async speakNarrator(text, lang) {
+  // staticUrl: pre-generated /onboarding/story-N-lang.mp3 (zero API cost)
+  // onAudioStart: fires the MOMENT audio begins playing (used for UI sync)
+  async speakNarrator(text, lang, staticUrl, onAudioStart) {
     this.stop();
     if (!text) return;
+    const myToken = this._stopToken;
 
-    const isLocal = ['localhost','127.0.0.1',''].includes(window.location.hostname);
     let audioUrl = null;
 
-    if (!isLocal) {
-      audioUrl = AudioCache.get(text);
-      if (!audioUrl) {
-        try { audioUrl = await AudioCache.fetchTTS(text, lang); } catch(e){}
+    // 1. Static pre-generated file (highest priority — always free)
+    if (staticUrl) {
+      try {
+        const r = await fetch(staticUrl, { method: 'HEAD' });
+        if (r.ok) { audioUrl = staticUrl; console.log('[Voice] Static:', staticUrl); }
+      } catch(e) {}
+    }
+
+    if (this._stopToken !== myToken) return;
+
+    // 2. IndexedDB / OpenAI API (fallback if static not deployed yet)
+    if (!audioUrl) {
+      const isLocal = ['localhost','127.0.0.1',''].includes(window.location.hostname);
+      if (!isLocal) {
+        audioUrl = AudioCache.get(text);
+        if (!audioUrl) {
+          try { audioUrl = await AudioCache.fetchTTS(text, lang); } catch(e){}
+        }
       }
     }
-    if (!audioUrl) { this._browserSpeak(text, lang); return; }
+
+    if (this._stopToken !== myToken) return;
+    if (!audioUrl) { this._browserSpeak(text, lang); onAudioStart && onAudioStart(); return; }
 
     try {
       const resp = await fetch(audioUrl);
@@ -1119,6 +1348,7 @@ const VoiceEngine = {
       master.connect(ctx.destination);
 
       // ═══ PLAY ═══
+      if (this._stopToken !== myToken) { try{osc1.stop();osc2.stop();osc3.stop();ctx.close()}catch(e){} return; }
       this.speaking = true;
       source.onended = () => {
         this.speaking = false;
@@ -1127,6 +1357,7 @@ const VoiceEngine = {
         setTimeout(()=>{try{osc1.stop();osc2.stop();osc3.stop();ctx.close()}catch(e){}this._yamaCtx=null},2000);
       };
       source.start(0);
+      onAudioStart && onAudioStart(); // ← fires exactly when audio begins
       osc1.start(0);
       osc2.start(0);
       osc3.start(0);
@@ -1141,6 +1372,7 @@ const VoiceEngine = {
       audio.volume = 1.0;
       this.audio = audio;
       this.speaking = true;
+      audio.onplay  = () => { onAudioStart && onAudioStart(); };
       audio.onended = () => { this.speaking = false; };
       await audio.play().catch(()=>{});
     } catch(e) {
@@ -1150,257 +1382,328 @@ const VoiceEngine = {
 };
 
 // ═══════════════════════════════════════════════════════════════════════
-// ONBOARDING BOARD — real 10×10 board with animated highlights & SVG paths
+// MINI BOARD — pixel-perfect miniature of the actual game board
+// Shares the same sqP() layout, realm zones, SVG snake/ladder paths,
+// sacred crown strip, geometry overlays, and animated token.
 // ═══════════════════════════════════════════════════════════════════════
 function OnboardingBoard({ mode }) {
-  const [animStep, setAnimStep] = useState(0);
-  const [tokenPos, setTokenPos] = useState(1);
-  const [highlightSq, setHighlightSq] = useState(null);
-  const [highlightRealm, setHighlightRealm] = useState(null); // 'bhuloka'|'antarloka'|'svargaloka'|null
-  const [snakeBiting, setSnakeBiting] = useState(false); // snake bite anim
-  const [ladderLifting, setLadderLifting] = useState(false);
+  const [tokenPos, setTokenPos]   = useState(1);
+  const [highlight, setHighlight] = useState(null); // sq number or null
+  const [realmPulse, setRealmPulse] = useState(null); // 'bhuloka'|'antarloka'|'svargaloka'
+  const [snakeActive, setSnakeActive] = useState(null); // snake head sq
+  const [ladderActive, setLadderActive] = useState(null); // ladder foot sq
+  const [snakeFlash, setSnakeFlash] = useState(false);
+  const [ladderFlash, setLadderFlash] = useState(false);
   const timerRef = useRef(null);
 
-  // Board geometry helpers
-  function sqPos(n) {
-    if (n < 1) n = 1; if (n > 100) n = 100;
-    const row = Math.floor((n - 1) / 10);
-    const col = row % 2 === 0 ? (n - 1) % 10 : 9 - ((n - 1) % 10);
-    return { row: 9 - row, col };
+  // Same cell layout as game board
+  function sqP(n) {
+    if(n<1)n=1;if(n>100)n=100;
+    const r=Math.floor((n-1)/10);
+    return{r:9-r,c:r%2===0?(n-1)%10:9-((n-1)%10)};
   }
-  function cellXY(n, cellSize) {
-    const { row, col } = sqPos(n);
-    return { x: col * cellSize + cellSize / 2, y: row * cellSize + cellSize / 2 };
+  function cellCenter(n,cs) {
+    const{r,c}=sqP(n);
+    return{x:c*cs+cs/2,y:r*cs+cs/2};
   }
+  const CS=28; // cell size px
+  const W=10*CS;
 
-  const CELL = 28; // px per cell
-  const W = 10 * CELL;
+  const realmOf=n=>n<=33?'bhuloka':n<=66?'antarloka':'svargaloka';
+  const RCOL={bhuloka:'#8a6030',antarloka:'#5a80a0',svargaloka:'#9070c0'};
 
-  // Snakes: head sq → tail sq
-  const SHEAD = Object.keys(SNAKES).map(Number);
-  // Ladders: foot sq → top sq
-  const LFOOT = Object.keys(LADDERS).map(Number);
+  const SHEAD=Object.keys(SNAKES).map(Number);
+  const LFOOT=Object.keys(LADDERS).map(Number);
+  const DLM=DLM_SQ;
 
-  useEffect(() => {
+  useEffect(()=>{
     clearInterval(timerRef.current);
+    clearTimeout(timerRef.current);
 
-    if (mode === 'intro') {
-      // Token walks from sq 1 upward with slight pauses at snakes/ladders
-      const path = [1, 3, 9, 12, 18, 22, 28, 31, 38, 42, 44, 53, 61, 65, 71, 82, 85, 89, 95, 97, 99];
-      let i = 0;
-      timerRef.current = setInterval(() => {
-        i = (i + 1) % path.length;
+    if(mode==='intro'){
+      const path=[1,3,9,18,22,28,31,37,44,47,53,56,61,65,71,74,82,85,89,95,97];
+      let i=0;
+      timerRef.current=setInterval(()=>{
+        i=(i+1)%path.length;
         setTokenPos(path[i]);
-        setHighlightSq(path[i]);
-      }, 700);
+        setHighlight(path[i]);
+      },700);
     }
-
-    if (mode === 'realms') {
-      const realms = ['bhuloka', 'antarloka', 'svargaloka', null];
-      let ri = 0;
-      setHighlightRealm(realms[0]);
-      timerRef.current = setInterval(() => {
-        ri = (ri + 1) % realms.length;
-        setHighlightRealm(realms[ri]);
-      }, 1800);
+    if(mode==='realms'){
+      const seq=['bhuloka','antarloka','svargaloka',null];
+      let ri=0;
+      setRealmPulse(seq[0]);
+      timerRef.current=setInterval(()=>{
+        ri=(ri+1)%seq.length;
+        setRealmPulse(seq[ri]);
+      },2000);
     }
-
-    if (mode === 'snakeLadder') {
-      // Sequence: token at ladder foot → climbs → token at snake head → bitten
-      const seq = [
-        () => { setTokenPos(9); setHighlightSq(9); setLadderLifting(false); setSnakeBiting(false); },
-        () => { setLadderLifting(true); setTokenPos(31); setHighlightSq(31); },
-        () => { setLadderLifting(false); setTokenPos(47); setHighlightSq(47); },
-        () => { setSnakeBiting(true); setTokenPos(29); setHighlightSq(29); },
-        () => { setSnakeBiting(false); },
+    if(mode==='snakeladder'){
+      const steps=[
+        ()=>{setTokenPos(9);setHighlight(9);setLadderActive(9);setLadderFlash(true);setSnakeActive(null);setSnakeFlash(false)},
+        ()=>{setTokenPos(31);setHighlight(31);setLadderFlash(false);setLadderActive(null)},
+        ()=>{setTokenPos(47);setHighlight(47);setSnakeActive(47);setSnakeFlash(true)},
+        ()=>{setTokenPos(29);setHighlight(29);setSnakeFlash(false);setSnakeActive(null)},
+        ()=>{setHighlight(null)},
       ];
-      let si = 0;
-      seq[0]();
-      timerRef.current = setInterval(() => {
-        si = (si + 1) % seq.length;
-        seq[si]();
-      }, 1600);
+      let si=0; steps[0]();
+      timerRef.current=setInterval(()=>{si=(si+1)%steps.length;steps[si]();},1800);
     }
+    return()=>{clearInterval(timerRef.current);clearTimeout(timerRef.current)};
+  },[mode]);
 
-    return () => clearInterval(timerRef.current);
-  }, [mode]);
+  const{x:tx,y:ty}=cellCenter(tokenPos,CS);
 
-  const realmOf = n => n <= 33 ? 'bhuloka' : n <= 66 ? 'antarloka' : 'svargaloka';
-  const REALM_COLORS = { bhuloka: '#8a6030', antarloka: '#5a80a0', svargaloka: '#9070c0' };
-  const REALM_GLOW   = { bhuloka: 'rgba(138,96,48,.4)', antarloka: 'rgba(90,128,160,.4)', svargaloka: 'rgba(144,112,192,.4)' };
+  // Build snake SVG path (sinuous curve)
+  const snakePath=(from,to)=>{
+    const f=cellCenter(from,CS),t=cellCenter(to,CS);
+    const dx=t.x-f.x,dy=t.y-f.y,len=Math.sqrt(dx*dx+dy*dy),nx=-dy/len,amp=len*.14;
+    let d=`M${f.x} ${f.y}`;
+    for(let i=1;i<=6;i++){
+      const p=i/6,s=i%2===0?1:-1;
+      d+=` Q${f.x+dx*((i-.5)/6)+nx*amp*s} ${f.y+dy*((i-.5)/6)+(dx/len)*amp*s} ${f.x+dx*p} ${f.y+dy*p}`;
+    }
+    return{d,fx:f.x,fy:f.y};
+  };
+  // Ladder SVG lines
+  const ladderLines=(from,to)=>{
+    const f=cellCenter(from,CS),t=cellCenter(to,CS);
+    return{x1f:f.x-2,y1f:f.y,x1t:t.x-2,y1t:t.y,x2f:f.x+2,y2f:f.y,x2t:t.x+2,y2t:t.y,fx:f.x,fy:f.y};
+  };
 
-  // Token pixel position
-  const { x: tx, y: ty } = cellXY(tokenPos > 100 ? 100 : tokenPos, CELL);
+  return(
+    <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:4}}>
+      {/* Sacred Crown strip — matches actual game */}
+      <div style={{
+        width:W,background:'linear-gradient(180deg,rgba(240,200,80,.1),rgba(20,16,10,.4))',
+        border:'1px solid rgba(240,200,80,.2)',borderBottom:'2px solid rgba(240,200,80,.2)',
+        borderRadius:'4px 4px 0 0',padding:'3px 2px 2px',position:'relative',overflow:'hidden',
+      }}>
+        <svg style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',opacity:.07}} viewBox="0 0 200 36" preserveAspectRatio="none">
+          {[0,25,50,75,100,125,150,175].map(x=><g key={x}>
+            <polygon points={`${x+12.5},3 ${x+25},33 ${x},33`} fill="none" stroke="#f0d050" strokeWidth=".5"/>
+            <polygon points={`${x+12.5},33 ${x+25},3 ${x},3`} fill="none" stroke="#f0d050" strokeWidth=".5"/>
+          </g>)}
+        </svg>
+        <div style={{fontSize:6,textAlign:'center',letterSpacing:3,color:'#f0d050',opacity:.55,marginBottom:2,fontFamily:"'Cinzel',serif"}}>अष्टांग मार्ग</div>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(8,1fr)',gap:1}}>
+          {SACRED_PATH.map((sq,si)=>(
+            <div key={sq.num} style={{
+              aspectRatio:'1',
+              background:sq.num===108?'radial-gradient(circle,rgba(240,200,80,.25),rgba(240,200,80,.04))':'radial-gradient(circle,rgba(240,200,80,.08),transparent)',
+              border:`0.5px solid ${sq.num===108?'rgba(240,200,80,.5)':'rgba(240,200,80,.15)'}`,
+              borderRadius:2,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
+              animation:`sacredGlow ${3+si*.3}s ease infinite`,
+            }}>
+              <span style={{fontSize:8}}>{sq.icon}</span>
+              <span style={{fontSize:5,color:'#f0d050',fontFamily:"'Noto Serif Devanagari',serif",lineHeight:1}}>{sq.skt}</span>
+            </div>
+          ))}
+        </div>
+      </div>
 
-  return (
-    <div style={{ position: 'relative', width: W, height: W, margin: '0 auto', flexShrink: 0 }}>
-      {/* Board cells */}
-      {Array.from({ length: 100 }, (_, i) => {
-        const n = i + 1;
-        const { row, col } = sqPos(n);
-        const realm = realmOf(n);
-        const rc = REALM_COLORS[realm];
-        const isSnakeHead = SHEAD.includes(n);
-        const isLadderFoot = LFOOT.includes(n);
-        const isHighlightRealm = highlightRealm && realmOf(n) === highlightRealm;
-        const isHighlightSq = highlightSq === n;
+      {/* Main 10×10 board */}
+      <div style={{
+        width:W,height:W,position:'relative',
+        background:"radial-gradient(ellipse at 30% 30%,rgba(60,45,20,.25),transparent 50%),radial-gradient(ellipse at 70% 70%,rgba(60,45,20,.2),transparent 50%),#1e1810",
+        border:'1.5px solid rgba(200,160,60,.3)',
+        boxShadow:'0 0 30px rgba(0,0,0,.5),inset 0 0 20px rgba(0,0,0,.3)',
+      }}>
+        {/* Realm divider lines */}
+        <div style={{position:'absolute',left:'2%',right:'2%',top:'33.3%',height:1,background:'linear-gradient(90deg,transparent,rgba(200,160,60,.2),transparent)',zIndex:8,pointerEvents:'none'}}/>
+        <div style={{position:'absolute',left:'2%',right:'2%',top:'66.6%',height:1,background:'linear-gradient(90deg,transparent,rgba(200,160,60,.2),transparent)',zIndex:8,pointerEvents:'none'}}/>
 
-        let bg = `${rc}18`;
-        if (isHighlightRealm) bg = `${rc}38`;
-        if (isSnakeHead) bg = 'rgba(200,60,40,.18)';
-        if (isLadderFoot) bg = 'rgba(80,180,80,.15)';
-        if (isHighlightSq) bg = `${rc}60`;
+        {/* Realm labels */}
+        {[{top:'5%',t:'स्वर्गलोक',c:'#9070c0'},{top:'38%',t:'अन्तर्लोक',c:'#5a80a0'},{top:'72%',t:'भूलोक',c:'#8a6030'}].map((r,i)=>(
+          <div key={i} style={{
+            position:'absolute',top:r.top,left:'50%',transform:'translateX(-50%)',
+            fontSize:6,letterSpacing:3,color:r.c,opacity:realmPulse?
+              (realmPulse===(['svargaloka','antarloka','bhuloka'][i])?0.7:0.15):0.2,
+            zIndex:9,pointerEvents:'none',whiteSpace:'nowrap',
+            transition:'opacity .5s',fontFamily:"'Cinzel',serif",
+          }}>{r.t}</div>
+        ))}
 
-        return (
-          <div key={n} style={{
-            position: 'absolute',
-            left: col * CELL, top: row * CELL,
-            width: CELL, height: CELL,
-            background: bg,
-            border: isHighlightRealm ? `0.5px solid ${rc}60` :
-                    isHighlightSq    ? `1px solid ${rc}` :
-                    isSnakeHead      ? '0.5px solid rgba(200,60,40,.35)' :
-                    isLadderFoot     ? '0.5px solid rgba(80,200,80,.35)' :
-                                       `0.5px solid ${rc}22`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 5, color: `${rc}70`, fontFamily: "'Cinzel',serif",
-            transition: 'background .4s, border-color .4s',
-            boxSizing: 'border-box',
-            boxShadow: isHighlightSq ? `0 0 8px ${REALM_GLOW[realm]}` : 'none',
-          }}>
-            {isSnakeHead ? <span style={{ fontSize: 8, opacity: .7 }}>𓆙</span> :
-             isLadderFoot ? <span style={{ fontSize: 8, opacity: .7 }}>↑</span> : n}
-          </div>
-        );
-      })}
+        {/* Sacred geometry overlay */}
+        <svg style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',zIndex:2,opacity:.1}} viewBox="0 0 100 100" preserveAspectRatio="none">
+          {[70,77,84,91].map(y=><line key={'bh'+y} x1="5" y1={y} x2="95" y2={y} stroke="#c0a060" strokeWidth=".4"/>)}
+          {[10,20,30,40,50,60,70,80,90].map(x=><line key={'bv'+x} x1={x} y1="67" x2={x} y2="100" stroke="#c0a060" strokeWidth=".3"/>)}
+          {[42,53].map(y=><g key={'al'+y}>
+            <polygon points={`50,${y-5} 58,${y+5} 42,${y+5}`} fill="none" stroke="#c0a060" strokeWidth=".4"/>
+            <polygon points={`50,${y+5} 42,${y-5} 58,${y-5}`} fill="none" stroke="#c0a060" strokeWidth=".4"/>
+          </g>)}
+          {[10,20].map(y=><g key={'sl'+y}>
+            <circle cx="50" cy={y} r="10" fill="none" stroke="#c0a060" strokeWidth=".3"/>
+            <circle cx="50" cy={y} r="5" fill="none" stroke="#c0a060" strokeWidth=".25"/>
+          </g>)}
+        </svg>
 
-      {/* SVG layer — snakes + ladders */}
-      <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }} viewBox={`0 0 ${W} ${W}`}>
-        <defs>
-          <filter id="obglow-s"><feGaussianBlur stdDeviation="1.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-          <filter id="obglow-l"><feGaussianBlur stdDeviation="1" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-        </defs>
+        {/* SVG layer: snakes + ladders + token */}
+        <svg style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',zIndex:6}} viewBox={`0 0 ${W} ${W}`}>
+          <defs>
+            <filter id="mbglow"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
 
-        {/* Ladders */}
-        {Object.entries(LADDERS).map(([from, { to }]) => {
-          const f = cellXY(+from, CELL), t = cellXY(+to, CELL);
-          const isActive = ladderLifting && (+from === 9);
-          return (
-            <g key={'l' + from} opacity={isActive ? 1 : 0.55} filter={isActive ? "url(#obglow-l)" : ""}>
-              <line x1={f.x - 2} y1={f.y} x2={t.x - 2} y2={t.y} stroke={isActive ? "#f0d050" : "rgba(200,160,60,.5)"} strokeWidth={isActive ? 1.5 : 0.8} />
-              <line x1={f.x + 2} y1={f.y} x2={t.x + 2} y2={t.y} stroke={isActive ? "#f0d050" : "rgba(200,160,60,.5)"} strokeWidth={isActive ? 1.5 : 0.8} />
-              {Array.from({ length: Math.max(3, Math.floor(Math.sqrt((t.x - f.x) ** 2 + (t.y - f.y) ** 2) / 8)) }).map((_, i, arr) => {
-                const tt = (i + 1) / (arr.length + 1);
-                return <line key={i} x1={f.x - 2 + (t.x - f.x) * tt} y1={f.y + (t.y - f.y) * tt} x2={f.x + 2 + (t.x - f.x) * tt} y2={f.y + (t.y - f.y) * tt} stroke={isActive ? "rgba(240,200,80,.8)" : "rgba(200,160,60,.3)"} strokeWidth={0.5} />;
-              })}
-            </g>
-          );
-        })}
+          {/* Ladders */}
+          {Object.entries(LADDERS).map(([from,{to}])=>{
+            const l=ladderLines(+from,+to);
+            const isAct=ladderActive===+from;
+            return(
+              <g key={'l'+from} opacity={isAct?1:0.5} filter={isAct?"url(#mbglow)":""}>
+                <line x1={l.x1f} y1={l.y1f} x2={l.x1t} y2={l.y1t} stroke={isAct?"#f0d050":"rgba(200,160,60,.55)"} strokeWidth={isAct?1.4:0.7}/>
+                <line x1={l.x2f} y1={l.y2f} x2={l.x2t} y2={l.y2t} stroke={isAct?"#f0d050":"rgba(200,160,60,.55)"} strokeWidth={isAct?1.4:0.7}/>
+                {Array.from({length:Math.max(2,Math.floor(Math.sqrt((l.x1t-l.x1f)**2+(l.y1t-l.y1f)**2)/10))}).map((_,i,arr)=>{
+                  const tt=(i+1)/(arr.length+1);
+                  return<line key={i} x1={l.x1f+(l.x1t-l.x1f)*tt} y1={l.y1f+(l.y1t-l.y1f)*tt} x2={l.x2f+(l.x2t-l.x2f)*tt} y2={l.y2f+(l.y2t-l.y2f)*tt} stroke={isAct?"rgba(240,200,80,.8)":"rgba(200,160,60,.3)"} strokeWidth={0.5}/>;
+                })}
+                {isAct&&ladderFlash&&[0,1,2].map(i=>(
+                  <circle key={i} cx={l.fx+(i-1)*3} r={2} fill="#f0d050" opacity={.7-i*.2}>
+                    <animate attributeName="cy" values={`${l.fy};${l.fy-12};${l.fy}`} dur=".8s" begin={`${i*.2}s`} repeatCount="indefinite"/>
+                  </circle>
+                ))}
+              </g>
+            );
+          })}
 
-        {/* Snakes */}
-        {Object.entries(SNAKES).map(([from, { to }]) => {
-          const f = cellXY(+from, CELL), t = cellXY(+to, CELL);
-          const dx = t.x - f.x, dy = t.y - f.y, len = Math.sqrt(dx * dx + dy * dy);
-          const nx = -dy / len, amp = len * 0.14;
-          let d = `M ${f.x} ${f.y}`;
-          for (let i = 1; i <= 6; i++) {
-            const p = i / 6, s = i % 2 === 0 ? 1 : -1;
-            d += ` Q ${f.x + dx * ((i - .5) / 6) + nx * amp * s} ${f.y + dy * ((i - .5) / 6) + (dx / len) * amp * s} ${f.x + dx * p} ${f.y + dy * p}`;
-          }
-          const isActive = snakeBiting && (+from === 47);
-          return (
-            <g key={'s' + from} opacity={isActive ? 1 : 0.45} filter={isActive ? "url(#obglow-s)" : ""}>
-              <path d={d} fill="none" stroke={isActive ? "#ff4020" : "rgba(160,60,30,.6)"} strokeWidth={isActive ? 2 : 1.2} strokeLinecap="round" />
-              <circle cx={f.x} cy={f.y} r={isActive ? 3 : 2} fill={isActive ? "#ff4020" : "rgba(180,60,30,.7)"} />
-            </g>
-          );
-        })}
+          {/* Snakes */}
+          {Object.entries(SNAKES).map(([from,{to}])=>{
+            const{d,fx,fy}=snakePath(+from,+to);
+            const isAct=snakeActive===+from;
+            return(
+              <g key={'s'+from} opacity={isAct?1:0.45} filter={isAct?"url(#mbglow)":""}>
+                <path d={d} fill="none" stroke={isAct?"#ff4020":"rgba(160,60,30,.6)"} strokeWidth={isAct?2:1} strokeLinecap="round"/>
+                <circle cx={fx} cy={fy} r={isAct?3:2} fill={isAct?"#ff4020":"rgba(180,60,30,.7)"}/>
+                {isAct&&snakeFlash&&(
+                  <circle cx={fx} cy={fy} r={10} fill="none" stroke="rgba(255,40,20,.5)" strokeWidth={1.5}>
+                    <animate attributeName="r" values="6;16;6" dur=".7s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="1;0;1" dur=".7s" repeatCount="indefinite"/>
+                  </circle>
+                )}
+              </g>
+            );
+          })}
 
-        {/* Moksha label — square 100 */}
-        {(() => { const { x, y } = cellXY(100, CELL); return <text x={x} y={y + 2} textAnchor="middle" fontSize="8" fill="#f0d050" opacity=".8">ॐ</text>; })()}
-
-        {/* Animated token */}
-        <g transform={`translate(${tx},${ty})`} style={{ transition: 'transform .5s cubic-bezier(.34,1.56,.64,1)' }}>
-          <circle r={7} fill="rgba(240,200,80,.15)" stroke="none">
-            <animate attributeName="r" values="7;9;7" dur="1.5s" repeatCount="indefinite" />
-          </circle>
-          <circle r={5} fill="#f0d050" />
-          <text textAnchor="middle" y={2} fontSize="6" fill="#1a1408">🔱</text>
-        </g>
-
-        {/* Snake bite effect */}
-        {snakeBiting && (() => { const { x, y } = cellXY(47, CELL); return (
-          <g>
-            <circle cx={x} cy={y} r={12} fill="none" stroke="rgba(255,40,20,.5)" strokeWidth={1.5}>
-              <animate attributeName="r" values="8;18;8" dur=".8s" repeatCount="indefinite" />
-              <animate attributeName="opacity" values="1;0;1" dur=".8s" repeatCount="indefinite" />
+          {/* Token */}
+          <g style={{transition:'transform .5s cubic-bezier(.34,1.56,.64,1)'}}
+             transform={`translate(${tx},${ty})`}>
+            <circle r={8} fill="rgba(240,200,80,.12)" stroke="none">
+              <animate attributeName="r" values="7;10;7" dur="2s" repeatCount="indefinite"/>
             </circle>
+            <circle r={5.5} fill="#f0d050" stroke="rgba(240,200,80,.6)" strokeWidth={1}/>
+            <text textAnchor="middle" y={2} fontSize="7" fill="#1a1408" fontWeight="bold">🔱</text>
           </g>
-        );})()}
+        </svg>
 
-        {/* Ladder lift effect */}
-        {ladderLifting && (() => { const { x, y } = cellXY(9, CELL); return (
-          <g>
-            {[0, 1, 2].map(i => <circle key={i} cx={x + (i - 1) * 4} cy={y - i * 6} r={2} fill="#f0d050" opacity={.7 - i * .2}>
-              <animate attributeName="cy" values={`${y};${y - 14};${y}`} dur=".9s" begin={`${i * 0.2}s`} repeatCount="indefinite" />
-            </circle>)}
-          </g>
-        );})()}
-      </svg>
+        {/* Cell grid */}
+        <div style={{display:'grid',gridTemplateColumns:'repeat(10,1fr)',position:'relative',zIndex:5,width:'100%',height:'100%',position:'absolute',inset:0}}>
+          {Array.from({length:100},(_,i)=>{
+            const num=i+1;
+            const sn=SNAKES[num],ld=LADDERS[num],dl=DLM.includes(num),mk=num===100;
+            const realm=realmOf(num);
+            const rc=RCOL[realm];
+            const isPulsed=realmPulse&&realmOf(num)===realmPulse;
+            let bg='transparent',bdr=`${rc}22`;
+            if(mk){bg='radial-gradient(circle,rgba(240,200,80,.2),transparent)';bdr='rgba(240,200,80,.5)'}
+            else if(sn){bg='radial-gradient(circle,rgba(180,60,20,.18),transparent)';bdr='rgba(180,60,20,.35)'}
+            else if(ld){bg='radial-gradient(circle,rgba(200,160,60,.14),transparent)';bdr='rgba(200,160,60,.25)'}
+            else if(dl){bg='radial-gradient(circle,rgba(120,80,180,.15),transparent)';bdr='rgba(140,100,200,.3)'}
+            if(isPulsed)bg=`${rc}30`;
+            return(
+              <div key={num} style={{
+                aspectRatio:'1',background:bg,
+                border:`0.5px solid ${bdr}`,
+                display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
+                position:'relative',transition:'background .4s',
+                boxShadow:highlight===num?`0 0 8px ${rc}80`:'none',
+              }}>
+                <span style={{position:'absolute',top:1,left:1.5,fontSize:5,color:`${rc}70`,fontFamily:"'Cinzel',serif"}}>{num}</span>
+                {mk&&<span style={{fontSize:9,animation:'mp 3s ease infinite',color:'#f0d050'}}>ॐ</span>}
+                {sn&&<span style={{fontSize:8,lineHeight:1}}>𓆙</span>}
+                {ld&&<span style={{fontSize:8,lineHeight:1}}>🪔</span>}
+                {dl&&!sn&&!ld&&<span style={{fontSize:7,lineHeight:1}}>⚖</span>}
+              </div>
+            );
+          })}
+        </div>
+      </div>
 
-      {/* Realm label overlay */}
-      {highlightRealm && (
-        <div style={{
-          position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
-          pointerEvents: 'none',
-        }}>
-          <div style={{
-            background: 'rgba(10,8,5,.82)', border: `1px solid ${REALM_COLORS[highlightRealm]}50`,
-            borderRadius: 6, padding: '4px 12px', fontSize: 9, letterSpacing: 3,
-            color: REALM_COLORS[highlightRealm], fontFamily: "'Cinzel',serif",
-            boxShadow: `0 0 20px ${REALM_GLOW[highlightRealm]}`,
-            animation: 'fadeIn .4s ease',
-          }}>
-            {{ bhuloka: '🌍 BHULOKA · 1–33', antarloka: '🌌 ANTARLOKA · 34–66', svargaloka: '✨ SVARGALOKA · 67–99' }[highlightRealm]}
-          </div>
-        </div>
-      )}
+      {/* Legend */}
+      <div style={{display:'flex',gap:14,fontSize:8,letterSpacing:2,color:'#5a4a30',marginTop:4,flexWrap:'wrap',justifyContent:'center'}}>
+        <span style={{color:'#e06030'}}>𓆙 NĀGA</span>
+        <span style={{color:'#f0d050'}}>🪔 VIRTUE</span>
+        <span style={{color:'#c8a0f0'}}>⚖ DHARMA</span>
+        <span style={{color:'#f0d050'}}>ॐ MOKSHA</span>
+      </div>
 
-      {/* Snake/ladder event labels */}
-      {snakeBiting && (
-        <div style={{ position: 'absolute', bottom: -24, left: 0, right: 0, textAlign: 'center', fontSize: 10, color: '#e06030', animation: 'fadeIn .3s ease', letterSpacing: 2 }}>
-          𓆙 SERPENT BITES · −18 squares · +2 Papa
-        </div>
-      )}
-      {ladderLifting && (
-        <div style={{ position: 'absolute', bottom: -24, left: 0, right: 0, textAlign: 'center', fontSize: 10, color: '#80c080', animation: 'fadeIn .3s ease', letterSpacing: 2 }}>
-          🪔 VIRTUE LIFTS · +22 squares · +1 Punya
-        </div>
-      )}
+      {/* Event label */}
+      {ladderFlash&&<div style={{fontSize:9,color:'#80c080',animation:'fadeIn .3s ease',letterSpacing:2,textAlign:'center'}}>🪔 VIRTUE LIFTS · +22 sq · +1 Punya</div>}
+      {snakeFlash&&<div style={{fontSize:9,color:'#e06030',animation:'fadeIn .3s ease',letterSpacing:2,textAlign:'center'}}>𓆙 SERPENT BITES · −18 sq · +2 Papa</div>}
     </div>
   );
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// DICE STAGE — 3D karma die + orbital graha die with animated effect card
+// DICE STAGE — 3D karma die + narration-synced graha showcase
+// Graha order matches the spoken narration exactly:
+//   Surya→Chandra→Mangal→Budh→Brihaspati→Shukra→Shani→Rahu→Ketu
+// Each graha is highlighted and held until narration moves to the next one.
 // ═══════════════════════════════════════════════════════════════════════
-function DiceStage({ GRAHA_INFO, chosenLang }) {
-  const [rolling, setRolling] = useState(false);
+
+// Approximate spoken duration (ms) per graha segment at slow narrator pace
+// Tuned to match the English narration script for story page 2.
+const GRAHA_NARRATE_TIMING = [
+  // [grahaIndex, holdDurationMs]
+  // Intro "Every turn ... living god..." — show karma die only (grahaIdx = -1)
+  [-1, 9000],   // 0–9s  : intro, no planet highlighted
+  [0,  5500],   // Surya — "+2 extra steps"
+  [1,  4500],   // Chandra — "purifies with Punya"
+  [2,  6500],   // Mangal — "battle fury, pushing rival back"
+  [3,  5000],   // Budh — "swaps your position"
+  [4,  4500],   // Brihaspati — "blesses everyone"
+  [5,  5000],   // Shukra — "divine Shield"
+  [6,  5500],   // Shani — "back 3 squares, Papa"
+  [7,  5000],   // Rahu — "steals from leader"
+  [8,  4500],   // Ketu — "strips all shields"
+];
+
+function DiceStage({ GRAHA_INFO, chosenLang, isNarrating, narrateStartedAt }) {
   const [karmaDie, setKarmaDie] = useState(4);
-  const [grahaIdx, setGrahaIdx] = useState(0);
+  const [grahaIdx, setGrahaIdx] = useState(-1); // -1 = intro (no planet)
   const [showEffect, setShowEffect] = useState(false);
-  const autoRef = useRef(null);
+  const [rolling, setRolling] = useState(false);
+  const [narrateStep, setNarrateStep] = useState(0);
+  const narrateRef = useRef(null);
+  const idleRef = useRef(null);
 
-  // Auto-cycle gracefully
-  useEffect(() => {
-    autoRef.current = setInterval(() => {
-      handleRoll();
-    }, 3200);
-    return () => clearInterval(autoRef.current);
-  }, []);
+  // ── Narration-sync mode ──────────────────────────────────────────────
+  const startNarrateSequence = () => {
+    let step = 0;
+    setGrahaIdx(GRAHA_NARRATE_TIMING[0][0]);
+    setShowEffect(GRAHA_NARRATE_TIMING[0][0] >= 0);
+    setNarrateStep(0);
 
+    const advance = () => {
+      step++;
+      if (step >= GRAHA_NARRATE_TIMING.length) {
+        // Loop from Surya again
+        step = 1;
+      }
+      const [gi, dur] = GRAHA_NARRATE_TIMING[step];
+      setGrahaIdx(gi);
+      setShowEffect(gi >= 0);
+      setNarrateStep(step);
+      // Roll karma die on each new planet
+      if (gi >= 0) setKarmaDie(Math.floor(Math.random() * 6) + 1);
+      narrateRef.current = setTimeout(advance, dur);
+    };
+
+    narrateRef.current = setTimeout(advance, GRAHA_NARRATE_TIMING[0][1]);
+  };
+
+  // ── Idle / manual mode ───────────────────────────────────────────────
   const handleRoll = () => {
-    clearInterval(autoRef.current);
+    if (isNarrating) return; // don't let manual roll interrupt narration sync
+    clearTimeout(idleRef.current);
     setRolling(true);
     setShowEffect(false);
     setTimeout(() => {
@@ -1409,123 +1712,1733 @@ function DiceStage({ GRAHA_INFO, chosenLang }) {
       setRolling(false);
       setTimeout(() => setShowEffect(true), 150);
     }, 440);
-    autoRef.current = setInterval(handleRoll, 3200);
+    // Resume idle after 6s
+    idleRef.current = setTimeout(() => {
+      idleRef.current = setInterval(() => {
+        setKarmaDie(Math.floor(Math.random() * 6) + 1);
+        setGrahaIdx(g => (g + 1) % 9);
+        setShowEffect(true);
+      }, 3500);
+    }, 6000);
   };
+
+  useEffect(() => {
+    clearTimeout(narrateRef.current);
+    clearInterval(narrateRef.current);
+    clearTimeout(idleRef.current);
+    clearInterval(idleRef.current);
+
+    if (isNarrating && narrateStartedAt) {
+      // Audio just started — begin graha sync sequence NOW
+      startNarrateSequence();
+    } else if (!isNarrating) {
+      // Idle auto-cycle every 3.5s
+      setGrahaIdx(0); setShowEffect(true);
+      idleRef.current = setInterval(() => {
+        setKarmaDie(Math.floor(Math.random() * 6) + 1);
+        setGrahaIdx(g => (g + 1) % 9);
+        setShowEffect(true);
+      }, 3500);
+    }
+    // if isNarrating but narrateStartedAt is null → loading, don't start yet
+
+    return () => {
+      clearTimeout(narrateRef.current);
+      clearInterval(narrateRef.current);
+      clearTimeout(idleRef.current);
+      clearInterval(idleRef.current);
+    };
+  }, [isNarrating, narrateStartedAt]);
 
   const DIE_DOTS = {
-    1: [[50, 50]],
-    2: [[25, 25], [75, 75]],
-    3: [[25, 25], [50, 50], [75, 75]],
-    4: [[25, 25], [75, 25], [25, 75], [75, 75]],
-    5: [[25, 25], [75, 25], [50, 50], [25, 75], [75, 75]],
-    6: [[25, 22], [75, 22], [25, 50], [75, 50], [25, 78], [75, 78]],
+    1: [[50,50]],
+    2: [[28,28],[72,72]],
+    3: [[28,28],[50,50],[72,72]],
+    4: [[28,28],[72,28],[28,72],[72,72]],
+    5: [[28,28],[72,28],[50,50],[28,72],[72,72]],
+    6: [[28,22],[72,22],[28,50],[72,50],[28,78],[72,78]],
   };
 
-  const g = GRAHA_INFO[grahaIdx];
-  const typeColor = g.type === 'blessing' ? '#80c080' : g.type === 'curse' ? '#e06030' : '#b0a0d0';
-  const typeBg    = g.type === 'blessing' ? 'rgba(80,200,80,.1)' : g.type === 'curse' ? 'rgba(200,80,40,.1)' : 'rgba(160,120,200,.1)';
-  const typeLabel = g.type === 'blessing' ? '✦ Blessing' : g.type === 'curse' ? '✦ Curse' : '✦ Chaos';
+  const g = grahaIdx >= 0 ? GRAHA_INFO[grahaIdx] : null;
+  const typeColor = !g ? '#8a7a50' : g.type==='blessing'?'#80c080':g.type==='curse'?'#e06030':'#b0a0d0';
+  const typeBg    = !g ? 'transparent' : g.type==='blessing'?'rgba(80,200,80,.1)':g.type==='curse'?'rgba(200,80,40,.1)':'rgba(160,120,200,.1)';
+  const typeLabel = !g ? '' : g.type==='blessing'?'✦ Blessing':g.type==='curse'?'✦ Curse':'✦ Chaos';
+  const grahaColor = g ? g.color : 'rgba(200,160,60,.2)';
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-      {/* Tap to roll label */}
-      <div style={{ fontSize: 9, letterSpacing: 4, color: '#5a4a30', cursor: 'pointer' }} onClick={handleRoll}>
-        TAP TO ROLL
+    <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:16,userSelect:'none'}}>
+      {/* Tap hint */}
+      <div style={{fontSize:9,letterSpacing:4,color:'#5a4a30',cursor:isNarrating?'default':'pointer'}}
+        onClick={handleRoll}>
+        {isNarrating ? 'NARRATION SYNC ACTIVE' : 'TAP TO ROLL'}
       </div>
 
       {/* Dice row */}
-      <div style={{ display: 'flex', gap: 24, alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{display:'flex',gap:24,alignItems:'center',justifyContent:'center'}}>
 
-        {/* ── KARMA DIE — SVG dot-face die ── */}
-        <div onClick={handleRoll} style={{ cursor: 'pointer', transition: 'transform .2s', transform: rolling ? 'scale(.88) rotate(18deg)' : 'scale(1)' }}>
-          <svg width={68} height={68} viewBox="0 0 100 100" style={{ filter: 'drop-shadow(0 4px 12px rgba(240,200,80,.25))' }}>
+        {/* ── Karma Die ── */}
+        <div onClick={handleRoll} style={{cursor:isNarrating?'default':'pointer',
+          transition:'transform .2s',transform:rolling?'scale(.88) rotate(18deg)':'scale(1)'}}>
+          <svg width={72} height={72} viewBox="0 0 100 100"
+            style={{filter:'drop-shadow(0 4px 16px rgba(240,200,80,.2))'}}>
             <defs>
-              <linearGradient id="dieFace" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="rgba(40,32,16,.95)" />
-                <stop offset="100%" stopColor="rgba(24,18,8,.98)" />
+              <linearGradient id="df2" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="rgba(42,34,16,.97)"/>
+                <stop offset="100%" stopColor="rgba(22,16,6,.99)"/>
               </linearGradient>
             </defs>
-            {/* Die body */}
-            <rect x={4} y={4} width={92} height={92} rx={18} fill="url(#dieFace)" stroke="rgba(240,200,80,.35)" strokeWidth={2} />
-            {/* Top shine */}
-            <rect x={10} y={6} width={80} height={18} rx={8} fill="rgba(255,255,255,.04)" />
-            {/* Dots */}
-            {(DIE_DOTS[karmaDie] || []).map(([cx, cy], i) => (
-              <circle key={i} cx={cx} cy={cy} r={7}
-                fill="#f0d050"
-                style={{ filter: 'drop-shadow(0 0 4px rgba(240,200,80,.6))' }}
-              />
+            <rect x={3} y={3} width={94} height={94} rx={18} fill="url(#df2)"
+              stroke="rgba(240,200,80,.35)" strokeWidth={2}/>
+            <rect x={9} y={5} width={82} height={18} rx={8} fill="rgba(255,255,255,.04)"/>
+            {(DIE_DOTS[karmaDie]||[]).map(([cx,cy],i)=>(
+              <circle key={i} cx={cx} cy={cy} r={7.5} fill="#f0d050"
+                style={{filter:'drop-shadow(0 0 5px rgba(240,200,80,.7))'}}/>
             ))}
           </svg>
-          <div style={{ textAlign: 'center', fontSize: 9, color: 'rgba(240,200,80,.5)', letterSpacing: 2, marginTop: 4 }}>KARMA</div>
+          <div style={{textAlign:'center',fontSize:8,color:'rgba(240,200,80,.45)',letterSpacing:2,marginTop:4}}>KARMA</div>
         </div>
 
-        {/* Plus sign */}
-        <div style={{ fontSize: 20, color: 'rgba(200,160,60,.2)', fontWeight: 700, userSelect: 'none' }}>+</div>
+        {/* Plus */}
+        <div style={{fontSize:20,color:'rgba(200,160,60,.18)',fontWeight:700}}>+</div>
 
-        {/* ── GRAHA DIE — orbital planet ── */}
-        <div onClick={handleRoll} style={{ cursor: 'pointer', transition: 'transform .2s', transform: rolling ? 'scale(.88) rotate(-18deg)' : 'scale(1)' }}>
+        {/* ── Graha Die ── */}
+        <div onClick={handleRoll} style={{cursor:isNarrating?'default':'pointer',
+          transition:'transform .2s',transform:rolling?'scale(.88) rotate(-18deg)':'scale(1)'}}>
           <div style={{
-            width: 68, height: 68,
-            background: `radial-gradient(circle at 35% 35%, ${g.color}30, rgba(10,8,5,.95))`,
-            border: `2px solid ${g.color}50`,
-            borderRadius: 16,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 32,
-            boxShadow: `0 0 20px ${g.color}30, inset 0 0 20px rgba(0,0,0,.4)`,
-            transition: 'all .4s',
-            position: 'relative', overflow: 'hidden',
+            width:72,height:72,
+            background: g
+              ? `radial-gradient(circle at 35% 35%,${g.color}35,rgba(10,8,5,.96))`
+              : 'radial-gradient(circle at 35% 35%,rgba(200,160,60,.08),rgba(10,8,5,.96))',
+            border:`2.5px solid ${grahaColor}60`,
+            borderRadius:16,
+            display:'flex',alignItems:'center',justifyContent:'center',
+            fontSize:34,
+            boxShadow: g
+              ? `0 0 28px ${g.color}35,inset 0 0 24px rgba(0,0,0,.5),0 0 0 1px ${g.color}20`
+              : 'inset 0 0 20px rgba(0,0,0,.4)',
+            transition:'all .5s cubic-bezier(.4,0,.2,1)',
+            position:'relative',overflow:'hidden',
           }}>
-            {/* Orbit ring */}
-            <div style={{
-              position: 'absolute', inset: -4,
-              border: `1px solid ${g.color}25`,
-              borderRadius: '50%',
-              animation: 'cymaticRotate 4s linear infinite',
-            }} />
-            <span style={{ position: 'relative', zIndex: 1, transition: 'all .3s', transform: rolling ? 'scale(.5)' : 'scale(1)' }}>{g.icon}</span>
+            {/* Spinning orbit ring — only when a planet is active */}
+            {g && <div style={{
+              position:'absolute',inset:-6,
+              border:`1.5px solid ${g.color}30`,
+              borderRadius:'50%',
+              animation:'cymaticRotate 3s linear infinite',
+            }}/>}
+            {/* Planet icon with entrance anim */}
+            <span key={grahaIdx} style={{
+              position:'relative',zIndex:1,
+              animation: g ? 'fadeIn .4s ease' : 'none',
+              fontSize: g ? 34 : 20,
+            }}>
+              {g ? g.icon : '🌌'}
+            </span>
           </div>
-          <div style={{ textAlign: 'center', fontSize: 9, color: `${g.color}80`, letterSpacing: 2, marginTop: 4 }}>GRAHA</div>
+          <div style={{textAlign:'center',fontSize:8,color:`${grahaColor}80`,letterSpacing:2,marginTop:4,transition:'color .5s'}}>
+            {g ? g.skt : 'GRAHA'}
+          </div>
         </div>
       </div>
+
+      {/* ── Planet 9-dot selector (only in idle) ── */}
+      {!isNarrating && (
+        <div style={{display:'flex',justifyContent:'center',gap:5,flexWrap:'wrap',maxWidth:280}}>
+          {GRAHA_INFO.map((gi,i)=>(
+            <div key={i}
+              onClick={()=>{setGrahaIdx(i);setShowEffect(true);setKarmaDie(Math.floor(Math.random()*6)+1)}}
+              title={gi.name}
+              style={{
+                width:i===grahaIdx?28:18,height:18,borderRadius:9,
+                background:i===grahaIdx?gi.color:`${gi.color}28`,
+                cursor:'pointer',transition:'all .3s',
+                display:'flex',alignItems:'center',justifyContent:'center',
+                fontSize:9,
+              }}>
+              {i===grahaIdx?gi.icon:''}
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* ── Effect card ── */}
       <div style={{
-        width: '100%', maxWidth: 300,
-        background: showEffect ? `${g.color}0d` : 'transparent',
-        border: showEffect ? `1px solid ${g.color}35` : '1px solid transparent',
-        borderRadius: 10,
-        padding: showEffect ? '14px 16px' : '0 16px',
-        transition: 'all .5s cubic-bezier(.34,1.56,.64,1)',
-        opacity: showEffect ? 1 : 0,
-        transform: showEffect ? 'translateY(0)' : 'translateY(8px)',
-        textAlign: 'center',
-        boxShadow: showEffect ? `0 0 24px ${g.color}18` : 'none',
-        overflow: 'hidden',
-        maxHeight: showEffect ? 120 : 0,
+        width:'100%',maxWidth:300,
+        background: showEffect && g ? `${g.color}0e` : 'transparent',
+        border: showEffect && g ? `1px solid ${g.color}40` : '1px solid transparent',
+        borderRadius:12,
+        padding: showEffect && g ? '14px 16px' : '0 16px',
+        transition:'all .55s cubic-bezier(.34,1.56,.64,1)',
+        opacity: showEffect && g ? 1 : 0,
+        transform: showEffect && g ? 'translateY(0) scale(1)' : 'translateY(10px) scale(.97)',
+        textAlign:'center',
+        boxShadow: showEffect && g ? `0 0 32px ${g.color}15` : 'none',
+        overflow:'hidden',
+        maxHeight: showEffect && g ? 140 : 0,
       }}>
-        {/* Planet name */}
-        <div style={{ fontSize: 13, fontFamily: "'Noto Serif Devanagari',serif", color: g.color, fontWeight: 700 }}>
-          {g.skt} &nbsp;·&nbsp; <span style={{ fontFamily: "'Cinzel',serif", fontSize: 11 }}>{g.name}</span>
+        {g && <>
+          <div style={{fontSize:13,fontFamily:"'Noto Serif Devanagari',serif",color:g.color,fontWeight:700}}>
+            {g.skt} &nbsp;·&nbsp;
+            <span style={{fontFamily:"'Cinzel',serif",fontSize:11,opacity:.85}}>
+              {g.name.replace(' — ','').replace(g.skt,'').trim()}
+            </span>
+          </div>
+          <div style={{fontSize:11,color:'#c0b080',marginTop:6,lineHeight:1.7}}>{g.effect}</div>
+          <div style={{marginTop:8}}>
+            <span style={{fontSize:9,padding:'2px 10px',borderRadius:10,background:typeBg,color:typeColor,border:`1px solid ${typeColor}30`}}>
+              {typeLabel}
+            </span>
+          </div>
+        </>}
+      </div>
+
+      {/* Move summary */}
+      {showEffect && g && (
+        <div style={{fontSize:10,color:'rgba(240,200,80,.35)',letterSpacing:1,animation:'fadeIn .5s ease',textAlign:'center'}}>
+          Roll <strong style={{color:'#f0d050'}}>{karmaDie}</strong> square{karmaDie!==1?'s':''} &nbsp;+&nbsp; {g.icon} {g.name.split('—')[0].trim()} effect
         </div>
-        {/* Effect text */}
-        <div style={{ fontSize: 11, color: '#c0b080', marginTop: 6, lineHeight: 1.6 }}>{g.effect}</div>
-        {/* Type badge */}
-        <div style={{ marginTop: 8 }}>
-          <span style={{ fontSize: 9, padding: '2px 10px', borderRadius: 10, background: typeBg, color: typeColor, border: `1px solid ${typeColor}35` }}>
-            {typeLabel}
-          </span>
+      )}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// DHARMA STAGE — cinematic moral choice experience
+// Shows: the dilemma → player chooses → consequence plays out visually
+// The balance scale animates, token moves, karma shifts in real time
+// ═══════════════════════════════════════════════════════════════════════
+function DharmaStage() {
+  const CARDS=[
+    {skt:"कर्णकवच",en:"Karna's Armour",era:"Mahabharata",
+     story:"The god Indra disguises as a beggar. He begs Karna for his divine armour — the one that makes him invincible. Karna knew it was Indra. Knew it meant death. He gave it away with a smile.",
+     punya:{l:"🙏 Give the armour",sub:"Honour above survival",karma:4,sq:-5,color:"#80c080"},
+     papa:{l:"💀 Keep the armour",sub:"Survival above honour",karma:3,sq:8,color:"#e06030"}},
+    {skt:"द्रौपदीवस्त्र",en:"Draupadi's Shame",era:"Mahabharata",
+     story:"In the royal court, Dushasana drags Draupadi by her hair. Bhishma, Drona, every elder — silent. Speaking costs you exile. Silence costs your soul.",
+     punya:{l:"🙏 Speak against the king",sub:"Exile for righteousness",karma:4,sq:-8,color:"#80c080"},
+     papa:{l:"💀 Stay silent",sub:"Complicit in adharma",karma:3,sq:6,color:"#e06030"}},
+    {skt:"कर्मचारी",en:"The Whistleblower",era:"Modern Life",
+     story:"Your company dumps toxins in a river. Children are sick. You have proof. If you leak it — you lose your job, your parents lose support. If you stay silent — the poisoning continues.",
+     punya:{l:"🙏 Blow the whistle",sub:"Truth at personal cost",karma:5,sq:0,color:"#80c080"},
+     papa:{l:"💀 Stay silent",sub:"Protect your family",karma:4,sq:10,color:"#e06030"}},
+    {skt:"एकलव्य",en:"Eklavya's Thumb",era:"Mahabharata",
+     story:"Dronacharya demands your right thumb as payment for the archery you taught yourself. Giving it destroys your greatest skill. But to refuse is to deny your guru.",
+     punya:{l:"🙏 Give the thumb",sub:"Devotion above all",karma:4,sq:-5,color:"#80c080"},
+     papa:{l:"💀 Refuse the guru",sub:"Keep your power",karma:3,sq:7,color:"#e06030"}},
+  ];
+
+  const [cardIdx,setCardIdx]=useState(0);
+  const [phase,setPhase]=useState('reveal'); // reveal → question → chosen → consequence → next
+  const [chosen,setChosen]=useState(null);
+  const [tokenSq,setTokenSq]=useState(28);
+  const [punya,setPunya]=useState(8);
+  const [papa,setPapa]=useState(4);
+  const [shake,setShake]=useState(false);
+  const [glowSide,setGlowSide]=useState(null); // 'punya'|'papa'
+  const timerRef=useRef(null);
+
+  const card=CARDS[cardIdx];
+
+  // Auto-reveal on mount and card change
+  useEffect(()=>{
+    setPhase('reveal');
+    const t=setTimeout(()=>setPhase('question'),1200);
+    return()=>clearTimeout(t);
+  },[cardIdx]);
+
+  const choose=(side)=>{
+    if(phase!=='question')return;
+    const c=card[side];
+    setChosen(side);
+    setGlowSide(side);
+    setPhase('chosen');
+
+    // Animate consequence
+    setTimeout(()=>{
+      setPhase('consequence');
+      setShake(true);
+      setTimeout(()=>setShake(false),600);
+      setTokenSq(sq=>Math.max(1,Math.min(99,sq+c.sq)));
+      if(side==='punya') setPunya(p=>Math.min(30,p+c.karma));
+      else setPapa(p=>Math.min(30,p+c.karma));
+    },800);
+
+    // Auto-advance to next card
+    setTimeout(()=>{
+      setChosen(null);setGlowSide(null);
+      setCardIdx(i=>(i+1)%CARDS.length);
+    },3800);
+
+    return()=>clearTimeout(timerRef.current);
+  };
+
+  const total=Math.max(punya+papa,1);
+  const punyaPct=(punya/total)*100;
+  const isPure=punya>=papa;
+  const realmOf=n=>n<=33?{name:'भूलोक',c:'#8a6030'}:n<=66?{name:'अन्तर्लोक',c:'#5a80a0'}:{name:'स्वर्गलोक',c:'#9070c0'};
+  const realm=realmOf(tokenSq);
+
+  return(
+    <div style={{display:'flex',flexDirection:'column',gap:14,width:'100%'}}>
+
+      {/* ── TOP: Karma scale + token position ── */}
+      <div style={{
+        display:'grid',gridTemplateColumns:'1fr auto 1fr',gap:10,
+        background:'rgba(8,6,3,.7)',border:'1px solid rgba(200,160,60,.1)',
+        borderRadius:12,padding:'14px 16px',alignItems:'center',
+      }}>
+        {/* Punya side */}
+        <div style={{textAlign:'center'}}>
+          <div style={{fontSize:9,letterSpacing:3,color:'#f0d050',marginBottom:6,fontFamily:"'Cinzel',serif"}}>पुण्य</div>
+          <div style={{fontSize:28,fontWeight:900,color:'#f0d050',fontFamily:"'Cinzel',serif",
+            transition:'all .8s cubic-bezier(.34,1.56,.64,1)',
+            textShadow:glowSide==='punya'?'0 0 20px #f0d050,0 0 40px rgba(240,200,80,.6)':'none'}}>{punya}</div>
+          <div style={{height:4,background:'rgba(200,160,60,.1)',borderRadius:2,overflow:'hidden',marginTop:6}}>
+            <div style={{height:'100%',background:'linear-gradient(90deg,#f0d050,#80c080)',borderRadius:2,width:`${punyaPct}%`,transition:'width .8s cubic-bezier(.4,0,.2,1)'}}/>
+          </div>
+        </div>
+
+        {/* Balance scale SVG */}
+        <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:4}}>
+          <svg width={48} height={56} viewBox="0 0 48 56">
+            {/* Fulcrum */}
+            <line x1={24} y1={8} x2={24} y2={48} stroke="rgba(200,160,60,.4)" strokeWidth={1.5}/>
+            <polygon points="18,48 30,48 24,52" fill="rgba(200,160,60,.35)"/>
+            {/* Beam — tilts based on balance */}
+            <line
+              x1={4} y1={isPure?12:16} x2={44} y2={isPure?16:12}
+              stroke={isPure?"#80c080":"#e06030"} strokeWidth={2}
+              style={{transition:'all .8s cubic-bezier(.4,0,.2,1)'}}/>
+            {/* Left pan (punya) */}
+            <ellipse cx={4} cy={isPure?16:20} rx={6} ry={2} fill="rgba(80,200,80,.25)" stroke="#80c080" strokeWidth={.8}
+              style={{transition:'all .8s'}}/>
+            {/* Right pan (papa) */}
+            <ellipse cx={44} cy={isPure?20:16} rx={6} ry={2} fill="rgba(200,80,60,.2)" stroke="#e06030" strokeWidth={.8}
+              style={{transition:'all .8s'}}/>
+          </svg>
+          <div style={{fontSize:8,letterSpacing:2,color:isPure?'#80c080':'#e06030',textAlign:'center',transition:'color .5s'}}>
+            {isPure?'PURE':'IMPURE'}
+          </div>
+        </div>
+
+        {/* Papa side */}
+        <div style={{textAlign:'center'}}>
+          <div style={{fontSize:9,letterSpacing:3,color:'#e06030',marginBottom:6,fontFamily:"'Cinzel',serif"}}>पाप</div>
+          <div style={{fontSize:28,fontWeight:900,color:'#e06030',fontFamily:"'Cinzel',serif",
+            transition:'all .8s cubic-bezier(.34,1.56,.64,1)',
+            textShadow:glowSide==='papa'?'0 0 20px #e06030,0 0 40px rgba(200,80,40,.6)':'none'}}>{papa}</div>
+          <div style={{height:4,background:'rgba(200,80,60,.1)',borderRadius:2,overflow:'hidden',marginTop:6}}>
+            <div style={{height:'100%',background:'linear-gradient(90deg,#e06030,#a03020)',borderRadius:2,width:`${100-punyaPct}%`,transition:'width .8s cubic-bezier(.4,0,.2,1)'}}/>
+          </div>
         </div>
       </div>
 
-      {/* Karma Die result */}
-      <div style={{ fontSize: 10, color: 'rgba(240,200,80,.4)', letterSpacing: 2, opacity: showEffect ? 1 : 0, transition: 'opacity .5s' }}>
-        Move <strong style={{ color: '#f0d050' }}>{karmaDie}</strong> squares + {g.name.split('—')[0].trim()} effect
+      {/* Token position strip */}
+      <div style={{display:'flex',alignItems:'center',gap:10,padding:'6px 14px',background:'rgba(8,6,3,.5)',border:'1px solid rgba(200,160,60,.08)',borderRadius:8}}>
+        {/* Mini progress bar */}
+        <div style={{flex:1,height:6,background:'rgba(200,160,60,.08)',borderRadius:3,overflow:'visible',position:'relative'}}>
+          <div style={{
+            position:'absolute',left:0,top:0,height:'100%',
+            width:`${(tokenSq/100)*100}%`,
+            background:`linear-gradient(90deg,${realm.c}60,${realm.c})`,
+            borderRadius:3,transition:'width 1s cubic-bezier(.34,1.56,.64,1)',
+          }}/>
+          {/* Token dot */}
+          <div style={{
+            position:'absolute',top:'50%',transform:'translate(-50%,-50%)',
+            left:`${(tokenSq/100)*100}%`,
+            width:14,height:14,borderRadius:'50%',
+            background:`radial-gradient(circle at 35% 30%,${realm.c},${realm.c}50)`,
+            border:`2px solid ${realm.c}`,
+            boxShadow:`0 0 8px ${realm.c}80`,
+            display:'flex',alignItems:'center',justifyContent:'center',
+            fontSize:7,transition:'left 1s cubic-bezier(.34,1.56,.64,1)',
+            animation:shake?'diceRoll .5s ease':'none',
+          }}>🔱</div>
+        </div>
+        <div style={{fontSize:9,color:realm.c,letterSpacing:2,whiteSpace:'nowrap',minWidth:80,textAlign:'right',transition:'color .5s'}}>
+          Sq {tokenSq} · {realm.name}
+        </div>
+      </div>
+
+      {/* ── DILEMMA CARD ── */}
+      <div style={{
+        background:'rgba(160,200,224,.04)',
+        border:`1.5px solid ${phase==='reveal'?'rgba(160,200,224,.1)':'rgba(160,200,224,.22)'}`,
+        borderRadius:12,overflow:'hidden',
+        transition:'all .5s',
+        boxShadow:phase==='question'?'0 0 40px rgba(160,200,224,.06)':'none',
+      }}>
+        {/* Card header */}
+        <div style={{padding:'14px 16px 10px',borderBottom:'1px solid rgba(160,200,224,.08)',
+          background:'rgba(160,200,224,.03)'}}>
+          <div style={{display:'flex',gap:10,alignItems:'center',marginBottom:6}}>
+            <span style={{fontSize:20}}>⚖</span>
+            <div style={{flex:1}}>
+              <div style={{fontSize:13,fontFamily:"'Noto Serif Devanagari',serif",color:'#a0c8e0',fontWeight:700}}>{card.skt}</div>
+              <div style={{fontSize:10,color:'#5a7080',letterSpacing:2}}>{card.en} · {card.era}</div>
+            </div>
+            <div style={{fontSize:8,padding:'2px 8px',borderRadius:10,background:'rgba(160,200,224,.06)',
+              border:'1px solid rgba(160,200,224,.12)',color:'#5a7080',letterSpacing:2}}>
+              {cardIdx+1}/{CARDS.length}
+            </div>
+          </div>
+          <div style={{
+            fontSize:11,color:'#c0b080',lineHeight:1.8,fontStyle:'italic',
+            opacity:phase==='reveal'?0:1,transition:'opacity .6s',
+          }}>
+            {card.story}
+          </div>
+        </div>
+
+        {/* Choices */}
+        <div style={{padding:'12px 14px',display:'flex',gap:10,flexWrap:'wrap'}}>
+          {/* Punya choice */}
+          <button
+            disabled={phase!=='question'}
+            onClick={()=>choose('punya')}
+            style={{
+              flex:'1 1 140px',
+              background:chosen==='punya'?'rgba(80,200,80,.15)':phase==='consequence'&&chosen!=='punya'?'rgba(10,8,5,.3)':'rgba(80,200,80,.05)',
+              border:`1.5px solid ${chosen==='punya'?'rgba(80,200,80,.5)':'rgba(80,200,80,.18)'}`,
+              borderRadius:10,padding:'12px 12px',cursor:phase==='question'?'pointer':'default',
+              textAlign:'center',transition:'all .4s cubic-bezier(.34,1.56,.64,1)',
+              transform:chosen==='punya'?'scale(1.03)':'scale(1)',
+              opacity:phase==='consequence'&&chosen!=='punya'?0.35:1,
+              boxShadow:chosen==='punya'?'0 0 20px rgba(80,200,80,.15)':'none',
+            }}
+            onMouseEnter={e=>{if(phase==='question'){e.currentTarget.style.background='rgba(80,200,80,.12)';e.currentTarget.style.transform='translateY(-2px) scale(1.01)'}}}
+            onMouseLeave={e=>{if(phase==='question'){e.currentTarget.style.background='rgba(80,200,80,.05)';e.currentTarget.style.transform='scale(1)'}}}
+          >
+            <div style={{fontSize:11,color:'#80c080',fontWeight:700,fontFamily:"'Cinzel',serif",marginBottom:4}}>{card.punya.l}</div>
+            <div style={{fontSize:9,color:'#5a8060',letterSpacing:1}}>{card.punya.sub}</div>
+            <div style={{fontSize:9,color:'rgba(80,200,80,.6)',marginTop:6,letterSpacing:1}}>+{card.punya.karma} Punya · {card.punya.sq<0?`Back ${Math.abs(card.punya.sq)}`:'Skip'} sq</div>
+          </button>
+
+          {/* Papa choice */}
+          <button
+            disabled={phase!=='question'}
+            onClick={()=>choose('papa')}
+            style={{
+              flex:'1 1 140px',
+              background:chosen==='papa'?'rgba(200,80,40,.15)':phase==='consequence'&&chosen!=='papa'?'rgba(10,8,5,.3)':'rgba(200,80,40,.05)',
+              border:`1.5px solid ${chosen==='papa'?'rgba(200,80,40,.5)':'rgba(200,80,40,.18)'}`,
+              borderRadius:10,padding:'12px 12px',cursor:phase==='question'?'pointer':'default',
+              textAlign:'center',transition:'all .4s cubic-bezier(.34,1.56,.64,1)',
+              transform:chosen==='papa'?'scale(1.03)':'scale(1)',
+              opacity:phase==='consequence'&&chosen!=='papa'?0.35:1,
+              boxShadow:chosen==='papa'?'0 0 20px rgba(200,80,40,.15)':'none',
+            }}
+            onMouseEnter={e=>{if(phase==='question'){e.currentTarget.style.background='rgba(200,80,40,.12)';e.currentTarget.style.transform='translateY(-2px) scale(1.01)'}}}
+            onMouseLeave={e=>{if(phase==='question'){e.currentTarget.style.background='rgba(200,80,40,.05)';e.currentTarget.style.transform='scale(1)'}}}
+          >
+            <div style={{fontSize:11,color:'#e06030',fontWeight:700,fontFamily:"'Cinzel',serif",marginBottom:4}}>{card.papa.l}</div>
+            <div style={{fontSize:9,color:'#80503a',letterSpacing:1}}>{card.papa.sub}</div>
+            <div style={{fontSize:9,color:'rgba(200,80,40,.6)',marginTop:6,letterSpacing:1}}>+{card.papa.karma} Papa · Advance {card.papa.sq} sq</div>
+          </button>
+        </div>
+
+        {/* Consequence reveal */}
+        {phase==='consequence'&&chosen&&(
+          <div style={{
+            margin:'0 14px 14px',padding:'12px',
+            background:chosen==='punya'?'rgba(80,200,80,.06)':'rgba(200,80,40,.06)',
+            border:`1px solid ${chosen==='punya'?'rgba(80,200,80,.2)':'rgba(200,80,40,.2)'}`,
+            borderRadius:8,animation:'fadeIn .4s ease',textAlign:'center',
+          }}>
+            <div style={{fontSize:16,marginBottom:4}}>{chosen==='punya'?'🙏':'💀'}</div>
+            <div style={{fontSize:12,color:chosen==='punya'?'#80c080':'#e06030',fontWeight:700,letterSpacing:1}}>
+              {chosen==='punya'?`+${card.punya.karma} Punya · ${card.punya.sq<0?`Back ${Math.abs(card.punya.sq)} squares`:'Turn skipped'}`:`+${card.papa.karma} Papa · Advance ${card.papa.sq} squares`}
+            </div>
+            <div style={{fontSize:9,color:'#5a4a30',marginTop:4,letterSpacing:2}}>
+              {chosen==='punya'?'DHARMIC PATH CHOSEN':'ADHARMIC PATH CHOSEN'}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Moksha gate status */}
+      <div style={{
+        textAlign:'center',padding:'8px',
+        background:isPure?'rgba(80,200,80,.04)':'rgba(200,80,40,.04)',
+        border:`1px solid ${isPure?'rgba(80,200,80,.12)':'rgba(200,80,40,.12)'}`,
+        borderRadius:8,transition:'all .5s',
+      }}>
+        <div style={{fontSize:10,color:isPure?'#80c080':'#e06030',letterSpacing:2,fontFamily:"'Cinzel',serif"}}>
+          {isPure?`✓ Moksha Gate OPEN — Punya (${punya}) ≥ Papa (${papa})`:`✗ Moksha Gate CLOSED — Papa (${papa}) > Punya (${punya})`}
+        </div>
+        {!isPure&&<div style={{fontSize:9,color:'#5a4a30',marginTop:3,letterSpacing:1}}>If you reach sq 108 like this, Yama casts you back to square 67</div>}
+      </div>
+
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// SACRED PATH STAGE — cinematic Ashtanga gate ascension
+// ═══════════════════════════════════════════════════════════════════════
+function SacredPathStage({SACRED_PATH}) {
+  const [active,setActive]=useState(0);
+  const [entering,setEntering]=useState(false);
+  const timerRef=useRef(null);
+
+  useEffect(()=>{
+    timerRef.current=setInterval(()=>{
+      setEntering(true);
+      setTimeout(()=>{
+        setActive(a=>(a+1)%8);
+        setEntering(false);
+      },300);
+    },2600);
+    return()=>clearInterval(timerRef.current);
+  },[]);
+
+  const sq=SACRED_PATH[active];
+  const isMoksha=sq.num===108;
+  const STEP_COLORS=['#a0c8e0','#f0b840','#80c0a0','#c0a0e0','#e0c080','#d0a0c0','#90c0b0','#f0d050'];
+  const sc=STEP_COLORS[active];
+
+  const RIDGE_DESCS=[
+    "The first gate. Restrain the senses. Still the mind. Without Yama, no gate opens.",
+    "Daily practice. Sacred rituals. Without Niyama, discipline dissolves.",
+    "The body as temple. Perfect stillness. Without Asana, the mind cannot settle.",
+    "Breath is the bridge. Expand the life-force. Pranayama opens every other gate.",
+    "Withdraw the senses. Turn the gaze inward. Without Pratyahara, distractions rule.",
+    "Single-pointed focus. The laser of consciousness. Dharana burns through illusion.",
+    "The stream flows unbroken. Thought dissolves into awareness. Dhyana is the door.",
+    "The wheel of Samsara stops. You are free. Moksha — the only goal.",
+  ];
+
+  return(
+    <div style={{display:'flex',flexDirection:'column',gap:12,width:'100%'}}>
+
+      {/* Gate path — horizontal scroll of 8 gates */}
+      <div style={{position:'relative',padding:'8px 4px 4px'}}>
+        {/* Connecting path line */}
+        <div style={{
+          position:'absolute',top:'50%',left:16,right:16,height:2,
+          background:'linear-gradient(90deg,rgba(200,160,60,.08),rgba(200,160,60,.15),rgba(200,160,60,.08))',
+          zIndex:0,
+        }}/>
+        <div style={{display:'flex',gap:4,position:'relative',zIndex:1}}>
+          {SACRED_PATH.slice(0,8).map((s,i)=>{
+            const isAct=i===active;
+            const isDone=i<active;
+            const c=STEP_COLORS[i];
+            return(
+              <div key={i}
+                onClick={()=>{clearInterval(timerRef.current);setActive(i)}}
+                style={{
+                  flex:isAct?'0 0 auto':'1',
+                  display:'flex',flexDirection:'column',alignItems:'center',gap:2,
+                  cursor:'pointer',
+                  padding:isAct?'8px 10px':'6px 4px',
+                  background:isAct?`${c}15`:isDone?'rgba(200,160,60,.04)':'transparent',
+                  border:`1px solid ${isAct?`${c}50`:isDone?`${c}18`:'transparent'}`,
+                  borderRadius:10,
+                  transition:'all .4s cubic-bezier(.34,1.56,.64,1)',
+                  boxShadow:isAct?`0 0 16px ${c}20`:'none',
+                }}>
+                <div style={{
+                  fontSize:isAct?22:14,
+                  filter:isAct?`drop-shadow(0 0 6px ${c})`:'none',
+                  opacity:isAct?1:isDone?0.7:0.3,
+                  transition:'all .4s',
+                }}>{s.icon}</div>
+                {isAct&&<div style={{fontSize:7,color:c,fontFamily:"'Cinzel',serif",letterSpacing:1,whiteSpace:'nowrap',fontWeight:700}}>
+                  {s.en}
+                </div>}
+                {isDone&&!isAct&&<div style={{width:6,height:2,borderRadius:1,background:`${c}50`}}/>}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Main gate card */}
+      <div style={{
+        background:`radial-gradient(ellipse at 50% 0%,${sc}10,rgba(8,6,3,.7) 60%)`,
+        border:`2px solid ${sc}30`,borderRadius:16,
+        padding:'24px 20px',textAlign:'center',
+        transition:'border-color .5s,box-shadow .5s',
+        boxShadow:`0 0 40px ${sc}10,inset 0 0 40px rgba(0,0,0,.3)`,
+        position:'relative',overflow:'hidden',
+        opacity:entering?0:1,
+        transform:entering?'translateY(8px)':'translateY(0)',
+        transition:'opacity .3s ease,transform .3s ease,border-color .5s,box-shadow .5s',
+      }}>
+        {/* Background mandala */}
+        <svg style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',opacity:.04}} viewBox="0 0 200 120" preserveAspectRatio="xMidYMid slice">
+          <circle cx={100} cy={60} r={50} fill="none" stroke={sc} strokeWidth={.8}/>
+          <circle cx={100} cy={60} r={35} fill="none" stroke={sc} strokeWidth={.6}/>
+          <circle cx={100} cy={60} r={20} fill="none" stroke={sc} strokeWidth={.5}/>
+          {[0,45,90,135,180,225,270,315].map(a=>(
+            <line key={a}
+              x1={100+50*Math.cos(a*Math.PI/180)} y1={60+50*Math.sin(a*Math.PI/180)}
+              x2={100+20*Math.cos(a*Math.PI/180)} y2={60+20*Math.sin(a*Math.PI/180)}
+              stroke={sc} strokeWidth={.4}/>
+          ))}
+        </svg>
+
+        {/* Gate number */}
+        <div style={{fontSize:8,letterSpacing:5,color:sc,opacity:.5,marginBottom:8,fontFamily:"'Cinzel',serif"}}>
+          GATE {active+1} OF 8 &nbsp;·&nbsp; SQUARE {sq.num}
+        </div>
+
+        {/* Icon */}
+        <div style={{
+          fontSize:48,marginBottom:12,
+          filter:`drop-shadow(0 0 16px ${sc}) drop-shadow(0 0 32px ${sc}50)`,
+          animation:'pulse 2.5s ease infinite',
+        }}>{sq.icon}</div>
+
+        {/* Names */}
+        <div style={{fontSize:24,fontFamily:"'Noto Serif Devanagari',serif",color:sc,fontWeight:700,marginBottom:4,
+          textShadow:`0 0 20px ${sc}50`}}>{sq.skt}</div>
+        <div style={{fontSize:16,color:'#e8c850',fontFamily:"'Cinzel',serif",letterSpacing:4,marginBottom:12}}>{sq.en}</div>
+        <div style={{fontSize:11,color:'#8a7a50',letterSpacing:1,fontStyle:'italic',lineHeight:1.7,maxWidth:360,margin:'0 auto'}}>
+          {RIDGE_DESCS[active]}
+        </div>
+
+        {/* Special badges */}
+        {sq.num===107&&(
+          <div style={{
+            marginTop:14,display:'inline-flex',alignItems:'center',gap:8,
+            padding:'6px 14px',borderRadius:20,
+            background:'rgba(240,180,60,.08)',border:'1px solid rgba(240,180,60,.25)',
+          }}>
+            <span style={{fontSize:14}}>🚪</span>
+            <span style={{fontSize:9,color:'#f0b840',letterSpacing:2}}>ROLL EXACT 1 TO ENTER MOKSHA</span>
+          </div>
+        )}
+        {isMoksha&&(
+          <div style={{marginTop:14}}>
+            <div style={{fontSize:36,animation:'mp 3s ease infinite',color:'#f0d050',
+              filter:'drop-shadow(0 0 20px rgba(240,200,80,.8))'}}>ॐ</div>
+            <div style={{fontSize:10,letterSpacing:4,color:'rgba(240,200,80,.5)',marginTop:4}}>LIBERATION · MOKSHA · मोक्ष</div>
+          </div>
+        )}
+      </div>
+
+      {/* Step progress dots */}
+      <div style={{display:'flex',gap:6,justifyContent:'center',alignItems:'center'}}>
+        {SACRED_PATH.slice(0,8).map((_,i)=>(
+          <div key={i}
+            onClick={()=>{clearInterval(timerRef.current);setActive(i)}}
+            style={{
+              width:i===active?28:8,height:8,borderRadius:4,cursor:'pointer',
+              background:i===active?STEP_COLORS[i]:i<active?`${STEP_COLORS[i]}50`:'rgba(200,160,60,.08)',
+              boxShadow:i===active?`0 0 8px ${STEP_COLORS[i]}80`:'none',
+              transition:'all .4s cubic-bezier(.34,1.56,.64,1)',
+          }}/>
+        ))}
+      </div>
+
+      {/* Navagraha reminder */}
+      <div style={{
+        textAlign:'center',padding:'8px 14px',
+        background:'rgba(240,200,80,.03)',border:'1px solid rgba(240,200,80,.08)',borderRadius:8,
+      }}>
+        <div style={{fontSize:9,color:'rgba(240,200,80,.4)',letterSpacing:2}}>
+          🌌 On the Sacred Path — no Navagraha effects · no swaps · no pushes · beyond the material world
+        </div>
       </div>
     </div>
   );
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// 🪶 CHITRAGUPTA'S AGRASANDHANI — The Living Cosmic Ledger
+//    Real-time balance scale + quill-written entries + soul purity ring
+// ══════════════════════════════════════════════════════════════════════
+function ChitraguptaPanel({ entries, players, punya, papa, cur, win }) {
+  const nP = players.length;
+  // Compute aggregate punya/papa for balance scale
+  const totalPunya = punya.reduce((a,b)=>a+b,0);
+  const totalPapa  = papa.reduce((a,b)=>a+b,0);
+  const total      = Math.max(totalPunya+totalPapa, 1);
+  const balance    = (totalPunya-totalPapa); // positive = purer, negative = more sin
+  // Scale tilt angle: max ±28deg
+  const tiltDeg    = Math.max(-28, Math.min(28, -(balance/Math.max(total*.5,1))*28));
+  const isShaking  = Math.abs(balance) < 3 && total > 4;
+  const recent     = entries.slice(-6);
+
+  const et = CG_ENTRY_TYPES;
+
+  return (
+    <div style={{
+      background:'linear-gradient(160deg,rgba(26,18,8,.98),rgba(14,10,4,.99))',
+      border:'1px solid rgba(200,175,90,.18)',borderRadius:8,
+      overflow:'hidden',position:'relative',
+    }}>
+      {/* Parchment ruled lines */}
+      <div style={{position:'absolute',inset:0,backgroundImage:'repeating-linear-gradient(0deg,transparent,transparent 20px,rgba(200,175,90,.022) 20px,rgba(200,175,90,.022) 21px)',pointerEvents:'none'}}/>
+
+      {/* ── Header ── */}
+      <div style={{padding:'8px 12px 6px',borderBottom:'1px solid rgba(200,175,90,.1)',display:'flex',alignItems:'center',gap:8,position:'relative'}}>
+        {/* Quill SVG */}
+        <svg width={16} height={20} viewBox="0 0 16 20" style={{flexShrink:0,filter:'drop-shadow(0 0 4px rgba(200,175,90,.6))'}}>
+          <path d="M8 1 Q13 0 14 4 Q16 9 11 13 Q9 15 8 18 Q7 15 8 13 Q3 9 2 5 Q3 1 8 1Z" fill="rgba(200,175,90,.2)" stroke="rgba(200,175,90,.55)" strokeWidth=".6"/>
+          <path d="M8 18 L8 13 Q11 10 12 7" fill="none" stroke="rgba(200,175,90,.6)" strokeWidth=".6"/>
+          <circle cx={8} cy={18.5} r={1.3} fill="rgba(200,175,90,.7)">
+            <animate attributeName="opacity" values=".4;1;.4" dur="2.2s" repeatCount="indefinite"/>
+          </circle>
+        </svg>
+        <div style={{flex:1}}>
+          <div style={{fontSize:8,letterSpacing:3,color:'rgba(200,175,90,.6)',fontFamily:"'Cinzel',serif",fontWeight:700}}>CHITRAGUPTA</div>
+          <div style={{fontSize:6,color:'rgba(200,175,90,.3)',letterSpacing:2}}>अग्रसंधानी · AGRASANDHANI</div>
+        </div>
+        {entries.length>0&&<div style={{fontSize:7,color:'rgba(200,175,90,.2)',fontFamily:"'Cinzel',serif"}}>{entries.length} entries</div>}
+      </div>
+
+      {/* ── Balance Scale ── */}
+      <div style={{padding:'10px 12px 6px',borderBottom:'1px solid rgba(200,175,90,.06)'}}>
+        <div style={{display:'flex',alignItems:'flex-end',gap:10}}>
+          {/* Scale SVG */}
+          <div style={{flexShrink:0,animation:isShaking?'cgScaleShake 0.3s ease infinite':'none'}}>
+            <svg width={80} height={60} viewBox="0 0 80 60" style={{overflow:'visible'}}>
+              {/* Fulcrum post */}
+              <line x1={40} y1={10} x2={40} y2={52} stroke="rgba(200,175,90,.4)" strokeWidth={1.5}/>
+              <polygon points="33,52 47,52 40,56" fill="rgba(200,175,90,.3)"/>
+              {/* Top pivot circle */}
+              <circle cx={40} cy={10} r={3} fill="rgba(200,175,90,.35)" stroke="rgba(200,175,90,.5)" strokeWidth=".8"/>
+              {/* Beam — tilts dynamically */}
+              <g style={{transformOrigin:'40px 10px',transform:`rotate(${tiltDeg}deg)`,transition:'transform 1.2s cubic-bezier(.34,1.56,.64,1)'}}>
+                <line x1={4} y1={10} x2={76} y2={10} stroke={balance>=0?'rgba(80,200,80,.7)':'rgba(200,80,60,.7)'} strokeWidth={2} style={{transition:'stroke 0.8s'}}/>
+                {/* Left string */}
+                <line x1={4} y1={10} x2={4} y2={24} stroke="rgba(200,175,90,.35)" strokeWidth={.8}/>
+                {/* Right string */}
+                <line x1={76} y1={10} x2={76} y2={24} stroke="rgba(200,175,90,.35)" strokeWidth={.8}/>
+                {/* Left pan (Punya) */}
+                <ellipse cx={4} cy={26} rx={10} ry={3} fill="rgba(80,200,80,.15)" stroke="rgba(80,200,80,.5)" strokeWidth={.8}/>
+                <text x={4} y={29.5} textAnchor="middle" fontSize={5} fill="rgba(80,200,80,.7)" fontFamily="Cinzel">पुण्य</text>
+                {/* Right pan (Papa) */}
+                <ellipse cx={76} cy={26} rx={10} ry={3} fill="rgba(200,80,60,.12)" stroke="rgba(200,80,60,.5)" strokeWidth={.8}/>
+                <text x={76} y={29.5} textAnchor="middle" fontSize={5} fill="rgba(200,80,60,.7)" fontFamily="Cinzel">पाप</text>
+              </g>
+              {/* Punya weight stack */}
+              {[...Array(Math.min(totalPunya,8))].map((_,i)=>(
+                <rect key={i} x={-6+40-36} y={36+i*-3} width={16} height={2.5} rx={1}
+                  fill={`rgba(240,200,80,${0.3+i*0.08})`}
+                  style={{transformOrigin:'40px 10px',transform:`rotate(${tiltDeg}deg)`,transition:'transform 1.2s cubic-bezier(.34,1.56,.64,1)'}}/>
+              ))}
+              {/* Papa weight stack */}
+              {[...Array(Math.min(totalPapa,8))].map((_,i)=>(
+                <rect key={i} x={70} y={36+i*-3} width={16} height={2.5} rx={1}
+                  fill={`rgba(200,80,60,${0.25+i*0.08})`}
+                  style={{transformOrigin:'40px 10px',transform:`rotate(${tiltDeg}deg)`,transition:'transform 1.2s cubic-bezier(.34,1.56,.64,1)'}}/>
+              ))}
+            </svg>
+          </div>
+          {/* Balance readout */}
+          <div style={{flex:1,paddingBottom:4}}>
+            <div style={{display:'flex',gap:10,marginBottom:4}}>
+              <div style={{flex:1}}>
+                <div style={{fontSize:7,color:'rgba(80,200,80,.5)',letterSpacing:1,marginBottom:2}}>पुण्य</div>
+                <div style={{height:4,background:'rgba(80,200,80,.08)',borderRadius:2,overflow:'hidden'}}>
+                  <div style={{height:'100%',width:`${(totalPunya/Math.max(totalPunya+totalPapa,1))*100}%`,background:'linear-gradient(90deg,rgba(80,200,80,.4),rgba(80,200,80,.7))',borderRadius:2,transition:'width 1s cubic-bezier(.4,0,.2,1)'}}/>
+                </div>
+                <div style={{fontSize:9,color:'rgba(80,200,80,.7)',fontWeight:700,marginTop:1}}>{totalPunya}</div>
+              </div>
+              <div style={{flex:1}}>
+                <div style={{fontSize:7,color:'rgba(200,80,60,.5)',letterSpacing:1,marginBottom:2}}>पाप</div>
+                <div style={{height:4,background:'rgba(200,80,60,.08)',borderRadius:2,overflow:'hidden'}}>
+                  <div style={{height:'100%',width:`${(totalPapa/Math.max(totalPunya+totalPapa,1))*100}%`,background:'linear-gradient(90deg,rgba(200,80,60,.4),rgba(200,80,60,.7))',borderRadius:2,transition:'width 1s cubic-bezier(.4,0,.2,1)'}}/>
+                </div>
+                <div style={{fontSize:9,color:'rgba(200,80,60,.7)',fontWeight:700,marginTop:1}}>{totalPapa}</div>
+              </div>
+            </div>
+            <div style={{fontSize:8,color:balance>=0?'rgba(80,200,80,.5)':'rgba(200,80,60,.5)',letterSpacing:1,textAlign:'center',transition:'color 0.8s'}}>
+              {isShaking?'⚖ तुला — The scales are even':balance>0?`✦ +${balance} Punya favoured`:`✦ ${Math.abs(balance)} Papa favoured`}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Ledger Entries (last 5, most recent at bottom) ── */}
+      <div style={{padding:'6px 10px',minHeight:40}}>
+        {entries.length===0?(
+          <div style={{fontSize:8,color:'rgba(200,175,90,.18)',fontStyle:'italic',letterSpacing:1,padding:'4px 2px'}}>
+            The page is open. The ink waits...
+          </div>
+        ):(
+          <div style={{display:'flex',flexDirection:'column',gap:3}}>
+            {recent.map((e,i)=>{
+              const t=et[e.type]||{icon:'·',color:'#a09060',bg:'rgba(200,160,60,.05)',label:'—'};
+              const isNewest=i===recent.length-1;
+              return(
+                <div key={e.id} style={{
+                  display:'flex',alignItems:'center',gap:6,
+                  padding:'3px 6px',borderRadius:4,
+                  background:isNewest?t.bg:'transparent',
+                  border:isNewest?`1px solid ${t.color}18`:'1px solid transparent',
+                  opacity:isNewest?1:0.3+(i/recent.length)*0.5,
+                  animation:isNewest?'cgEntry .4s ease both':'none',
+                  transition:'opacity .6s',
+                }}>
+                  <span style={{fontSize:9,color:t.color,flexShrink:0,filter:isNewest?`drop-shadow(0 0 3px ${t.color})`:'none'}}>{t.icon}</span>
+                  <div style={{flex:1,minWidth:0,display:'flex',alignItems:'center',justifyContent:'space-between',gap:4}}>
+                    <span style={{fontSize:8,color:t.color,fontFamily:"'Cinzel',serif",letterSpacing:.5,fontWeight:isNewest?700:400}}>{t.label}</span>
+                    <span style={{fontSize:7,color:'rgba(200,175,90,.3)',whiteSpace:'nowrap'}}>sq {e.sq}</span>
+                    <span style={{fontSize:7,color:'rgba(200,160,90,.4)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',maxWidth:70,fontStyle:'italic'}}>{e.detail}</span>
+                  </div>
+                  {/* Ink-weight bar */}
+                  <div style={{width:2,height:12,borderRadius:1,background:t.color,opacity:isNewest?.6:.2,flexShrink:0}}/>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// ✨ MOKSHA SCREEN — Full-screen canvas ascension cinematic
+//    Winner's soul ascends through all three realms to Swarga.
+//    2000 golden particles, lotus bloom, Chitragupta seals the ledger.
+// ══════════════════════════════════════════════════════════════════════
+function MokshaScreen({ winner, players, punya, papa, onClose, muted }) {
+  const canvasRef = useRef(null);
+  const rafRef    = useRef(null);
+  const [phase, setPhase] = useState(0); // 0=ascend 1=swarga 2=judgment
+  const [showJudge, setShowJudge] = useState(false);
+  // Find loser with most papa (for judgment)
+  const loserIdx = useMemo(()=>{
+    let mi=-1;
+    players.forEach((_,i)=>{
+      if(i!==winner&&(mi<0||papa[i]>papa[mi])) mi=i;
+    });
+    return mi;
+  },[players, winner, papa]);
+  const wPunya = punya[winner]||0;
+  const wPapa  = papa[winner]||0;
+  const wp = players[winner];
+  const lp = loserIdx>=0 ? players[loserIdx] : null;
+
+  useEffect(()=>{
+    const canvas=canvasRef.current; if(!canvas) return;
+    const ctx=canvas.getContext('2d');
+    let t=0;
+    const resize=()=>{ canvas.width=window.innerWidth; canvas.height=window.innerHeight; };
+    resize(); window.addEventListener('resize',resize);
+
+    // ── Particle system ──
+    const PARTICLE_COUNT=1800;
+    const particles=[];
+    for(let i=0;i<PARTICLE_COUNT;i++){
+      const angle=(Math.random()*Math.PI*2);
+      const radius=Math.random()*canvas.width*0.3;
+      particles.push({
+        x: canvas.width/2 + Math.cos(angle)*radius*Math.random(),
+        y: canvas.height*0.8 + Math.random()*canvas.height*0.3,
+        vx: (Math.random()-0.5)*1.2,
+        vy: -(0.8+Math.random()*3.5),
+        size: 0.8+Math.random()*3.5,
+        opacity: 0.4+Math.random()*0.6,
+        hue: 30+Math.random()*30, // gold range
+        life: 0,
+        maxLife: 120+Math.random()*180,
+        delay: Math.random()*60,
+        spiral: (Math.random()-0.5)*0.04,
+      });
+    }
+    // Realm labels  
+    const REALMS=[
+      {y:0.75,label:'भूलोक',color:'rgba(160,120,60,.4)'},
+      {y:0.45,label:'अन्तर्लोक',color:'rgba(80,120,160,.4)'},
+      {y:0.18,label:'स्वर्गलोक',color:'rgba(160,120,220,.4)'},
+      {y:0.02,label:'परमधाम',color:'rgba(240,200,80,.5)'},
+    ];
+
+    const draw=()=>{
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      t++;
+
+      // Background gradient
+      const grad=ctx.createLinearGradient(0,canvas.height,0,0);
+      grad.addColorStop(0,'rgba(8,5,2,.95)');
+      grad.addColorStop(0.4,'rgba(10,8,20,.9)');
+      grad.addColorStop(0.75,'rgba(15,10,35,.85)');
+      grad.addColorStop(1,'rgba(30,20,60,.8)');
+      ctx.fillStyle=grad;
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+
+      // Realm boundary lines
+      REALMS.forEach(r=>{
+        const y=r.y*canvas.height;
+        ctx.strokeStyle=r.color;
+        ctx.lineWidth=.8;
+        ctx.setLineDash([4,8]);
+        ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle=r.color;
+        ctx.font=`${Math.max(10,canvas.width*0.018)}px Cinzel,serif`;
+        ctx.textAlign='right';
+        ctx.fillText(r.label, canvas.width-16, y-6);
+      });
+
+      // Light beam from center bottom
+      const beamCx=canvas.width/2;
+      if(t>20){
+        const beamGrad=ctx.createLinearGradient(beamCx,canvas.height,beamCx,0);
+        beamGrad.addColorStop(0,'rgba(240,200,80,0)');
+        beamGrad.addColorStop(0.3,'rgba(240,200,80,.06)');
+        beamGrad.addColorStop(0.7,'rgba(200,180,240,.08)');
+        beamGrad.addColorStop(1,'rgba(255,255,255,.12)');
+        const bw=Math.min(t*3,canvas.width*0.4);
+        ctx.fillStyle=beamGrad;
+        ctx.beginPath();
+        ctx.moveTo(beamCx-20,canvas.height);
+        ctx.lineTo(beamCx-bw,0);
+        ctx.lineTo(beamCx+bw,0);
+        ctx.lineTo(beamCx+20,canvas.height);
+        ctx.fill();
+      }
+
+      // Particles
+      particles.forEach(p=>{
+        if(t<p.delay) return;
+        p.life++;
+        if(p.life>p.maxLife){ p.life=0; p.y=canvas.height*0.9+Math.random()*canvas.height*.2; p.x=canvas.width/2+(Math.random()-0.5)*canvas.width*.4; p.vy=-(0.8+Math.random()*3.5); }
+        p.x+=p.vx+Math.sin(t*0.02+p.spiral*100)*p.spiral*60;
+        p.y+=p.vy;
+        p.vy*=0.998;
+        const lifeRatio=p.life/p.maxLife;
+        const alpha=p.opacity*(1-Math.pow(lifeRatio,2));
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.size*(1-lifeRatio*.5),0,Math.PI*2);
+        ctx.fillStyle=`hsla(${p.hue},80%,${50+lifeRatio*30}%,${alpha})`;
+        ctx.fill();
+        // Sparkle cross
+        if(p.size>2.5){
+          ctx.strokeStyle=`hsla(${p.hue},90%,80%,${alpha*.4})`;
+          ctx.lineWidth=.5;
+          ctx.beginPath(); ctx.moveTo(p.x-p.size*1.5,p.y); ctx.lineTo(p.x+p.size*1.5,p.y); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(p.x,p.y-p.size*1.5); ctx.lineTo(p.x,p.y+p.size*1.5); ctx.stroke();
+        }
+      });
+
+      // Pulsing OM at top
+      if(t>40){
+        const omAlpha=Math.min((t-40)/60, 1);
+        const omScale=1+Math.sin(t*.02)*.06;
+        ctx.save();
+        ctx.globalAlpha=omAlpha;
+        ctx.translate(canvas.width/2, canvas.height*0.08);
+        ctx.scale(omScale,omScale);
+        ctx.font=`${Math.max(48,canvas.width*0.08)}px serif`;
+        ctx.textAlign='center';
+        ctx.textBaseline='middle';
+        ctx.fillStyle='rgba(240,200,80,.9)';
+        ctx.shadowBlur=30; ctx.shadowColor='rgba(240,200,80,.6)';
+        ctx.fillText('ॐ',0,0);
+        ctx.restore();
+      }
+
+      // Expanding light rings from top
+      if(t>60){
+        for(let ring=0;ring<4;ring++){
+          const rAge=((t-60)+ring*40)%160;
+          const rAlpha=Math.max(0,(1-rAge/160)*.15);
+          ctx.strokeStyle=`rgba(240,200,80,${rAlpha})`;
+          ctx.lineWidth=1.5;
+          ctx.beginPath();
+          ctx.arc(canvas.width/2,canvas.height*.08,rAge*3,0,Math.PI*2);
+          ctx.stroke();
+        }
+      }
+
+      rafRef.current=requestAnimationFrame(draw);
+    };
+    draw();
+
+    // Phase progression
+    const t1=setTimeout(()=>setPhase(1),3500);
+    const t2=setTimeout(()=>setPhase(2),5500);
+    const t3=setTimeout(()=>setShowJudge(true),7000);
+
+    return()=>{
+      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener('resize',resize);
+      clearTimeout(t1); clearTimeout(t2); clearTimeout(t3);
+    };
+  },[]);
+
+  const isYamaMode = players.length===2 && players.find(p=>p.cpu);
+  // Show judgment whenever there is a loser — especially Yama in solo mode
+
+  return(
+    <div style={{position:'fixed',inset:0,zIndex:600,overflow:'hidden'}}>
+      <canvas ref={canvasRef} style={{position:'absolute',inset:0,width:'100%',height:'100%'}}/>
+
+      {/* Winner card — ascends over time */}
+      <div style={{
+        position:'absolute',left:'50%',bottom:'15%',transform:'translateX(-50%)',
+        textAlign:'center',
+        animation:'mokshaAscend 8s ease 1.5s both',
+        filter:'drop-shadow(0 0 40px rgba(240,200,80,.6))',
+      }}>
+        <div style={{fontSize:'clamp(52px,10vw,80px)',marginBottom:8,animation:'cgGoldPulse 2s ease infinite'}}>{wp?.char?.icon}</div>
+        <div style={{fontSize:'clamp(18px,4vw,28px)',fontFamily:"'Yatra One',serif",color:'#f0d050',letterSpacing:3,textShadow:'0 0 30px rgba(240,200,80,.6)'}}>{wp?.name}</div>
+        <div style={{fontSize:'clamp(10px,2vw,13px)',color:'rgba(240,200,80,.6)',letterSpacing:4,fontFamily:"'Cinzel',serif",marginTop:4}}>मोक्ष प्राप्त · LIBERATED</div>
+      </div>
+
+      {/* Chitragupta seal — appears after ascension */}
+      {phase>=1&&(
+        <div style={{
+          position:'absolute',left:'50%',top:'50%',transform:'translate(-50%,-50%)',
+          textAlign:'center',animation:'fadeIn 1.5s ease',
+          background:'linear-gradient(135deg,rgba(14,10,4,.95),rgba(20,14,6,.98))',
+          border:'1px solid rgba(200,175,90,.25)',borderRadius:12,
+          padding:'clamp(16px,3vw,28px) clamp(20px,4vw,40px)',
+          maxWidth:'min(420px,90vw)',backdropFilter:'blur(10px)',
+        }}>
+          {/* Quill SVG above text */}
+          <div style={{fontSize:20,marginBottom:8,animation:'pulse 2s ease infinite',opacity:.6}}>🪶</div>
+          <div style={{fontSize:8,letterSpacing:4,color:'rgba(200,175,90,.5)',fontFamily:"'Cinzel',serif",marginBottom:10}}>CHITRAGUPTA SEALS THE LEDGER</div>
+          <div style={{width:80,height:1,background:'linear-gradient(90deg,transparent,rgba(200,175,90,.4),transparent)',margin:'0 auto 16px'}}/>
+
+          {/* Stats */}
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:16}}>
+            <div style={{padding:'8px',background:'rgba(80,200,80,.06)',border:'1px solid rgba(80,200,80,.12)',borderRadius:6,textAlign:'center'}}>
+              <div style={{fontSize:7,color:'rgba(80,200,80,.5)',letterSpacing:2,marginBottom:4}}>पुण्य EARNED</div>
+              <div style={{fontSize:22,fontWeight:900,color:'#80c080',fontFamily:"'Cinzel',serif"}}>{wPunya}</div>
+            </div>
+            <div style={{padding:'8px',background:'rgba(200,80,60,.05)',border:'1px solid rgba(200,80,60,.1)',borderRadius:6,textAlign:'center'}}>
+              <div style={{fontSize:7,color:'rgba(200,80,60,.45)',letterSpacing:2,marginBottom:4}}>पाप CARRIED</div>
+              <div style={{fontSize:22,fontWeight:900,color:'#e08060',fontFamily:"'Cinzel',serif"}}>{wPapa}</div>
+            </div>
+          </div>
+
+          {/* CG quote */}
+          <div style={{fontSize:'clamp(10px,1.8vw,13px)',color:'rgba(200,175,120,.55)',fontStyle:'italic',lineHeight:1.8,marginBottom:16,letterSpacing:.5}}>
+            "The page is complete. I seal it. In all the ages I have kept this record, few pages end this way."
+          </div>
+          <div style={{fontSize:8,color:'rgba(200,175,90,.3)',letterSpacing:3,marginBottom:16}}>— चित्रगुप्त</div>
+        </div>
+      )}
+
+      {/* Yama judgment for losers — appears last */}
+      {showJudge&&lp&&(
+        <YamaJudgment loser={lp} papa={papa[loserIdx]} punya={punya[loserIdx]} isYama={!!lp.cpu}/>
+      )}
+
+      {/* Close button */}
+      {phase>=2&&(
+        <div style={{position:'absolute',bottom:24,left:'50%',transform:'translateX(-50%)',display:'flex',gap:12,animation:'fadeIn 1s ease'}}>
+          <button onClick={onClose} style={{
+            background:'linear-gradient(180deg,rgba(200,160,60,.2),rgba(200,160,60,.08))',
+            border:'1px solid rgba(200,160,60,.4)',color:'#e8c850',
+            padding:'10px 28px',fontSize:11,fontFamily:"'Cinzel',serif",
+            cursor:'pointer',borderRadius:4,letterSpacing:3,
+          }}>नया जन्म · NEW JOURNEY</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// 💀 YAMA JUDGMENT — Canvas fire + chains for the most-sinful player
+// ══════════════════════════════════════════════════════════════════════
+function YamaJudgment({ loser, papa, punya, isYama }) {
+  const canvasRef = useRef(null);
+  const rafRef    = useRef(null);
+
+  useEffect(()=>{
+    const canvas=canvasRef.current; if(!canvas) return;
+    const W=canvas.width=360, H=canvas.height=280;
+    const ctx=canvas.getContext('2d');
+    let t=0;
+
+    // Flame particles
+    const flames=[];
+    for(let i=0;i<120;i++){
+      flames.push({
+        x:W/2+(Math.random()-.5)*W*.7,
+        y:H*.85+Math.random()*H*.2,
+        vx:(Math.random()-.5)*.8,
+        vy:-(0.5+Math.random()*2),
+        size:4+Math.random()*14,
+        life:0, maxLife:30+Math.random()*50,
+        hue:Math.random()<.7?10+Math.random()*20:30+Math.random()*20,
+        delay:Math.random()*30,
+      });
+    }
+
+    const draw=()=>{
+      ctx.clearRect(0,0,W,H);
+      t++;
+      // Dark background
+      ctx.fillStyle='rgba(8,3,2,.92)';
+      ctx.fillRect(0,0,W,H);
+
+      // Glow from bottom
+      const grd=ctx.createRadialGradient(W/2,H,10,W/2,H,W*.6);
+      grd.addColorStop(0,'rgba(200,40,10,.25)');
+      grd.addColorStop(.5,'rgba(150,20,5,.08)');
+      grd.addColorStop(1,'transparent');
+      ctx.fillStyle=grd; ctx.fillRect(0,0,W,H);
+
+      // Flames
+      flames.forEach(f=>{
+        if(t<f.delay) return;
+        f.life++;
+        if(f.life>f.maxLife){f.life=0;f.y=H*.85+Math.random()*H*.2;f.x=W/2+(Math.random()-.5)*W*.65;f.vy=-(0.5+Math.random()*2);}
+        f.x+=f.vx+Math.sin(t*.05+f.x*.01)*.5;
+        f.y+=f.vy;
+        f.vy*=0.995;
+        const lr=f.life/f.maxLife;
+        const alpha=(1-lr)*(0.5+Math.random()*.3);
+        ctx.beginPath();
+        ctx.arc(f.x,f.y,f.size*(1-lr*.6),0,Math.PI*2);
+        ctx.fillStyle=`hsla(${f.hue+lr*20},90%,${35+lr*25}%,${alpha})`;
+        ctx.fill();
+      });
+
+      // Smoke particles
+      if(t%3===0){
+        ctx.beginPath();
+        const sx=W/2+(Math.random()-.5)*W*.5;
+        const sy=H*.55;
+        ctx.arc(sx,sy,3+Math.random()*8,0,Math.PI*2);
+        ctx.fillStyle=`rgba(40,20,10,${0.1+Math.random()*.1})`;
+        ctx.fill();
+      }
+
+      // SVG-like Yama silhouette (buffalo + figure)
+      const yamaY=H*.55-Math.min(t*1.5,H*.25); // rises from flames
+      const yamaAlpha=Math.min(t/40,1);
+      ctx.save();
+      ctx.globalAlpha=yamaAlpha;
+      ctx.fillStyle='rgba(60,10,10,.9)';
+      // Body
+      ctx.beginPath(); ctx.ellipse(W/2,yamaY,20,28,0,0,Math.PI*2); ctx.fill();
+      // Head
+      ctx.beginPath(); ctx.arc(W/2,yamaY-32,14,0,Math.PI*2); ctx.fill();
+      // Crown (trident-like)
+      ctx.strokeStyle='rgba(200,40,10,.8)'; ctx.lineWidth=3; ctx.lineCap='round';
+      for(let spike=-1;spike<=1;spike++){
+        ctx.beginPath();
+        ctx.moveTo(W/2+spike*8,yamaY-44);
+        ctx.lineTo(W/2+spike*8,yamaY-64-Math.abs(spike)*6);
+        ctx.stroke();
+      }
+      // Arms raised
+      ctx.strokeStyle='rgba(60,10,10,.9)'; ctx.lineWidth=8;
+      ctx.beginPath(); ctx.moveTo(W/2-18,yamaY-10); ctx.lineTo(W/2-50,yamaY-35); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(W/2+18,yamaY-10); ctx.lineTo(W/2+50,yamaY-35); ctx.stroke();
+      ctx.restore();
+
+      // Animated chains
+      if(t>30){
+        const chainAlpha=Math.min((t-30)/40,1);
+        ctx.save();
+        ctx.globalAlpha=chainAlpha;
+        ctx.strokeStyle='rgba(180,140,60,.6)';
+        ctx.lineWidth=2.5;
+        ctx.setLineDash([4,3]);
+        ctx.lineDashOffset=-t*.5;
+        // Left chain
+        ctx.beginPath();
+        ctx.moveTo(30,H*.3);
+        ctx.bezierCurveTo(W*.2,H*.35+Math.sin(t*.04)*8,W*.35,H*.5,W*.38,H*.7);
+        ctx.stroke();
+        // Right chain
+        ctx.beginPath();
+        ctx.moveTo(W-30,H*.3);
+        ctx.bezierCurveTo(W*.8,H*.35+Math.sin(t*.04+1)*8,W*.65,H*.5,W*.62,H*.7);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.restore();
+      }
+
+      rafRef.current=requestAnimationFrame(draw);
+    };
+    draw();
+    return()=>{ cancelAnimationFrame(rafRef.current); };
+  },[]);
+
+  return(
+    <div style={{
+      position:'fixed',bottom:20,right:20,
+      background:'rgba(8,3,2,.95)',
+      border:'1.5px solid rgba(180,40,20,.35)',
+      borderRadius:10,overflow:'hidden',
+      animation:'yamaRise .8s cubic-bezier(.34,1.56,.64,1)',
+      boxShadow:'0 0 40px rgba(180,40,20,.2)',
+      width:'min(360px,90vw)',
+    }}>
+      <canvas ref={canvasRef} width={360} height={280} style={{display:'block',width:'100%'}}/>
+      <div style={{padding:'10px 14px',background:'linear-gradient(0deg,rgba(8,3,2,.98),rgba(8,3,2,.85))'}}>
+        <div style={{fontSize:10,color:'rgba(200,60,30,.7)',letterSpacing:2,fontFamily:"'Cinzel',serif",fontWeight:700,marginBottom:4}}>
+          {isYama ? '💀 YAMA FALLS — THE GOD OF DEATH IS JUDGED' : '☠️ YAMA\'S JUDGMENT'}
+        </div>
+        <div style={{fontSize:9,color:'rgba(200,80,60,.6)',marginBottom:6,lineHeight:1.6}}>
+          {isYama
+            ? <><span style={{fontSize:13}}>☠️</span> <strong style={{color:'#e06060'}}>यमराज · YAMA</strong> — God of Death. Defeated.</>
+            : <>{loser.char.icon} <strong style={{color:loser.char.color}}>{loser.name}</strong> — {papa} Papa, {punya} Punya</>
+          }
+        </div>
+        <div style={{fontSize:8,color:'rgba(180,60,40,.45)',fontStyle:'italic',lineHeight:1.7}}>
+          {isYama
+            ? '"Even the God of Death carries karma. He who judges all souls — has now been judged himself. The ledger does not exempt even Yama. He will return. He always returns."'
+            : `"The ledger has spoken. ${papa} Papa cannot be hidden from Yama's gaze. The soul must return — to learn, to suffer, to try again."`
+          }
+        </div>
+        <div style={{fontSize:7,color:'rgba(160,40,20,.4)',marginTop:4,letterSpacing:2}}>— CHITRAGUPTA'S FINAL ENTRY</div>
+      </div>
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// 🪶 CHITRAGUPTA INTRO SCREEN
+//    A cameo page introducing the divine scribe before the game begins.
+//    Story lines reveal themselves one by one. Quill draws across the top.
+//    Skippable at any time.
+// ══════════════════════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════════════════════
+// 🪶 CHITRAGUPTA INTRO — 3D Particle Deity + Cinematic Story
+//
+// A full-screen 3D canvas scene:
+//   · Chitragupta built from ~1400 glowing gold particles
+//   · 4-armed deity silhouette: head, body, arms, halo, lotus throne
+//   · Particles spawn from center and fly to their positions (2s burst)
+//   · Figure rotates slowly on Y-axis (real 3D perspective projection)
+//   · Sanskrit characters orbit him in 3D ellipses at varying inclinations
+//   · Stars parallax in the background
+//   · Story lines appear ONE AT A TIME (cinematic, not a list)
+//   · "BEGIN" triggers particle explosion outward
+// ══════════════════════════════════════════════════════════════════════
+function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip }) {
+  const canvasRef  = useRef(null);
+  const stateRef   = useRef({ lineIdx:0, explode:false, t:0, particles:[], orbiters:[], stars:[] });
+  const rafRef     = useRef(null);
+  const timerRef   = useRef(null);
+  const [lineIdx,  setLineIdx]  = useState(0);
+  const [done,     setDone]     = useState(false);
+  const [exploding,setExploding]= useState(false);
+
+  const LINES_EN = [
+    { text:"I am Chitragupta.",                                              accent:'#f0d050', delay:1400 },
+    { text:"Brahma carved me from his own body —",                           accent:'#c0b080', delay:1600 },
+    { text:"born fully formed, holding a quill.",                             accent:'#c0b080', delay:1400 },
+    { text:"My task: to record every deed of every soul\nin the universe.",   accent:'#c0b080', delay:2200 },
+    { text:"Every Punya. Every Papa.",                                        accent:'#e0c870', delay:1400 },
+    { text:"Every whisper of virtue.\nEvery shadow of vice.",                accent:'#c0a860', delay:1800 },
+    { text:"When a soul stands before Yama for judgment —",                  accent:'#c0b080', delay:1800 },
+    { text:"it is I who reads the account aloud.",                            accent:'#f0d050', delay:1400 },
+    { text:"Yama cannot see what I have not written.",                        accent:'#f0d050', delay:1600 },
+    { text:"I wrote this board.",                                             accent:'#c0a060', delay:1200 },
+    { text:"Every serpent's name — my Sanskrit.",                            accent:'#e08060', delay:1400 },
+    { text:"Every virtue ladder — my ink.",                                   accent:'#80c080', delay:1200 },
+    { text:"I know how your story ends.",                                     accent:'#c0b080', delay:1400 },
+    { text:"I say nothing.",                                                  accent:'#f0d050', delay:900  },
+    { text:"I only write.",                                                   accent:'#f0d050', delay:900  },
+  ];
+  const LINES_HI = [
+    { text:"मैं चित्रगुप्त हूँ।",                                            accent:'#f0d050', delay:1400 },
+    { text:"ब्रह्मा ने मुझे स्वयं अपने शरीर से बनाया —",                    accent:'#c0b080', delay:1800 },
+    { text:"हाथ में कलम लिए, पूर्ण रूप से जन्मा।",                         accent:'#c0b080', delay:1600 },
+    { text:"मेरा कार्य: ब्रह्मांड में हर आत्मा के\nहर कर्म को दर्ज करना।", accent:'#c0b080', delay:2400 },
+    { text:"हर पुण्य। हर पाप।",                                              accent:'#e0c870', delay:1400 },
+    { text:"पुण्य की हर फुसफुसाहट।\nपाप की हर छाया।",                      accent:'#c0a860', delay:1800 },
+    { text:"जब कोई आत्मा यमराज के सामने खड़ी होती है —",                    accent:'#c0b080', delay:2000 },
+    { text:"मैं खाता पढ़ता हूँ।",                                            accent:'#f0d050', delay:1200 },
+    { text:"यमराज वह नहीं देख सकते जो मैंने नहीं लिखा।",                   accent:'#f0d050', delay:1800 },
+    { text:"मैंने यह पट लिखा।",                                              accent:'#c0a060', delay:1200 },
+    { text:"हर सांप का नाम — मेरी संस्कृत।",                               accent:'#e08060', delay:1400 },
+    { text:"हर सीढ़ी — मेरी स्याही।",                                       accent:'#80c080', delay:1200 },
+    { text:"मुझे पता है तुम्हारी कहानी कैसे समाप्त होती है।",               accent:'#c0b080', delay:1800 },
+    { text:"मैं कुछ नहीं कहता।",                                             accent:'#f0d050', delay:1000 },
+    { text:"केवल लिखता हूँ।",                                                accent:'#f0d050', delay:900  },
+  ];
+  const LINES = chosenLang==='hi' ? LINES_HI : LINES_EN;
+
+  // ── Build particle positions for Chitragupta's 3D figure ──
+  const buildFigure = () => {
+    const pts = [];
+    const add = (x,y,z,type,col) => pts.push({
+      // target position
+      tx:x, ty:y, tz:z,
+      // current position (start at center, burst out)
+      x:(Math.random()-0.5)*20, y:(Math.random()-0.5)*20, z:(Math.random()-0.5)*20,
+      vx:0, vy:0, vz:0,
+      color:col||'gold', type, size:1+Math.random()*1.5,
+      baseOpacity:0.6+Math.random()*0.4, phase:Math.random()*Math.PI*2,
+    });
+    const rand = (s=1) => (Math.random()-0.5)*s;
+
+    // ── HEAD (sphere) ──
+    for(let i=0;i<120;i++){
+      const φ=Math.acos(2*Math.random()-1), θ=Math.random()*Math.PI*2, r=28+rand(4);
+      add(r*Math.sin(φ)*Math.cos(θ), -155+r*Math.cos(φ), r*Math.sin(φ)*Math.sin(θ), 'head', '#f0d080');
+    }
+    // FACE glow (dense front)
+    for(let i=0;i<40;i++){
+      add(rand(16), -150+rand(20), 24+rand(8), 'face', '#ffe080');
+    }
+
+    // ── CROWN (5 spikes + circle) ──
+    for(let spike=0;spike<5;spike++){
+      const a = (spike/5)*Math.PI*2;
+      const cx=22*Math.cos(a), cz=22*Math.sin(a);
+      for(let j=0;j<10;j++){
+        const t2=j/10;
+        add(cx*(1-t2*0.4), -183-j*7+rand(4), cz*(1-t2*0.4), 'crown', '#ffe040');
+      }
+    }
+    // Crown base ring
+    for(let i=0;i<50;i++){
+      const a=(i/50)*Math.PI*2;
+      add(24*Math.cos(a)+rand(3), -183+rand(4), 24*Math.sin(a)+rand(3), 'crown', '#f0c830');
+    }
+
+    // ── HALO (glowing ring behind head) ──
+    for(let i=0;i<90;i++){
+      const a=(i/90)*Math.PI*2;
+      const r=55+rand(6);
+      add(r*Math.cos(a)+rand(4), -155+rand(6), -8+r*Math.sin(a)*0.25, 'halo', '#f0d050');
+    }
+
+    // ── BODY (ellipsoid torso) ──
+    for(let i=0;i<160;i++){
+      const t2=Math.random(), a=Math.random()*Math.PI*2;
+      const y=-125+t2*100;
+      const rx=28*(1-Math.pow((t2-0.5)*2,2)*0.4);
+      add(rx*Math.cos(a)+rand(5), y+rand(6), rx*0.5*Math.sin(a)+rand(4), 'body', '#e0c060');
+    }
+
+    // ── 4 ARMS ──
+    // Arm 1: upper-right (holding quill upward)
+    for(let i=0;i<80;i++){
+      const t2=i/80;
+      add(28+t2*70+rand(6), -115-t2*60+rand(6), t2*20+rand(6), 'arm', '#d0b050');
+    }
+    // Arm 2: lower-right (holding scroll downward)
+    for(let i=0;i<80;i++){
+      const t2=i/80;
+      add(25+t2*65+rand(6), -100+t2*55+rand(6), t2*15+rand(6), 'arm', '#d0b050');
+    }
+    // Arm 3: upper-left (palm outward, blessing)
+    for(let i=0;i<80;i++){
+      const t2=i/80;
+      add(-28-t2*65+rand(6), -115-t2*50+rand(6), t2*15+rand(6), 'arm', '#d0b050');
+    }
+    // Arm 4: lower-left (holding ledger)
+    for(let i=0;i<80;i++){
+      const t2=i/80;
+      add(-25-t2*60+rand(6), -95+t2*50+rand(6), t2*10+rand(6), 'arm', '#d0b050');
+    }
+
+    // ── HANDS (clusters at arm tips) ──
+    const hands = [[98,-175,20],[90,-45,15],[-93,-165,15],[-85,-45,10]];
+    hands.forEach(([hx,hy,hz],hi)=>{
+      for(let i=0;i<20;i++) add(hx+rand(12), hy+rand(12), hz+rand(8), 'hand', hi<2?'#ffe080':'#ffe080');
+    });
+
+    // ── QUILL (tip of upper-right hand) ──
+    for(let i=0;i<30;i++){
+      const t2=i/30;
+      add(100+t2*30+rand(5), -178-t2*40+rand(5), 22+t2*5+rand(4), 'quill', '#ffffff');
+    }
+    // Quill feather barbs
+    for(let i=0;i<25;i++){
+      add(105+i*1.2+rand(4), -184-i*1.5+rand(4), 24+rand(4), 'quill', '#f0e080');
+    }
+
+    // ── SCROLL in lower-right hand ──
+    for(let i=0;i<35;i++){
+      const a=(i/35)*Math.PI;
+      add(92+15*Math.cos(a)+rand(4), -38+8*Math.sin(a)+rand(4), 16+rand(4), 'scroll', '#e8d080');
+    }
+
+    // ── LEDGER in lower-left hand ──
+    for(let i=0;i<40;i++){
+      add(-88+rand(18), -40+rand(20), 12+rand(6), 'ledger', '#d4b860');
+    }
+
+    // ── LEGS (cross-legged lotus) ──
+    // Right leg
+    for(let i=0;i<60;i++){
+      const t2=i/60;
+      add(10+t2*45+rand(8), -20+t2*30+rand(8), -10+t2*5+rand(8), 'leg', '#c8a840');
+    }
+    // Left leg
+    for(let i=0;i<60;i++){
+      const t2=i/60;
+      add(-10-t2*40+rand(8), -20+t2*28+rand(8), -10+t2*5+rand(8), 'leg', '#c8a840');
+    }
+
+    // ── LOTUS THRONE ──
+    for(let petal=0;petal<12;petal++){
+      const pa=(petal/12)*Math.PI*2;
+      for(let j=0;j<18;j++){
+        const t2=j/18;
+        const pr=45+t2*25;
+        add(pr*Math.cos(pa)+rand(6), 20+t2*20+rand(5), pr*Math.sin(pa)*0.5+rand(5), 'lotus',
+          petal%2===0?'#f090b0':'#e070a0');
+      }
+    }
+    // Inner lotus glow
+    for(let i=0;i<40;i++){
+      const a=Math.random()*Math.PI*2, r=Math.random()*30;
+      add(r*Math.cos(a)+rand(4), 22+rand(6), r*Math.sin(a)*0.5+rand(4), 'lotus', '#ffb0c8');
+    }
+
+    // ── SACRED THREAD / ORNAMENTATION ──
+    for(let i=0;i<30;i++){
+      const t2=i/30, a=t2*Math.PI;
+      add(28*Math.cos(a)-5, -125+t2*60+rand(4), 28*Math.cos(a)*0.3+rand(3), 'ornament', '#f0d060');
+    }
+
+    // ── AURA PARTICLES ──
+    for(let i=0;i<120;i++){
+      const a=Math.random()*Math.PI*2, r=80+Math.random()*60;
+      const y=-80+rand(200);
+      add(r*Math.cos(a)+rand(15), y, r*Math.sin(a)*0.6+rand(15), 'aura', '#f0d05040');
+    }
+
+    return pts;
+  };
+
+  // ── Build orbiting Sanskrit characters ──
+  const buildOrbiters = () => {
+    const chars = ['ॐ','पु','पा','कर्','म','श्री','अ','ग्र','सं','धा','नी','✦','◈','⚬'];
+    return chars.map((ch,i)=>{
+      const inclination = (i/chars.length)*Math.PI*0.8 - 0.4;
+      return {
+        ch, inclination,
+        radius: 140+Math.random()*60,
+        speed:  0.004+Math.random()*0.006,
+        phase:  (i/chars.length)*Math.PI*2,
+        size:   10+Math.random()*8,
+        color:  i<9?'rgba(240,200,80,0.7)':'rgba(200,175,90,0.35)',
+        yOff:   -70+Math.random()*60,
+      };
+    });
+  };
+
+  // ── Build stars ──
+  const buildStars = (W,H) => Array.from({length:200},()=>({
+    x:Math.random()*W, y:Math.random()*H,
+    z:200+Math.random()*600,
+    r:0.4+Math.random()*1.2, opacity:0.2+Math.random()*0.5,
+  }));
+
+  // ── Canvas draw loop ──
+  useEffect(()=>{
+    const canvas = canvasRef.current; if(!canvas) return;
+    const ctx    = canvas.getContext('2d');
+    const resize = ()=>{ canvas.width=window.innerWidth; canvas.height=window.innerHeight; };
+    resize(); window.addEventListener('resize',resize);
+
+    const s = stateRef.current;
+    s.particles = buildFigure();
+    s.orbiters  = buildOrbiters();
+    s.stars     = buildStars(canvas.width, canvas.height);
+    s.t = 0;
+    s.explode = false;
+
+    const FOV    = 500;   // perspective focal length
+    const ROTY   = 0.004; // rotation speed around Y axis
+
+    const project = (x,y,z, rotY, cx,cy) => {
+      // Rotate around Y
+      const rx = x*Math.cos(rotY) - z*Math.sin(rotY);
+      const rz = x*Math.sin(rotY) + z*Math.cos(rotY);
+      // Perspective project
+      const scale = FOV / (FOV + rz + 300);
+      return { sx: cx + rx*scale, sy: cy + y*scale, scale, rz };
+    };
+
+    const SPAWN_FRAMES = 90; // particles travel to positions over 90 frames
+
+    const draw = ()=>{
+      const W = canvas.width, H = canvas.height;
+      const CX = W * 0.38, CY = H * 0.48; // figure center (left of center)
+      s.t++;
+      const rotY = s.t * ROTY;
+      const exploding = s.explode;
+
+      // ── Background ──
+      ctx.fillStyle = 'rgba(6,4,2,1)';
+      ctx.fillRect(0,0,W,H);
+
+      // Radial glow behind figure
+      const grd = ctx.createRadialGradient(CX,CY,20,CX,CY,280);
+      grd.addColorStop(0,'rgba(200,175,90,.07)');
+      grd.addColorStop(0.5,'rgba(200,160,60,.03)');
+      grd.addColorStop(1,'transparent');
+      ctx.fillStyle=grd; ctx.fillRect(0,0,W,H);
+
+      // ── Stars (parallax depth) ──
+      s.stars.forEach(st=>{
+        const scale = FOV/(FOV+st.z);
+        const sx = W/2+(st.x-W/2)*scale;
+        const sy = H/2+(st.y-H/2)*scale;
+        ctx.beginPath(); ctx.arc(sx,sy,st.r*scale,0,Math.PI*2);
+        ctx.fillStyle=`rgba(255,255,220,${st.opacity*scale})`; ctx.fill();
+      });
+
+      // ── Particles — animate toward target ──
+      // Sort by depth (painter's algorithm)
+      const projected = s.particles.map(p=>{
+        // Move toward target
+        if(exploding){
+          p.vx += (p.x-CX)*0.03 + (Math.random()-0.5)*3;
+          p.vy += (p.y-CY)*0.03 + (Math.random()-0.5)*3;
+          p.x+=p.vx; p.y+=p.vy; p.z+=p.vz;
+        } else if(s.t < SPAWN_FRAMES){
+          // Spawn: fly from center to target
+          const ease = s.t/SPAWN_FRAMES;
+          const curve = ease*ease*(3-2*ease); // smoothstep
+          p.x = p.x + (p.tx-p.x)*0.08;
+          p.y = p.y + (p.ty-p.y)*0.08;
+          p.z = p.z + (p.tz-p.z)*0.08;
+        } else {
+          // Settled: slight organic drift around target
+          const drift = Math.sin(s.t*0.02+p.phase)*1.5;
+          p.x = p.tx + drift*Math.cos(p.phase) + (Math.random()-0.5)*0.2;
+          p.y = p.ty + drift*Math.sin(p.phase)*0.5 + (Math.random()-0.5)*0.2;
+          p.z = p.tz + Math.sin(s.t*0.015+p.phase*1.3)*3;
+        }
+        const pr = project(p.x, p.y, p.z, rotY, CX, CY);
+        return { p, ...pr };
+      });
+      projected.sort((a,b)=>a.rz-b.rz);
+
+      projected.forEach(({p,sx,sy,scale})=>{
+        if(sx<-50||sx>W+50||sy<-50||sy>H+50) return;
+        const r = p.size*scale;
+        const opacity = p.baseOpacity * Math.min(1, s.t/30) * scale * 1.2;
+        const pulse = 1 + Math.sin(s.t*0.04+p.phase)*0.12;
+
+        // Glow for bright parts
+        if(p.type==='quill'||p.type==='face'||p.type==='crown'||p.type==='halo'){
+          ctx.beginPath(); ctx.arc(sx,sy,r*3*pulse,0,Math.PI*2);
+          ctx.fillStyle=`rgba(240,210,80,${opacity*0.15})`; ctx.fill();
+        }
+        // Core particle
+        ctx.beginPath(); ctx.arc(sx,sy,r*pulse,0,Math.PI*2);
+        ctx.fillStyle=p.color==='gold'?`rgba(240,200,80,${opacity})`:
+          p.color.startsWith('#')?hexAlpha(p.color,opacity):p.color;
+        ctx.fill();
+      });
+
+      // ── Orbiting Sanskrit characters ──
+      if(s.t>60){
+        const alpha = Math.min((s.t-60)/40,1);
+        s.orbiters.forEach(orb=>{
+          const angle = orb.phase + s.t*orb.speed;
+          // 3D orbit: x=r*cos(a), y=r*sin(a)*sin(incl), z=r*sin(a)*cos(incl)
+          const ox = orb.radius * Math.cos(angle);
+          const oy = orb.yOff + orb.radius * Math.sin(angle)*Math.sin(orb.inclination);
+          const oz = orb.radius * Math.sin(angle)*Math.cos(orb.inclination);
+          const pr = project(ox,oy,oz,rotY,CX,CY);
+          const opacity = alpha * pr.scale * 0.9;
+          if(opacity<0.05) return;
+          ctx.font=`${orb.size*pr.scale}px 'Noto Serif Devanagari',serif`;
+          ctx.textAlign='center'; ctx.textBaseline='middle';
+          const orbOpacity=orb.color.includes('0.7')?opacity:opacity*0.5; ctx.fillStyle='rgba(240,200,80,'+orbOpacity+')';
+          ctx.shadowBlur=12; ctx.shadowColor=`rgba(240,200,80,${opacity*0.6})`;
+          ctx.fillText(orb.ch, pr.sx, pr.sy);
+          ctx.shadowBlur=0;
+        });
+      }
+
+      // ── Ink droplet particles falling from quill tip ──
+      if(s.t>80&&!exploding){
+        const inkAlpha=Math.min((s.t-80)/40,1);
+        for(let i=0;i<3;i++){
+          const pr=project(100+Math.random()*20, -180+Math.random()*10, 22, rotY, CX,CY);
+          ctx.beginPath(); ctx.arc(pr.sx,pr.sy,1.5*pr.scale,0,Math.PI*2);
+          ctx.fillStyle=`rgba(240,210,80,${inkAlpha*0.5*Math.random()})`;
+          ctx.fill();
+        }
+      }
+
+      rafRef.current = requestAnimationFrame(draw);
+    };
+    draw();
+    return()=>{ cancelAnimationFrame(rafRef.current); window.removeEventListener('resize',resize); };
+  },[]);
+
+  // Helper: hex color + alpha
+  const hexAlpha = (hex, a) => {
+    const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+    return `rgba(${r},${g},${b},${a})`;
+  };
+
+  // ── Auto-advance story lines ──
+  useEffect(()=>{
+    if(lineIdx>=LINES.length){ setDone(true); return; }
+    timerRef.current=setTimeout(()=>setLineIdx(i=>i+1), LINES[lineIdx]?.delay||1500);
+    return()=>clearTimeout(timerRef.current);
+  },[lineIdx]);
+
+  // Sync lineIdx to ref for canvas
+  useEffect(()=>{ stateRef.current.lineIdx=lineIdx; },[lineIdx]);
+
+  // Speak CG voice on mount
+  useEffect(()=>{
+    if(!muted) setTimeout(()=>VoiceEngine.speakChitragupta('open',chosenLang),800);
+    return()=>VoiceEngine.stop();
+  },[]);
+
+  const handleBegin = ()=>{
+    stateRef.current.explode=true;
+    setExploding(true);
+    setTimeout(onBegin, 900);
+  };
+
+  const cur = LINES[lineIdx-1];
+  const prev= LINES[lineIdx-2];
+  const isHi= chosenLang==='hi';
+
+  return(
+    <div style={{position:'fixed',inset:0,zIndex:100,overflow:'hidden',background:'#060402'}}>
+      <canvas ref={canvasRef} style={{position:'absolute',inset:0,width:'100%',height:'100%'}}/>
+
+      {/* Skip */}
+      <button onClick={onSkip} style={{
+        position:'fixed',top:20,right:20,zIndex:20,
+        background:'transparent',border:'1px solid rgba(200,175,90,.2)',
+        color:'rgba(200,175,90,.35)',padding:'5px 16px',fontSize:10,
+        fontFamily:"'Cinzel',serif",cursor:'pointer',borderRadius:3,letterSpacing:2,
+        transition:'all .2s',
+      }}
+      onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(200,175,90,.5)';e.currentTarget.style.color='rgba(200,175,90,.7)'}}
+      onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(200,175,90,.2)';e.currentTarget.style.color='rgba(200,175,90,.35)'}}>
+        SKIP ▸
+      </button>
+
+      {/* Right side — Text panel */}
+      <div style={{
+        position:'absolute', right:0, top:0, bottom:0,
+        width:'clamp(300px,42%,520px)',
+        display:'flex',flexDirection:'column',justifyContent:'center',
+        padding:'40px clamp(20px,4vw,48px) 100px clamp(16px,3vw,32px)',
+        background:'linear-gradient(90deg,transparent 0%,rgba(6,4,2,.7) 25%,rgba(6,4,2,.92) 60%)',
+        zIndex:5,
+      }}>
+        {/* Top identifier */}
+        <div style={{marginBottom:28}}>
+          <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:12}}>
+            <svg width={20} height={26} viewBox="0 0 20 26" style={{flexShrink:0,filter:'drop-shadow(0 0 6px rgba(200,175,90,.6))'}}>
+              <path d="M10 1Q16 0 18 5Q20 12 14 18Q11 21 10 25Q9 21 10 18Q4 12 2 5Q4 0 10 1Z"
+                fill="rgba(200,175,90,.2)" stroke="rgba(200,175,90,.6)" strokeWidth="1"/>
+              <path d="M10 25L10 18Q14 14 16 10" fill="none" stroke="rgba(200,175,90,.6)" strokeWidth=".8"/>
+              <circle cx={10} cy={25} r={2} fill="rgba(200,175,90,.8)">
+                <animate attributeName="opacity" values=".3;1;.3" dur="1.6s" repeatCount="indefinite"/>
+              </circle>
+            </svg>
+            <div>
+              <div style={{fontSize:8,letterSpacing:5,color:'rgba(200,175,90,.45)',fontFamily:"'Cinzel',serif",fontWeight:700}}>THE DIVINE SCRIBE</div>
+              <div style={{fontSize:'clamp(18px,3vw,26px)',fontFamily:"'Yatra One',serif",color:'#f0d050',
+                textShadow:'0 0 20px rgba(200,175,90,.4)',letterSpacing:2,lineHeight:1.2}}>
+                {isHi?'चित्रगुप्त':'Chitragupta'}
+              </div>
+            </div>
+          </div>
+          <div style={{width:'100%',height:1,background:'linear-gradient(90deg,transparent,rgba(200,175,90,.2),transparent)'}}/>
+        </div>
+
+        {/* Story text — show current and fading previous */}
+        <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'center',gap:16,position:'relative'}}>
+          {/* Previous line — fading out */}
+          {prev&&(
+            <div key={`prev-${lineIdx}`} style={{
+              fontSize:'clamp(11px,1.8vw,14px)',
+              color:'rgba(200,175,90,.2)',
+              lineHeight:1.85,
+              fontFamily:isHi?"'Noto Serif Devanagari',serif":"'Cinzel',serif",
+              fontStyle:isHi?'normal':'italic',
+              letterSpacing:isHi?0:.5,
+              whiteSpace:'pre-line',
+              transition:'opacity .8s',
+            }}>
+              {prev.text}
+            </div>
+          )}
+          {/* Current line — bold and bright */}
+          {cur&&(
+            <div key={`cur-${lineIdx}`} style={{
+              fontSize:'clamp(14px,2.4vw,20px)',
+              color:cur.accent,
+              lineHeight:1.85,
+              fontFamily:isHi?"'Noto Serif Devanagari',serif":"'Cinzel',serif",
+              fontStyle:isHi?'normal':'italic',
+              letterSpacing:isHi?0:1,
+              fontWeight:700,
+              whiteSpace:'pre-line',
+              animation:'fadeIn .5s ease',
+              textShadow:`0 0 30px ${cur.accent}50`,
+            }}>
+              {cur.text}
+            </div>
+          )}
+          {/* Blinking quill cursor */}
+          {!done&&(
+            <div style={{display:'flex',alignItems:'center',gap:8,opacity:.5}}>
+              <div style={{fontSize:14,animation:'pulse 1.2s ease infinite'}}>🪶</div>
+              <div style={{fontSize:8,color:'rgba(200,175,90,.4)',letterSpacing:3,fontFamily:"'Cinzel',serif"}}>
+                {isHi?'लिख रहे हैं...':'WRITING...'}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Progress dots */}
+        <div style={{display:'flex',gap:5,marginBottom:20,marginTop:16}}>
+          {LINES.map((_,i)=>(
+            <div key={i} style={{
+              height:2, flex:1, borderRadius:1,
+              background:i<lineIdx?'rgba(200,175,90,.6)':'rgba(200,175,90,.12)',
+              transition:'background .4s',
+            }}/>
+          ))}
+        </div>
+
+        {/* Players */}
+        <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:16}}>
+          {players.filter(p=>!p.cpu).map((p,i)=>(
+            <div key={i} style={{display:'flex',alignItems:'center',gap:6,padding:'3px 10px',
+              background:'rgba(200,175,90,.05)',border:'1px solid rgba(200,175,90,.12)',borderRadius:14}}>
+              <span style={{fontSize:14}}>{p.char.icon}</span>
+              <span style={{fontSize:9,color:'rgba(200,175,90,.45)',fontFamily:"'Cinzel',serif"}}>{p.name}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Begin button */}
+        {done?(
+          <button onClick={handleBegin} disabled={exploding} style={{
+            background:exploding?'transparent':'linear-gradient(180deg,rgba(200,175,90,.22),rgba(200,175,90,.08))',
+            border:'1.5px solid rgba(200,175,90,.5)',color:'#f0d050',
+            padding:'13px 0',fontSize:12,fontFamily:"'Cinzel',serif",
+            cursor:exploding?'default':'pointer',borderRadius:4,letterSpacing:4,
+            width:'100%',animation:exploding?'none':'pulse 2.5s ease infinite',
+            boxShadow:'0 0 24px rgba(200,175,90,.08)',
+            transition:'all .3s',
+          }}>
+            {exploding?'✨ ...':'▸ '+(isHi?'खेल आरंभ करो':'BEGIN THE GAME')}
+          </button>
+        ):(
+          <div style={{height:46,display:'flex',alignItems:'center',justifyContent:'center',
+            border:'1px solid rgba(200,175,90,.08)',borderRadius:4,
+            color:'rgba(200,175,90,.2)',fontSize:9,letterSpacing:3,fontFamily:"'Cinzel',serif"}}>
+            {isHi?'अग्रसंधानी खुल रही है...':'AGRASANDHANI OPENS...'}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 /* Yama Image — put yama.png in /public folder */
 function YamaIcon({size=80}){
   return <div style={{width:size,height:size*1.3,display:"flex",alignItems:"center",justifyContent:"center"}}>
@@ -1533,6 +3446,75 @@ function YamaIcon({size=80}){
   </div>;
 }
 
+
+// ═══ SINE WAVE BACKGROUND — animated sacred geometry waves ═══
+function SineWaveBackground() {
+  const canvasRef = useRef(null);
+  const rafRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let t = 0;
+
+    const resize = () => {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const WAVES = [
+      { amp: 38, freq: 0.012, speed: 0.018, phase: 0,    color: 'rgba(200,160,60,.10)',  width: 1.5, yOff: 0.35 },
+      { amp: 22, freq: 0.018, speed: 0.026, phase: 1.2,  color: 'rgba(200,160,60,.07)',  width: 1.0, yOff: 0.45 },
+      { amp: 50, freq: 0.008, speed: 0.012, phase: 2.4,  color: 'rgba(160,120,60,.06)',  width: 2.0, yOff: 0.55 },
+      { amp: 28, freq: 0.022, speed: 0.032, phase: 3.6,  color: 'rgba(240,200,80,.05)',  width: 0.8, yOff: 0.65 },
+      { amp: 60, freq: 0.006, speed: 0.008, phase: 4.8,  color: 'rgba(180,140,60,.04)',  width: 2.5, yOff: 0.50 },
+      // Subtle Om-like circular resonance wave
+      { amp: 15, freq: 0.030, speed: 0.045, phase: 0.8,  color: 'rgba(240,200,80,.06)',  width: 0.6, yOff: 0.38 },
+    ];
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      t += 1;
+
+      WAVES.forEach(w => {
+        const y0 = canvas.height * w.yOff;
+        ctx.beginPath();
+        ctx.strokeStyle = w.color;
+        ctx.lineWidth = w.width;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = 'rgba(200,160,60,.12)';
+
+        for (let x = 0; x <= canvas.width; x += 2) {
+          // Layered sine: primary + harmonic for organic feel
+          const y = y0
+            + Math.sin(x * w.freq + t * w.speed + w.phase) * w.amp
+            + Math.sin(x * w.freq * 2.1 + t * w.speed * 1.4 + w.phase) * (w.amp * 0.3);
+          x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      });
+
+      rafRef.current = requestAnimationFrame(draw);
+    };
+    draw();
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener('resize', resize);
+    };
+  }, []);
+
+  return (
+    <canvas ref={canvasRef} style={{
+      position: 'fixed', inset: 0, width: '100%', height: '100%',
+      pointerEvents: 'none', zIndex: 0, opacity: 0.8,
+    }}/>
+  );
+}
 
 function InstaBadge(){
   return(
@@ -1661,6 +3643,16 @@ const CSS=`
 @keyframes yamaTextReveal{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
 @keyframes waveBar{0%,100%{height:8px}50%{height:28px}}
 @keyframes cymaticPulse{0%{transform:scale(.97);opacity:.08}50%{transform:scale(1.03);opacity:.2}100%{transform:scale(.97);opacity:.08}}
+@keyframes cgWrite{from{stroke-dashoffset:1000}to{stroke-dashoffset:0}}
+@keyframes cgEntry{0%{opacity:0;transform:translateX(-10px)}100%{opacity:1;transform:translateX(0)}}
+@keyframes cgScaleShake{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-1.5deg)}75%{transform:rotate(1.5deg)}}
+@keyframes cgGoldPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.6) drop-shadow(0 0 6px rgba(240,200,80,.8))}}
+@keyframes mokshaAscend{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-120vh) scale(0.1);opacity:0}}
+@keyframes mokshaLotus{0%{transform:scale(0) rotate(-180deg);opacity:0}60%{transform:scale(1.15) rotate(10deg);opacity:1}100%{transform:scale(1) rotate(0deg);opacity:1}}
+@keyframes mokshaBeam{0%{transform:scaleY(0);opacity:0;transform-origin:bottom}100%{transform:scaleY(1);opacity:1;transform-origin:bottom}}
+@keyframes yamaRise{0%{transform:translateY(100%) scale(0.5);opacity:0}100%{transform:translateY(0) scale(1);opacity:1}}
+@keyframes yamaFlame{0%,100%{transform:scaleY(1) skewX(0deg)}33%{transform:scaleY(1.1) skewX(-3deg)}66%{transform:scaleY(.95) skewX(2deg)}}
+@keyframes yamaChain{0%{stroke-dashoffset:200}100%{stroke-dashoffset:0}}
 @keyframes cymaticRotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
 @keyframes diceRoll{0%{transform:rotate(0deg) scale(1)}25%{transform:rotate(90deg) scale(1.2)}50%{transform:rotate(180deg) scale(.9)}75%{transform:rotate(270deg) scale(1.1)}100%{transform:rotate(360deg) scale(1)}}
 @keyframes cymaticFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
@@ -2023,6 +4015,11 @@ export default function MokshaPatam108(){
   const[msg,setMsg]=useState("");
   const[dil,setDil]=useState(null);
   const[win,setWin]=useState(null);
+  const[pendingPlayers,setPendingPlayers]=useState(null); // held during CG intro
+  // ── Chitragupta state ──
+  const[cgEntries,setCgEntries]=useState([]);
+  const[showMoksha,setShowMoksha]=useState(false);
+  const cgEntryId=useRef(0);
   const[busy,setBusy]=useState(false);
   const[hist,setHist]=useState([]);
   const[shI,setShI]=useState(0);
@@ -2043,6 +4040,7 @@ export default function MokshaPatam108(){
   const[gameVoicesPct,setGameVoicesPct]=useState(0);
   const[gameVoicesReady,setGameVoicesReady]=useState(false);
   const[yamaPhase,setYamaPhase]=useState(0); // 0=intro speaking, 1=who are you?, 2=go to setup // tracks which players are CPU
+  const[narrateStartedAt,setNarrateStartedAt]=useState(null); // timestamp when narrator audio actually begins — used for DiceStage graha sync
 
   const sfx=useSound();
   const ambient=useAmbient();
@@ -2056,6 +4054,19 @@ export default function MokshaPatam108(){
     });
   },[ambient]);
 
+  // ── Chitragupta helpers ──
+  const addCGEntry=useCallback((type,sq,detail)=>{
+    const id=++cgEntryId.current;
+    setCgEntries(e=>[...e.slice(-29),{id,type,sq,detail,ts:Date.now()}]);
+  },[]);
+
+  const speakCG=useCallback((key,delayMs=600)=>{
+    if(muted)return;
+    setTimeout(()=>{
+      if(!VoiceEngine.speaking) VoiceEngine.speakChitragupta(key,chosenLang);
+    },delayMs);
+  },[muted,chosenLang]);
+
   const eventCallback=useRef(null);
   const voiceTimerRef=useRef(null);
   const showEvent = useCallback((popup, onDismiss) => {
@@ -2067,7 +4078,25 @@ export default function MokshaPatam108(){
     eventCallback.current=onDismiss||null;
     if(!muted&&popup.subtitle){
       ambient.duck();
-      voiceTimerRef.current=setTimeout(()=>{voiceTimerRef.current=null;VoiceEngine.speak(popup.subtitle,chosenLang)},200);
+      const lang=chosenLang==='hi'?'hi':'en';
+      const tryStatic=()=>{
+        if(popup.staticKey){
+          const sv=STATIC_VOICES[popup.staticKey];
+          if(sv&&sv[lang]){
+            // Use speakNarrator with the static URL — same bass+reverb+drone processing as onboarding
+            VoiceEngine.speakNarrator(popup.subtitle,chosenLang,sv[lang]);
+            return true;
+          }
+        }
+        return false;
+      };
+      voiceTimerRef.current=setTimeout(()=>{
+        voiceTimerRef.current=null;
+        if(!tryStatic()){
+          // Fall back to dynamic TTS (cached in IndexedDB after first play)
+          VoiceEngine.speakNarrator(popup.subtitle,chosenLang,null);
+        }
+      },200);
     }
   }, [muted,chosenLang,ambient]);
   const dismissEvent = useCallback(() => {
@@ -2106,7 +4135,18 @@ export default function MokshaPatam108(){
     if(screen==="story"&&!muted){
       VoiceEngine.stop();
       // Small delay so browser is ready
-      setTimeout(()=>{if(!muted)VoiceEngine.speakNarrator(STORY_PAGES[storyPage][chosenLang],chosenLang)},300);
+      setTimeout(()=>{
+        if(!muted){
+          setNarrateStartedAt(null); // reset before new narration
+          const staticUrl=`/onboarding/story-${storyPage}-${chosenLang}.mp3`;
+          VoiceEngine.speakNarrator(
+            STORY_PAGES[storyPage][chosenLang],
+            chosenLang,
+            staticUrl,
+            ()=>setNarrateStartedAt(Date.now()) // fires when audio ACTUALLY starts
+          );
+        }
+      },300);
     }
     return()=>VoiceEngine.stop();
   },[screen,storyPage,muted]);
@@ -2116,9 +4156,11 @@ export default function MokshaPatam108(){
     setPos(Array(n).fill(1));setPunya(Array(n).fill(0));setPapa(Array(n).fill(0));
     setShieldA(Array(n).fill(false));setSkipA(Array(n).fill(false));
     setCur(0);setWin(null);setHist([]);setRv(null);setGv(null);setBusy(false);setDil(null);setUsedDharma([]);
+    setCgEntries([]);setShowMoksha(false);
     setMsg(`${pList[0].name} the ${pList[0].char.name} — your journey begins.`);
     gameStats.current={startTime:Date.now(),turns:0,snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0,grahaHits:{sun:0,moon:0,mars:0,mercury:0,jupiter:0,venus:0,saturn:0,rahu:0,ketu:0}};
     setScreen("game");
+    setTimeout(()=>{ if(!muted) VoiceEngine.speakChitragupta('open',chosenLang); },2800);
   };
 
   const addPlayer=()=>{
@@ -2135,7 +4177,10 @@ export default function MokshaPatam108(){
       }
     }
     setPlayers(np);setUsedChars(uc);setTempName("");setTempChar(-1);
-    if(np.length>=nP)setTimeout(()=>startGame(np),100);
+    if(np.length>=nP){
+      setPendingPlayers(np); // store for after CG intro
+      setTimeout(()=>setScreen("chitragupta"),100);
+    }
   };
 
   const nearest=(positions,ci,count)=>{let m=Infinity,idx=-1;for(let i=0;i<count;i++){if(i!==ci&&positions[i]<101){const d=Math.abs(positions[i]-positions[ci]);if(d>0&&d<m){m=d;idx=i}}}return idx};
@@ -2223,26 +4268,32 @@ export default function MokshaPatam108(){
           // ═══ STEP 3: Check landing — show popup, wait for dismiss ═══
           const finishTurn=(skipDharmaCheck)=>{
             nPos[cur]=p;setPos([...nPos]);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setSkipA(nSkip);
-            // Track highest square reached
             if(p>(gameStats.current.highest||1))gameStats.current.highest=p;
             setMsg([eMsg,...extras].filter(Boolean).join(" · ")||`Moved to ${p}.`);
             setHist(h=>[...h.slice(-12),`${pName}→${p}`]);
             if(nPunya[cur]>=30&&!win){setWin(cur);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory");
-              showEvent({icon:"ॐ",title:"KARMA VICTORY!",subtitle:`${pName} has accumulated 30 Punya! The board dissolves. Instant Moksha!`,color:"#f0d050"});
+              addCGEntry('moksha',p,`30 पुण्य · कर्म विजय`);
+              showEvent({icon:"ॐ",title:"KARMA VICTORY!",subtitle:`${pName} has accumulated 30 Punya! The board dissolves. Instant Moksha!`,color:"#f0d050"},()=>{speakCG('moksha',300);setTimeout(()=>setShowMoksha(true),1200);});
+            }
+            // Balance warning — Chitragupta watches when it's knife-edge
+            const pu=nPunya[cur],pa=nPapa[cur];
+            if(pu>0&&pa>0&&Math.abs(pu-pa)<=2&&p<100&&!win){
+              addCGEntry('balance',p,`${pu}P·${pa}X तुला`);
+              speakCG('balance',5500);
             }
             if(skipDharmaCheck||(!DLM_SQ.includes(p)&&!(p>100&&p<108)))setCur(c=>(c+1)%nP);
             setBusy(false);
           };
 
           if(SNAKES[p]){const sn=SNAKES[p];if(nShield[cur]){nShield[cur]=false;eMsg=`𓆙 ${sn.skt} — Shield!`;play("ladder");
-            showEvent({icon:"🛡",title:`Shield Saved ${pName}!`,subtitle:`The serpent ${sn.skt} (${sn.en}) struck — but Shukra's shield absorbed the venom! Shield is now gone.`,color:"#d0a0c0"},()=>finishTurn(true));
+            showEvent({icon:"🛡",title:`Shield Saved ${pName}!`,subtitle:`The serpent ${sn.skt} (${sn.en}) struck — but Shukra's shield absorbed the venom! Shield is now gone.`,color:"#d0a0c0",staticKey:"shield_save"},()=>{addCGEntry('punya',p,`${sn.skt} — shield`);speakCG('punya',500);finishTurn(true)});
           }else{const o=p;p=sn.to;eMsg=`𓆙 ${o}→${p}`;nPapa[cur]+=2;gameStats.current.snakes++;play("snake");play("yamaLaugh");
             // Yama taunts the player with voice
             if(!muted){setTimeout(()=>VoiceEngine.playYamaTaunt("snake",chosenLang),800)}
-            showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} caught you! ${sn.tale} Dragged from ${o} to ${p}. +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`},()=>finishTurn(true));
+            showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} caught you! ${sn.tale} Dragged from ${o} to ${p}. +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`,staticKey:"snake_hit"},()=>{addCGEntry('snake',p,`${sn.skt} · ${o}→${p}`);speakCG('snake',4000);finishTurn(true)});
           }}
           else if(LADDERS[p]){const ld=LADDERS[p];const o=p;p=ld.to;eMsg=`🪔 ${o}→${p}`;nPunya[cur]+=1;gameStats.current.ladders++;play("ladder");
-            showEvent({icon:"🪔",title:`${ld.skt} — ${ld.en}`,subtitle:`${pName}, the virtue of ${ld.en} lifts you! ${ld.tale} Rise from ${o} to ${p}. +1 PUNYA.`,color:"#f0d050",extra:`${o} → ${p}`},()=>finishTurn(true));
+            showEvent({icon:"🪔",title:`${ld.skt} — ${ld.en}`,subtitle:`${pName}, the virtue of ${ld.en} lifts you! ${ld.tale} Rise from ${o} to ${p}. +1 PUNYA.`,color:"#f0d050",extra:`${o} → ${p}`,staticKey:"ladder_rise"},()=>{addCGEntry('ladder',p,`${ld.skt} · ${o}→${p}`);speakCG('ladder',500);finishTurn(true)});
           }
           else if(DLM_SQ.includes(p)){
             // No-repeat dharma: pick from unused pool, reset if all used
@@ -2260,13 +4311,17 @@ export default function MokshaPatam108(){
             const sq=SACRED_PATH[p-101];
             const stepNum=p-100;
             const isFirstStep=p===101;
+            // Static text per step (no player name — pre-cacheable as MP3)
             const introText=isFirstStep
-              ?`${pName}, you have ENTERED THE ASHTANGA MARGA — the 8-fold sacred path of Patanjali! From here, you move only ONE STEP per turn. Each step tests your soul. There are no dice shortcuts. Only dharma. Step ${stepNum} of 7: ${sq.en} (${sq.desc}).`
+              ?`You have entered the Ashtanga Marga — the 8-fold sacred path of Patanjali. From here, you move only one step per turn. Each step tests your soul. There are no dice shortcuts. Only dharma. Step one of seven: ${sq.en}. ${sq.desc}.`
               :p===107
-              ?`${pName}, you have reached the FINAL STEP — ध्यान Dhyana, Meditation. After this test, you must roll EXACT 1 to enter Moksha. Only absolute surrender opens the final gate. Step 7 of 7.`
-              :`${pName}, Step ${stepNum} of 7 on the Sacred Path: ${sq.skt} — ${sq.en} (${sq.desc}). A test of your soul awaits.`;
+              ?`You have reached the final step — Dhyana, Meditation. After this test, you must roll exact one to enter Moksha. Only absolute surrender opens the final gate. Step seven of seven.`
+              :`Step ${stepNum} of 7 on the Sacred Path: ${sq.skt} — ${sq.en}. ${sq.desc}. A test of your soul awaits.`;
+            const ashtangaStaticKey=`ashtanga_step_${stepNum}`;
             eMsg=`${sq.icon} ${sq.skt} — Step ${stepNum}/7`;play("dilemma");
-            showEvent({icon:sq.icon,title:`अष्टांग मार्ग · Step ${stepNum}`,subtitle:introText,color:"#f0d050"},()=>{
+            showEvent({icon:sq.icon,title:`अष्टांग मार्ग · Step ${stepNum}`,subtitle:introText,color:"#f0d050",staticKey:ashtangaStaticKey},()=>{
+              addCGEntry('sacred',p,`${sq.skt} · ${sq.en}`);
+              if(stepNum===1) speakCG('sacred',500);
               // Pick random riddle for this step
               const pool=ASHTANGA_RIDDLES[p]||ASHTANGA_RIDDLES[101];
               const riddle=pool[Math.floor(Math.random()*pool.length)];
@@ -2287,10 +4342,10 @@ export default function MokshaPatam108(){
             });
           }
           else if(p===108){if(nPunya[cur]>=nPapa[cur]){setWin(cur);eMsg=`ॐ MOKSHA!`;play("victory");
-            showEvent({icon:"ॐ",title:"मोक्ष प्राप्त — MOKSHA!",subtitle:`${pName} reached Square 108 — Moksha! Punya (${nPunya[cur]}) ≥ Papa (${nPapa[cur]}). Liberation! The cycle of Samsara ends.`,color:"#f0d050"},finishTurn);
+            showEvent({icon:"ॐ",title:"मोक्ष प्राप्त — MOKSHA!",subtitle:`${pName} reached Square 108 — Moksha! Punya (${nPunya[cur]}) ≥ Papa (${nPapa[cur]}). Liberation! The cycle of Samsara ends.`,color:"#f0d050",staticKey:"moksha_gate"},()=>{addCGEntry('moksha',108,`${nPunya[cur]} पुण्य · मुक्ति`);speakCG('moksha',600);setTimeout(()=>setShowMoksha(true),1200);finishTurn()});
           }else{p=67;eMsg="Impure → 67";play("snake");play("yamaLaugh");
             if(!muted)setTimeout(()=>VoiceEngine.playYamaTaunt("reject",chosenLang),800);
-            showEvent({icon:"⚠",title:"Gates of Moksha REJECT You!",subtitle:`${pName}, your soul is impure! Punya (${nPunya[cur]}) < Papa (${nPapa[cur]}). Cast back to 67.`,color:"#e06030"},finishTurn);
+            showEvent({icon:"⚠",title:"Gates of Moksha REJECT You!",subtitle:`${pName}, your soul is impure! Punya (${nPunya[cur]}) < Papa (${nPapa[cur]}). Cast back to 67.`,color:"#e06030"},()=>{addCGEntry('reject',67,`${nPunya[cur]}P < ${nPapa[cur]}X`);speakCG('reject',600);finishTurn()});
           }}
           else{finishTurn()}
         }
@@ -2300,7 +4355,7 @@ export default function MokshaPatam108(){
     // Show graha popup — user dismisses, then movement begins
     // On sacred path: skip graha popup entirely
     if(onSacredPath){startMovement()}
-    else{showEvent({icon:g.icon,title:`${g.n} · ${g.en}`,subtitle:grahaStory,color:g.color,type:"graha"},startMovement)}
+    else{showEvent({icon:g.icon,title:`${g.n} · ${g.en}`,subtitle:grahaStory,color:g.color,type:"graha",staticKey:GRAHA_STATIC_KEY[g.fx]},startMovement)}
   },[cur,nP,dil,win,busy,punya,papa,pos,shieldA,skipA,play,players,showEvent,chosenLang,muted]);
 
   const solvD=(ci)=>{
@@ -2319,7 +4374,7 @@ export default function MokshaPatam108(){
         play("chime");
         if(!muted){
           ambient.duck();
-          setTimeout(()=>VoiceEngine.speak(`Well done ${pName}! You answered correctly. Your soul grows purer.`,chosenLang),300);
+          setTimeout(()=>VoiceEngine.speakNarrator(`Well done ${pName}! You answered correctly. Your soul grows purer.`,chosenLang,null),300);
           setTimeout(()=>ambient.unduck(),4000);
         }
       }else{
@@ -2357,7 +4412,8 @@ export default function MokshaPatam108(){
     setPunya(np);setPapa(npa);setSkipA(nsk);setPos(npos);setShieldA(nsh);
     const parts=[];if(fx.punya)parts.push(`+${fx.punya} Punya`);if(fx.papa)parts.push(`+${fx.papa} Papa`);if(fx.move)parts.push(fx.move>0?`advance ${fx.move}`:`back ${Math.abs(fx.move)}`);if(fx.skip)parts.push("skip next");if(fx.loseShield)parts.push("lost Shield");if(fx.giveShield)parts.push("gained Shield");
     setMsg(parts.join(", ")||"Balanced.");
-    if(ch.k==="punya"){play("chime");gameStats.current.riddlesC++}else if(ch.k==="papa"){play("yamaLaugh");gameStats.current.riddlesW++}
+    if(ch.k==="punya"){play("chime");gameStats.current.riddlesC++;addCGEntry('dharma_p',npos[dil.pi]||1,dil.en||'');speakCG('dharma_p',600);}
+    else if(ch.k==="papa"){play("yamaLaugh");gameStats.current.riddlesW++;addCGEntry('dharma_x',npos[dil.pi]||1,dil.en||'');speakCG('dharma_x',4000);}
     if(np[dil.pi]>=30&&!win){setWin(dil.pi);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory")}
     setDil(null);setCur(c=>(c+1)%nP);
   };
@@ -2448,7 +4504,7 @@ export default function MokshaPatam108(){
       const voiceText=dil.ashtanga
         ?`Riddle of ${dil.en}. ${dil.txt}. Option one: ${dil.c[0].l}. Option two: ${dil.c[1].l}.`
         :`Dharma Dilemma. ${dil.en}. ${dil.txt}. Your choices are: ${dil.c.map((c,i)=>c.l).join('. Or. ')}`;
-      VoiceEngine.speak(voiceText,chosenLang);
+      VoiceEngine.speakNarrator(voiceText,chosenLang,null);
     },500);
     // Only clear timer on cleanup, DON'T stop voice - let it finish naturally after card closes
     return()=>{clearTimeout(timer)};
@@ -2461,6 +4517,17 @@ export default function MokshaPatam108(){
   // ═══ GLOBAL OVERLAYS — rendered on every screen ═══
   const globalOverlays=<>
     <style>{CSS}</style>
+    {/* ═══ MOKSHA CINEMATIC — appears full-screen when win triggers ═══ */}
+    {showMoksha&&win!==null&&(
+      <MokshaScreen
+        winner={win}
+        players={players}
+        punya={punya}
+        papa={papa}
+        muted={muted}
+        onClose={()=>{setShowMoksha(false);setScreen("title");setWin(null);setPlayers([]);ambient.stop();}}
+      />
+    )}
     {/* ═══ SACRED BACKGROUND — visible on ALL screens ═══ */}
     <div style={{position:"fixed",inset:0,pointerEvents:"none",overflow:"hidden",zIndex:0}}>
       <div style={{position:"fixed",inset:0,background:"radial-gradient(ellipse at center,transparent 40%,rgba(6,5,3,.85) 100%)"}}/>
@@ -2617,7 +4684,7 @@ export default function MokshaPatam108(){
             </div>
             {/* Tabs */}
             <div style={{display:"flex",gap:6,marginBottom:20,justifyContent:"center",flexWrap:"wrap"}}>
-              {[["overview","🔱 Overview"],["history","📜 History"],["leaderboard","🏆 Leaderboard"]].map(([key,label])=><button key={key} onClick={()=>{setProfileTab(key);if(key==="history"&&auth.user){setHistLoading(true);GameDB.getHistory(auth.user.id).then(d=>{setGameHistory(d);setHistLoading(false)})}if(key==="leaderboard")GameDB.getLeaderboard().then(d=>setLeaderboard(d))}} style={{padding:"6px 16px",fontSize:11,borderRadius:20,cursor:"pointer",border:`1px solid ${profileTab===key?"rgba(240,200,80,.4)":"rgba(200,160,60,.15)"}`,background:profileTab===key?"rgba(240,200,80,.1)":"transparent",color:profileTab===key?"#f0d050":"#8a7a50",fontFamily:"'Cinzel',serif",letterSpacing:1}}>{label}</button>)}
+              {[["overview","🔱 Overview"],["history","📜 Past Lives"],["leaderboard","🪶 Agrasandhani"]].map(([key,label])=><button key={key} onClick={()=>{setProfileTab(key);if(key==="history"&&auth.user){setHistLoading(true);GameDB.getHistory(auth.user.id).then(d=>{setGameHistory(d);setHistLoading(false)})}if(key==="leaderboard")GameDB.getLeaderboard().then(d=>setLeaderboard(d))}} style={{padding:"6px 16px",fontSize:11,borderRadius:20,cursor:"pointer",border:`1px solid ${profileTab===key?"rgba(240,200,80,.4)":"rgba(200,160,60,.15)"}`,background:profileTab===key?"rgba(240,200,80,.1)":"transparent",color:profileTab===key?"#f0d050":"#8a7a50",fontFamily:"'Cinzel',serif",letterSpacing:1}}>{label}</button>)}
             </div>
             {/* Overview */}
             {profileTab==="overview"&&<>
@@ -2706,7 +4773,7 @@ export default function MokshaPatam108(){
               </div>
             </>}
             {/* History */}
-            {profileTab==="history"&&<>{histLoading?<div style={{textAlign:"center",padding:40,color:"#5a4a30",fontSize:12}}>Loading past lives...</div>:gameHistory.length===0?<div style={{textAlign:"center",padding:40,color:"#5a4a30",fontSize:12,fontStyle:"italic"}}>No games yet. Your journey begins with the first roll.</div>:gameHistory.map(g=>{
+            {profileTab==="history"&&<>{histLoading?<div style={{textAlign:"center",padding:40,color:"#5a4a30",fontSize:12}}>Loading past lives...</div>:gameHistory.length===0?<div style={{textAlign:"center",padding:40,color:"#5a4a30",fontSize:12,fontStyle:"italic"}}>No past lives recorded. Your journey begins with the first roll.</div>:gameHistory.map(g=>{
               // Parse players data from graha_effects
               let gamePlayers=[];let grahaHits={};
               try{const ge=typeof g.graha_effects==="string"?JSON.parse(g.graha_effects):g.graha_effects;gamePlayers=ge?.players||[];grahaHits=ge?.grahaHits||{}}catch(e){}
@@ -2766,8 +4833,8 @@ export default function MokshaPatam108(){
                 {(()=>{const max=Object.entries(grahaHits).reduce((a,b)=>b[1]>a[1]?b:a,["",0]);const grNames={sun:"Surya ☀",moon:"Chandra ☾",mars:"Mangal ♂",mercury:"Budh ☿",jupiter:"Brihaspati ♃",venus:"Shukra ♀",saturn:"Shani ♄",rahu:"Rahu ☊",ketu:"Ketu ☋"};return max[1]>1?<div style={{fontSize:9,color:"#8a7a50",marginTop:4,fontStyle:"italic"}}>{grNames[max[0]]||max[0]} influenced you most ({max[1]} times)</div>:null})()}
               </div>}
             </div>})}</>}
-            {/* Leaderboard */}
-            {profileTab==="leaderboard"&&<div style={{background:"rgba(20,16,10,.6)",border:"1px solid rgba(200,160,60,.1)",borderRadius:8,overflow:"hidden"}}>{leaderboard.length===0?<div style={{textAlign:"center",padding:30,color:"#5a4a30",fontSize:12}}>The sacred ledger is empty.</div>:leaderboard.map((lb,i)=>{const isMe=auth.user&&lb.id===auth.user.id;const lks=(lb.total_punya_earned||0)-(lb.total_papa_earned||0);return<div key={lb.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",borderBottom:"1px solid rgba(200,160,60,.06)",background:isMe?"rgba(240,200,80,.06)":"transparent"}}>
+            {/* अग्रसंधानी — The Eternal Ledger */}
+            {profileTab==="leaderboard"&&<div style={{background:"rgba(20,16,10,.6)",border:"1px solid rgba(200,160,60,.1)",borderRadius:8,overflow:"hidden"}}>{leaderboard.length===0?<div style={{textAlign:"center",padding:30,color:"#5a4a30",fontSize:12}}>चित्रगुप्त की कलम तैयार है · Chitragupta's quill awaits the first soul.</div>:leaderboard.map((lb,i)=>{const isMe=auth.user&&lb.id===auth.user.id;const lks=(lb.total_punya_earned||0)-(lb.total_papa_earned||0);return<div key={lb.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",borderBottom:"1px solid rgba(200,160,60,.06)",background:isMe?"rgba(240,200,80,.06)":"transparent"}}>
               <div style={{width:28,textAlign:"center",fontSize:i<3?16:12,color:i===0?"#f0d050":i===1?"#c0c0c0":i===2?"#cd7f32":"#8a7a50",fontWeight:700}}>{i===0?"🥇":i===1?"🥈":i===2?"🥉":i+1}</div>
               {lb.avatar_url?<img src={lb.avatar_url} alt="" style={{width:28,height:28,borderRadius:"50%",border:isMe?"2px solid rgba(240,200,80,.4)":"1px solid rgba(200,160,60,.1)"}} referrerPolicy="no-referrer"/>:<div style={{width:28,height:28,borderRadius:"50%",background:"rgba(240,200,80,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#c0b080"}}>{(lb.display_name||"S").charAt(0)}</div>}
               <div style={{flex:1,minWidth:0}}><div style={{fontSize:12,color:isMe?"#f0d050":"#c0b080",fontWeight:isMe?700:400,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{lb.display_name}{isMe?" (you)":""}</div><div style={{fontSize:10,color:"#8a7a50"}}>{lb.total_games} games · {lb.total_wins} wins</div></div>
@@ -2855,17 +4922,11 @@ export default function MokshaPatam108(){
 
             {/* Action buttons */}
             <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
-              <button className="gb gp" disabled={preloading} onClick={()=>{
+              <button className="gb gp" onClick={()=>{
                 ambient.start();
-                const isLocal = ['localhost','127.0.0.1',''].includes(window.location.hostname);
-                if (isLocal) { setScreen("story"); setStoryPage(0); return; }
-                setPreloading(true); setPreloadPct(0);
-                const { promise, progress } = AudioCache.preloadAll(chosenLang);
-                const iv = setInterval(() => setPreloadPct(progress()), 300);
-                promise.then(() => { clearInterval(iv); setPreloadPct(100); setCacheCount(AudioCache.count()); setPreloading(false); setScreen("story"); setStoryPage(0); })
-                  .catch(() => { clearInterval(iv); setPreloading(false); setScreen("story"); setStoryPage(0); });
+                setScreen("story"); setStoryPage(0);
               }} style={{fontSize:13,padding:"12px 28px",letterSpacing:2}}>
-                {preloading ? `📜 LOADING... ${preloadPct}%` : "📜 BEGIN STORY"}
+                📜 BEGIN STORY
               </button>
               <button className="gb" onClick={()=>{ambient.start();setScreen("pickcount")}} style={{fontSize:13,padding:"12px 28px",letterSpacing:2,opacity:.5}}>⚡ PLAY</button>
             </div>
@@ -2916,9 +4977,11 @@ export default function MokshaPatam108(){
       );
 
       if(vis.type==="diceStage") return(
-        <DiceStage GRAHA_INFO={GRAHA_INFO} chosenLang={chosenLang}/>
+        <DiceStage GRAHA_INFO={GRAHA_INFO} chosenLang={chosenLang} isNarrating={!muted} narrateStartedAt={narrateStartedAt}/>
       );
 
+      if(vis.type==="dharmaStage") return <DharmaStage key={0}/>;
+      if(vis.type==="sacredPathStage") return <SacredPathStage key={0} SACRED_PATH={SACRED_PATH}/>;
       if(vis.type==="versus") return(
         <div style={{background:"radial-gradient(ellipse at center,rgba(160,40,40,.12),transparent 70%)",border:"1px solid rgba(160,40,40,.25)",borderRadius:12,padding:"24px 20px",textAlign:"center",animation:"fadeIn .8s ease",position:"relative",overflow:"hidden"}}>
           <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 50% 0%,rgba(160,30,30,.08),transparent 60%)",pointerEvents:"none"}}/>
@@ -2957,7 +5020,7 @@ export default function MokshaPatam108(){
             </div>
           </div>
           <div style={{display:"flex",gap:6,alignItems:"center"}}>
-            <button onClick={()=>{if(!muted)VoiceEngine.speakNarrator(pg[chosenLang],chosenLang);else VoiceEngine.stop()}}
+            <button onClick={()=>{if(!muted){const su=`/onboarding/story-${storyPage}-${chosenLang}.mp3`;setNarrateStartedAt(null);VoiceEngine.speakNarrator(pg[chosenLang],chosenLang,su,()=>setNarrateStartedAt(Date.now()))}else VoiceEngine.stop()}}
               style={{background:"transparent",border:"1px solid rgba(200,160,60,.18)",color:"#c0b080",padding:"5px 10px",fontSize:13,cursor:"pointer",borderRadius:3,lineHeight:1}}>
               🔊
             </button>
@@ -2986,83 +5049,102 @@ export default function MokshaPatam108(){
               <div style={{width:60,height:1,background:"linear-gradient(90deg,transparent,rgba(240,200,80,.3),transparent)",margin:"14px auto 0"}}/>
             </div>
 
-            {/* ── Responsive two-panel layout ── */}
-            <div style={{display:"flex",gap:24,alignItems:"flex-start",flexWrap:"wrap"}}>
-
-              {/* LEFT: Bullet list */}
-              <div style={{flex:"1 1 260px",minWidth:0}}>
-                <div style={{display:"flex",flexDirection:"column",gap:10}}>
+            {/* ── Responsive layout: full-width for cinematic pages, two-panel otherwise ── */}
+            {(vis?.type==="dharmaStage"||vis?.type==="sacredPathStage") ? (
+              /* FULL-WIDTH CINEMATIC — bullets stacked above visual */
+              <div style={{display:"flex",flexDirection:"column",gap:16}}>
+                {/* Compact bullet row */}
+                <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))",gap:8}}>
                   {bullets.map((b,bi)=>(
                     <div key={bi} style={{
-                      display:"flex",gap:14,alignItems:"flex-start",
-                      background:"rgba(20,16,10,.55)",
-                      border:`1px solid ${b.accent}22`,
-                      borderLeft:`3px solid ${b.accent}`,
-                      borderRadius:"0 8px 8px 0",
-                      padding:"12px 14px",
-                      animation:`slideUp .5s ease ${bi*0.1}s both`,
-                      transition:"background .2s",
-                    }}
-                    onMouseEnter={e=>e.currentTarget.style.background="rgba(30,22,12,.7)"}
-                    onMouseLeave={e=>e.currentTarget.style.background="rgba(20,16,10,.55)"}
-                    >
-                      {/* Icon bubble */}
-                      <div style={{
-                        width:34,height:34,borderRadius:8,flexShrink:0,
-                        background:`${b.accent}15`,border:`1px solid ${b.accent}30`,
-                        display:"flex",alignItems:"center",justifyContent:"center",
-                        fontSize:16,
-                      }}>
-                        {b.icon}
-                      </div>
-                      {/* Text */}
+                      display:"flex",gap:10,alignItems:"flex-start",
+                      background:"rgba(20,16,10,.5)",
+                      border:`1px solid ${b.accent}18`,
+                      borderLeft:`2px solid ${b.accent}`,
+                      borderRadius:"0 6px 6px 0",
+                      padding:"8px 12px",
+                      animation:`slideUp .4s ease ${bi*0.08}s both`,
+                    }}>
+                      <div style={{width:28,height:28,borderRadius:6,flexShrink:0,background:`${b.accent}12`,border:`1px solid ${b.accent}25`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}>{b.icon}</div>
                       <div style={{flex:1,minWidth:0}}>
-                        <div style={{fontSize:12,fontWeight:700,color:b.accent,letterSpacing:.5,marginBottom:3,fontFamily:"'Cinzel',serif"}}>
-                          {b.title}
-                        </div>
-                        <div style={{fontSize:11,color:"#a09070",lineHeight:1.7}}>
-                          {b.text}
-                        </div>
+                        <div style={{fontSize:10,fontWeight:700,color:b.accent,letterSpacing:.5,marginBottom:2,fontFamily:"'Cinzel',serif"}}>{b.title}</div>
+                        <div style={{fontSize:10,color:"#8a7a50",lineHeight:1.6}}>{b.text}</div>
                       </div>
                     </div>
                   ))}
                 </div>
+                {/* Full-width visual */}
+                <div style={{width:"100%"}}>
+                  {renderMainVisual()}
+                </div>
               </div>
-
-              {/* RIGHT: Animated visual */}
-              <div style={{flex:"0 0 auto",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",paddingTop:4,minWidth:280}}>
-                {renderMainVisual()}
+            ) : (
+              /* TWO-PANEL — bullets left, visual right */
+              <div style={{display:"flex",gap:24,alignItems:"flex-start",flexWrap:"wrap"}}>
+                {/* LEFT: Bullet list */}
+                <div style={{flex:"1 1 260px",minWidth:0}}>
+                  <div style={{display:"flex",flexDirection:"column",gap:10}}>
+                    {bullets.map((b,bi)=>(
+                      <div key={bi} style={{
+                        display:"flex",gap:14,alignItems:"flex-start",
+                        background:"rgba(20,16,10,.55)",
+                        border:`1px solid ${b.accent}22`,
+                        borderLeft:`3px solid ${b.accent}`,
+                        borderRadius:"0 8px 8px 0",
+                        padding:"12px 14px",
+                        animation:`slideUp .5s ease ${bi*0.1}s both`,
+                        transition:"background .2s",
+                      }}
+                      onMouseEnter={e=>e.currentTarget.style.background="rgba(30,22,12,.7)"}
+                      onMouseLeave={e=>e.currentTarget.style.background="rgba(20,16,10,.55)"}
+                      >
+                        <div style={{width:34,height:34,borderRadius:8,flexShrink:0,background:`${b.accent}15`,border:`1px solid ${b.accent}30`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>{b.icon}</div>
+                        <div style={{flex:1,minWidth:0}}>
+                          <div style={{fontSize:12,fontWeight:700,color:b.accent,letterSpacing:.5,marginBottom:3,fontFamily:"'Cinzel',serif"}}>{b.title}</div>
+                          <div style={{fontSize:11,color:"#a09070",lineHeight:1.7}}>{b.text}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {/* RIGHT: Visual */}
+                <div style={{flex:"0 0 auto",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",paddingTop:4,minWidth:280}}>
+                  {renderMainVisual()}
+                </div>
               </div>
-            </div>
+            )}
 
           </div>
         </div>
 
         {/* ── Fixed bottom navigation ── */}
-        <div style={{position:"fixed",bottom:0,left:0,right:0,padding:"12px 20px",background:"linear-gradient(0deg,rgba(12,10,7,.98) 60%,rgba(12,10,7,0))",display:"flex",justifyContent:"space-between",alignItems:"center",zIndex:20,gap:12}}>
-          <button onClick={()=>{VoiceEngine.stop();setScreen("pickcount")}}
-            style={{background:"transparent",border:"none",color:"rgba(90,74,48,.5)",fontSize:9,cursor:"pointer",letterSpacing:2,fontFamily:"'Cinzel',serif",flexShrink:0}}>
-            SKIP →
-          </button>
-          <div style={{display:"flex",gap:12,flex:1,justifyContent:"flex-end"}}>
-            {storyPage>0&&(
-              <button className="gb" onClick={()=>{VoiceEngine.stop();setStoryPage(storyPage-1)}}
-                style={{padding:"10px 22px",fontSize:11,letterSpacing:2}}>
-                ← Prev
-              </button>
-            )}
-            {storyPage<STORY_PAGES.length-1?(
-              <button className="gb gp" onClick={()=>{VoiceEngine.stop();setStoryPage(storyPage+1)}}
-                style={{padding:"10px 28px",fontSize:12,letterSpacing:3}}>
-                Next →
-              </button>
-            ):(
-              <button className="gb gp" onClick={()=>{VoiceEngine.stop();setScreen("pickcount")}}
-                style={{padding:"10px 28px",fontSize:12,letterSpacing:3,animation:"pulse 2s ease infinite"}}>
-                ⚡ Play Now
-              </button>
-            )}
+        <div style={{position:"fixed",bottom:0,left:0,right:0,padding:"8px 20px 10px",background:"linear-gradient(0deg,rgba(12,10,7,.98) 60%,rgba(12,10,7,0))",display:"flex",flexDirection:"column",alignItems:"center",gap:4,zIndex:20}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",width:"100%",maxWidth:700,gap:12}}>
+            <button onClick={()=>{VoiceEngine.stop();setScreen("pickcount")}}
+              style={{background:"transparent",border:"none",color:"rgba(90,74,48,.5)",fontSize:9,cursor:"pointer",letterSpacing:2,fontFamily:"'Cinzel',serif",flexShrink:0}}>
+              SKIP →
+            </button>
+            <div style={{display:"flex",gap:12,flex:1,justifyContent:"flex-end"}}>
+              {storyPage>0&&(
+                <button className="gb" onClick={()=>{VoiceEngine.stop();setStoryPage(storyPage-1)}}
+                  style={{padding:"10px 22px",fontSize:11,letterSpacing:2}}>
+                  ← Prev
+                </button>
+              )}
+              {storyPage<STORY_PAGES.length-1?(
+                <button className="gb gp" onClick={()=>{VoiceEngine.stop();setStoryPage(storyPage+1)}}
+                  style={{padding:"10px 28px",fontSize:12,letterSpacing:3}}>
+                  Next →
+                </button>
+              ):(
+                <button className="gb gp" onClick={()=>{VoiceEngine.stop();setScreen("pickcount")}}
+                  style={{padding:"10px 28px",fontSize:12,letterSpacing:3,animation:"pulse 2s ease infinite"}}>
+                  ⚡ Play Now
+                </button>
+              )}
+            </div>
           </div>
+          <div style={{fontSize:9,color:"#4a3a28",letterSpacing:1}}>© {new Date().getFullYear()} RasaVisio · All rights reserved · Inspired by the ancient game of Moksha Patam · Created in India 🇮🇳</div>
         </div>
       </div>
     );
@@ -3070,26 +5152,113 @@ export default function MokshaPatam108(){
 
   // ═══ PICK COUNT ═══
   if(screen==="pickcount")return(
-    <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20}}>
+    <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"100vh",padding:"20px 20px 80px",overflow:"hidden",position:"relative"}}>
       {globalOverlays}
-      <div style={{animation:"slideUp .8s ease",textAlign:"center"}}>
-        <button onClick={()=>{VoiceEngine.stop();setScreen("title")}} style={{position:"absolute",top:20,left:20,background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#8a7a50",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
-        <div style={{fontSize:32,marginBottom:12}}>🔱</div>
-        <h2 style={{fontSize:"clamp(20px,4vw,32px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"0 0 8px"}}>How Many Seekers?</h2>
-        <p style={{fontSize:13,opacity:.4,marginBottom:12,letterSpacing:3}}>Each soul walks a different path</p>
-        <div style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap"}}>
-          <button className="gb gp" onClick={()=>{
-            setNP(2);setIsCPU([false,true]);setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);
-            setScreen("yama");
-          }} style={{padding:"18px 36px",fontSize:16}}>
-            <div style={{fontSize:22,marginBottom:4}}>☠️</div>1 vs Yama
-          </button>
-          {[2,3,4].map(n=><button key={n} className="gb" onClick={()=>{setNP(n);setIsCPU(Array(n).fill(false));setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("setup")}} style={{padding:"18px 36px",fontSize:16}}>{n} Players</button>)}
+
+      {/* ── Animated sine wave canvas ── */}
+      <SineWaveBackground/>
+
+      {/* Back */}
+      <button onClick={()=>{VoiceEngine.stop();setScreen("title")}} style={{position:"fixed",top:20,left:20,background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#8a7a50",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
+
+      <div style={{position:"relative",zIndex:2,display:"flex",flexDirection:"column",alignItems:"center",width:"100%",maxWidth:560,animation:"slideUp .8s ease"}}>
+
+        {/* Header */}
+        <div style={{fontSize:40,marginBottom:10,filter:"drop-shadow(0 0 20px rgba(240,200,80,.35))",animation:"pulse 3s ease infinite"}}>🔱</div>
+        <div style={{fontSize:9,letterSpacing:6,color:"#5a4a30",marginBottom:6,fontFamily:"'Cinzel',serif"}}>CHOOSE YOUR PATH</div>
+        <h2 style={{fontSize:"clamp(24px,5vw,38px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"0 0 4px",textAlign:"center",textShadow:"0 0 30px rgba(240,200,80,.25)"}}>How Many Seekers?</h2>
+        <p style={{fontSize:12,opacity:.3,marginBottom:32,letterSpacing:4,fontFamily:"'Cinzel',serif",textAlign:"center"}}>Each soul walks a different path</p>
+
+        {/* Mode cards */}
+        <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:12,width:"100%",marginBottom:14}}>
+
+          {/* 1 vs Yama — full width, special */}
+          <div onClick={()=>{setNP(2);setIsCPU([false,true]);setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("yama")}}
+            style={{
+              gridColumn:"1 / -1",
+              background:"linear-gradient(135deg,rgba(160,40,40,.18),rgba(80,20,20,.25))",
+              border:"1.5px solid rgba(180,50,50,.35)",
+              borderRadius:14,padding:"22px 24px",
+              cursor:"pointer",display:"flex",alignItems:"center",gap:20,
+              transition:"all .3s cubic-bezier(.34,1.56,.64,1)",
+              boxShadow:"0 0 40px rgba(160,40,40,.08),inset 0 0 30px rgba(0,0,0,.2)",
+              position:"relative",overflow:"hidden",
+            }}
+            onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow="0 8px 40px rgba(160,40,40,.2),inset 0 0 30px rgba(0,0,0,.2)";e.currentTarget.style.borderColor="rgba(200,60,60,.6)"}}
+            onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="0 0 40px rgba(160,40,40,.08),inset 0 0 30px rgba(0,0,0,.2)";e.currentTarget.style.borderColor="rgba(180,50,50,.35)"}}>
+            {/* Radial glow */}
+            <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 20% 50%,rgba(160,40,40,.15),transparent 60%)",pointerEvents:"none"}}/>
+            <div style={{fontSize:52,filter:"drop-shadow(0 0 16px rgba(200,40,40,.6))",flexShrink:0,animation:"pulse 3s ease infinite"}}>☠️</div>
+            <div style={{flex:1}}>
+              <div style={{fontSize:18,fontFamily:"'Yatra One',serif",color:"#e08080",letterSpacing:2,marginBottom:4}}>1 vs Yama</div>
+              <div style={{fontSize:11,color:"#906060",lineHeight:1.7}}>Face the God of Death alone. Yama plays every turn — cold, karmic, inevitable. Can your dharma outlast Death?</div>
+              <div style={{display:"flex",gap:8,marginTop:10,flexWrap:"wrap"}}>
+                {["☠️ CPU opponent","⚡ Instant start","🎲 Hardest karma test"].map((t,i)=>(
+                  <span key={i} style={{fontSize:9,padding:"2px 8px",borderRadius:10,background:"rgba(160,40,40,.12)",border:"1px solid rgba(160,40,40,.2)",color:"#c07070",letterSpacing:1}}>{t}</span>
+                ))}
+              </div>
+            </div>
+            <div style={{fontSize:20,color:"rgba(200,80,80,.4)",flexShrink:0}}>▸</div>
+          </div>
+
+          {/* 2, 3, 4 player cards */}
+          {[
+            {n:2,icon:"👥",label:"2 Players",desc:"Sacred duel. Two souls, one board, one Moksha.",tags:["⚔️ Head to head","🔱 Classic"]},
+            {n:3,icon:"🧘",label:"3 Players",desc:"The dharmic triangle. Alliance and betrayal.",tags:["🌌 3-way","⚖ Complex"]},
+            {n:4,icon:"🕉",label:"4 Players",desc:"Four cardinal paths. Maximum chaos and karma.",tags:["🎭 Full house","🔱 Epic"]}
+          ].map(({n,icon,label,desc,tags})=>(
+            <div key={n}
+              onClick={()=>{setNP(n);setIsCPU(Array(n).fill(false));setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("setup")}}
+              style={{
+                background:"linear-gradient(135deg,rgba(30,24,14,.7),rgba(20,16,10,.8))",
+                border:"1px solid rgba(200,160,60,.18)",
+                borderRadius:12,padding:"18px 16px",
+                cursor:"pointer",display:"flex",flexDirection:"column",gap:8,
+                transition:"all .3s cubic-bezier(.34,1.56,.64,1)",
+                boxShadow:"inset 0 0 20px rgba(0,0,0,.2)",
+                position:"relative",overflow:"hidden",
+              }}
+              onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px) scale(1.01)";e.currentTarget.style.borderColor="rgba(240,200,80,.45)";e.currentTarget.style.background="linear-gradient(135deg,rgba(40,32,18,.8),rgba(30,24,14,.9))";e.currentTarget.style.boxShadow="0 8px 30px rgba(200,160,60,.1),inset 0 0 20px rgba(0,0,0,.2)"}}
+              onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.borderColor="rgba(200,160,60,.18)";e.currentTarget.style.background="linear-gradient(135deg,rgba(30,24,14,.7),rgba(20,16,10,.8))";e.currentTarget.style.boxShadow="inset 0 0 20px rgba(0,0,0,.2)"}}>
+              <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 50% 0%,rgba(200,160,60,.04),transparent 60%)",pointerEvents:"none"}}/>
+              <div style={{fontSize:32,filter:"drop-shadow(0 0 10px rgba(240,200,80,.3))"}}>{icon}</div>
+              <div style={{fontSize:15,fontFamily:"'Cinzel',serif",color:"#e8c850",letterSpacing:1,fontWeight:700}}>{label}</div>
+              <div style={{fontSize:10,color:"#8a7a50",lineHeight:1.6}}>{desc}</div>
+              <div style={{display:"flex",gap:5,flexWrap:"wrap",marginTop:2}}>
+                {tags.map((t,i)=>(
+                  <span key={i} style={{fontSize:9,padding:"1px 7px",borderRadius:8,background:"rgba(200,160,60,.06)",border:"1px solid rgba(200,160,60,.12)",color:"rgba(200,160,60,.6)",letterSpacing:1}}>{t}</span>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
-        <div style={{marginTop:16}}><div style={{display:"flex",gap:10,justifyContent:"center",marginBottom:8,flexWrap:"wrap"}}><button onClick={()=>setShowGuide(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📜 How to Play</button><button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📖 Encyclopaedia</button></div><InstaBadge/></div>
+
+        {/* Utility links */}
+        <div style={{display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap",marginBottom:8}}>
+          <button onClick={()=>setShowGuide(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.15)",color:"#8a7a50",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.6}}>📜 How to Play</button>
+          <button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.15)",color:"#8a7a50",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.6}}>📖 Encyclopaedia</button>
+        </div>
+        <InstaBadge/>
+      </div>
+
+      {/* Footer */}
+      <div style={{position:"fixed",bottom:0,left:0,right:0,textAlign:"center",padding:"10px 0 12px",background:"linear-gradient(0deg,rgba(12,10,7,.9),transparent)",zIndex:2}}>
+        <div style={{fontSize:10,color:"#6a5a38",letterSpacing:1}}>© {new Date().getFullYear()} RasaVisio · All rights reserved</div>
+        <div style={{fontSize:9,color:"#4a3a28",letterSpacing:1,marginTop:2}}>Inspired by the ancient game of Moksha Patam · Created in India 🇮🇳</div>
       </div>
     </div>
   );
+
+  // ═══ CHITRAGUPTA INTRO ═══
+  if(screen==="chitragupta"){
+    return <ChitraguptaIntroScreen
+      players={pendingPlayers||players}
+      chosenLang={chosenLang}
+      muted={muted}
+      onBegin={()=>startGame(pendingPlayers||players)}
+      onSkip={()=>startGame(pendingPlayers||players)}
+    />;
+  }
 
   // ═══ YAMA INTRO ═══
   if(screen==="yama"){
@@ -3155,6 +5324,23 @@ export default function MokshaPatam108(){
             <button onClick={()=>{VoiceEngine.stop();setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("pickcount")}} style={{position:"absolute",top:20,left:20,background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#8a7a50",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
             <div style={{fontSize:10,opacity:.3,letterSpacing:5}}>SEEKER {pidx+1} OF {nP}</div>
             <h2 style={{fontSize:"clamp(20px,4vw,30px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"8px 0"}}>Choose Your Identity</h2>
+            {pidx===0&&<div
+              onClick={()=>!muted&&VoiceEngine.speakChitragupta('seeker',chosenLang)}
+              style={{
+                display:"inline-flex",alignItems:"center",gap:8,cursor:"pointer",
+                padding:"5px 14px",marginTop:2,
+                background:"linear-gradient(135deg,rgba(200,175,90,.06),rgba(200,175,90,.02))",
+                border:"1px solid rgba(200,175,90,.14)",borderRadius:20,
+                animation:"fadeIn 1.5s ease .8s both",
+              }}>
+              <svg width={11} height={14} viewBox="0 0 11 14" style={{opacity:.65}}>
+                <path d="M5.5 1Q8.5 0 10 3Q11 7 7 9Q5.5 11 5.5 13Q4.5 11 4.5 9Q1 7 1 4Q2.5 1 5.5 1Z" fill="rgba(200,175,90,.25)" stroke="rgba(200,175,90,.5)" strokeWidth=".5"/>
+                <path d="M5.5 13L5.5 9Q7.5 7 8.5 5" fill="none" stroke="rgba(200,175,90,.55)" strokeWidth=".5"/>
+              </svg>
+              <span style={{fontSize:8,color:"rgba(200,175,90,.4)",letterSpacing:2,fontFamily:"'Cinzel',serif",fontStyle:"italic"}}>
+                Chitragupta watches · He already knows your choice
+              </span>
+            </div>}
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(clamp(140px,30vw,200px),1fr))",gap:10,marginBottom:20}}>
             {CHARS.map((ch,i)=>{const used=usedChars.includes(i);const sel=tempChar===i;
@@ -3188,12 +5374,14 @@ export default function MokshaPatam108(){
           </div>}
           <div style={{textAlign:"center",marginTop:12}}><div style={{display:"flex",gap:10,justifyContent:"center",marginBottom:8,flexWrap:"wrap"}}><button onClick={()=>setShowGuide(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📜 How to Play</button><button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"4px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1,opacity:.5}}>📖 Encyclopaedia</button></div><InstaBadge/></div>
         </div>
+        {/* Footer */}
+        <div style={{textAlign:"center",padding:"16px 0 10px",width:"100%"}}>
+          <div style={{fontSize:10,color:"#6a5a38",letterSpacing:1}}>© {new Date().getFullYear()} RasaVisio · All rights reserved</div>
+          <div style={{fontSize:9,color:"#4a3a28",letterSpacing:1,marginTop:2}}>Inspired by the ancient game of Moksha Patam · Created in India 🇮🇳</div>
+        </div>
       </div>
     );
   }
-
-  // ═══ INFO ═══
-  // ═══ GAME ═══
   if(screen!=="game"||players.length===0)return null;
   const cp=players[cur]||players[0];
   const hd=hov?(SNAKES[hov]?{type:"𓆙 NĀGA",label:`${SNAKES[hov].skt} — ${SNAKES[hov].en}`,desc:SNAKES[hov].tale,to:`Falls to ${SNAKES[hov].to}`,cl:"#e08040"}:LADDERS[hov]?{type:"🪔 VIRTUE",label:`${LADDERS[hov].skt} — ${LADDERS[hov].en}`,desc:LADDERS[hov].tale,to:`Rises to ${LADDERS[hov].to}`,cl:"#f0d050"}:DLM_SQ.includes(hov)?{type:"⚖ DHARMA",label:"Moral crossroads",desc:"A dilemma from the Mahābhārata.",cl:"#d0b870"}:hov===108?{type:"ॐ MOKSHA",label:"Square 108 — Liberation",desc:"The 108th square. Punya must ≥ Papa. The sacred number of the cosmos.",cl:"#f0d050"}:hov>100?{type:`${SACRED_PATH[hov-101]?.icon} ${SACRED_PATH[hov-101]?.en}`,label:`${SACRED_PATH[hov-101]?.skt} — ${SACRED_PATH[hov-101]?.desc}`,desc:"The Ashtanga Marga — 8-fold path of Patanjali. Only the purest souls walk here.",cl:"#f0d050"}:null):null;
@@ -3403,20 +5591,22 @@ export default function MokshaPatam108(){
               {busy?"Rolling...":"Roll Dice"}
             </button>
           </div>}
-          {win!==null&&<div style={{background:"radial-gradient(circle,rgba(240,200,80,.08),#12100a)",border:"2px solid rgba(240,200,80,.4)",padding:22,textAlign:"center"}}>
-            <div style={{fontSize:40,animation:"mp 2s ease infinite"}}>ॐ</div>
-            <div style={{fontSize:20,fontFamily:"'Yatra One',serif",margin:"6px 0",color:"#f0d050"}}>मोक्ष प्राप्त</div>
-            <div style={{fontSize:15,color:players[win]?.char?.color}}>{players[win]?.char?.icon} {players[win]?.name}</div>
-            <div style={{fontSize:12,opacity:.6,marginBottom:8}}>{players[win]?.char?.name} is liberated</div>
-            <div style={{display:"flex",gap:12,justifyContent:"center",fontSize:11,opacity:.5,marginBottom:12}}>
-              <span style={{color:"#80c080"}}>Punya: {punya[win]}</span>
-              <span style={{color:"#e08060"}}>Papa: {papa[win]}</span>
-              <span>Sq: {pos[win]}</span>
-            </div>
-            {auth.user&&<div style={{fontSize:11,color:"#80c080",marginBottom:8}}>✓ Game saved to your profile</div>}
-            <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
-              <button onClick={()=>{setScreen("title");setWin(null);setPlayers([]);ambient.stop()}} className="gb" style={{marginTop:4}}>New Journey</button>
-              {auth.user&&<button onClick={()=>{setShowProfile(true);setProfileTab("history")}} className="gb" style={{marginTop:4,opacity:.7}}>📊 View Stats</button>}
+          {win!==null&&<div style={{background:"radial-gradient(circle,rgba(240,200,80,.1),rgba(12,10,7,.95))",border:"2px solid rgba(240,200,80,.5)",padding:20,textAlign:"center",borderRadius:6,animation:"fadeIn .5s ease"}}>
+            <div style={{fontSize:44,animation:"mp 2s ease infinite",filter:"drop-shadow(0 0 20px rgba(240,200,80,.6))"}}>ॐ</div>
+            <div style={{fontSize:18,fontFamily:"'Yatra One',serif",margin:"8px 0",color:"#f0d050",letterSpacing:3}}>मोक्ष प्राप्त</div>
+            <div style={{fontSize:13,color:players[win]?.char?.color,marginBottom:4}}>{players[win]?.char?.icon} {players[win]?.name}</div>
+            <div style={{fontSize:10,opacity:.5,marginBottom:14}}>{players[win]?.char?.name} · Liberation achieved</div>
+            {auth.user&&<div style={{fontSize:10,color:"#80c080",marginBottom:10}}>✓ Game saved to profile</div>}
+            <button onClick={()=>setShowMoksha(true)} style={{
+              background:"linear-gradient(180deg,rgba(240,200,80,.25),rgba(240,200,80,.1))",
+              border:"1.5px solid rgba(240,200,80,.5)",color:"#f0d050",
+              padding:"10px 20px",fontSize:11,fontFamily:"'Cinzel',serif",
+              cursor:"pointer",borderRadius:4,letterSpacing:2,marginBottom:8,
+              display:"block",width:"100%",animation:"pulse 2s ease infinite",
+            }}>✨ View Moksha Ceremony</button>
+            <div style={{display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap"}}>
+              <button onClick={()=>{setScreen("title");setWin(null);setPlayers([]);ambient.stop()}} className="gb" style={{padding:"6px 16px",fontSize:10,marginTop:0}}>New Journey</button>
+              {auth.user&&<button onClick={()=>{setShowProfile(true);setProfileTab("history")}} className="gb" style={{padding:"6px 16px",fontSize:10,marginTop:0,opacity:.7}}>📊 Stats</button>}
             </div>
           </div>}
           {dil&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.85)",zIndex:250,display:"flex",alignItems:"center",justifyContent:"center",padding:16,overflowY:"auto"}}>
@@ -3449,6 +5639,15 @@ export default function MokshaPatam108(){
               <div style={{textAlign:"center",marginTop:14,fontSize:9,opacity:.25,letterSpacing:2}}>CHOOSE YOUR PATH WISELY</div>
             </div>
           </div>}
+          {/* ══ CHITRAGUPTA'S AGRASANDHANI — the living ledger ══ */}
+          <ChitraguptaPanel
+            entries={cgEntries}
+            players={players}
+            punya={punya}
+            papa={papa}
+            cur={cur}
+            win={win}
+          />
           <div style={{background:"linear-gradient(180deg,#1e1810,#14100a)",border:"1px solid rgba(200,160,60,.2)",padding:12,borderRadius:4}}>
             <div onClick={(e)=>{
               // ═══ HIDDEN DEV PANEL: Triple-click to toggle ═══
