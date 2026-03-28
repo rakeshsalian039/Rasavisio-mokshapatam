@@ -1,141 +1,120 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// 🪶 CHITRAGUPTA INTRO — Three Scientific Riddles Hidden in Plain Sight
+// 🪶 CHITRAGUPTA INTRO — Three Hidden Riddles
 //
-// RING I  (r=190) — THE HYDROGEN SPECTRUM
-//   Hydrogen emits light at exactly 4 visible wavelengths. Always.
-//   4 symbols orbit Ring I. They flash in STRICT sequence, always same colors:
-//     Hα 656nm → deep red   (#ff3520)
-//     Hβ 486nm → cyan       (#30c8e0)
-//     Hγ 434nm → violet     (#8840e8)
-//     Hδ 410nm → deep violet (#5018c0)
-//   The Navagraha planets also orbit Ring I — they do not flash.
-//   The color sequence is the fingerprint of every star in the universe.
-//   You are made of hydrogen. This pattern was in you before you were born.
+// RING I  — HYDROGEN SPECTRUM (4 colors, always same order)
+// RING II — GRAVITATIONAL WAVE GW150914 (drawn as actual chirp waveform)
+// RING III— DUAL RIDDLE:
+//             EYES: Symbol ◈ blinks OM in Morse  — — — · — —
+//             EARS: morse-108.wav plays quietly  (1=.———— 0=————— 8=———..)
+//           Two hidden messages. Same ring. Same symbol.
+//           "Those who know will hear. Those who know will see."
 //
-// RING II (r=310) — GRAVITATIONAL WAVE CHIRP (GW150914)
-//   On 14 September 2015, LIGO detected spacetime itself rippling.
-//   Two black holes merged 1.3 billion light years away.
-//   The signal: slow pulses → faster → faster → PEAK (merger) → silence → fade
-//   Ring II symbols pulse in this exact chirp pattern, cycling every ~480 frames.
-//   The merger flash illuminates ALL Ring II symbols simultaneously.
-//   We are sitting on the fabric of spacetime that made this wave.
-//
-// RING III (r=430) — OM IN MORSE CODE
-//   One symbol (ॐ) orbits Ring III very slowly.
-//   As it travels, it blinks Morse code. Silently. Patiently.
-//   O = — — —   (3 long blinks)
-//   M = — —     (2 long blinks)
-//   Full cycle: 270 frames ≈ 4.5 seconds at 60fps
-//   It has been blinking since the screen opened.
-//   Only those who watch long enough — and know Morse — understand.
+// DEPLOY: put /public/morse-108.wav  in your Vercel public folder
 // ══════════════════════════════════════════════════════════════════════════════
 function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip }) {
-  const canvasRef = useRef(null);
-  const stateRef  = useRef({ t:0, explode:false });
-  const rafRef    = useRef(null);
+  const canvasRef  = useRef(null);
+  const stateRef   = useRef({ t:0, explode:false });
+  const rafRef     = useRef(null);
+  const morseAudio = useRef(null);
   const [done,      setDone]      = useState(false);
   const [exploding, setExploding] = useState(false);
 
-  useEffect(()=>{ const t=setTimeout(()=>setDone(true),32000); return()=>clearTimeout(t); },[]);
+  useEffect(()=>{ const t=setTimeout(()=>setDone(true),34000); return()=>clearTimeout(t); },[]);
+
+  // Voice + morse audio init
   useEffect(()=>{
-    if(!muted) setTimeout(()=>VoiceEngine.speakChitragupta('open',chosenLang),900);
+    if(!muted){
+      setTimeout(()=>VoiceEngine.speakChitragupta('open',chosenLang),900);
+      // Morse 108 audio — quiet, loops with gap
+      try{
+        const audio=new Audio('/morse-108.wav');
+        audio.volume=0.18; // subtle — beneath the voice
+        morseAudio.current=audio;
+        // Play once after 8s, then every 35s
+        const play=()=>{ try{ audio.currentTime=0; audio.play().catch(()=>{}); }catch(e){} };
+        const t1=setTimeout(play,8000);
+        const iv=setInterval(play,35000);
+        return()=>{ clearTimeout(t1); clearInterval(iv); audio.pause(); };
+      }catch(e){}
+    }
     return()=>VoiceEngine.stop();
   },[]);
 
-  // ─── HYDROGEN SPECTRUM — 4 wavelengths, always in this exact order ─────
-  const H_LINES = [
-    { name:'Hα', nm:656, col:'#ff3520', glow:'rgba(255,53,32,',   phase:0             }, // red
-    { name:'Hβ', nm:486, col:'#30c8e0', glow:'rgba(48,200,224,',  phase:Math.PI/2     }, // cyan
-    { name:'Hγ', nm:434, col:'#8840e8', glow:'rgba(136,64,232,',  phase:Math.PI       }, // violet
-    { name:'Hδ', nm:410, col:'#5018c0', glow:'rgba(80,24,192,',   phase:3*Math.PI/2   }, // deep violet
+  // ─── HYDROGEN SPECTRUM ────────────────────────────────────────────────
+  const H_LINES=[
+    {nm:656,col:'#ff3520',glow:'rgba(255,53,32,',  phase:0           }, // Hα red
+    {nm:486,col:'#30c8e0',glow:'rgba(48,200,224,', phase:Math.PI/2   }, // Hβ cyan
+    {nm:434,col:'#8840e8',glow:'rgba(136,64,232,', phase:Math.PI     }, // Hγ violet
+    {nm:410,col:'#5018c0',glow:'rgba(80,24,192,',  phase:3*Math.PI/2 }, // Hδ deep violet
   ];
-  // Each H symbol flashes for 35 frames, gap of 25 before next one lights
-  // So cycle = 4 × 60 = 240 frames. They flash in strict order.
-  const H_PERIOD = 240;
-  const H_FLASH  = 35;
+  const H_PERIOD=260, H_FLASH=38;
 
-  // ─── GRAVITATIONAL WAVE CHIRP (GW150914) ──────────────────────────────
-  // Real shape: slow inspiral → chirp → merger peak → ringdown
-  // Encoded as brightness multiplier over 480-frame cycle
-  const GW_PERIOD = 480;
-  const getChirpBrightness = (t) => {
-    const phase = t % GW_PERIOD;
-    // INSPIRAL (0-320): 8 slow pulses, spacing decreasing
-    if(phase < 320) {
-      // Pulse spacing shrinks from 55 to 18 across 8 pulses
-      let cumulative = 0;
+  // ─── GW CHIRP — returns [amplitude 0-1, isChirping, isMerger] ────────
+  const gwState=(t)=>{
+    const phase=t%520;
+    // INSPIRAL 0-310: 8 pulses, spacing 55→18 frames, each brighter
+    if(phase<310){
+      let cum=0;
       for(let i=0;i<8;i++){
-        const spacing = Math.round(55 - i*4.6);
-        const prev = cumulative;
-        cumulative += spacing;
-        if(phase >= prev && phase < prev+16){
-          const brightness=(phase-prev)/16;
-          return brightness*(0.3+i*0.08); // each pulse brighter
+        const sp=Math.round(55-i*4.6);
+        if(phase>=cum&&phase<cum+18){
+          const frac=(phase-cum)/18;
+          const amp=Math.sin(frac*Math.PI)*(0.25+i*0.09);
+          return {amp,chirp:false,merger:false};
         }
-        if(cumulative > 320) break;
+        cum+=sp; if(cum>310) break;
       }
-      return 0;
+      return {amp:0,chirp:false,merger:false};
     }
-    // CHIRP (320-390): rapid bright pulses
-    if(phase < 390) {
-      const chirpPhase = phase - 320;
-      if(chirpPhase % 10 < 5) return 0.7+(chirpPhase/70)*0.3;
-      return 0;
+    // CHIRP 310-400: rapid pulses, 6-frame period
+    if(phase<400){
+      const cp=phase-310;
+      const amp=cp%6<3?0.55+cp/90*0.4:0;
+      return {amp,chirp:true,merger:false};
     }
-    // MERGER (390-410): ALL symbols flash simultaneously
-    if(phase < 410) {
-      const mergerPhase = phase - 390;
-      return mergerPhase < 10 ? 1.0 : Math.max(0, 1-(mergerPhase-10)/10);
+    // MERGER 400-422: peak flash
+    if(phase<422){
+      const mp=phase-400;
+      const amp=mp<10?0.9+mp*.01:Math.max(0,1-(mp-10)/12);
+      return {amp,chirp:true,merger:true};
     }
-    // RINGDOWN (410-480): 3 fading echoes
-    if(phase < 480) {
-      const rdPhase = phase - 410;
-      const echo = Math.floor(rdPhase / 23);
-      const withinEcho = rdPhase % 23;
-      if(echo < 3 && withinEcho < 14)
-        return Math.max(0, (1-withinEcho/14) * (0.5 - echo*0.14));
-      return 0;
+    // RINGDOWN 422-520: 4 fading echoes
+    if(phase<520){
+      const rd=phase-422;
+      const echo=Math.floor(rd/24);
+      const w=rd%24;
+      if(echo<4&&w<14) return {amp:Math.max(0,(1-w/14)*(0.45-echo*.1)),chirp:false,merger:false};
     }
-    return 0;
+    return {amp:0,chirp:false,merger:false};
   };
-  // Each Ring II symbol has a slight phase offset based on position
-  // so the wave "sweeps" around the ring visually during chirp
 
-  // ─── MORSE OM in Ring III ──────────────────────────────────────────────
-  // O = — — —   M = — —
-  // DAH=28f  DIT_GAP=9f  LETTER_GAP=28f  WORD_GAP=55f
-  // O: 28+9+28+9+28 = 102f   LETTER_GAP: 28f   M: 28+9+28 = 65f   WORD_GAP: 55f
-  // Total: 102+28+65+55 = 250 frames
-  const MORSE_PERIOD = 250;
-  const isMorseOn = (t) => {
-    const phase = t % MORSE_PERIOD;
-    // O: three DAH
-    if(phase < 28) return true;           // dah 1
-    if(phase < 37) return false;          // gap
-    if(phase < 65) return true;           // dah 2
-    if(phase < 74) return false;          // gap
-    if(phase < 102) return true;          // dah 3
+  // ─── MORSE: OM = O(— — —) M(— —) ────────────────────────────────────
+  // DAH=30f  GAP=10f  LETTER=30f  WORD=60f  Total=270f
+  const MORSE_PERIOD=270;
+  const morseState=(t)=>{
+    const p=t%MORSE_PERIOD;
+    // O: dah dah dah
+    if(p<30)  return {on:true,pct:p/30};
+    if(p<40)  return {on:false,pct:0};
+    if(p<70)  return {on:true,pct:(p-40)/30};
+    if(p<80)  return {on:false,pct:0};
+    if(p<110) return {on:true,pct:(p-80)/30};
     // letter gap
-    if(phase < 130) return false;
-    // M: two DAH
-    if(phase < 158) return true;          // dah 1
-    if(phase < 167) return false;         // gap
-    if(phase < 195) return true;          // dah 2
-    // word gap — silence
-    return false;
+    if(p<140) return {on:false,pct:0};
+    // M: dah dah
+    if(p<170) return {on:true,pct:(p-140)/30};
+    if(p<180) return {on:false,pct:0};
+    if(p<210) return {on:true,pct:(p-180)/30};
+    // word silence
+    return {on:false,pct:0};
   };
 
-  // ─── PARTICLE FIGURE (scale 3.2, CY=0.60) ────────────────────────────
-  const buildFigure = useCallback(()=>{
+  // ─── PARTICLE FIGURE (S=3.2, CY=0.60) ───────────────────────────────
+  const buildFigure=useCallback(()=>{
     const pts=[], S=3.2;
-    const add=(x,y,z,type,col)=>pts.push({
-      tx:x*S,ty:y*S,tz:z*S,
-      x:(Math.random()-.5)*10,y:(Math.random()-.5)*10,z:(Math.random()-.5)*10,
-      color:col,type,size:1.2+Math.random()*2.2,
-      baseOpacity:.5+Math.random()*.5,phase:Math.random()*Math.PI*2,
-    });
+    const add=(x,y,z,type,col)=>pts.push({tx:x*S,ty:y*S,tz:z*S,x:(Math.random()-.5)*10,y:(Math.random()-.5)*10,z:(Math.random()-.5)*10,color:col,type,size:1.2+Math.random()*2.2,baseOpacity:.5+Math.random()*.5,phase:Math.random()*Math.PI*2});
     const r=()=>(Math.random()-.5);
-    for(let i=0;i<160;i++){const phi=Math.acos(2*Math.random()-1),th=Math.random()*Math.PI*2,rv=27+r()*5;add(rv*Math.sin(phi)*Math.cos(th),-154+rv*Math.cos(phi),rv*Math.sin(phi)*Math.sin(th),'head','#f0d880');}
+    for(let i=0;i<160;i++){const ph=Math.acos(2*Math.random()-1),th=Math.random()*Math.PI*2,rv=27+r()*5;add(rv*Math.sin(ph)*Math.cos(th),-154+rv*Math.cos(ph),rv*Math.sin(ph)*Math.sin(th),'head','#f0d880');}
     for(let i=0;i<55;i++)add(r()*17,-150+r()*21,25+r()*9,'face','#fffce0');
     for(let s=0;s<5;s++){const a=(s/5)*Math.PI*2,cx=22*Math.cos(a),cz=22*Math.sin(a);for(let j=0;j<14;j++)add(cx*(1-j*.04),-182-j*9+r()*4,cz*(1-j*.04),'crown','#ffe040');}
     for(let i=0;i<70;i++){const a=(i/70)*Math.PI*2;add(27*Math.cos(a)+r()*3,-187+r()*4,27*Math.sin(a)+r()*3,'crown','#f0c820');}
@@ -160,7 +139,7 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
   },[]);
 
   // ─── DRAW PLANET ──────────────────────────────────────────────────────
-  const drawPlanet = useCallback((ctx,x,y,sc,p)=>{
+  const drawPlanet=useCallback((ctx,x,y,sc,p)=>{
     const rv=p.pr*sc; if(rv<1.2) return;
     if(p.rings){ctx.save();ctx.translate(x,y);ctx.scale(1,.28);ctx.beginPath();ctx.arc(0,0,rv*2.6,0,Math.PI*2);ctx.strokeStyle='rgba(210,185,115,.5)';ctx.lineWidth=rv*.85/.28;ctx.stroke();ctx.beginPath();ctx.arc(0,0,rv*1.75,0,Math.PI*2);ctx.strokeStyle='rgba(185,160,90,.38)';ctx.lineWidth=rv*.42/.28;ctx.stroke();ctx.restore();}
     const g=ctx.createRadialGradient(x-rv*.38,y-rv*.38,0,x,y,rv);g.addColorStop(0,p.hi);g.addColorStop(.65,p.col);g.addColorStop(1,p.sh);
@@ -175,17 +154,16 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
     ctx.save();ctx.globalAlpha=Math.min(sc*.85,.75);ctx.font=`${Math.max(6,8*sc)}px 'Noto Serif Devanagari',serif`;ctx.textAlign='center';ctx.textBaseline='top';ctx.fillStyle='rgba(200,175,90,.6)';ctx.fillText(p.skt,x,y+rv*(p.rings?2.2:1.55));ctx.restore();
   },[]);
 
-  // ─── NAVAGRAHA ────────────────────────────────────────────────────────
   const NAVAGRAHA=[
-    {name:'Surya',   skt:'☀ सूर्य',   pr:14,col:'#f0b020',hi:'#fff880',sh:'#b05800',corona:true,  speed:.0018,phase:0.20 },
-    {name:'Chandra', skt:'☽ चन्द्र',  pr:9, col:'#c8d4e0',hi:'#f0f4ff',sh:'#506878',crescent:true,speed:.0014,phase:1.10 },
-    {name:'Mangal',  skt:'♂ मंगल',    pr:8, col:'#c83020',hi:'#ff7060',sh:'#601010',polar:true,   speed:.0012,phase:1.85 },
-    {name:'Budh',    skt:'☿ बुध',     pr:6, col:'#7090a0',hi:'#a0c8d8',sh:'#304050',              speed:.0022,phase:2.60 },
-    {name:'Brihaspati',skt:'♃ बृहस्पति',pr:19,col:'#d08020',hi:'#f0c060',sh:'#804810',bands:true,speed:.0010,phase:3.30},
-    {name:'Shukra',  skt:'♀ शुक्र',   pr:10,col:'#e8e098',hi:'#fffff8',sh:'#a09038',              speed:.0016,phase:4.05 },
-    {name:'Shani',   skt:'♄ शनि',     pr:13,col:'#c0a860',hi:'#e8d890',sh:'#7a6428',rings:true,   speed:.0008,phase:4.80 },
-    {name:'Rahu',    skt:'☊ राहु',    pr:10,col:'#302840',hi:'#604880',sh:'#100a18',shadow:true,  speed:.0006,phase:5.50 },
-    {name:'Ketu',    skt:'☋ केतु',    pr:8, col:'#805060',hi:'#c08090',sh:'#401020',comet:true,   speed:.0005,phase:6.00 },
+    {skt:'☀ सूर्य',   pr:14,col:'#f0b020',hi:'#fff880',sh:'#b05800',corona:true,  speed:.0018,phase:.20},
+    {skt:'☽ चन्द्र',  pr:9, col:'#c8d4e0',hi:'#f0f4ff',sh:'#506878',crescent:true,speed:.0014,phase:1.10},
+    {skt:'♂ मंगल',    pr:8, col:'#c83020',hi:'#ff7060',sh:'#601010',polar:true,   speed:.0012,phase:1.85},
+    {skt:'☿ बुध',     pr:6, col:'#7090a0',hi:'#a0c8d8',sh:'#304050',              speed:.0022,phase:2.60},
+    {skt:'♃ बृहस्पति',pr:19,col:'#d08020',hi:'#f0c060',sh:'#804810',bands:true,  speed:.0010,phase:3.30},
+    {skt:'♀ शुक्र',   pr:10,col:'#e8e098',hi:'#fffff8',sh:'#a09038',              speed:.0016,phase:4.05},
+    {skt:'♄ शनि',     pr:13,col:'#c0a860',hi:'#e8d890',sh:'#7a6428',rings:true,   speed:.0008,phase:4.80},
+    {skt:'☊ राहु',    pr:10,col:'#302840',hi:'#604880',sh:'#100a18',shadow:true,  speed:.0006,phase:5.50},
+    {skt:'☋ केतु',    pr:8, col:'#805060',hi:'#c08090',sh:'#401020',comet:true,   speed:.0005,phase:6.00},
   ];
 
   // ─── CANVAS LOOP ──────────────────────────────────────────────────────
@@ -198,29 +176,74 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
     const particles=buildFigure();
     const stars=Array.from({length:320},()=>({x:Math.random()*2400,y:Math.random()*1500,z:200+Math.random()*900,r:.3+Math.random()*1.8,op:.12+Math.random()*.6}));
 
-    const FOV=680, ROTY=.0018, SPAWN=100; // slower rotation
+    const FOV=680, ROTY=.0018, SPAWN=100;
     const s=stateRef.current; s.t=0;
 
-    // Ring II filler symbols — 24 chars, each with a fixed phase offset
-    const ring2fill=['∞','DNA','π','⚛','tat','tvam','asi','ħ','Δ','∇','Ψ','∅','E=mc²','∫','☯','ॐ','◎','Ω','∴','∵','lim','∑','☽','✦'].map((ch,i,a)=>({
-      ch, phase:(i/a.length)*Math.PI*2,
-      speed:.0009,  // slow — ring II is slow
-      phaseOffset:i/a.length, // 0→1, used for chirp sweep delay
+    // Ring II symbols — 22 characters, slow
+    const ring2syms=['∞','π','⚛','tat','tvam','asi','ħ','Δ','∇','Ψ','∅','E=mc²','∫','☯','ॐ','Ω','∴','∵','∑','DNA','◎','✦'].map((ch,i,a)=>({
+      ch, phase:(i/a.length)*Math.PI*2, speed:.00085, idx:i, total:a.length,
     }));
 
-    // Ring III — OM symbol + dim filler
-    const ring3fill=['अ','ग्र','स','ध','नी','✦','❊','◈','⬡','∞'].map((ch,i,a)=>({
-      ch, phase:(i/a.length)*Math.PI*2+0.8, speed:.0004,
+    // Ring III filler (dim, non-blinking)
+    const ring3syms=['✦','❊','⬡','∞','◯','△','▽','◇'].map((ch,i,a)=>({
+      ch, phase:(i/a.length)*Math.PI*2+1.1, speed:.00035,
     }));
-    // OM symbol — orbits very slowly, blinks Morse
-    const omOrbit={ phase:Math.PI/2, speed:.0004 };
 
     const project=(x,y,z,ry,cx,cy)=>{
       const rx=x*Math.cos(ry)-z*Math.sin(ry),rz=x*Math.sin(ry)+z*Math.cos(ry);
       const sc=FOV/(FOV+rz+420);
       return {sx:cx+rx*sc,sy:cy+y*sc,scale:sc,rz};
     };
-    const hexA=(hex,a)=>{const rv=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgba(${rv},${g},${b},${a})`;};
+    const hA=(hex,a)=>{const rv=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgba(${rv},${g},${b},${a})`;};
+
+    // ── Pre-bake GW waveform points (2D screen space, drawn each frame) ──
+    // We draw the GW chirp as a flat 2D waveform "ribbon" sitting in the
+    // Ring II orbital plane — a sine wave whose frequency ramps up then explodes
+    const GW_STEPS=300; // samples across waveform
+    const getGWCurve=(t,CX,CY,W,H)=>{
+      const phase=t%520;
+      const gwAl=Math.min((t-55)/50,1);
+      if(gwAl<.04) return;
+
+      // Waveform spans horizontally, slightly above center
+      const wX0=CX-W*.28, wX1=CX+W*.28;
+      const wY=CY-H*.36; // above figure head
+      const wH=H*.055; // max amplitude in px
+
+      const pts2=[];
+      for(let i=0;i<=GW_STEPS;i++){
+        const frac=i/GW_STEPS;
+        // Chirp: frequency ramps from 0.012 to 0.22 across the waveform
+        // but only "lit" according to GW phase
+        let freq, amp;
+        if(phase<310){
+          // Inspiral: slow, low amplitude
+          freq=0.012+frac*.04;
+          const {amp:a0}=gwState(t);
+          amp=a0*0.7;
+        } else if(phase<400){
+          // Chirp
+          freq=0.055+frac*.18;
+          const cp=(phase-310)/90;
+          amp=0.4+cp*.55;
+        } else if(phase<422){
+          // Merger — big spike in middle
+          freq=0.18+frac*.12;
+          const mp=(phase-400)/22;
+          const spike=Math.exp(-Math.pow((frac-.5)*4,2))*2.2;
+          amp=(0.95+spike)*(1-mp*.3);
+        } else {
+          // Ringdown
+          const rd=(phase-422)/98;
+          freq=0.16+frac*.08;
+          amp=Math.max(0,(0.5-rd*.45))*Math.exp(-frac*2);
+        }
+        const x=wX0+(wX1-wX0)*frac;
+        const y=wY+Math.sin(frac*Math.PI*2*freq*GW_STEPS*.012)*wH*amp;
+        pts2.push({x,y});
+      }
+      return {pts2,wY,wX0,wX1,wH,gwAl,phase};
+    };
 
     const draw=()=>{
       const W=canvas.width, H=canvas.height;
@@ -229,15 +252,14 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
       const rotY=s.t*ROTY;
 
       // BG
-      ctx.fillStyle='rgba(4,2,1,1)'; ctx.fillRect(0,0,W,H);
+      ctx.fillStyle='rgba(4,2,1,1)';ctx.fillRect(0,0,W,H);
       const bg=ctx.createRadialGradient(CX,CY,50,CX,CY,Math.min(W,H)*.72);
-      bg.addColorStop(0,'rgba(200,175,90,.038)');bg.addColorStop(.7,'rgba(0,0,0,0)');
-      ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+      bg.addColorStop(0,'rgba(200,175,90,.036)');bg.addColorStop(.7,'rgba(0,0,0,0)');
+      ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
 
-      // Stars
       stars.forEach(st=>{const sc=FOV/(FOV+st.z);ctx.beginPath();ctx.arc(W*.5+(st.x-W*.5)*sc,H*.5+(st.y-H*.5)*sc,st.r*sc,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,220,${st.op*sc})`;ctx.fill();});
 
-      // ── Particles ──
+      // Particles
       const proj=particles.map(p=>{
         if(s.explode){p.x+=(p.x-CX%W)*.05+(Math.random()-.5)*5;p.y+=(p.y-H*.5)*.05+(Math.random()-.5)*5;p.z+=(Math.random()-.5)*7;}
         else if(s.t<SPAWN){p.x+=(p.tx-p.x)*.065;p.y+=(p.ty-p.y)*.065;p.z+=(p.tz-p.z)*.065;}
@@ -246,160 +268,148 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
       });
       proj.sort((a,b)=>a.rz-b.rz);
       proj.forEach(({sx,sy,scale,p})=>{
-        if(sx<-100||sx>W+100||sy<-100||sy>H+100) return;
-        const rv=p.size*scale, al=p.baseOpacity*Math.min(1,s.t/55)*scale*1.5;
+        if(sx<-100||sx>W+100||sy<-100||sy>H+100)return;
+        const rv=p.size*scale,al=p.baseOpacity*Math.min(1,s.t/55)*scale*1.5;
         const pulse=1+Math.sin(s.t*.033+p.phase)*.1;
         if(['quill','face','crown','halo'].includes(p.type)){ctx.beginPath();ctx.arc(sx,sy,rv*4*pulse,0,Math.PI*2);ctx.fillStyle=`rgba(240,210,80,${al*.13})`;ctx.fill();}
         ctx.beginPath();ctx.arc(sx,sy,rv*pulse,0,Math.PI*2);
-        ctx.fillStyle=hexA(p.color.startsWith('#')?p.color:'#d0b050',al);ctx.fill();
+        ctx.fillStyle=hA(p.color.startsWith('#')?p.color:'#d0b050',al);ctx.fill();
       });
 
-      // ── RING I: Navagraha + Hydrogen Spectrum ──
+      // ── RING I: Planets + Hydrogen Spectrum ──
       if(s.t>30){
         const ral=Math.min((s.t-30)/50,1);
-        // Planets
         NAVAGRAHA.forEach(pl=>{
           const a=pl.phase+s.t*pl.speed;
           const pr=project(190*Math.cos(a),-80+190*Math.sin(a)*Math.sin(.18),190*Math.sin(a)*Math.cos(.18),rotY,CX,CY);
-          if(pr.scale<.15) return;
-          ctx.save();ctx.globalAlpha=ral*Math.min(pr.scale*1.8,1);
-          drawPlanet(ctx,pr.sx,pr.sy,pr.scale,pl);
-          ctx.restore();
+          if(pr.scale<.15)return;
+          ctx.save();ctx.globalAlpha=ral*Math.min(pr.scale*1.8,1);drawPlanet(ctx,pr.sx,pr.sy,pr.scale,pl);ctx.restore();
         });
-
-        // 4 Hydrogen emission lines — flash in strict color sequence
         H_LINES.forEach((hl,i)=>{
-          const a=hl.phase+s.t*.0009; // slow orbit
+          const a=hl.phase+s.t*.0009;
           const pr=project(190*Math.cos(a),-80+190*Math.sin(a)*Math.sin(.18),190*Math.sin(a)*Math.cos(.18),rotY,CX,CY);
-          const al=ral*Math.min(pr.scale*1.8,1);
-          if(al<.04) return;
-
-          // Flash on: this symbol lights when its slot in the 240-frame cycle is active
-          const slotStart = i * (H_PERIOD/4); // each gets 60 frames
-          const phase = s.t % H_PERIOD;
-          const withinSlot = phase - slotStart;
-          const isFlashing = withinSlot >= 0 && withinSlot < H_FLASH;
-          const flashBright = isFlashing ? Math.sin((withinSlot/H_FLASH)*Math.PI) : 0;
-
-          ctx.save();ctx.globalAlpha=al*(isFlashing?1:.18);
+          const al=ral*Math.min(pr.scale*1.8,1);if(al<.04)return;
+          const slotStart=i*(H_PERIOD/4);
+          const phase=s.t%H_PERIOD;
+          const w=phase-slotStart;
+          const isFlashing=w>=0&&w<H_FLASH;
+          const fb=isFlashing?Math.sin((w/H_FLASH)*Math.PI):0;
+          ctx.save();ctx.globalAlpha=al*(isFlashing?1:.15);
           const sz=Math.max(8,11*pr.scale);
-          ctx.font=`bold ${sz}px serif`;
-          ctx.textAlign='center';ctx.textBaseline='middle';
-
+          ctx.font=`bold ${sz}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';
           if(isFlashing){
-            // Glow in the hydrogen wavelength color
-            ctx.shadowBlur=20+flashBright*25;
-            ctx.shadowColor=hl.col;
-            ctx.fillStyle=hl.col;
-            // Outer glow circle
-            const gr=ctx.createRadialGradient(pr.sx,pr.sy,0,pr.sx,pr.sy,sz*2);
-            gr.addColorStop(0,hl.glow+flashBright*.35+')');
-            gr.addColorStop(1,hl.glow+'0)');
-            ctx.beginPath();ctx.arc(pr.sx,pr.sy,sz*2,0,Math.PI*2);
-            ctx.fillStyle=gr;ctx.fill();
-            // Re-set for text
-            ctx.shadowBlur=20+flashBright*25;ctx.shadowColor=hl.col;ctx.fillStyle=hl.col;
+            const gr=ctx.createRadialGradient(pr.sx,pr.sy,0,pr.sx,pr.sy,sz*2.2);
+            gr.addColorStop(0,hl.glow+fb*.4+')');gr.addColorStop(1,hl.glow+'0)');
+            ctx.beginPath();ctx.arc(pr.sx,pr.sy,sz*2.2,0,Math.PI*2);ctx.fillStyle=gr;ctx.fill();
+            ctx.shadowBlur=18+fb*22;ctx.shadowColor=hl.col;ctx.fillStyle=hl.col;
+            ctx.fillText('✦',pr.sx,pr.sy);
+            if(fb>0.45){ctx.save();ctx.globalAlpha=fb*.65;ctx.font=`${Math.max(6,7*pr.scale)}px 'Cinzel',serif`;ctx.fillStyle=hl.col;ctx.fillText(hl.nm+'nm',pr.sx,pr.sy+sz*1.6);ctx.restore();}
           } else {
-            ctx.fillStyle='rgba(200,175,90,.2)';
-          }
-          ctx.fillText('✦',pr.sx,pr.sy);
-          // Wavelength label when flashing
-          if(isFlashing&&flashBright>0.4){
-            ctx.save();ctx.globalAlpha=flashBright*.7;ctx.font=`${Math.max(6,7*pr.scale)}px 'Cinzel',serif`;
-            ctx.fillStyle=hl.col;ctx.fillText(hl.nm+'nm',pr.sx,pr.sy+(sz*1.5));ctx.restore();
+            ctx.fillStyle='rgba(200,175,90,.18)';ctx.fillText('✦',pr.sx,pr.sy);
           }
           ctx.restore();
         });
       }
 
-      // ── RING II: Gravitational Wave Chirp ──
+      // ── RING II: GW waveform + orbiting symbols ──
       if(s.t>55){
         const ral=Math.min((s.t-55)/50,1);
-        // Thin orbit guide line (barely visible)
-        ctx.save();ctx.globalAlpha=ral*.04;ctx.strokeStyle='rgba(200,175,90,1)';ctx.lineWidth=.5;
-        ctx.setLineDash([2,12]);
-        ctx.beginPath();
-        for(let i=0;i<64;i++){
-          const a2=(i/64)*Math.PI*2;
-          const pr2=project(310*Math.cos(a2),-30+310*Math.sin(a2)*Math.sin(.32),310*Math.sin(a2)*Math.cos(.32),rotY,CX,CY);
-          i===0?ctx.moveTo(pr2.sx,pr2.sy):ctx.lineTo(pr2.sx,pr2.sy);
-        }
-        ctx.stroke();ctx.setLineDash([]);ctx.restore();
+        const gwCurve=getGWCurve(s.t,CX,CY,W,H);
 
-        ring2fill.forEach((orb,i)=>{
+        if(gwCurve){
+          const {pts2,wY,wX0,wX1,gwAl,phase}=gwCurve;
+          const isMerging=phase>=400&&phase<422;
+          const isChirping=phase>=310&&phase<422;
+          const gwIntensity=gwState(s.t).amp;
+
+          // Glow behind waveform
+          const wGlow=ctx.createLinearGradient(wX0,wY,wX1,wY);
+          wGlow.addColorStop(0,'rgba(100,160,255,0)');
+          wGlow.addColorStop(.35,`rgba(120,180,255,${gwAl*gwIntensity*.18})`);
+          wGlow.addColorStop(.5,`rgba(200,220,255,${gwAl*(isMerging?.45:isChirping?.25:gwIntensity*.12)})`);
+          wGlow.addColorStop(.65,`rgba(120,180,255,${gwAl*gwIntensity*.18})`);
+          wGlow.addColorStop(1,'rgba(100,160,255,0)');
+          ctx.fillStyle=wGlow;
+          ctx.fillRect(wX0,wY-H*.07,wX1-wX0,H*.14);
+
+          // Draw waveform line (thick glow + thin bright)
+          if(pts2.length>1){
+            // Thick glow pass
+            ctx.beginPath();
+            pts2.forEach((pt,i)=>i===0?ctx.moveTo(pt.x,pt.y):ctx.lineTo(pt.x,pt.y));
+            ctx.strokeStyle=isMerging?`rgba(220,230,255,${gwAl*.7})`:`rgba(140,190,255,${gwAl*(isChirping?.55:gwIntensity*.4+.08)})`;
+            ctx.lineWidth=isMerging?4:isChirping?2.5:1.8;
+            ctx.shadowBlur=isMerging?28:isChirping?14:6;
+            ctx.shadowColor=isMerging?'rgba(200,220,255,.8)':'rgba(120,160,255,.5)';
+            ctx.stroke();
+            ctx.shadowBlur=0;
+
+            // Thin bright centre
+            ctx.beginPath();
+            pts2.forEach((pt,i)=>i===0?ctx.moveTo(pt.x,pt.y):ctx.lineTo(pt.x,pt.y));
+            ctx.strokeStyle=`rgba(200,220,255,${gwAl*(isMerging?.95:isChirping?.7:.3)})`;
+            ctx.lineWidth=.8;ctx.stroke();
+          }
+
+          // Label
+          if(gwAl>0.5){
+            ctx.save();ctx.globalAlpha=gwAl*.35;
+            ctx.font=`${Math.max(7,9*Math.min(W/1400,1))}px 'Cinzel',serif`;
+            ctx.textAlign='center';ctx.fillStyle='rgba(140,190,255,.7)';
+            ctx.fillText(isMerging?'GW150914 · MERGER':'GW150914',CX,wY-H*.038);
+            ctx.restore();
+          }
+        }
+
+        // Orbiting symbols
+        ring2syms.forEach(orb=>{
           const a=orb.phase+s.t*orb.speed;
           const pr=project(310*Math.cos(a),-30+310*Math.sin(a)*Math.sin(.32),310*Math.sin(a)*Math.cos(.32),rotY,CX,CY);
-          const al=ral*Math.min(pr.scale*1.5,.75);if(al<.04) return;
-
-          // Chirp brightness — each symbol gets a slightly different phase offset
-          // so the wave "sweeps" around the ring (inspiral sweep effect)
-          const sweepOffset=Math.floor(orb.phaseOffset*60); // 0-60 frame offset
-          const chirpBright=getChirpBrightness(s.t-sweepOffset);
-          const isMerger=(s.t-sweepOffset)%GW_PERIOD>=390&&(s.t-sweepOffset)%GW_PERIOD<410;
-
-          const finalAlpha=al*(chirpBright>0?Math.min(1,.15+chirpBright):.15);
-          ctx.save();ctx.globalAlpha=finalAlpha;
+          const al=ral*Math.min(pr.scale*1.5,.7);if(al<.04)return;
+          const gws=gwState(s.t);
+          const bright=gws.amp*(0.4+orb.idx/orb.total*.3);
+          ctx.save();ctx.globalAlpha=al*(bright>0.05?Math.min(1,.12+bright):.12);
           ctx.font=`${(orb.ch.length>3?7:10)*pr.scale}px 'Cinzel',serif`;
           ctx.textAlign='center';ctx.textBaseline='middle';
-          if(chirpBright>0.3){
-            ctx.shadowBlur=isMerger?30:8;
-            ctx.shadowColor=isMerger?'rgba(200,200,255,.9)':'rgba(180,200,255,.6)';
-            ctx.fillStyle=isMerger?'rgba(220,220,255,1)':'rgba(160,195,240,0.85)';
-          } else {
-            ctx.fillStyle='rgba(140,190,215,0.22)';
-          }
-          ctx.fillText(orb.ch,pr.sx,pr.sy);
-          ctx.restore();
+          if(gws.merger){ctx.shadowBlur=16;ctx.shadowColor='rgba(180,200,255,.8)';ctx.fillStyle='rgba(200,220,255,.9)';}
+          else if(bright>0.1){ctx.fillStyle='rgba(140,190,215,0.7)';}
+          else{ctx.fillStyle='rgba(140,190,215,0.2)';}
+          ctx.fillText(orb.ch,pr.sx,pr.sy);ctx.restore();
         });
       }
 
-      // ── RING III: OM in Morse + filler ──
+      // ── RING III: Morse blinker (◈) + filler ──
       if(s.t>80){
         const ral=Math.min((s.t-80)/60,1);
-
-        // Filler symbols — dim, slow
-        ring3fill.forEach(orb=>{
+        ring3syms.forEach(orb=>{
           const a=orb.phase+s.t*orb.speed;
-          const pr=project(430*Math.cos(a),430*Math.sin(a)*Math.sin(.50),430*Math.sin(a)*Math.cos(.50),rotY,CX,CY);
-          const al=ral*Math.min(pr.scale*1.8,.6);if(al<.04) return;
-          ctx.save();ctx.globalAlpha=al*.4;
-          ctx.font=`${9*pr.scale}px 'Noto Serif Devanagari',serif`;
-          ctx.textAlign='center';ctx.textBaseline='middle';
-          ctx.fillStyle='rgba(200,175,90,0.35)';ctx.fillText(orb.ch,pr.sx,pr.sy);
-          ctx.restore();
+          const pr=project(430*Math.cos(a),430*Math.sin(a)*Math.sin(.5),430*Math.sin(a)*Math.cos(.5),rotY,CX,CY);
+          const al=ral*Math.min(pr.scale*1.8,.6);if(al<.04)return;
+          ctx.save();ctx.globalAlpha=al*.3;ctx.font=`${9*pr.scale}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='rgba(200,175,90,.3)';ctx.fillText(orb.ch,pr.sx,pr.sy);ctx.restore();
         });
 
-        // OM — the Morse blinker
-        const omAngle=omOrbit.phase+s.t*omOrbit.speed;
-        const omPr=project(430*Math.cos(omAngle),430*Math.sin(omAngle)*Math.sin(.50),430*Math.sin(omAngle)*Math.cos(.50),rotY,CX,CY);
-        const omAl=ral*Math.min(omPr.scale*1.8,.95);
-        if(omAl>0.04){
-          const morseOn=isMorseOn(s.t);
-          const morsePhase=s.t%MORSE_PERIOD;
-          // How far into current blink (for smooth fade-in/out)
-          const blinkSmooth=morseOn?Math.min(morsePhase%40/8,1):0;
-
-          ctx.save();ctx.globalAlpha=omAl*(morseOn?1:.2);
-          const omSz=Math.max(10,18*omPr.scale);
-          ctx.font=`bold ${omSz}px 'Noto Serif Devanagari',serif`;
-          ctx.textAlign='center';ctx.textBaseline='middle';
-          if(morseOn){
-            ctx.shadowBlur=20+blinkSmooth*20;ctx.shadowColor='rgba(240,200,80,.95)';
-            ctx.fillStyle='rgba(255,225,60,1)';
-            // Outer halo
-            const og=ctx.createRadialGradient(omPr.sx,omPr.sy,0,omPr.sx,omPr.sy,omSz*2.2);
-            og.addColorStop(0,'rgba(240,200,80,.25)');og.addColorStop(1,'rgba(240,200,80,0)');
-            ctx.beginPath();ctx.arc(omPr.sx,omPr.sy,omSz*2.2,0,Math.PI*2);ctx.fillStyle=og;ctx.fill();
-            ctx.shadowBlur=20+blinkSmooth*20;ctx.shadowColor='rgba(240,200,80,.95)';ctx.fillStyle='rgba(255,225,60,1)';
+        // ◈ — the Morse blinker (no label, no hint)
+        const morseAngle=Math.PI/2+s.t*.00035;
+        const mPr=project(430*Math.cos(morseAngle),430*Math.sin(morseAngle)*Math.sin(.5),430*Math.sin(morseAngle)*Math.cos(.5),rotY,CX,CY);
+        const mAl=ral*Math.min(mPr.scale*1.8,.95);
+        if(mAl>0.04){
+          const ms=morseState(s.t);
+          ctx.save();ctx.globalAlpha=mAl*(ms.on?1:.15);
+          const sz=Math.max(10,17*mPr.scale);
+          ctx.font=`bold ${sz}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+          if(ms.on){
+            const og=ctx.createRadialGradient(mPr.sx,mPr.sy,0,mPr.sx,mPr.sy,sz*2.5);
+            og.addColorStop(0,'rgba(240,200,80,.3)');og.addColorStop(1,'rgba(240,200,80,0)');
+            ctx.beginPath();ctx.arc(mPr.sx,mPr.sy,sz*2.5,0,Math.PI*2);ctx.fillStyle=og;ctx.fill();
+            ctx.shadowBlur=22+ms.pct*18;ctx.shadowColor='rgba(240,200,80,.95)';ctx.fillStyle='rgba(255,225,60,1)';
           } else {
-            ctx.fillStyle='rgba(200,175,90,0.28)';
+            ctx.fillStyle='rgba(200,175,90,.22)';
           }
-          ctx.fillText('ॐ',omPr.sx,omPr.sy);
-          ctx.restore();
+          ctx.fillText('◈',mPr.sx,mPr.sy);ctx.restore();
         }
       }
 
-      // Ink drips from quill
+      // Ink drips
       if(s.t>90&&!s.explode){const ia=Math.min((s.t-90)/40,1);for(let i=0;i<2;i++){const pr=project(115+Math.random()*18,-190+Math.random()*10,24,rotY,CX,CY);ctx.beginPath();ctx.arc(pr.sx,pr.sy,1.8*pr.scale,0,Math.PI*2);ctx.fillStyle=`rgba(240,210,80,${ia*.4*Math.random()})`;ctx.fill();}}
 
       rafRef.current=requestAnimationFrame(draw);
@@ -422,23 +432,28 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
         SKIP ▸
       </button>
 
-      {/* Ring legend — minimal, top left */}
-      <div style={{position:'fixed',top:22,left:22,zIndex:10,display:'flex',flexDirection:'column',gap:6,opacity:0,animation:'fadeIn 1s ease 2s both'}}>
-        {[
-          {col:'rgba(240,190,60,.7)',  label:'Navagraha · Nine Planets'},
-          {col:'rgba(255,53,32,.8)',   label:'Ring I — four lights, always same order'},
-          {col:'rgba(160,195,240,.7)', label:'Ring II — a wave from 1.3 billion light years'},
-          {col:'rgba(240,200,80,.9)',  label:'Ring III — ॐ speaks, if you listen'},
-        ].map((row,i)=>(
-          <div key={i} style={{display:'flex',alignItems:'center',gap:7}}>
-            <div style={{width:5,height:5,borderRadius:'50%',background:row.col,boxShadow:`0 0 5px ${row.col}`,flexShrink:0}}/>
-            <span style={{fontSize:8,color:'rgba(200,175,90,.4)',fontFamily:"'Cinzel',serif",letterSpacing:1.2}}>{row.label}</span>
-          </div>
-        ))}
+      {/* THE RIDDLE — fades in after 5s, stays subtle */}
+      <div style={{
+        position:'fixed',bottom:grandText(),left:'50%',transform:'translateX(-50%)',
+        zIndex:15,textAlign:'center',whiteSpace:'nowrap',
+        opacity:0,animation:'fadeIn 2s ease 5s both',
+      }}>
+        <div style={{
+          fontSize:'clamp(9px,1.2vw,11px)',
+          color:'rgba(200,175,90,.28)',
+          fontFamily:"'Cinzel',serif",
+          letterSpacing:'clamp(2px,.4vw,4px)',
+          lineHeight:2,
+        }}>
+          {isHi
+            ?<>जो सुनेंगे — सुनेंगे<br/>जो देखेंगे — देखेंगे</>
+            :<>Those who know will hear.&nbsp;&nbsp;&nbsp;Those who know will see.</>
+          }
+        </div>
       </div>
 
       {/* Bottom */}
-      <div style={{position:'fixed',bottom:0,left:0,right:0,padding:'10px 24px 18px',background:'linear-gradient(0deg,rgba(4,2,1,.95) 60%,transparent)',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:12,zIndex:10}}>
+      <div style={{position:'fixed',bottom:0,left:0,right:0,padding:'10px 24px 16px',background:'linear-gradient(0deg,rgba(4,2,1,.95) 60%,transparent)',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:12,zIndex:10}}>
         <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
           {players.filter(p=>!p.cpu).map((p,i)=>(
             <div key={i} style={{display:'flex',alignItems:'center',gap:6,padding:'4px 12px',background:'rgba(200,175,90,.04)',border:'1px solid rgba(200,175,90,.1)',borderRadius:16}}>
@@ -459,3 +474,5 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
     </div>
   );
 }
+
+function grandText(){ return 62; }
