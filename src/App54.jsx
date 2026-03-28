@@ -1,7 +1,3 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// 🪶 To use standalone: import ChitraguptaIntroScreen from './ChitraguptaIntro'
-//    then remove the inline function below (search: function ChitraguptaIntroScreen)
-// ─────────────────────────────────────────────────────────────────────────────
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 
 // ═══ AUTH + DATABASE (Supabase) ═══
@@ -3344,7 +3340,7 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
 
       {/* ══ THE THREE-RING CIPHER — indicator boxes ══ */}
       <div style={{
-        position:'fixed', bottom:96, left:'50%', transform:'translateX(-50%)',
+        position:'fixed', bottom:grandSeen?110:96, left:'50%', transform:'translateX(-50%)',
         zIndex:15, display:'flex', flexDirection:'column', alignItems:'center', gap:8,
         transition:'bottom .5s ease',
       }}>
@@ -3352,6 +3348,7 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
         <div style={{display:'flex',gap:10,alignItems:'center'}}>
           {KEY.map((k,i)=>{
             const lit=boxDisplay[i]!=='?';
+            const isGrand=grandSeen&&lit;
             return(
               <div key={i} style={{
                 width:42, height:48, borderRadius:6,
@@ -3362,7 +3359,7 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
                 boxShadow:lit?`0 0 18px ${k.color}40, inset 0 0 10px ${k.color}10`:'none',
               }}>
                 <div style={{
-                  fontSize:lit?20:12,
+                  fontSize:isGrand?22:lit?20:12,
                   color:lit?k.color:'rgba(200,175,90,.18)',
                   fontFamily:"'Noto Serif Devanagari',serif",
                   fontWeight:700,lineHeight:1,
@@ -3381,6 +3378,17 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
         </div>
 
         {/* Grand alignment message */}
+        {grandSeen&&(
+          <div style={{animation:'fadeIn .8s ease',textAlign:'center'}}>
+            <div style={{
+              fontSize:11, color:'rgba(240,200,80,.7)',
+              fontFamily:isHi?"'Noto Serif Devanagari',serif":"'Cinzel',serif",
+              letterSpacing:isHi?0:2, lineHeight:1.8,
+            }}>
+              {isHi?'तीन ताल — एक रहस्य':'Three rhythms — one secret'}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Bottom: players + begin */}
