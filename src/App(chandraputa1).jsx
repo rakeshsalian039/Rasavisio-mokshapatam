@@ -2666,8 +2666,7 @@ function MokshaScreen({ winner, players, punya, papa, onClose, muted }) {
     };
   },[]);
 
-  const isYamaMode = players.length===2 && players.find(p=>p.cpu);
-  // Show judgment whenever there is a loser — especially Yama in solo mode
+  const isMulti = players.length>2 || (players.length===2&&!players[1]?.cpu);
 
   return(
     <div style={{position:'fixed',inset:0,zIndex:600,overflow:'hidden'}}>
@@ -2721,8 +2720,8 @@ function MokshaScreen({ winner, players, punya, papa, onClose, muted }) {
       )}
 
       {/* Yama judgment for losers — appears last */}
-      {showJudge&&lp&&(
-        <YamaJudgment loser={lp} papa={papa[loserIdx]} punya={punya[loserIdx]} isYama={!!lp.cpu}/>
+      {showJudge&&lp&&isMulti&&(
+        <YamaJudgment loser={lp} papa={papa[loserIdx]} punya={punya[loserIdx]}/>
       )}
 
       {/* Close button */}
@@ -2743,7 +2742,7 @@ function MokshaScreen({ winner, players, punya, papa, onClose, muted }) {
 // ══════════════════════════════════════════════════════════════════════
 // 💀 YAMA JUDGMENT — Canvas fire + chains for the most-sinful player
 // ══════════════════════════════════════════════════════════════════════
-function YamaJudgment({ loser, papa, punya, isYama }) {
+function YamaJudgment({ loser, papa, punya }) {
   const canvasRef = useRef(null);
   const rafRef    = useRef(null);
 
@@ -2874,19 +2873,13 @@ function YamaJudgment({ loser, papa, punya, isYama }) {
       <canvas ref={canvasRef} width={360} height={280} style={{display:'block',width:'100%'}}/>
       <div style={{padding:'10px 14px',background:'linear-gradient(0deg,rgba(8,3,2,.98),rgba(8,3,2,.85))'}}>
         <div style={{fontSize:10,color:'rgba(200,60,30,.7)',letterSpacing:2,fontFamily:"'Cinzel',serif",fontWeight:700,marginBottom:4}}>
-          {isYama ? '💀 YAMA FALLS — THE GOD OF DEATH IS JUDGED' : '☠️ YAMA\'S JUDGMENT'}
+          ☠️ YAMA'S JUDGMENT
         </div>
         <div style={{fontSize:9,color:'rgba(200,80,60,.6)',marginBottom:6,lineHeight:1.6}}>
-          {isYama
-            ? <><span style={{fontSize:13}}>☠️</span> <strong style={{color:'#e06060'}}>यमराज · YAMA</strong> — God of Death. Defeated.</>
-            : <>{loser.char.icon} <strong style={{color:loser.char.color}}>{loser.name}</strong> — {papa} Papa, {punya} Punya</>
-          }
+          {loser.char.icon} <strong style={{color:loser.char.color}}>{loser.name}</strong> — {papa} Papa, {punya} Punya
         </div>
         <div style={{fontSize:8,color:'rgba(180,60,40,.45)',fontStyle:'italic',lineHeight:1.7}}>
-          {isYama
-            ? '"Even the God of Death carries karma. He who judges all souls — has now been judged himself. The ledger does not exempt even Yama. He will return. He always returns."'
-            : `"The ledger has spoken. ${papa} Papa cannot be hidden from Yama's gaze. The soul must return — to learn, to suffer, to try again."`
-          }
+          "The ledger has spoken. {papa} Papa cannot be hidden from Yama's gaze. The soul must return — to learn, to suffer, to try again."
         </div>
         <div style={{fontSize:7,color:'rgba(160,40,20,.4)',marginTop:4,letterSpacing:2}}>— CHITRAGUPTA'S FINAL ENTRY</div>
       </div>
@@ -4135,7 +4128,7 @@ export default function MokshaPatam108(){
             </div>
             {/* Tabs */}
             <div style={{display:"flex",gap:6,marginBottom:20,justifyContent:"center",flexWrap:"wrap"}}>
-              {[["overview","🔱 Overview"],["history","📜 Past Lives"],["leaderboard","🪶 Agrasandhani"]].map(([key,label])=><button key={key} onClick={()=>{setProfileTab(key);if(key==="history"&&auth.user){setHistLoading(true);GameDB.getHistory(auth.user.id).then(d=>{setGameHistory(d);setHistLoading(false)})}if(key==="leaderboard")GameDB.getLeaderboard().then(d=>setLeaderboard(d))}} style={{padding:"6px 16px",fontSize:11,borderRadius:20,cursor:"pointer",border:`1px solid ${profileTab===key?"rgba(240,200,80,.4)":"rgba(200,160,60,.15)"}`,background:profileTab===key?"rgba(240,200,80,.1)":"transparent",color:profileTab===key?"#f0d050":"#8a7a50",fontFamily:"'Cinzel',serif",letterSpacing:1}}>{label}</button>)}
+              {[["overview","🔱 Overview"],["history","📜 History"],["leaderboard","🏆 Leaderboard"]].map(([key,label])=><button key={key} onClick={()=>{setProfileTab(key);if(key==="history"&&auth.user){setHistLoading(true);GameDB.getHistory(auth.user.id).then(d=>{setGameHistory(d);setHistLoading(false)})}if(key==="leaderboard")GameDB.getLeaderboard().then(d=>setLeaderboard(d))}} style={{padding:"6px 16px",fontSize:11,borderRadius:20,cursor:"pointer",border:`1px solid ${profileTab===key?"rgba(240,200,80,.4)":"rgba(200,160,60,.15)"}`,background:profileTab===key?"rgba(240,200,80,.1)":"transparent",color:profileTab===key?"#f0d050":"#8a7a50",fontFamily:"'Cinzel',serif",letterSpacing:1}}>{label}</button>)}
             </div>
             {/* Overview */}
             {profileTab==="overview"&&<>
@@ -4224,7 +4217,7 @@ export default function MokshaPatam108(){
               </div>
             </>}
             {/* History */}
-            {profileTab==="history"&&<>{histLoading?<div style={{textAlign:"center",padding:40,color:"#5a4a30",fontSize:12}}>Loading past lives...</div>:gameHistory.length===0?<div style={{textAlign:"center",padding:40,color:"#5a4a30",fontSize:12,fontStyle:"italic"}}>No past lives recorded. Your journey begins with the first roll.</div>:gameHistory.map(g=>{
+            {profileTab==="history"&&<>{histLoading?<div style={{textAlign:"center",padding:40,color:"#5a4a30",fontSize:12}}>Loading past lives...</div>:gameHistory.length===0?<div style={{textAlign:"center",padding:40,color:"#5a4a30",fontSize:12,fontStyle:"italic"}}>No games yet. Your journey begins with the first roll.</div>:gameHistory.map(g=>{
               // Parse players data from graha_effects
               let gamePlayers=[];let grahaHits={};
               try{const ge=typeof g.graha_effects==="string"?JSON.parse(g.graha_effects):g.graha_effects;gamePlayers=ge?.players||[];grahaHits=ge?.grahaHits||{}}catch(e){}
@@ -4284,8 +4277,8 @@ export default function MokshaPatam108(){
                 {(()=>{const max=Object.entries(grahaHits).reduce((a,b)=>b[1]>a[1]?b:a,["",0]);const grNames={sun:"Surya ☀",moon:"Chandra ☾",mars:"Mangal ♂",mercury:"Budh ☿",jupiter:"Brihaspati ♃",venus:"Shukra ♀",saturn:"Shani ♄",rahu:"Rahu ☊",ketu:"Ketu ☋"};return max[1]>1?<div style={{fontSize:9,color:"#8a7a50",marginTop:4,fontStyle:"italic"}}>{grNames[max[0]]||max[0]} influenced you most ({max[1]} times)</div>:null})()}
               </div>}
             </div>})}</>}
-            {/* अग्रसंधानी — The Eternal Ledger */}
-            {profileTab==="leaderboard"&&<div style={{background:"rgba(20,16,10,.6)",border:"1px solid rgba(200,160,60,.1)",borderRadius:8,overflow:"hidden"}}>{leaderboard.length===0?<div style={{textAlign:"center",padding:30,color:"#5a4a30",fontSize:12}}>चित्रगुप्त की कलम तैयार है · Chitragupta's quill awaits the first soul.</div>:leaderboard.map((lb,i)=>{const isMe=auth.user&&lb.id===auth.user.id;const lks=(lb.total_punya_earned||0)-(lb.total_papa_earned||0);return<div key={lb.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",borderBottom:"1px solid rgba(200,160,60,.06)",background:isMe?"rgba(240,200,80,.06)":"transparent"}}>
+            {/* Leaderboard */}
+            {profileTab==="leaderboard"&&<div style={{background:"rgba(20,16,10,.6)",border:"1px solid rgba(200,160,60,.1)",borderRadius:8,overflow:"hidden"}}>{leaderboard.length===0?<div style={{textAlign:"center",padding:30,color:"#5a4a30",fontSize:12}}>The sacred ledger is empty.</div>:leaderboard.map((lb,i)=>{const isMe=auth.user&&lb.id===auth.user.id;const lks=(lb.total_punya_earned||0)-(lb.total_papa_earned||0);return<div key={lb.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",borderBottom:"1px solid rgba(200,160,60,.06)",background:isMe?"rgba(240,200,80,.06)":"transparent"}}>
               <div style={{width:28,textAlign:"center",fontSize:i<3?16:12,color:i===0?"#f0d050":i===1?"#c0c0c0":i===2?"#cd7f32":"#8a7a50",fontWeight:700}}>{i===0?"🥇":i===1?"🥈":i===2?"🥉":i+1}</div>
               {lb.avatar_url?<img src={lb.avatar_url} alt="" style={{width:28,height:28,borderRadius:"50%",border:isMe?"2px solid rgba(240,200,80,.4)":"1px solid rgba(200,160,60,.1)"}} referrerPolicy="no-referrer"/>:<div style={{width:28,height:28,borderRadius:"50%",background:"rgba(240,200,80,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#c0b080"}}>{(lb.display_name||"S").charAt(0)}</div>}
               <div style={{flex:1,minWidth:0}}><div style={{fontSize:12,color:isMe?"#f0d050":"#c0b080",fontWeight:isMe?700:400,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{lb.display_name}{isMe?" (you)":""}</div><div style={{fontSize:10,color:"#8a7a50"}}>{lb.total_games} games · {lb.total_wins} wins</div></div>
