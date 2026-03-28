@@ -557,30 +557,35 @@ function useAmbient(){
   const start=useCallback(()=>{
     if(playing.current)return;
     try{
+      // ═══════════════════════════════════════════════════════════
+      // 🎵 TO CHANGE THE MUSIC:
+      // Put your audio file in the /public folder and change the
+      // filename below. Supports MP3, OGG, WAV.
+      // Example: "/vedic-chant.mp3" or "/tanpura-drone.ogg"
+      // ═══════════════════════════════════════════════════════════
       const a=new Audio("/ambient.mp3");
-      a.loop=true; a.volume=1.0;
+      a.loop=true;
+      a.volume=1.0;
       audioRef.current=a;
       a.play().then(()=>{playing.current=true}).catch(()=>{});
     }catch(e){}
   },[]);
   const stop=useCallback(()=>{
     if(!playing.current||!audioRef.current)return;
-    try{const a=audioRef.current;a.pause();a.currentTime=0;playing.current=false;audioRef.current=null;}catch(e){}
+    try{
+      const a=audioRef.current;
+      a.pause();a.currentTime=0;
+      playing.current=false;audioRef.current=null;
+    }catch(e){}
   },[]);
-  const duck=useCallback(()=>{if(audioRef.current){try{audioRef.current.pause()}catch(e){}}},[]);
-  const unduck=useCallback(()=>{if(audioRef.current&&playing.current){try{audioRef.current.play().catch(()=>{})}catch(e){}}},[]);
-
-  // ── Pause when tab hidden, resume when visible ──
-  useEffect(()=>{
-    const onVisibility=()=>{
-      if(!audioRef.current||!playing.current) return;
-      if(document.hidden){ try{audioRef.current.pause()}catch(e){} }
-      else { try{audioRef.current.play().catch(()=>{})}catch(e){} }
-    };
-    document.addEventListener('visibilitychange',onVisibility);
-    return()=>document.removeEventListener('visibilitychange',onVisibility);
+  // Mobile browsers (iOS/Android) ignore volume changes on audio elements.
+  // So we pause/resume instead of duck/unduck for reliable behavior.
+  const duck=useCallback(()=>{
+    if(audioRef.current){try{audioRef.current.pause()}catch(e){}}
   },[]);
-
+  const unduck=useCallback(()=>{
+    if(audioRef.current&&playing.current){try{audioRef.current.play().catch(()=>{})}catch(e){}}
+  },[]);
   return{start,stop,duck,unduck,playing};
 }
 
@@ -3017,8 +3022,8 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
         morseAudio.current=audio;
         // Play once after 8s, then every 35s
         const play=()=>{ try{ audio.currentTime=0; audio.play().catch(()=>{}); }catch(e){} };
-        const t1=setTimeout(play,3000);
-        const iv=setInterval(play,12000);
+        const t1=setTimeout(play,8000);
+        const iv=setInterval(play,35000);
         return()=>{ clearTimeout(t1); clearInterval(iv); audio.pause(); };
       }catch(e){}
     }
@@ -3181,63 +3186,53 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
     };
     const hA=(hex,a)=>{const rv=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgba(${rv},${g},${b},${a})`;};
 
-    // ── GW: Draw chirp as pulsing light that travels around Ring II ──────
-    // No flat line — the wave IS the ring. Pulses sweep around the orbit.
-    // During inspiral: slow pulses, dim. Chirp: rapid bright sweep. Merger: full ring flash.
-    const drawGWRing=(t,rotY,CX,CY,ral)=>{
+    // ── Pre-bake GW waveform points (2D screen space, drawn each frame) ──
+    // We draw the GW chirp as a flat 2D waveform "ribbon" sitting in the
+    // Ring II orbital plane — a sine wave whose frequency ramps up then explodes
+    const GW_STEPS=300; // samples across waveform
+    const getGWCurve=(t,CX,CY,W,H)=>{
       const phase=t%520;
-      const gws=gwState(t);
-      if(gws.amp<0.02&&!gws.merger) return;
+      const gwAl=Math.min((t-55)/50,1);
+      if(gwAl<.04) return;
 
-      // Draw subtle orbit guide circle
-      ctx.save();ctx.globalAlpha=ral*.06;ctx.strokeStyle='rgba(140,190,255,1)';ctx.lineWidth=.6;
-      ctx.setLineDash([2,14]);
-      ctx.beginPath();
-      for(let i=0;i<=64;i++){
-        const a2=(i/64)*Math.PI*2;
-        const pr2=project(310*Math.cos(a2),-30+310*Math.sin(a2)*Math.sin(.32),310*Math.sin(a2)*Math.cos(.32),rotY,CX,CY);
-        i===0?ctx.moveTo(pr2.sx,pr2.sy):ctx.lineTo(pr2.sx,pr2.sy);
-      }
-      ctx.stroke();ctx.setLineDash([]);ctx.restore();
+      // Waveform spans horizontally, slightly above center
+      const wX0=CX-W*.28, wX1=CX+W*.28;
+      const wY=CY-H*.36; // above figure head
+      const wH=H*.055; // max amplitude in px
 
-      // During merger — flash the whole ring
-      if(gws.merger){
-        const mp=(phase-400)/22;
-        const mAl=(1-mp)*.65;
-        ctx.save();ctx.globalAlpha=ral*mAl;
-        ctx.beginPath();
-        for(let i=0;i<=64;i++){
-          const a2=(i/64)*Math.PI*2;
-          const pr2=project(310*Math.cos(a2),-30+310*Math.sin(a2)*Math.sin(.32),310*Math.sin(a2)*Math.cos(.32),rotY,CX,CY);
-          i===0?ctx.moveTo(pr2.sx,pr2.sy):ctx.lineTo(pr2.sx,pr2.sy);
+      const pts2=[];
+      for(let i=0;i<=GW_STEPS;i++){
+        const frac=i/GW_STEPS;
+        // Chirp: frequency ramps from 0.012 to 0.22 across the waveform
+        // but only "lit" according to GW phase
+        let freq, amp;
+        if(phase<310){
+          // Inspiral: slow, low amplitude
+          freq=0.012+frac*.04;
+          const {amp:a0}=gwState(t);
+          amp=a0*0.7;
+        } else if(phase<400){
+          // Chirp
+          freq=0.055+frac*.18;
+          const cp=(phase-310)/90;
+          amp=0.4+cp*.55;
+        } else if(phase<422){
+          // Merger — big spike in middle
+          freq=0.18+frac*.12;
+          const mp=(phase-400)/22;
+          const spike=Math.exp(-Math.pow((frac-.5)*4,2))*2.2;
+          amp=(0.95+spike)*(1-mp*.3);
+        } else {
+          // Ringdown
+          const rd=(phase-422)/98;
+          freq=0.16+frac*.08;
+          amp=Math.max(0,(0.5-rd*.45))*Math.exp(-frac*2);
         }
-        ctx.strokeStyle='rgba(200,220,255,.9)';ctx.lineWidth=3;ctx.shadowBlur=20;ctx.shadowColor='rgba(180,210,255,.8)';ctx.stroke();ctx.shadowBlur=0;
-        ctx.restore();
-        // Label
-        ctx.save();ctx.globalAlpha=ral*mAl*.8;ctx.font=`${Math.max(8,10*Math.min(CX/700,1))}px 'Cinzel',serif`;ctx.textAlign='center';ctx.fillStyle='rgba(200,220,255,.85)';ctx.fillText('GW150914 · MERGER',CX,CY-CY*.52);ctx.restore();
-        return;
+        const x=wX0+(wX1-wX0)*frac;
+        const y=wY+Math.sin(frac*Math.PI*2*freq*GW_STEPS*.012)*wH*amp;
+        pts2.push({x,y});
       }
-
-      // Inspiral / chirp — a bright arc sweeps around the ring
-      // Arc width narrows as chirp accelerates (inspiral = wide slow arc, chirp = tight fast arc)
-      const arcFrac=gws.chirp?0.08:0.25; // how much of ring is lit
-      const sweepAngle=(t*.018)%(Math.PI*2); // sweep position
-
-      ctx.save();ctx.globalAlpha=ral*Math.min(gws.amp*1.8,.75);
-      ctx.beginPath();
-      const arcSteps=32;
-      for(let i=0;i<=arcSteps;i++){
-        const a2=sweepAngle+(i/arcSteps)*arcFrac*Math.PI*2;
-        const pr2=project(310*Math.cos(a2),-30+310*Math.sin(a2)*Math.sin(.32),310*Math.sin(a2)*Math.cos(.32),rotY,CX,CY);
-        i===0?ctx.moveTo(pr2.sx,pr2.sy):ctx.lineTo(pr2.sx,pr2.sy);
-      }
-      ctx.strokeStyle=gws.chirp?'rgba(160,200,255,.85)':'rgba(120,170,240,.65)';
-      ctx.lineWidth=gws.chirp?2.2:1.5;ctx.shadowBlur=gws.chirp?14:8;ctx.shadowColor='rgba(140,180,255,.6)';ctx.stroke();ctx.shadowBlur=0;ctx.restore();
-
-      // Subtle GW label
-      if(gws.amp>0.3){
-        ctx.save();ctx.globalAlpha=ral*gws.amp*.3;ctx.font=`${Math.max(7,8*Math.min(CX/700,1))}px 'Cinzel',serif`;ctx.textAlign='center';ctx.fillStyle='rgba(140,190,255,.6)';ctx.fillText('GW150914',CX,CY-CY*.49);ctx.restore();
-      }
+      return {pts2,wY,wX0,wX1,wH,gwAl,phase};
     };
 
     const draw=()=>{
@@ -3309,8 +3304,52 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
       // ── RING II: GW waveform + orbiting symbols ──
       if(s.t>55){
         const ral=Math.min((s.t-55)/50,1);
-        // GW ring chirp
-        drawGWRing(s.t,rotY,CX,CY,ral);
+        const gwCurve=getGWCurve(s.t,CX,CY,W,H);
+
+        if(gwCurve){
+          const {pts2,wY,wX0,wX1,gwAl,phase}=gwCurve;
+          const isMerging=phase>=400&&phase<422;
+          const isChirping=phase>=310&&phase<422;
+          const gwIntensity=gwState(s.t).amp;
+
+          // Glow behind waveform
+          const wGlow=ctx.createLinearGradient(wX0,wY,wX1,wY);
+          wGlow.addColorStop(0,'rgba(100,160,255,0)');
+          wGlow.addColorStop(.35,`rgba(120,180,255,${gwAl*gwIntensity*.18})`);
+          wGlow.addColorStop(.5,`rgba(200,220,255,${gwAl*(isMerging?.45:isChirping?.25:gwIntensity*.12)})`);
+          wGlow.addColorStop(.65,`rgba(120,180,255,${gwAl*gwIntensity*.18})`);
+          wGlow.addColorStop(1,'rgba(100,160,255,0)');
+          ctx.fillStyle=wGlow;
+          ctx.fillRect(wX0,wY-H*.07,wX1-wX0,H*.14);
+
+          // Draw waveform line (thick glow + thin bright)
+          if(pts2.length>1){
+            // Thick glow pass
+            ctx.beginPath();
+            pts2.forEach((pt,i)=>i===0?ctx.moveTo(pt.x,pt.y):ctx.lineTo(pt.x,pt.y));
+            ctx.strokeStyle=isMerging?`rgba(220,230,255,${gwAl*.7})`:`rgba(140,190,255,${gwAl*(isChirping?.55:gwIntensity*.4+.08)})`;
+            ctx.lineWidth=isMerging?4:isChirping?2.5:1.8;
+            ctx.shadowBlur=isMerging?28:isChirping?14:6;
+            ctx.shadowColor=isMerging?'rgba(200,220,255,.8)':'rgba(120,160,255,.5)';
+            ctx.stroke();
+            ctx.shadowBlur=0;
+
+            // Thin bright centre
+            ctx.beginPath();
+            pts2.forEach((pt,i)=>i===0?ctx.moveTo(pt.x,pt.y):ctx.lineTo(pt.x,pt.y));
+            ctx.strokeStyle=`rgba(200,220,255,${gwAl*(isMerging?.95:isChirping?.7:.3)})`;
+            ctx.lineWidth=.8;ctx.stroke();
+          }
+
+          // Label
+          if(gwAl>0.5){
+            ctx.save();ctx.globalAlpha=gwAl*.35;
+            ctx.font=`${Math.max(7,9*Math.min(W/1400,1))}px 'Cinzel',serif`;
+            ctx.textAlign='center';ctx.fillStyle='rgba(140,190,255,.7)';
+            ctx.fillText(isMerging?'GW150914 · MERGER':'GW150914',CX,wY-H*.038);
+            ctx.restore();
+          }
+        }
 
         // Orbiting symbols
         ring2syms.forEach(orb=>{
@@ -3385,8 +3424,9 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
 
       {/* THE RIDDLE — fades in after 5s, stays subtle */}
       <div style={{
-        position:'fixed',bottom:62,left:'50%',transform:'translateX(-50%)',
+        position:'fixed',bottom:grandText(),left:'50%',transform:'translateX(-50%)',
         zIndex:15,textAlign:'center',whiteSpace:'nowrap',
+        opacity:0,animation:'fadeIn 2s ease 5s both',
       }}>
         <div style={{
           fontSize:'clamp(9px,1.2vw,11px)',
@@ -3425,7 +3465,7 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
   );
 }
 
-
+function grandText(){ return 62; }
 /* Yama Image — put yama.png in /public folder */
 function YamaIcon({size=80}){
   return <div style={{width:size,height:size*1.3,display:"flex",alignItems:"center",justifyContent:"center"}}>
@@ -3964,38 +4004,7 @@ export default function MokshaPatam108(){
     GameDB.getLeaderboard().then(d=>setLeaderboard(d));
   },[showProfile]);
 
-  const[screen,setScreen]=useState("title"); // title|story|pickcount|setup|chitragupta|game
-
-  // ── Browser back button ──────────────────────────────────────────────
-  // Push a history entry on every screen change so back button works
-  // instead of exiting the app entirely
-  const navigateTo=useCallback((newScreen)=>{
-    setScreen(newScreen);
-    // Push state so browser back button fires popstate
-    window.history.pushState({screen:newScreen},'',window.location.pathname);
-  },[]);
-
-  useEffect(()=>{
-    // On mount, replace current history entry with title screen
-    window.history.replaceState({screen:'title'},'',window.location.pathname);
-
-    const onPop=(e)=>{
-      const prev=e.state?.screen;
-      if(!prev){setScreen('title');return;}
-      // Map back: where should each screen go?
-      const backMap={
-        game:'title', chitragupta:'setup', setup:'pickcount',
-        pickcount:'story', story:'title', yama:'pickcount',
-      };
-      navigateTo(backMap[prev]||'title');
-      // Also stop voices and audio on back
-      VoiceEngine.stop();
-      try{window.speechSynthesis.cancel()}catch(e){}
-    };
-    window.addEventListener('popstate',onPop);
-    return()=>window.removeEventListener('popstate',onPop);
-  },[]);
-
+  const[screen,setScreen]=useState("title"); // title|story|pickcount|setup|game
   const[nP,setNP]=useState(2);
   const[players,setPlayers]=useState([]);
   const[tempName,setTempName]=useState("");
@@ -4177,7 +4186,7 @@ export default function MokshaPatam108(){
     setCgEntries([]);setShowMoksha(false);
     setMsg(`${pList[0].name} the ${pList[0].char.name} — your journey begins.`);
     gameStats.current={startTime:Date.now(),turns:0,snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0,grahaHits:{sun:0,moon:0,mars:0,mercury:0,jupiter:0,venus:0,saturn:0,rahu:0,ketu:0}};
-    navigateTo("game");
+    setScreen("game");
     setTimeout(()=>{ if(!muted) VoiceEngine.speakChitragupta('open',chosenLang); },2800);
   };
 
@@ -4197,7 +4206,7 @@ export default function MokshaPatam108(){
     setPlayers(np);setUsedChars(uc);setTempName("");setTempChar(-1);
     if(np.length>=nP){
       setPendingPlayers(np); // store for after CG intro
-      setTimeout(()=>navigateTo("chitragupta"),100);
+      setTimeout(()=>setScreen("chitragupta"),100);
     }
   };
 
@@ -4543,7 +4552,7 @@ export default function MokshaPatam108(){
         punya={punya}
         papa={papa}
         muted={muted}
-        onClose={()=>{setShowMoksha(false);navigateTo("title");setWin(null);setPlayers([]);ambient.stop();}}
+        onClose={()=>{setShowMoksha(false);setScreen("title");setWin(null);setPlayers([]);ambient.stop();}}
       />
     )}
     {/* ═══ SACRED BACKGROUND — visible on ALL screens ═══ */}
@@ -4942,11 +4951,11 @@ export default function MokshaPatam108(){
             <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
               <button className="gb gp" onClick={()=>{
                 ambient.start();
-                navigateTo("story"); setStoryPage(0);
+                setScreen("story"); setStoryPage(0);
               }} style={{fontSize:13,padding:"12px 28px",letterSpacing:2}}>
                 📜 BEGIN STORY
               </button>
-              <button className="gb" onClick={()=>{ambient.start();navigateTo("pickcount")}} style={{fontSize:13,padding:"12px 28px",letterSpacing:2,opacity:.5}}>⚡ PLAY</button>
+              <button className="gb" onClick={()=>{ambient.start();setScreen("pickcount")}} style={{fontSize:13,padding:"12px 28px",letterSpacing:2,opacity:.5}}>⚡ PLAY</button>
             </div>
 
             <div style={{marginTop:8,opacity:.12,fontSize:8,textAlign:"center"}}>Screen text = English · Voice = your choice</div>
@@ -5022,7 +5031,7 @@ export default function MokshaPatam108(){
 
         {/* ── Fixed top bar ── */}
         <div style={{position:"fixed",top:0,left:0,right:0,height:56,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 16px",background:"linear-gradient(180deg,rgba(12,10,7,.95),rgba(12,10,7,0))",zIndex:20}}>
-          <button onClick={()=>{VoiceEngine.stop();if(storyPage>0)setStoryPage(storyPage-1);else navigateTo("title")}}
+          <button onClick={()=>{VoiceEngine.stop();if(storyPage>0)setStoryPage(storyPage-1);else setScreen("title")}}
             style={{background:"transparent",border:"1px solid rgba(200,160,60,.18)",color:"#8a7a50",padding:"5px 14px",fontSize:10,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1}}>
             ← Back
           </button>
@@ -5138,7 +5147,7 @@ export default function MokshaPatam108(){
         {/* ── Fixed bottom navigation ── */}
         <div style={{position:"fixed",bottom:0,left:0,right:0,padding:"8px 20px 10px",background:"linear-gradient(0deg,rgba(12,10,7,.98) 60%,rgba(12,10,7,0))",display:"flex",flexDirection:"column",alignItems:"center",gap:4,zIndex:20}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",width:"100%",maxWidth:700,gap:12}}>
-            <button onClick={()=>{VoiceEngine.stop();navigateTo("pickcount")}}
+            <button onClick={()=>{VoiceEngine.stop();setScreen("pickcount")}}
               style={{background:"transparent",border:"none",color:"rgba(90,74,48,.5)",fontSize:9,cursor:"pointer",letterSpacing:2,fontFamily:"'Cinzel',serif",flexShrink:0}}>
               SKIP →
             </button>
@@ -5155,7 +5164,7 @@ export default function MokshaPatam108(){
                   Next →
                 </button>
               ):(
-                <button className="gb gp" onClick={()=>{VoiceEngine.stop();navigateTo("pickcount")}}
+                <button className="gb gp" onClick={()=>{VoiceEngine.stop();setScreen("pickcount")}}
                   style={{padding:"10px 28px",fontSize:12,letterSpacing:3,animation:"pulse 2s ease infinite"}}>
                   ⚡ Play Now
                 </button>
@@ -5177,7 +5186,7 @@ export default function MokshaPatam108(){
       <SineWaveBackground/>
 
       {/* Back */}
-      <button onClick={()=>{VoiceEngine.stop();navigateTo("title")}} style={{position:"fixed",top:20,left:20,background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#8a7a50",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
+      <button onClick={()=>{VoiceEngine.stop();setScreen("title")}} style={{position:"fixed",top:20,left:20,background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#8a7a50",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
 
       <div style={{position:"relative",zIndex:2,display:"flex",flexDirection:"column",alignItems:"center",width:"100%",maxWidth:560,animation:"slideUp .8s ease"}}>
 
@@ -5191,7 +5200,7 @@ export default function MokshaPatam108(){
         <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:12,width:"100%",marginBottom:14}}>
 
           {/* 1 vs Yama — full width, special */}
-          <div onClick={()=>{setNP(2);setIsCPU([false,true]);setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);navigateTo("yama")}}
+          <div onClick={()=>{setNP(2);setIsCPU([false,true]);setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("yama")}}
             style={{
               gridColumn:"1 / -1",
               background:"linear-gradient(135deg,rgba(160,40,40,.18),rgba(80,20,20,.25))",
@@ -5226,7 +5235,7 @@ export default function MokshaPatam108(){
             {n:4,icon:"🕉",label:"4 Players",desc:"Four cardinal paths. Maximum chaos and karma.",tags:["🎭 Full house","🔱 Epic"]}
           ].map(({n,icon,label,desc,tags})=>(
             <div key={n}
-              onClick={()=>{setNP(n);setIsCPU(Array(n).fill(false));setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);navigateTo("setup")}}
+              onClick={()=>{setNP(n);setIsCPU(Array(n).fill(false));setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("setup")}}
               style={{
                 background:"linear-gradient(135deg,rgba(30,24,14,.7),rgba(20,16,10,.8))",
                 border:"1px solid rgba(200,160,60,.18)",
@@ -5288,7 +5297,7 @@ export default function MokshaPatam108(){
     return(
       <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20,minHeight:"100vh",background:"radial-gradient(ellipse at center,#1a0808 0%,#0c0505 40%,#050202 100%)"}}>
         {globalOverlays}
-        <button onClick={()=>{VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){}navigateTo("pickcount");setYamaPhase(0)}} style={{position:"fixed",top:20,left:20,background:"transparent",border:"1px solid rgba(160,64,64,.25)",color:"#806060",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
+        <button onClick={()=>{VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){}setScreen("pickcount");setYamaPhase(0)}} style={{position:"fixed",top:20,left:20,background:"transparent",border:"1px solid rgba(160,64,64,.25)",color:"#806060",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
         <div style={{position:"fixed",inset:0,background:"radial-gradient(ellipse at center,rgba(160,40,40,.08),transparent 60%)",pointerEvents:"none"}}/>
         
         {yamaPhase===0&&<div style={{textAlign:"center",animation:"yamaReveal 2s ease forwards",display:"flex",flexDirection:"column",alignItems:"center"}}>
@@ -5321,7 +5330,7 @@ export default function MokshaPatam108(){
           <div style={{fontSize:"clamp(11px,1.5vw,14px)",color:"#806060",marginBottom:28,fontStyle:"italic",letterSpacing:2}}>
             {chosenLang==='hi'?"अपनी पहचान बताओ, नश्वर प्राणी":"Identify yourself, mortal"}
           </div>
-          <button className="gb gp" onClick={()=>navigateTo("setup")} style={{padding:"14px 40px",fontSize:16,letterSpacing:4,background:"rgba(160,64,64,.15)",border:"2px solid rgba(160,64,64,.4)",color:"#e08080"}}>
+          <button className="gb gp" onClick={()=>setScreen("setup")} style={{padding:"14px 40px",fontSize:16,letterSpacing:4,background:"rgba(160,64,64,.15)",border:"2px solid rgba(160,64,64,.4)",color:"#e08080"}}>
             {chosenLang==='hi'?"अपना योद्धा चुनो ▸":"CHOOSE YOUR SEEKER ▸"}
           </button>
         </div>}
@@ -5339,7 +5348,7 @@ export default function MokshaPatam108(){
         {globalOverlays}
         <div style={{maxWidth:680,width:"100%",animation:"slideUp .6s ease"}} key={pidx}>
           <div style={{textAlign:"center",marginBottom:20}}>
-            <button onClick={()=>{VoiceEngine.stop();setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);navigateTo("pickcount")}} style={{position:"absolute",top:20,left:20,background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#8a7a50",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
+            <button onClick={()=>{VoiceEngine.stop();setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("pickcount")}} style={{position:"absolute",top:20,left:20,background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#8a7a50",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
             <div style={{fontSize:10,opacity:.3,letterSpacing:5}}>SEEKER {pidx+1} OF {nP}</div>
             <h2 style={{fontSize:"clamp(20px,4vw,30px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"8px 0"}}>Choose Your Identity</h2>
             {pidx===0&&<div
@@ -5383,7 +5392,7 @@ export default function MokshaPatam108(){
               style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(200,160,60,.3)",color:"#e8c850",padding:"10px 14px",fontSize:14,fontFamily:"'Cinzel',serif",width:"100%",outline:"none",borderRadius:3}}/>
           </div>
           <div style={{display:"flex",justifyContent:"space-between",gap:12}}>
-            <button className="gb" onClick={()=>{if(pidx===0)navigateTo("pickcount");else{const lp=players[players.length-1];setPlayers(p=>p.slice(0,-1));setUsedChars(u=>u.filter(x=>x!==lp.charIdx))}}}>← Back</button>
+            <button className="gb" onClick={()=>{if(pidx===0)setScreen("pickcount");else{const lp=players[players.length-1];setPlayers(p=>p.slice(0,-1));setUsedChars(u=>u.filter(x=>x!==lp.charIdx))}}}>← Back</button>
             <button className="gb gp" onClick={addPlayer} style={{opacity:(!tempName.trim()||tempChar<0)?.4:1}}>{pidx<nP-1?"Next Seeker →":"Begin Journey →"}</button>
           </div>
           {players.length>0&&<div style={{marginTop:16,borderTop:"1px solid rgba(200,160,60,.1)",paddingTop:12}}>
@@ -5623,7 +5632,7 @@ export default function MokshaPatam108(){
               display:"block",width:"100%",animation:"pulse 2s ease infinite",
             }}>✨ View Moksha Ceremony</button>
             <div style={{display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap"}}>
-              <button onClick={()=>{navigateTo("title");setWin(null);setPlayers([]);ambient.stop()}} className="gb" style={{padding:"6px 16px",fontSize:10,marginTop:0}}>New Journey</button>
+              <button onClick={()=>{setScreen("title");setWin(null);setPlayers([]);ambient.stop()}} className="gb" style={{padding:"6px 16px",fontSize:10,marginTop:0}}>New Journey</button>
               {auth.user&&<button onClick={()=>{setShowProfile(true);setProfileTab("history")}} className="gb" style={{padding:"6px 16px",fontSize:10,marginTop:0,opacity:.7}}>📊 Stats</button>}
             </div>
           </div>}
