@@ -22,7 +22,7 @@ export default function ChitraguptaIntroScreen({ players, chosenLang, muted, onB
   const [done,      setDone]      = useState(false);
   const [exploding, setExploding] = useState(false);
 
-  useEffect(()=>{ const t=setTimeout(()=>setDone(true),34000); return()=>clearTimeout(t); },[]);
+  useEffect(()=>{ const t=setTimeout(()=>setDone(true),5000); return()=>clearTimeout(t); },[]);
 
   // Voice + morse audio init
   useEffect(()=>{
