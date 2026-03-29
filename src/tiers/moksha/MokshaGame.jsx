@@ -3,8 +3,8 @@
 //    then remove the inline function below (search: function ChitraguptaIntroScreen)
 // ─────────────────────────────────────────────────────────────────────────────
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
-import HowToPlay    from "./components/HowToPlay.jsx";
-import Encyclopedia from "./components/Encyclopedia.jsx";
+import HowToPlay    from "../../components/HowToPlay.jsx";
+import Encyclopedia from "../../components/Encyclopedia.jsx";
 // ═══ AUTH + DATABASE (Supabase) ═══
 // npm install @supabase/supabase-js
 // Set REACT_APP_SUPABASE_URL and REACT_APP_SUPABASE_ANON_KEY in Vercel env vars
