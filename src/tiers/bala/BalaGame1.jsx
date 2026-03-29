@@ -221,104 +221,114 @@ function MayaviSVG({ size=120 }) {
 }
 
 // ── BOARD with snake SVG paths ────────────────────────────────────────────────
-function BalaBoard({ players, pos, cur }) {
-  const playersSq = players.map((_,pi) => pos[pi]||1);
+function BalaBoard({ players, pos, cur, crownRiddle }) {
+  const playersSq = players.map((_,pi)=>pos[pi]||1);
 
-  // Pre-sort squares into visual order (top-left to bottom-right) like Moksha
-  const mainBoard = [];
-  for (let r=0; r<10; r++) {
-    for (let c=0; c<10; c++) {
-      const row = 9 - r;
-      const n = row*10 + (row%2===0 ? c : 9-c) + 1;
-      mainBoard.push(n);
-    }
-  }
-
-  // SVG coordinates for snake/ladder overlay: viewBox "0 0 100 100", same as Moksha
-  const sq2xy = (n) => {
-    if(n<1||n>100) return {x:50,y:50};
-    const origRow = Math.floor((n-1)/10);
-    const r = 9 - origRow;
-    const c = origRow%2===0 ? (n-1)%10 : 9-((n-1)%10);
-    return { x: c*10+5, y: r*10+5 };
-  };
-
+  // S-curve snake path (viewBox 0 0 100 100 for the 10x10 main grid)
   const snakePath = (f, t) => {
-    const fc=sq2xy(f), tc=sq2xy(t);
+    const fc=sqMain(f), tc=sqMain(t);
     const dx=tc.x-fc.x, dy=tc.y-fc.y, len=Math.sqrt(dx*dx+dy*dy);
-    const px=-dy/len, py=dx/len, wave=Math.min(len*.35,13);
-    return {
-      fc, tc,
-      d:`M${fc.x},${fc.y} C${(fc.x+dx*.28+px*wave).toFixed(1)},${(fc.y+dy*.28+py*wave).toFixed(1)} ${(fc.x+dx*.72-px*wave).toFixed(1)},${(fc.y+dy*.72-py*wave).toFixed(1)} ${tc.x},${tc.y}`
-    };
+    const px=-dy/len, py=dx/len, wave=Math.min(len*.38,14);
+    const cp1x=fc.x+dx*.28+px*wave, cp1y=fc.y+dy*.28+py*wave;
+    const cp2x=fc.x+dx*.72-px*wave, cp2y=fc.y+dy*.72-py*wave;
+    return {fc,tc,d:`M${fc.x.toFixed(1)},${fc.y.toFixed(1)} C${cp1x.toFixed(1)},${cp1y.toFixed(1)} ${cp2x.toFixed(1)},${cp2y.toFixed(1)} ${tc.x.toFixed(1)},${tc.y.toFixed(1)}`};
   };
 
   const ladderParts = (f, t) => {
-    const fc=sq2xy(f), tc=sq2xy(t);
+    const fc=sqMain(f), tc=sqMain(t);
     const dx=tc.x-fc.x, dy=tc.y-fc.y, len=Math.sqrt(dx*dx+dy*dy);
-    const px=-dy/len*1.5, py=dx/len*1.5;
-    const nn=Math.max(3,Math.floor(len/8));
+    const ux=dx/len, uy=dy/len, px=-uy*1.5, py=ux*1.5;
+    const n=Math.max(3,Math.floor(len/8));
     const rungs=[];
-    for(let i=0;i<=nn;i++){const t2=i/nn;rungs.push({x1:fc.x+t2*dx+px,y1:fc.y+t2*dy+py,x2:fc.x+t2*dx-px,y2:fc.y+t2*dy-py});}
+    for(let i=0;i<=n;i++){const t2=i/n;rungs.push({x1:fc.x+t2*dx+px,y1:fc.y+t2*dy+py,x2:fc.x+t2*dx-px,y2:fc.y+t2*dy-py});}
     return {fc,tc,rungs,r1:{x1:fc.x+px,y1:fc.y+py,x2:tc.x+px,y2:tc.y+py},r2:{x1:fc.x-px,y1:fc.y-py,x2:tc.x-px,y2:tc.y-py}};
   };
 
-  return (
-    <div style={{width:'100%',userSelect:'none'}}>
+  // Main board squares (1-100) — for SVG overlay coordinate in viewBox "0 0 100 100"
+  function sqMain(n) {
+    const {r,c} = sqP(n);
+    return { x:(c+0.5)*10, y:(r+0.5)*10 };
+  }
 
-      {/* CROWN ROW 101-108 */}
-      <div style={{position:'relative',overflow:'hidden',
-        background:'linear-gradient(180deg,rgba(105,240,174,.07),rgba(4,13,6,.8))',
+  const mainSquares = Array.from({length:100},(_,i)=>i+1).map(n=>({n,...sqP(n)}));
+  const crownSquares = Array.from({length:8},(_,i)=>({n:101+i,ci:i}));
+
+  return (
+    <div style={{position:'relative',width:'100%'}}>
+
+      {/* ── CROWN ROW (101-108) — like Moksha's Ashtanga Marga ── */}
+      <div style={{
+        position:'relative',
+        background:'linear-gradient(180deg,rgba(100,200,120,.08),rgba(10,25,12,.5))',
         borderBottom:'2px solid rgba(105,240,174,.2)',
-        padding:'5px 3px 3px',borderRadius:'8px 8px 0 0'}}>
-        <svg style={{position:'absolute',inset:0,width:'100%',height:'100%',
-          pointerEvents:'none',opacity:.05}} viewBox="0 0 200 50" preserveAspectRatio="none">
+        padding:'6px 4px 4px',
+        overflow:'hidden',
+        borderRadius:'10px 10px 0 0',
+      }}>
+        {/* Jungle vine pattern overlay */}
+        <svg style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',opacity:.06}} viewBox="0 0 200 50" preserveAspectRatio="none">
           {[0,25,50,75,100,125,150,175].map(x=>(
             <g key={x}>
-              <path d={`M${x},50 Q${x+8},28 ${x+16},8 Q${x+20},2 ${x+25},0`}
-                fill="none" stroke="#69f0ae" strokeWidth="1.2"/>
-              <circle cx={x+8} cy={30} r="3.5" fill="none" stroke="#69f0ae" strokeWidth=".7"/>
+              <path d={`M${x},50 Q${x+12},25 ${x+25},0`} fill="none" stroke="#69f0ae" strokeWidth="1"/>
+              <circle cx={x+6} cy={35} r="4" fill="none" stroke="#69f0ae" strokeWidth=".5"/>
+              <circle cx={x+18} cy={15} r="3" fill="none" stroke="#69f0ae" strokeWidth=".5"/>
             </g>
           ))}
         </svg>
-        <div style={{fontSize:'clamp(5px,.8vw,8px)',textAlign:'center',letterSpacing:3,
-          color:'#69f0ae',opacity:.4,marginBottom:3,fontFamily:"'Baloo 2',sans-serif"}}>
-          ✦ PATH TO THE GOLDEN GARDEN ✦
+        <div style={{fontSize:'clamp(6px,1vw,9px)',textAlign:'center',letterSpacing:4,
+          color:'#69f0ae',opacity:.5,marginBottom:4,fontFamily:"'Baloo 2',sans-serif",
+          textShadow:'0 0 10px rgba(105,240,174,.3)'}}>
+          ✨ PATH TO THE GOLDEN GARDEN · क्राउन मार्ग ✨
         </div>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(8,1fr)',gap:2}}>
-          {[101,102,103,104,105,106,107,108].map((n,ci)=>{
-            const isWin=n===108, riddle=CROWN_RIDDLES[n];
-            const here=players.map((_,pi)=>playersSq[pi]===n?pi:-1).filter(x=>x>=0);
+        <div style={{display:'grid',gridTemplateColumns:'repeat(8,1fr)',gap:3}}>
+          {crownSquares.map(({n,ci})=>{
+            const isWin = n===108;
+            const isRiddle = n>=101 && n<=107;
+            const here = players.map((_,pi)=>playersSq[pi]===n?pi:-1).filter(x=>x>=0);
+            const riddle = CROWN_RIDDLES[n];
             return (
-              <div key={n} style={{aspectRatio:'1',position:'relative',
-                background:isWin?'radial-gradient(circle,rgba(255,215,0,.22),rgba(255,140,0,.08))':'radial-gradient(circle,rgba(105,240,174,.06),transparent)',
-                border:`1px solid ${isWin?'rgba(255,215,0,.4)':'rgba(105,240,174,.14)'}`,
-                borderRadius:3,display:'flex',flexDirection:'column',
-                alignItems:'center',justifyContent:'center'}}>
-                <span style={{position:'absolute',top:1,left:2,fontSize:'clamp(5px,.7vw,7px)',
-                  color:isWin?'#ffd700':'rgba(105,240,174,.32)',fontWeight:700,lineHeight:1}}>{n}</span>
-                <span style={{fontSize:'clamp(10px,1.9vw,17px)',lineHeight:1,
-                  filter:isWin?'drop-shadow(0 0 8px rgba(255,215,0,.7))':'drop-shadow(0 0 4px rgba(105,240,174,.4))',
-                  animation:`bFloat ${2+ci*.22}s ease infinite`}}>
-                  {isWin?'⭐':riddle?.icon||'❓'}
+              <div key={n} style={{
+                aspectRatio:'1',
+                background:isWin
+                  ?'radial-gradient(circle,rgba(255,215,0,.25),rgba(255,140,0,.1))'
+                  :'radial-gradient(circle,rgba(105,240,174,.08),transparent)',
+                border:`1px solid ${isWin?'rgba(255,215,0,.5)':'rgba(105,240,174,.18)'}`,
+                borderRadius:4,
+                display:'flex',flexDirection:'column',
+                alignItems:'center',justifyContent:'center',
+                cursor:'pointer',position:'relative',
+                transition:'all .3s',
+                animation:isWin?'bFloat 3s ease infinite':'none',
+                boxShadow:isWin?'0 0 16px rgba(255,215,0,.15)':'none',
+              }}>
+                <span style={{position:'absolute',top:1,left:2,
+                  fontSize:'clamp(5px,.8vw,8px)',
+                  color:isWin?'#ffd700':'rgba(105,240,174,.4)',fontWeight:700}}>
+                  {n}
                 </span>
-                {!isWin&&riddle&&<span style={{fontSize:'clamp(4px,.55vw,6px)',
-                  color:'rgba(105,240,174,.45)',fontFamily:"'Noto Sans Devanagari',sans-serif",
-                  lineHeight:1,textShadow:'0 1px 3px rgba(0,0,0,.8)'}}>{riddle.skt}</span>}
-                {isWin&&<span style={{fontSize:'clamp(4px,.5vw,6px)',color:'#ffd700',fontWeight:800,
-                  fontFamily:"'Baloo 2',sans-serif",lineHeight:1}}>MOKSHA</span>}
+                {/* Icon */}
+                {isWin
+                  ?<span style={{fontSize:'clamp(12px,2.2vw,20px)',filter:'drop-shadow(0 0 8px rgba(255,215,0,.8))',animation:'bFloat 1.5s ease infinite'}}>⭐</span>
+                  :<span style={{fontSize:'clamp(11px,2vw,18px)',filter:'drop-shadow(0 0 5px rgba(105,240,174,.5))',animation:`bFloat ${2+ci*.3}s ease infinite`}}>{riddle?.icon||'❓'}</span>
+                }
+                {/* Sanskrit */}
+                {isRiddle&&<span style={{fontSize:'clamp(4px,.6vw,7px)',color:'rgba(105,240,174,.55)',fontFamily:"'Noto Sans Devanagari',sans-serif",fontWeight:700,lineHeight:1}}>{riddle?.skt}</span>}
+                {isWin&&<span style={{fontSize:'clamp(4px,.6vw,7px)',color:'#ffd700',fontWeight:700,fontFamily:"'Baloo 2',sans-serif",lineHeight:1}}>MOKSHA</span>}
+                {/* Player tokens */}
                 {here.length>0&&(
-                  <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',
-                    justifyContent:'center',gap:1,zIndex:5}}>
+                  <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center',gap:1,zIndex:5}}>
                     {here.map(pi=>{
                       const pc=players[pi].char?.color||'#69f0ae';
-                      return <div key={pi} style={{width:'clamp(12px,2.2vw,20px)',height:'clamp(12px,2.2vw,20px)',
-                        borderRadius:'50%',background:`radial-gradient(circle at 35% 30%,${pc}ee,${pc})`,
-                        border:`2px solid ${pc}`,boxShadow:`0 0 8px ${pc}99`,
-                        display:'flex',alignItems:'center',justifyContent:'center',
-                        fontSize:'clamp(5px,1vw,10px)',animation:pi===cur?'bPulse .9s ease infinite':'none'}}>
-                        {players[pi].char?.icon}
-                      </div>;
+                      return(
+                        <div key={pi} style={{width:'clamp(14px,2.5vw,22px)',height:'clamp(14px,2.5vw,22px)',borderRadius:'50%',
+                          background:`radial-gradient(circle at 35% 30%,${pc}ee,${pc})`,
+                          border:`2px solid ${pc}`,boxShadow:`0 0 10px ${pc}99`,
+                          display:'flex',alignItems:'center',justifyContent:'center',
+                          fontSize:'clamp(7px,1.2vw,12px)',
+                          animation:pi===cur?'bPulse .9s ease infinite':'none'}}>
+                          {players[pi].char?.icon}
+                        </div>
+                      );
                     })}
                   </div>
                 )}
@@ -328,126 +338,163 @@ function BalaBoard({ players, pos, cur }) {
         </div>
       </div>
 
-      {/* MAIN BOARD 1-100 */}
-      <div style={{position:'relative',borderRadius:'0 0 8px 8px',overflow:'hidden',
-        border:'1px solid rgba(105,240,174,.1)',borderTop:'none',
-        boxShadow:'0 8px 30px rgba(0,0,0,.5)'}}>
+      {/* ── MAIN BOARD (1-100) ── */}
+      <div style={{position:'relative',
+        background:'#0a1a0d',
+        border:'1px solid rgba(105,240,174,.1)',
+        borderTop:'none',
+        borderRadius:'0 0 10px 10px',
+        overflow:'hidden',
+        boxShadow:'0 10px 40px rgba(0,0,0,.6)',
+      }}>
+        {/* Jungle background gradient */}
+        <div style={{position:'absolute',inset:0,
+          background:`linear-gradient(to bottom,
+            #0a1f0d 0%,#0d2510 22%,
+            #060f18 23%,#08131f 45%,
+            #1a0a0e 46%,#220c10 68%,
+            #040d06 69%,#061508 100%)`,
+          zIndex:0}}/>
+        {/* Realm dividers */}
+        <div style={{position:'absolute',left:'2%',right:'2%',top:'33.5%',height:1,
+          background:'linear-gradient(90deg,transparent,rgba(105,240,174,.12),transparent)',zIndex:2,pointerEvents:'none'}}/>
+        <div style={{position:'absolute',left:'2%',right:'2%',top:'67%',height:1,
+          background:'linear-gradient(90deg,transparent,rgba(105,240,174,.12),transparent)',zIndex:2,pointerEvents:'none'}}/>
 
-        {/* Jungle depth background */}
-        <div style={{position:'absolute',inset:0,zIndex:0,
-          background:`linear-gradient(to bottom,#0c2210 0%,#081a09 25%,#04121a 26%,#071823 50%,#170910 51%,#1e0b12 74%,#040d06 75%,#061508 100%)`}}/>
-        <div style={{position:'absolute',left:'2%',right:'2%',top:'33%',height:1,zIndex:2,pointerEvents:'none',
-          background:'linear-gradient(90deg,transparent,rgba(105,240,174,.09),transparent)'}}/>
-        <div style={{position:'absolute',left:'2%',right:'2%',top:'67%',height:1,zIndex:2,pointerEvents:'none',
-          background:'linear-gradient(90deg,transparent,rgba(105,240,174,.09),transparent)'}}/>
-
-        {/* Grid — squares in visual order (no gridColumn/gridRow needed) */}
+        {/* CSS Grid */}
         <div style={{display:'grid',gridTemplateColumns:'repeat(10,1fr)',
-          position:'relative',zIndex:3,aspectRatio:'1'}}>
-          {mainBoard.map(n=>{
+          position:'relative',zIndex:3,aspectRatio:'10/10'}}>
+          {mainSquares.map(({n,r,c})=>{
             const sn=SNAKES_BALA[n], ld=LADDERS_BALA[n];
             const disc=DISCOVERY_SQUARES[n], dlm=DLM_SQ_BALA.includes(n);
             const here=players.map((_,pi)=>playersSq[pi]===n?pi:-1).filter(x=>x>=0);
-            let bg='rgba(8,20,10,.7)',border='rgba(105,240,174,.06)';
-            if(sn){bg='radial-gradient(ellipse,rgba(160,20,20,.35),rgba(60,8,8,.22))';border=sn.color+'40';}
-            else if(ld){bg='radial-gradient(ellipse,rgba(20,120,40,.28),rgba(8,50,15,.16))';border='rgba(105,240,174,.22)';}
-            else if(disc){bg='radial-gradient(ellipse,rgba(100,50,200,.25),rgba(40,15,90,.15))';border='rgba(179,136,255,.22)';}
-            else if(dlm){bg='radial-gradient(ellipse,rgba(160,110,0,.2),rgba(70,50,0,.1))';border='rgba(255,193,7,.16)';}
+            let bg='rgba(10,25,12,.7)', border='rgba(105,240,174,.07)';
+            if(sn){bg='radial-gradient(ellipse at 50% 30%,rgba(180,30,30,.4),rgba(80,10,10,.25))';border=sn.color+'55';}
+            else if(ld){bg='radial-gradient(ellipse at 50% 70%,rgba(30,140,50,.3),rgba(10,60,20,.18))';border='rgba(105,240,174,.3)';}
+            else if(disc){bg='radial-gradient(ellipse at 50% 30%,rgba(120,60,220,.3),rgba(50,20,100,.18))';border='rgba(179,136,255,.3)';}
+            else if(dlm){bg='radial-gradient(ellipse,rgba(180,130,0,.2),rgba(80,60,0,.12))';border='rgba(255,193,7,.2)';}
             return (
-              <div key={n} style={{aspectRatio:'1',background:bg,border:`0.5px solid ${border}`,
-                display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
-                position:'relative',overflow:'hidden'}}>
-                <span style={{position:'absolute',top:'4%',left:'5%',
-                  fontSize:'clamp(6px,.95vw,11px)',lineHeight:1,
-                  color:sn?'#ff8a80':ld?'#69f0ae':disc?'#ce93d8':'rgba(105,240,174,.35)',
+              <div key={n} style={{
+                aspectRatio:'1',background:bg,
+                border:`0.5px solid ${border}`,
+                display:'flex',flexDirection:'column',
+                alignItems:'center',justifyContent:'center',
+                cursor:'pointer',position:'relative',
+                transition:'background .2s',overflow:'hidden',
+              }}>
+                {/* Number */}
+                <span style={{
+                  position:'absolute',top:1,left:2,
+                  fontSize:'clamp(6px,.9vw,9px)',
+                  color:sn?'#ff8a80':ld?'#69f0ae':disc?'#ce93d8':'rgba(105,240,174,.4)',
                   fontWeight:900,fontFamily:"'Nunito',sans-serif",
-                  textShadow:'0 1px 4px rgba(0,0,0,.95)'}}>
-                  {n}
-                </span>
+                  textShadow:'0 1px 4px rgba(0,0,0,.9)',lineHeight:1,
+                }}>{n}</span>
+
+                {/* SNAKE SQUARE — icon + text */}
                 {sn&&!here.length&&(
-                  <div style={{display:'flex',flexDirection:'column',alignItems:'center',padding:'6% 2% 2%',width:'100%'}}>
-                    <svg width="52%" height="auto" viewBox="0 0 24 24">
-                      <path d="M5 18 Q8 12 12 10 Q16 8 19 5" stroke={sn.color} strokeWidth="2.2" fill="none" strokeLinecap="round"/>
-                      <circle cx="19.5" cy="4" r="2.5" fill={sn.headColor}/>
-                      <circle cx="18.4" cy="3.2" r=".7" fill="white"/>
-                      <circle cx="20.5" cy="3.2" r=".7" fill="white"/>
-                      <path d="M19.5,6.5 L18.6,8.5 M19.5,6.5 L20.4,8.5" stroke="#ff1744" strokeWidth=".7" strokeLinecap="round"/>
+                  <div style={{display:'flex',flexDirection:'column',alignItems:'center',width:'100%',padding:'1px'}}>
+                    {/* SVG snake icon */}
+                    <svg width="clamp(14px,2.5vw,22px)" height="clamp(14px,2.5vw,22px)" viewBox="0 0 24 24">
+                      <path d="M6 18 Q8 12 12 10 Q16 8 18 4" stroke={sn.color} strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+                      <circle cx="18" cy="3.5" r="2.8" fill={sn.headColor}/>
+                      <circle cx="16.8" cy="2.8" r=".8" fill="white"/>
+                      <circle cx="19.2" cy="2.8" r=".8" fill="white"/>
+                      <path d="M18,6 L17,8 M18,6 L19,8" stroke="#ff1744" strokeWidth=".8" strokeLinecap="round"/>
                     </svg>
-                    <span style={{fontSize:'clamp(5px,.95vw,10px)',color:sn.color,fontWeight:900,
-                      fontFamily:"'Noto Sans Devanagari',sans-serif",lineHeight:1.15,
-                      textShadow:'0 0 8px rgba(0,0,0,.95)',textAlign:'center',
-                      maxWidth:'95%',display:'block',overflow:'hidden'}}>{sn.skt}</span>
-                    <span style={{fontSize:'clamp(4px,.65vw,7px)',color:'rgba(255,140,120,.6)',
-                      fontWeight:700,fontFamily:"'Nunito',sans-serif",lineHeight:1,maxWidth:'95%',
-                      overflow:'hidden',whiteSpace:'nowrap',textShadow:'0 0 6px rgba(0,0,0,.9)'}}>
+                    <span style={{fontSize:'clamp(5px,.85vw,9px)',color:sn.color,fontWeight:900,
+                      fontFamily:"'Noto Sans Devanagari',sans-serif",lineHeight:1.1,
+                      textShadow:'0 0 8px rgba(0,0,0,.9)',textAlign:'center',
+                      whiteSpace:'nowrap',overflow:'hidden',maxWidth:'100%'}}>
+                      {sn.skt}
+                    </span>
+                    <span style={{fontSize:'clamp(4px,.65vw,7px)',color:'rgba(255,130,100,.7)',
+                      fontWeight:700,fontFamily:"'Nunito',sans-serif",lineHeight:1,
+                      textShadow:'0 0 6px rgba(0,0,0,.9)'}}>
                       {sn.en.split('·')[1]?.trim()||sn.en}
                     </span>
                   </div>
                 )}
+
+                {/* LADDER SQUARE — icon + text */}
                 {ld&&!here.length&&(
-                  <div style={{display:'flex',flexDirection:'column',alignItems:'center',padding:'6% 2% 2%',width:'100%'}}>
-                    <svg width="42%" height="auto" viewBox="0 0 24 24">
+                  <div style={{display:'flex',flexDirection:'column',alignItems:'center',width:'100%',padding:'1px'}}>
+                    {/* SVG ladder icon */}
+                    <svg width="clamp(14px,2.5vw,22px)" height="clamp(14px,2.5vw,22px)" viewBox="0 0 24 24">
                       <defs>
-                        <linearGradient id={`li${n}`} x1="0" y1="22" x2="0" y2="2" gradientUnits="userSpaceOnUse">
-                          <stop offset="0%" stopColor={ld.color1}/><stop offset="100%" stopColor={ld.color2}/>
+                        <linearGradient id={`ladIco${n}`} x1="0" y1="22" x2="0" y2="2" gradientUnits="userSpaceOnUse">
+                          <stop offset="0%" stopColor={ld.color1}/>
+                          <stop offset="100%" stopColor={ld.color2}/>
                         </linearGradient>
                       </defs>
-                      <line x1="5" y1="22" x2="5" y2="2" stroke={`url(#li${n})`} strokeWidth="2.5" strokeLinecap="round"/>
-                      <line x1="19" y1="22" x2="19" y2="2" stroke={`url(#li${n})`} strokeWidth="2.5" strokeLinecap="round"/>
-                      <line x1="5" y1="18" x2="19" y2="18" stroke="rgba(255,255,255,.6)" strokeWidth="1.8" strokeLinecap="round"/>
-                      <line x1="5" y1="12" x2="19" y2="12" stroke="rgba(255,255,255,.6)" strokeWidth="1.8" strokeLinecap="round"/>
-                      <line x1="5" y1="6"  x2="19" y2="6"  stroke="rgba(255,255,255,.6)" strokeWidth="1.8" strokeLinecap="round"/>
+                      <line x1="6" y1="22" x2="6" y2="2" stroke={`url(#ladIco${n})`} strokeWidth="2.5" strokeLinecap="round"/>
+                      <line x1="18" y1="22" x2="18" y2="2" stroke={`url(#ladIco${n})`} strokeWidth="2.5" strokeLinecap="round"/>
+                      <line x1="6" y1="19" x2="18" y2="19" stroke="rgba(255,255,255,.6)" strokeWidth="2" strokeLinecap="round"/>
+                      <line x1="6" y1="13" x2="18" y2="13" stroke="rgba(255,255,255,.6)" strokeWidth="2" strokeLinecap="round"/>
+                      <line x1="6" y1="7" x2="18" y2="7" stroke="rgba(255,255,255,.6)" strokeWidth="2" strokeLinecap="round"/>
                     </svg>
-                    <span style={{fontSize:'clamp(5px,.95vw,10px)',color:'#69f0ae',fontWeight:900,
-                      fontFamily:"'Noto Sans Devanagari',sans-serif",lineHeight:1.15,
-                      textShadow:'0 0 8px rgba(0,0,0,.95)',textAlign:'center',
-                      maxWidth:'95%',display:'block',overflow:'hidden'}}>{ld.skt}</span>
-                    <span style={{fontSize:'clamp(4px,.65vw,7px)',color:'rgba(130,220,150,.55)',
-                      fontWeight:700,fontFamily:"'Nunito',sans-serif",lineHeight:1,maxWidth:'95%',
-                      overflow:'hidden',whiteSpace:'nowrap',textShadow:'0 0 6px rgba(0,0,0,.9)'}}>
+                    <span style={{fontSize:'clamp(5px,.85vw,9px)',color:'#69f0ae',fontWeight:900,
+                      fontFamily:"'Noto Sans Devanagari',sans-serif",lineHeight:1.1,
+                      textShadow:'0 0 8px rgba(0,0,0,.9)',textAlign:'center',
+                      whiteSpace:'nowrap',overflow:'hidden',maxWidth:'100%'}}>
+                      {ld.skt}
+                    </span>
+                    <span style={{fontSize:'clamp(4px,.65vw,7px)',color:'rgba(130,220,130,.6)',
+                      fontWeight:700,fontFamily:"'Nunito',sans-serif",lineHeight:1}}>
                       {ld.en}
                     </span>
                   </div>
                 )}
+
+                {/* DISCOVERY SQUARE */}
                 {disc&&!sn&&!ld&&!here.length&&(
-                  <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:1}}>
-                    <span style={{fontSize:'clamp(12px,2.3vw,22px)',lineHeight:1,
+                  <div style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+                    <span style={{fontSize:'clamp(12px,2.2vw,20px)',lineHeight:1,
                       animation:'bFloat 2s ease infinite',
-                      filter:'drop-shadow(0 0 5px rgba(179,136,255,.8))'}}>{disc.icon}</span>
-                    <span style={{fontSize:'clamp(4px,.7vw,7px)',color:'#b39ddb',fontWeight:800,
-                      fontFamily:"'Nunito',sans-serif",letterSpacing:.5,lineHeight:1}}>DISCOVER</span>
+                      filter:'drop-shadow(0 0 6px rgba(179,136,255,.8))'}}>{disc.icon}</span>
+                    <span style={{fontSize:'clamp(4px,.7vw,7px)',color:'#ce93d8',fontWeight:800,
+                      fontFamily:"'Nunito',sans-serif",letterSpacing:.5,lineHeight:1,marginTop:1}}>DISCOVER</span>
+                    <span style={{fontSize:'clamp(4px,.6vw,6px)',color:'rgba(179,136,255,.5)',
+                      fontFamily:"'Noto Sans Devanagari',sans-serif",lineHeight:1}}>{disc.skt}</span>
                   </div>
                 )}
+
+                {/* DILEMMA SQUARE */}
                 {dlm&&!sn&&!ld&&!disc&&!here.length&&(
-                  <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:1}}>
-                    <span style={{fontSize:'clamp(10px,1.9vw,18px)',lineHeight:1}}>⚖</span>
-                    <span style={{fontSize:'clamp(4px,.65vw,6.5px)',color:'rgba(255,193,7,.5)',
+                  <div style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+                    <span style={{fontSize:'clamp(10px,1.9vw,16px)',lineHeight:1}}>⚖</span>
+                    <span style={{fontSize:'clamp(4px,.65vw,6px)',color:'rgba(255,193,7,.5)',
                       fontWeight:700,fontFamily:"'Nunito',sans-serif",letterSpacing:.3}}>CHOOSE</span>
                   </div>
                 )}
+
+                {/* PLAYER TOKENS */}
                 {here.length>0&&(
-                  <div style={{position:'absolute',inset:0,display:'flex',flexWrap:'wrap',
-                    alignItems:'center',justifyContent:'center',gap:1,zIndex:8}}>
+                  <div style={{display:'flex',flexWrap:'wrap',gap:1,position:'absolute',
+                    inset:0,alignItems:'center',justifyContent:'center',zIndex:8}}>
                     {here.map(pi=>{
-                      const p=players[pi], pc=p.char?.color||'#69f0ae', isActive=pi===cur;
-                      return (
+                      const p=players[pi];
+                      const pc=p.char?.color||'#69f0ae';
+                      const isActive=pi===cur;
+                      return(
                         <div key={pi} style={{display:'flex',flexDirection:'column',alignItems:'center',
-                          transform:isActive?'scale(1.35) translateY(-3px)':'scale(1)',transition:'transform .3s',
-                          position:'relative',zIndex:isActive?10:5}}>
-                          {isActive&&<div style={{position:'absolute',inset:-2,borderRadius:3,
-                            background:`${pc}15`,border:`1.5px solid ${pc}50`,animation:'bPulse .9s ease infinite'}}/>}
-                          <div style={{width:'clamp(14px,2.6vw,28px)',height:'clamp(14px,2.6vw,28px)',
+                          transition:'all .3s',transform:isActive?'scale(1.4) translateY(-3px)':'scale(1)',
+                          zIndex:isActive?10:5,position:'relative'}}>
+                          {isActive&&<div style={{position:'absolute',inset:-3,borderRadius:4,
+                            background:`${pc}15`,border:`1.5px solid ${pc}60`,
+                            animation:'bPulse .9s ease infinite'}}/>}
+                          <div style={{
+                            width:'clamp(14px,2.4vw,26px)',height:'clamp(14px,2.4vw,26px)',
                             borderRadius:'50%',
-                            background:`radial-gradient(circle at 35% 30%,${pc}f0,${pc} 55%,${pc}44)`,
+                            background:`radial-gradient(circle at 35% 30%,${pc}ee,${pc} 60%,${pc}44)`,
                             border:`2px solid ${pc}`,
-                            boxShadow:`0 0 ${isActive?14:4}px ${pc}${isActive?'bb':'33'},0 2px 6px rgba(0,0,0,.5)`,
+                            boxShadow:`0 0 ${isActive?14:5}px ${pc}${isActive?'cc':'44'},0 2px 6px rgba(0,0,0,.5)`,
                             display:'flex',alignItems:'center',justifyContent:'center',
-                            fontSize:'clamp(7px,1.3vw,14px)'}}>
-                            {p.char?.icon||'●'}
-                          </div>
+                            fontSize:'clamp(7px,1.2vw,13px)',
+                          }}>{p.char?.icon||'●'}</div>
                           <div style={{fontSize:'clamp(4px,.65vw,7px)',color:pc,fontWeight:900,
-                            textShadow:`0 0 4px #000,0 0 8px ${pc}30`,opacity:isActive?1:.5,
-                            lineHeight:1,marginTop:1}}>{p.name?.slice(0,5)}</div>
+                            textShadow:`0 0 4px #000,0 0 8px ${pc}40`,
+                            opacity:isActive?1:.6,lineHeight:1,marginTop:1}}>{p.name?.slice(0,5)}</div>
                         </div>
                       );
                     })}
@@ -458,71 +505,75 @@ function BalaBoard({ players, pos, cur }) {
           })}
         </div>
 
-        {/* SVG overlay — same coord system as Moksha */}
+        {/* SVG Snake + Ladder overlay (100% × 100% over the 10×10 grid) */}
         <svg style={{position:'absolute',top:0,left:0,width:'100%',height:'100%',
           pointerEvents:'none',overflow:'visible',zIndex:10}}
           viewBox="0 0 100 100" preserveAspectRatio="none">
           <defs>
-            <filter id="sGlow" x="-40%" y="-40%" width="180%" height="180%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation=".8" result="b"/>
-              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            <filter id="snakeGlow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation=".8" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
-            <filter id="lGlow" x="-30%" y="-30%" width="160%" height="160%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation=".55" result="b"/>
-              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            <filter id="ladderGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation=".6" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
             {Object.entries(LADDERS_BALA).map(([f,ld])=>{
-              const fc=sq2xy(Number(f)), tc=sq2xy(ld.to);
-              return <linearGradient key={f} id={`sLD${f}`}
+              const fc=sqMain(Number(f)), tc=sqMain(ld.to);
+              return (<linearGradient key={f} id={`svgLG${f}`}
                 x1={fc.x} y1={fc.y} x2={tc.x} y2={tc.y} gradientUnits="userSpaceOnUse">
                 <stop offset="0%" stopColor={ld.color1}/>
-                <stop offset="50%" stopColor="white" stopOpacity="0.2"/>
+                <stop offset="50%" stopColor="white" stopOpacity="0.3"/>
                 <stop offset="100%" stopColor={ld.color2}/>
-              </linearGradient>;
+              </linearGradient>);
             })}
           </defs>
+          {/* Ladders */}
           {Object.entries(LADDERS_BALA).map(([f,ld])=>{
-            const {r1,r2,rungs,fc,tc}=ladderParts(Number(f),ld.to);
+            const from=Number(f);
+            const {r1,r2,rungs,fc,tc}=ladderParts(from,ld.to);
             return (
-              <g key={f} filter="url(#lGlow)" style={{animation:'ladderShine 3s ease infinite'}}>
-                <line {...r1} stroke="rgba(0,0,0,.4)" strokeWidth="2.2" strokeLinecap="round"/>
-                <line {...r2} stroke="rgba(0,0,0,.4)" strokeWidth="2.2" strokeLinecap="round"/>
-                <line {...r1} stroke={`url(#sLD${f})`} strokeWidth="1.6" strokeLinecap="round"/>
-                <line {...r2} stroke={`url(#sLD${f})`} strokeWidth="1.6" strokeLinecap="round"/>
-                <line {...r1} stroke="rgba(255,255,255,.25)" strokeWidth=".35" strokeLinecap="round"/>
-                <line {...r2} stroke="rgba(255,255,255,.25)" strokeWidth=".35" strokeLinecap="round"/>
+              <g key={f} filter="url(#ladderGlow)" style={{animation:'ladderShine 3s ease infinite'}}>
+                <line {...r1} stroke="rgba(0,0,0,.4)" strokeWidth="2.5" strokeLinecap="round"/>
+                <line {...r2} stroke="rgba(0,0,0,.4)" strokeWidth="2.5" strokeLinecap="round"/>
+                <line {...r1} stroke={`url(#svgLG${f})`} strokeWidth="1.8" strokeLinecap="round"/>
+                <line {...r2} stroke={`url(#svgLG${f})`} strokeWidth="1.8" strokeLinecap="round"/>
+                <line {...r1} stroke="rgba(255,255,255,.3)" strokeWidth=".4" strokeLinecap="round"/>
+                <line {...r2} stroke="rgba(255,255,255,.3)" strokeWidth=".4" strokeLinecap="round"/>
                 {rungs.map((rg,i)=>(
                   <g key={i}>
-                    <line {...rg} stroke="rgba(0,0,0,.28)" strokeWidth="1.6" strokeLinecap="round"/>
-                    <line {...rg} stroke={i%2===0?ld.color1:ld.color2} strokeWidth="1.2" strokeLinecap="round" opacity=".9"/>
-                    <line {...rg} stroke="rgba(255,255,255,.28)" strokeWidth=".28" strokeLinecap="round"/>
+                    <line {...rg} stroke="rgba(0,0,0,.3)" strokeWidth="1.8" strokeLinecap="round"/>
+                    <line {...rg} stroke={i%2===0?ld.color1:ld.color2} strokeWidth="1.3" strokeLinecap="round" opacity=".9"/>
+                    <line {...rg} stroke="rgba(255,255,255,.35)" strokeWidth=".35" strokeLinecap="round"/>
                   </g>
                 ))}
-                <circle cx={fc.x} cy={fc.y} r="1.7" fill={ld.color1} opacity=".9"/>
-                <circle cx={tc.x} cy={tc.y} r="2" fill={ld.color2} opacity=".9"/>
+                <circle cx={fc.x} cy={fc.y} r="2" fill={ld.color1} opacity=".9"/>
+                <circle cx={tc.x} cy={tc.y} r="2.3" fill={ld.color2} opacity=".9"/>
               </g>
             );
           })}
+          {/* Snakes */}
           {Object.entries(SNAKES_BALA).map(([f,sn])=>{
-            const {fc,tc,d}=snakePath(Number(f),sn.to);
+            const from=Number(f);
+            const {fc,tc,d}=snakePath(from,sn.to);
             return (
-              <g key={f} filter="url(#sGlow)" style={{animation:'snakePulse 2.5s ease infinite'}}>
-                <path d={d} stroke={sn.color} strokeWidth="3.8" fill="none" strokeLinecap="round" opacity=".1"/>
-                <path d={d} stroke="rgba(0,0,0,.42)" strokeWidth="3" fill="none" strokeLinecap="round"/>
-                <path d={d} stroke={sn.headColor} strokeWidth="2.5" fill="none" strokeLinecap="round" opacity=".4"/>
-                <path d={d} stroke={sn.color} strokeWidth="1.8" fill="none" strokeLinecap="round"/>
-                <path d={d} stroke="rgba(255,255,255,.14)" strokeWidth=".6" fill="none" strokeDasharray="2,3" strokeLinecap="round"/>
-                <path d={d} stroke="rgba(255,255,255,.28)" strokeWidth=".28" fill="none" strokeLinecap="round"/>
-                <circle cx={fc.x} cy={fc.y+.3} r="2.6" fill="rgba(0,0,0,.3)"/>
-                <ellipse cx={fc.x} cy={fc.y} rx="2.4" ry="2.1" fill={sn.headColor}/>
-                <ellipse cx={fc.x-.45} cy={fc.y-.55} rx=".8" ry=".55" fill="rgba(255,255,255,.28)" transform={`rotate(-30,${fc.x-.45},${fc.y-.55})`}/>
-                <circle cx={fc.x-.9} cy={fc.y-.42} r=".62" fill="white"/>
-                <circle cx={fc.x+.9} cy={fc.y-.42} r=".62" fill="white"/>
-                <circle cx={fc.x-.9} cy={fc.y-.35} r=".35" fill="#111"/>
-                <circle cx={fc.x+.9} cy={fc.y-.35} r=".35" fill="#111"/>
-                <path d={`M${fc.x},${fc.y+1.5} L${fc.x-.55},${fc.y+2.8} M${fc.x},${fc.y+1.5} L${fc.x+.55},${fc.y+2.8}`}
-                  stroke="#ff1744" strokeWidth=".5" strokeLinecap="round"/>
-                <circle cx={tc.x} cy={tc.y} r="1.2" fill={sn.color} opacity=".5"/>
+              <g key={f} filter="url(#snakeGlow)" style={{animation:'snakePulse 2.5s ease infinite'}}>
+                <path d={d} stroke={sn.color} strokeWidth="4.5" fill="none" strokeLinecap="round" opacity=".1"/>
+                <path d={d} stroke="rgba(0,0,0,.45)" strokeWidth="3.5" fill="none" strokeLinecap="round"/>
+                <path d={d} stroke={sn.headColor} strokeWidth="3" fill="none" strokeLinecap="round" opacity=".5"/>
+                <path d={d} stroke={sn.color} strokeWidth="2.2" fill="none" strokeLinecap="round"/>
+                <path d={d} stroke="rgba(255,255,255,.18)" strokeWidth=".7" fill="none" strokeDasharray="2,3" strokeLinecap="round"/>
+                <path d={d} stroke="rgba(255,255,255,.35)" strokeWidth=".35" fill="none" strokeLinecap="round"/>
+                {/* Head */}
+                <circle cx={fc.x} cy={fc.y+.3} r="3" fill="rgba(0,0,0,.3)"/>
+                <ellipse cx={fc.x} cy={fc.y} rx="2.8" ry="2.5" fill={sn.headColor}/>
+                <circle cx={fc.x-1.1} cy={fc.y-.5} r=".75" fill="white"/>
+                <circle cx={fc.x+1.1} cy={fc.y-.5} r=".75" fill="white"/>
+                <circle cx={fc.x-1.1} cy={fc.y-.4} r=".42" fill="#111"/>
+                <circle cx={fc.x+1.1} cy={fc.y-.4} r=".42" fill="#111"/>
+                <path d={`M${fc.x},${fc.y+1.8} L${fc.x-.7},${fc.y+3.2} M${fc.x},${fc.y+1.8} L${fc.x+.7},${fc.y+3.2}`}
+                  stroke="#ff1744" strokeWidth=".65" strokeLinecap="round"/>
+                <circle cx={tc.x} cy={tc.y} r="1.5" fill={sn.color} opacity=".6"/>
               </g>
             );
           })}
@@ -531,6 +582,7 @@ function BalaBoard({ players, pos, cur }) {
     </div>
   );
 }
+
 function DiscoveryPopup({ sq, onClose }) {
   const d = DISCOVERY_SQUARES[sq]; if (!d) return null;
   return (
@@ -1137,7 +1189,7 @@ export default function BalaGame({ onExit }) {
           ← {isHi?'घर':'Home'}
         </button>
         {/* Player chips */}
-        <div style={{display:'flex',gap:6,flexWrap:'nowrap',flex:1,justifyContent:'center',overflowX:'auto',padding:'0 2px'}}>
+        <div style={{display:'flex',gap:6,flexWrap:'wrap',flex:1,justifyContent:'center'}}>
           {players.map((p,i)=>{
             const g=gyan[i]||0,a=agyan[i]||0,total=g+a;
             const gPct=total>0?Math.round(g/total*100):50;
@@ -1168,11 +1220,9 @@ export default function BalaGame({ onExit }) {
         </div>
       </div>
 
-      {/* Main content — board + panel side by side (like Moksha), stacks on mobile */}
-      <div style={{display:'flex',gap:10,padding:'62px 8px 20px',
-        minHeight:'100vh',alignItems:'flex-start',
-        flexWrap:'wrap',          // panel wraps below board on mobile
-        maxWidth:1100,margin:'0 auto'}}>
+      {/* Main content — board + panel side by side (like Moksha) */}
+      <div style={{display:'flex',gap:10,padding:'62px 10px 20px',
+        minHeight:'100vh',alignItems:'flex-start'}}>
 
         {/* LEFT: Board */}
         <div style={{flex:'1 1 340px', maxWidth:680, minWidth:0}}>
@@ -1208,8 +1258,8 @@ export default function BalaGame({ onExit }) {
           </div>
         </div>
 
-        {/* RIGHT: Panel — fixed width on desktop, full width below board on mobile */}
-        <div style={{flex:'0 0 clamp(220px,28vw,290px)',minWidth:'min(100%,220px)',display:'flex',flexDirection:'column',gap:8}}>
+        {/* RIGHT: Panel (like Moksha sidebar) */}
+        <div style={{flex:'0 0 clamp(220px,28vw,290px)',display:'flex',flexDirection:'column',gap:8}}>
 
           {/* Current player card */}
           <div style={{background:'#0a1a0d',border:`1px solid ${cp.char?.color||'#69f0ae'}30`,
