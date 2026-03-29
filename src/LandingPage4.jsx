@@ -841,7 +841,7 @@ export default function LandingPage({onSelectTier}){
       {/* ── NAV ── */}
       <nav className={scrolled?'sc':''}>
         <div className="logo" onClick={()=>window.scrollTo({top:0,behavior:'smooth'})}>
-          <img src="/rasavisio-icon.png" alt="RasaVisio" className="logo-img"/><span>{'Rasa'}<em>{'Visio'}</em></span>
+          <img src="/rasavisio-icon.png" alt="RasaVisio" className="logo-img"/>{'Rasa'}<em>{'Visio'}</em>
         </div>
         <ul className="nav-ul">
           <li><a onClick={()=>go('games')}>Games</a></li>
