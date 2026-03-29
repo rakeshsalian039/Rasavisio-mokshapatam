@@ -3,8 +3,7 @@
 //    then remove the inline function below (search: function ChitraguptaIntroScreen)
 // ─────────────────────────────────────────────────────────────────────────────
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
-import HowToPlay    from "./components/HowToPlay.jsx";
-import Encyclopedia from "./components/Encyclopedia.jsx";
+
 // ═══ AUTH + DATABASE (Supabase) ═══
 // npm install @supabase/supabase-js
 // Set REACT_APP_SUPABASE_URL and REACT_APP_SUPABASE_ANON_KEY in Vercel env vars
@@ -4797,8 +4796,65 @@ export default function MokshaPatam108(){
         </div>
       </button>:<button onClick={auth.signInGoogle} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 16px",background:"rgba(12,10,7,.9)",border:"1.5px solid rgba(200,160,60,.2)",borderRadius:22,cursor:"pointer",color:"#c0b080",fontSize:12,fontFamily:"'Cinzel',serif",backdropFilter:"blur(8px)",boxShadow:"0 2px 12px rgba(0,0,0,.4)",transition:"all .2s"}}><GoogleIcon/><span>Sign In</span></button>}
     </div>
-    {showInfo   && <Encyclopedia onClose={()=>setShowInfo(false)}/>}
-    {showGuide  && <HowToPlay    onClose={()=>setShowGuide(false)}/>}
+    {showInfo&&<div key="info-panel" style={{position:"fixed",inset:0,background:"rgba(6,5,3,.95)",zIndex:300,overflowY:"auto",padding:"clamp(12px,3vw,24px)",animation:"fadeIn .3s ease"}}>
+      <div style={{maxWidth:700,margin:"0 auto"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+          <h2 style={{fontSize:"clamp(18px,4vw,28px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:0}}>Game Encyclopaedia</h2>
+          <button className="gb" onClick={()=>setShowInfo(false)} style={{padding:"6px 16px",fontSize:12}}>✕ Close</button>
+        </div>
+        <h3 style={{fontSize:15,color:"#f0d050",letterSpacing:3,borderBottom:"1px solid rgba(200,160,60,.15)",paddingBottom:6,marginBottom:10}}>THE TWO DICE</h3>
+        <div style={{background:"rgba(20,16,10,.5)",padding:14,borderRadius:4,marginBottom:8,border:"1px solid rgba(200,160,60,.1)"}}>
+          <div style={{fontSize:13,fontWeight:700,color:"#f0d050",marginBottom:4}}>🎲 KARMA DIE (1-6)</div>
+          <p style={{fontSize:12,color:"#c0b080",lineHeight:1.7,margin:0}}>Determines movement forward.</p>
+        </div>
+        <div style={{background:"rgba(20,16,10,.5)",padding:14,borderRadius:4,marginBottom:20,border:"1px solid rgba(200,160,60,.1)"}}>
+          <div style={{fontSize:13,fontWeight:700,color:"#f0d050",marginBottom:8}}>🌌 GRAHA DIE (9 Navagraha)</div>
+          {GRAHA.map((g,i)=><div key={i} style={{display:"flex",gap:10,padding:"6px 0",borderBottom:i<8?"1px solid rgba(200,160,60,.06)":"none"}}>
+            <span style={{fontSize:18,color:g.color,minWidth:24}}>{g.icon}</span>
+            <span style={{fontSize:11,color:"#c0b080"}}><strong style={{color:g.color}}>{g.n} · {g.en}</strong> — {g.desc}</span>
+          </div>)}
+        </div>
+        <h3 style={{fontSize:15,color:"#e08040",letterSpacing:3,borderBottom:"1px solid rgba(200,160,60,.15)",paddingBottom:6,marginBottom:10}}>𓆙 SERPENTS</h3>
+        {Object.entries(SNAKES).map(([sq,sn])=><div key={sq} style={{padding:"6px 0",borderBottom:"1px solid rgba(200,160,60,.04)",fontSize:11}}>
+          <span style={{color:"#e08040",fontWeight:700}}>Sq {sq}</span> <span style={{fontFamily:"'Noto Serif Devanagari',serif",color:"#ffc050"}}>{sn.skt}</span> {sn.en} → {sn.to}
+        </div>)}
+        <h3 style={{fontSize:15,color:"#f0d050",letterSpacing:3,borderBottom:"1px solid rgba(200,160,60,.15)",paddingBottom:6,margin:"16px 0 10px"}}>🪔 VIRTUES</h3>
+        {Object.entries(LADDERS).map(([sq,ld])=><div key={sq} style={{padding:"6px 0",borderBottom:"1px solid rgba(200,160,60,.04)",fontSize:11}}>
+          <span style={{color:"#f0d050",fontWeight:700}}>Sq {sq}</span> <span style={{fontFamily:"'Noto Serif Devanagari',serif",color:"#ffe070"}}>{ld.skt}</span> {ld.en} → {ld.to}
+        </div>)}
+        <h3 style={{fontSize:15,color:"#d0b870",letterSpacing:3,borderBottom:"1px solid rgba(200,160,60,.15)",paddingBottom:6,margin:"16px 0 10px"}}>⚖ DHARMA CARDS ({DILEMMAS.length})</h3>
+        {DILEMMAS.map((d,i)=><div key={i} style={{background:"rgba(20,16,10,.4)",border:"1px solid rgba(200,160,60,.08)",padding:10,borderRadius:4,marginBottom:8}}>
+          <div style={{fontSize:12,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:700,color:"#f0d050"}}>{d.t} — <span style={{fontFamily:"'Cinzel',serif",fontSize:11,opacity:.7}}>{d.en}</span></div>
+          <p style={{fontSize:11,color:"#c0b080",lineHeight:1.6,margin:"4px 0",fontStyle:"italic"}}>{d.txt}</p>
+          {d.c.map((ch,ci)=><div key={ci} style={{fontSize:10,color:ch.k==="punya"?"#f0d050":"#e08040",padding:"1px 0"}}>→ {ch.l}</div>)}
+        </div>)}
+      </div>
+    </div>}
+    {showGuide&&<div key="guide-panel" style={{position:"fixed",inset:0,background:"rgba(6,5,3,.95)",zIndex:300,overflowY:"auto",padding:"clamp(12px,3vw,24px)",animation:"fadeIn .3s ease"}}>
+      <div style={{maxWidth:700,margin:"0 auto"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+          <h2 style={{fontSize:"clamp(18px,4vw,28px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:0}}>📜 How to Play</h2>
+          <button className="gb" onClick={()=>setShowGuide(false)} style={{padding:"6px 16px",fontSize:12}}>✕ Close</button>
+        </div>
+        {[
+          {t:"🎯 Goal",d:"Reach Square 108 (Moksha) through the Sacred 8-fold Path with Punya ≥ Papa. Or collect 30 Punya for instant Karma Victory."},
+          {t:"🎲 Your Turn",d:"Roll TWO dice: Karma Die (1-6 movement) + Graha Die (9 planet effects). Popups explain what happened."},
+          {t:"☀ The 9 Navagraha",d:"Surya = +2 steps. Chandra = +1 Punya. Mangal = push rival back 3. Budh = swap. Brihaspati = ALL +1 Punya. Shukra = Shield. Shani = back 3 +1 Papa. Rahu = steal from leader. Ketu = strip shields. Navagraha have NO power on the Sacred Path."},
+          {t:"𓆙 Serpents (Red)",d:"10 Nāga serpents named after vices. Landing = dragged DOWN + 2 Papa."},
+          {t:"🪔 Virtues (Gold)",d:"10 divine ladders of virtue. Landing = lifted UP + 1 Punya."},
+          {t:"⚖ Dharma (Purple)",d:"21 moral dilemmas from Mahābhārata & real life. Choose wisely — no repeat in same game."},
+          {t:"🛡 Shield",d:"Shukra grants a one-time shield blocking the next serpent."},
+          {t:"🕉 Why 108?",d:"108 is sacred in Vedic tradition: 108 Upanishads, 108 beads on a mala, the distance between Sun & Earth = 108× Sun's diameter, 108 energy lines converge at the heart chakra. In this game, 100 squares test your karma — the final 8 test your soul."},
+          {t:"🪷 Ashtanga Marga (Squares 101-108)",d:"The Sacred 8-fold Path of Patanjali. After square 100, you enter the crown. You move ONLY 1 step per turn (dice roll ignored). Each step asks a RIDDLE about that path's teaching. Correct = +2 Punya. Wrong = Papa + sent backwards. At square 107, you must roll EXACT 1 to reach 108 (Moksha). Navagraha cannot affect you here. No one can swap/push you. You are beyond the material world."},
+          {t:"⚡ Karma Victory (30 Punya)",d:"Accumulate 30 Punya from any square = instant Moksha."},
+          {t:"🔯 Sacred Geometry on the Board",d:"The geometric patterns represent ancient Vedic vibrations. Bhuloka: Square grid = material stability, the earthly foundation. Antarloka: Hexagonal patterns = the Star of David / Shatkona, union of Shiva (upward △) and Shakti (downward ▽). Svargaloka: Circular mandalas = cosmic unity, the celestial sphere. The Sri Yantra triangles in the Ashtanga crown represent the 9 interlocking triangles of creation."},
+          {t:"☠️ Playing vs Yama",d:"Solo mode vs the God of Death. Yama favours Papa 60%. Can you stay purer than Death?"},
+        ].map((s,i)=><div key={i} style={{background:"rgba(20,16,10,.5)",border:"1px solid rgba(200,160,60,.1)",padding:14,borderRadius:4,marginBottom:10}}>
+          <div style={{fontSize:14,fontWeight:700,color:"#f0d050",marginBottom:6}}>{s.t}</div>
+          <p style={{fontSize:12,color:"#c0b080",lineHeight:1.8,margin:0}}>{s.d}</p>
+        </div>)}
+      </div>
+    </div>}
     {showRiddles&&<div key="riddles-panel" style={{position:"fixed",inset:0,background:"rgba(6,5,3,.95)",zIndex:300,overflowY:"auto",padding:"clamp(12px,3vw,24px)",animation:"fadeIn .3s ease"}}>
       <div style={{maxWidth:700,margin:"0 auto"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
