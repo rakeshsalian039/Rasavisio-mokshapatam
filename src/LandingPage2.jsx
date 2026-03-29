@@ -32,7 +32,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:16px 6%;
 nav.sc{background:rgba(10,8,5,.96);backdrop-filter:blur(16px);
   border-bottom:1px solid rgba(245,220,100,.07)}
 .logo{display:flex;align-items:center;gap:10px;font-family:'Cinzel Decorative',serif;font-size:clamp(13px,1.8vw,17px);
-  color:var(--gold);letter-spacing:1px;cursor:pointer;text-shadow:0 0 20px rgba(245,220,100,.2);text-decoration:none}
+  color:var(--gold);letter-spacing:4px;cursor:pointer;text-shadow:0 0 20px rgba(245,220,100,.2);text-decoration:none}
 .logo em{color:var(--saffron);font-style:normal}
 .logo-img{width:clamp(28px,3vw,36px);height:clamp(28px,3vw,36px);
   border-radius:8px;border:1px solid rgba(245,220,100,.25);
@@ -690,51 +690,19 @@ function ComingSoonModal({path,onClose}){
 }
 
 // ── Feedback Section ─────────────────────────────────────────────────────────
-// ── Supabase REST helper (same pattern as rest of app) ─────────────────────
-const SB_URL = process.env.REACT_APP_SUPABASE_URL || '';
-const SB_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY || '';
-async function saveFeedback(msg, email, type='general') {
-  if (!SB_URL || !SB_KEY) {
-    // Fallback: open email client
-    const sub = encodeURIComponent('Moksha Patam 108 — ' + type);
-    const bod = encodeURIComponent('Message:\n' + msg + '\n\nFrom: ' + (email||'Anonymous'));
-    window.open('mailto:rakesh@rasavisio.com?subject=' + sub + '&body=' + bod);
-    return true;
-  }
-  try {
-    const res = await fetch(`${SB_URL}/rest/v1/feedback`, {
-      method: 'POST',
-      headers: {
-        'apikey': SB_KEY,
-        'Authorization': `Bearer ${SB_KEY}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=minimal',
-      },
-      body: JSON.stringify({ message: msg, email: email||null, type, source: 'landing' }),
-    });
-    return res.ok || res.status === 201;
-  } catch {
-    // Fallback to email if Supabase fails
-    const sub = encodeURIComponent('Moksha Patam 108 — ' + type);
-    const bod = encodeURIComponent('Message:\n' + msg + '\n\nFrom: ' + (email||'Anonymous'));
-    window.open('mailto:rakesh@rasavisio.com?subject=' + sub + '&body=' + bod);
-    return true;
-  }
-}
-
 function FeedbackSection() {
   const [msg, setMsg] = useState('');
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
-  const [sending, setSending] = useState(false);
 
-  const submit = async () => {
+  const submit = () => {
     if (!msg.trim()) return;
-    setSending(true);
-    await saveFeedback(msg, email, 'general');
-    setSending(false);
+    // Open mailto with message pre-filled
+    const subject = encodeURIComponent('Moksha Patam 108 — Feedback');
+    const body = encodeURIComponent(`Message:\n${msg}\n\nFrom: ${email||'Anonymous'}`);
+    window.open(`mailto:rakesh@rasavisio.com?subject=${subject}&body=${body}`);
     setSent(true);
-    setTimeout(() => setSent(false), 5000);
+    setTimeout(() => setSent(false), 4000);
     setMsg(''); setEmail('');
   };
 
@@ -791,9 +759,9 @@ function FeedbackSection() {
           placeholder="Your email (optional — if you'd like a reply)"
           style={{marginTop:10}}/>
         <div style={{textAlign:'center'}}>
-          <button className="fb-submit" onClick={submit} disabled={sending}>{sending?'Sending...':'Send Message ✦'}</button>
+          <button className="fb-submit" onClick={submit}>Send Message ✦</button>
         </div>
-        {sent && <div className="fb-sent">✦ Received. Panditji will read it. Thank you, seeker.</div>}
+        {sent && <div className="fb-sent">✦ Opening your email client... Thank you, seeker.</div>}
       </div>
     </section>
   );

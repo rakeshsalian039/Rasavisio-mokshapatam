@@ -31,12 +31,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:16px 6%;
   display:flex;justify-content:space-between;align-items:center;transition:all .4s}
 nav.sc{background:rgba(10,8,5,.96);backdrop-filter:blur(16px);
   border-bottom:1px solid rgba(245,220,100,.07)}
-.logo{display:flex;align-items:center;gap:10px;font-family:'Cinzel Decorative',serif;font-size:clamp(13px,1.8vw,17px);
-  color:var(--gold);letter-spacing:1px;cursor:pointer;text-shadow:0 0 20px rgba(245,220,100,.2);text-decoration:none}
+.logo{font-family:'Cinzel Decorative',serif;font-size:clamp(13px,1.8vw,17px);
+  color:var(--gold);letter-spacing:4px;cursor:pointer;text-shadow:0 0 20px rgba(245,220,100,.2)}
 .logo em{color:var(--saffron);font-style:normal}
-.logo-img{width:clamp(28px,3vw,36px);height:clamp(28px,3vw,36px);
-  border-radius:8px;border:1px solid rgba(245,220,100,.25);
-  box-shadow:0 0 12px rgba(245,220,100,.15);flex-shrink:0}
 .nav-ul{display:flex;gap:36px;list-style:none}
 .nav-ul a{font-family:'Cinzel',serif;font-size:10px;letter-spacing:4px;
   color:rgba(220,203,136,.45);text-decoration:none;transition:color .3s;text-transform:uppercase;cursor:pointer}
@@ -53,30 +50,24 @@ nav.sc{background:rgba(10,8,5,.96);backdrop-filter:blur(16px);
   overflow:hidden;text-align:center;padding:0 5%}
 .hcan{position:absolute;inset:0;width:100%;height:100%}
 .hov{position:absolute;inset:0;
-  background:radial-gradient(ellipse at 50% 50%,rgba(10,8,5,.15) 0%,rgba(10,8,5,.75) 50%,rgba(10,8,5,.97) 100%)}
-/* Dark pill behind hero text block */
-.hc{position:relative;z-index:3;
-  background:radial-gradient(ellipse at 50% 50%,rgba(10,8,5,.55) 0%,rgba(10,8,5,.0) 75%);
-  padding:40px 20px 20px;border-radius:50%}
+  background:radial-gradient(ellipse at 50% 50%,rgba(10,8,5,.2) 0%,rgba(10,8,5,.78) 60%,rgba(10,8,5,.97) 100%)}
+.hc{position:relative;z-index:3}
 .h-pre{font-family:'Noto Serif Devanagari',serif;font-size:clamp(22px,5vw,44px);
-  color:rgba(245,220,100,.7);letter-spacing:10px;margin-bottom:6px;
-  animation:dn 1.4s ease forwards .3s;opacity:0;
-  text-shadow:0 2px 20px rgba(10,8,5,.9),0 0 40px rgba(10,8,5,.8)}
+  color:rgba(245,220,100,.18);letter-spacing:10px;margin-bottom:6px;
+  animation:dn 1.4s ease forwards .3s;opacity:0}
 .h-title{font-family:'Cinzel Decorative',serif;
   font-size:clamp(30px,6.5vw,68px);color:var(--gold);letter-spacing:3px;line-height:1.1;
-  text-shadow:0 0 50px rgba(245,220,100,.3),0 2px 20px rgba(10,8,5,.95),0 0 80px rgba(10,8,5,.8);
+  text-shadow:0 0 50px rgba(245,220,100,.25),0 0 100px rgba(245,220,100,.08);
   animation:dn 1.4s ease forwards .6s;opacity:0}
 .h-108{font-size:clamp(20px,4.5vw,50px);color:var(--saffron);letter-spacing:6px;
-  text-shadow:0 0 40px rgba(232,120,48,.5),0 2px 16px rgba(10,8,5,.9)}
-.h-sub{font-family:'Cinzel',serif;font-size:clamp(10px,1.4vw,13px);letter-spacing:7px;
-  color:rgba(245,220,100,.9);margin:12px 0;text-transform:uppercase;
-  animation:dn 1.4s ease forwards .9s;opacity:0;
-  text-shadow:0 2px 12px rgba(10,8,5,.95),0 0 24px rgba(10,8,5,.9)}
+  text-shadow:0 0 40px rgba(232,120,48,.4)}
+.h-sub{font-family:'Cinzel',serif;font-size:clamp(9px,1.3vw,12px);letter-spacing:7px;
+  color:rgba(220,203,136,.45);margin:12px 0;text-transform:uppercase;
+  animation:dn 1.4s ease forwards .9s;opacity:0}
 .h-tag{font-family:'IM Fell English',serif;font-style:italic;
-  font-size:clamp(15px,2.2vw,20px);color:rgba(255,245,210,.95);
+  font-size:clamp(15px,2.2vw,21px);color:rgba(220,203,136,.75);
   margin:16px auto 44px;line-height:1.9;max-width:560px;
-  animation:dn 1.4s ease forwards 1.2s;opacity:0;
-  text-shadow:0 2px 16px rgba(10,8,5,.98),0 0 30px rgba(10,8,5,.9)}
+  animation:dn 1.4s ease forwards 1.2s;opacity:0}
 .h-portals{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;
   animation:up 1.4s ease forwards 1.6s;opacity:0}
 
@@ -104,7 +95,7 @@ nav.sc{background:rgba(10,8,5,.96);backdrop-filter:blur(16px);
   font-size:8px;letter-spacing:2px;padding:2px 6px;
   background:rgba(245,220,100,.12);border:1px solid rgba(245,220,100,.3);
   color:var(--gold);text-transform:uppercase}
-.scroll-ind{position:absolute;bottom:28px;left:0;right:0;margin:0 auto;width:fit-content;transform:none;
+.scroll-ind{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
   display:flex;flex-direction:column;align-items:center;gap:6px;z-index:3;
   animation:up 1s ease forwards 2.8s;opacity:0}
 .scroll-ind span{font-family:'Cinzel',serif;font-size:8px;letter-spacing:5px;color:rgba(245,220,100,.3)}
@@ -253,66 +244,10 @@ footer{background:rgba(6,4,2,.99);border-top:1px solid rgba(245,220,100,.08);pad
   background:transparent;border:none;cursor:pointer;padding:0;text-align:left}
 .fcol a:hover,.fcol button:hover{color:var(--gold)}
 .fbot{max-width:1100px;margin:0 auto;padding-top:30px;
-  border-top:1px solid rgba(245,220,100,.12);
+  border-top:1px solid rgba(245,220,100,.06);
   display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
-.fcp{font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;
-  color:rgba(220,203,136,.7);text-transform:uppercase}
-
-/* ── DONATE ── */
-.donate-sec{background:linear-gradient(180deg,var(--cosmos2),rgba(30,20,5,.9));
-  padding:90px 6%;text-align:center;border-top:1px solid rgba(245,220,100,.08);
-  border-bottom:1px solid rgba(245,220,100,.08)}
-.donate-icon{font-size:48px;margin-bottom:18px;animation:pulse 3s ease infinite}
-.donate-h{font-family:'Cinzel Decorative',serif;font-size:clamp(20px,3.5vw,32px);
-  color:var(--gold);margin-bottom:10px;letter-spacing:2px;
-  text-shadow:0 0 30px rgba(245,220,100,.2)}
-.donate-p{font-family:'IM Fell English',serif;font-style:italic;
-  font-size:clamp(15px,1.8vw,18px);color:rgba(220,203,136,.75);
-  line-height:2;max-width:560px;margin:0 auto 32px}
-.donate-opts{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:32px}
-.donate-btn{font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;
-  padding:13px 28px;border:1px solid rgba(245,220,100,.35);color:var(--gold);
-  cursor:pointer;background:rgba(245,220,100,.05);transition:all .3s;
-  text-transform:uppercase;text-decoration:none;display:inline-block}
-.donate-btn:hover{background:rgba(245,220,100,.12);border-color:var(--gold)}
-.donate-btn.primary{background:rgba(245,220,100,.15);border-color:var(--gold);
-  box-shadow:0 0 20px rgba(245,220,100,.08)}
-.donate-note{font-family:'IM Fell English',serif;font-style:italic;
-  font-size:13px;color:rgba(220,203,136,.4);margin-top:16px}
-
-/* ── FEEDBACK ── */
-.fb-sec{background:var(--cosmos);padding:90px 6%;text-align:center}
-.fb-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;max-width:760px;margin:40px auto 0}
-@media(max-width:600px){.fb-grid{grid-template-columns:1fr}}
-.fb-card{padding:32px 28px;border:1px solid rgba(245,220,100,.08);
-  background:rgba(16,13,5,.5);text-align:left;transition:border-color .3s;cursor:pointer}
-.fb-card:hover{border-color:rgba(245,220,100,.2)}
-.fb-card h4{font-family:'Cinzel',serif;font-size:11px;letter-spacing:4px;color:var(--gold);
-  text-transform:uppercase;margin-bottom:10px;opacity:.7}
-.fb-card p{font-family:'IM Fell English',serif;font-style:italic;
-  font-size:14px;line-height:1.9;color:rgba(220,203,136,.55);margin-bottom:14px}
-.fb-link{font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;
-  color:var(--saffron);text-transform:uppercase;opacity:.6;transition:opacity .3s}
-.fb-card:hover .fb-link{opacity:1}
-.fb-form{max-width:560px;margin:40px auto 0;text-align:left}
-.fb-form textarea{width:100%;background:rgba(16,13,5,.7);border:1px solid rgba(245,220,100,.15);
-  color:rgba(220,203,136,.8);padding:16px;font-family:'IM Fell English',serif;
-  font-style:italic;font-size:15px;line-height:1.8;resize:vertical;min-height:120px;
-  outline:none;transition:border-color .3s}
-.fb-form textarea:focus{border-color:rgba(245,220,100,.4)}
-.fb-form textarea::placeholder{color:rgba(220,203,136,.25)}
-.fb-form input{width:100%;background:rgba(16,13,5,.7);border:1px solid rgba(245,220,100,.15);
-  color:rgba(220,203,136,.8);padding:12px 16px;font-family:'IM Fell English',serif;
-  font-style:italic;font-size:14px;outline:none;margin-bottom:10px;transition:border-color .3s}
-.fb-form input:focus{border-color:rgba(245,220,100,.4)}
-.fb-form input::placeholder{color:rgba(220,203,136,.25)}
-.fb-submit{font-family:'Cinzel',serif;font-size:10px;letter-spacing:4px;
-  padding:12px 28px;border:1px solid rgba(245,220,100,.35);color:var(--gold);
-  cursor:pointer;background:rgba(245,220,100,.06);transition:all .3s;text-transform:uppercase;
-  margin-top:10px}
-.fb-submit:hover{background:rgba(245,220,100,.12);border-color:var(--gold)}
-.fb-sent{color:var(--green);font-family:'Cinzel',serif;font-size:12px;
-  letter-spacing:3px;margin-top:14px;text-align:center}
+.fcp{font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;
+  color:rgba(220,203,136,.28);text-transform:uppercase}
 
 /* ── MODALS ── */
 .moverlay{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:1000;
@@ -348,33 +283,6 @@ footer{background:rgba(6,4,2,.99);border-top:1px solid rgba(245,220,100,.08);pad
 .cs-date{font-family:'Cinzel',serif;font-size:10px;letter-spacing:4px;
   color:var(--saffron);opacity:.7;margin-bottom:32px;text-transform:uppercase}
 
-/* ── MOBILE FIXES ── */
-@media(max-width:600px){
-  /* Hero: more padding, larger portal buttons */
-  .hero{padding:0 4%;justify-content:center}
-  .h-portals{flex-direction:column;align-items:center;gap:10px}
-  .pb{width:85vw;max-width:320px;padding:14px 20px;flex-direction:row;
-    justify-content:flex-start;gap:12px;min-width:0}
-  .pb-age{display:none}
-  .pb-name{font-size:14px}
-  .pb-sk{font-size:13px}
-  /* Fix geometry clutter on mobile — reduce opacity */
-  .hcan{opacity:.6}
-  /* Scroll indicator */
-  .scroll-ind{left:0;right:0;margin:0 auto;width:fit-content;transform:none}
-  /* Paths: single col with less padding */
-  .paths-grid{gap:10px}
-  .pc{padding:32px 22px}
-  /* 108 grid */
-  .s3c{padding:18px 10px}
-  /* Features */
-  .feat-c{padding:28px 20px}
-  /* Donate */
-  .donate-opts{flex-direction:column;align-items:center}
-  .donate-btn{width:85vw;max-width:300px;text-align:center}
-  /* Footer */
-  .fbot{flex-direction:column;text-align:center;gap:8px}
-}
 /* ── KEYFRAMES ── */
 @keyframes dn{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}
 @keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
@@ -689,116 +597,6 @@ function ComingSoonModal({path,onClose}){
   );
 }
 
-// ── Feedback Section ─────────────────────────────────────────────────────────
-// ── Supabase REST helper (same pattern as rest of app) ─────────────────────
-const SB_URL = process.env.REACT_APP_SUPABASE_URL || '';
-const SB_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY || '';
-async function saveFeedback(msg, email, type='general') {
-  if (!SB_URL || !SB_KEY) {
-    // Fallback: open email client
-    const sub = encodeURIComponent('Moksha Patam 108 — ' + type);
-    const bod = encodeURIComponent('Message:\n' + msg + '\n\nFrom: ' + (email||'Anonymous'));
-    window.open('mailto:rakesh@rasavisio.com?subject=' + sub + '&body=' + bod);
-    return true;
-  }
-  try {
-    const res = await fetch(`${SB_URL}/rest/v1/feedback`, {
-      method: 'POST',
-      headers: {
-        'apikey': SB_KEY,
-        'Authorization': `Bearer ${SB_KEY}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=minimal',
-      },
-      body: JSON.stringify({ message: msg, email: email||null, type, source: 'landing' }),
-    });
-    return res.ok || res.status === 201;
-  } catch {
-    // Fallback to email if Supabase fails
-    const sub = encodeURIComponent('Moksha Patam 108 — ' + type);
-    const bod = encodeURIComponent('Message:\n' + msg + '\n\nFrom: ' + (email||'Anonymous'));
-    window.open('mailto:rakesh@rasavisio.com?subject=' + sub + '&body=' + bod);
-    return true;
-  }
-}
-
-function FeedbackSection() {
-  const [msg, setMsg] = useState('');
-  const [email, setEmail] = useState('');
-  const [sent, setSent] = useState(false);
-  const [sending, setSending] = useState(false);
-
-  const submit = async () => {
-    if (!msg.trim()) return;
-    setSending(true);
-    await saveFeedback(msg, email, 'general');
-    setSending(false);
-    setSent(true);
-    setTimeout(() => setSent(false), 5000);
-    setMsg(''); setEmail('');
-  };
-
-  return (
-    <section className="fb-sec" id="feedback">
-      <span className="sec-label reveal" style={{display:'block'}}>Your Voice Matters</span>
-      <h2 className="sec-h reveal" style={{maxWidth:500,margin:'0 auto 14px'}}>
-        Speak to Panditji.<br/>We Are Listening.
-      </h2>
-      <p className="sec-p reveal" style={{margin:'0 auto',maxWidth:520,textAlign:'center',
-        color:'rgba(220,203,136,.7)'}}>
-        Every great game was shaped by the people who played it.
-        What moved you? What was missing? What should we build next?
-      </p>
-      <div className="fb-grid reveal">
-        <div className="fb-card" onClick={() => window.open('mailto:rakesh@rasavisio.com?subject=Bug Report')}>
-          <div style={{fontSize:28,marginBottom:12}}>🐛</div>
-          <h4>Report a Bug</h4>
-          <p>Found something broken? A snake that doesn't bite? A ladder that goes nowhere? Tell us.</p>
-          <div className="fb-link">Write to Rakesh →</div>
-        </div>
-        <div className="fb-card" onClick={() => window.open('mailto:rakesh@rasavisio.com?subject=Story Suggestion')}>
-          <div style={{fontSize:28,marginBottom:12}}>📜</div>
-          <h4>Suggest a Story</h4>
-          <p>Know a Panchatantra story that belongs in Bala Marg? A Mahābhārata dilemma we missed?</p>
-          <div className="fb-link">Share a Story →</div>
-        </div>
-        <div className="fb-card" onClick={() => window.open('mailto:rakesh@rasavisio.com?subject=Schools and Education')}>
-          <div style={{fontSize:28,marginBottom:12}}>🏫</div>
-          <h4>Schools & Education</h4>
-          <p>Want to bring Moksha Patam 108 into a classroom, gurukul, or learning space? Let's talk.</p>
-          <div className="fb-link">Get in Touch →</div>
-        </div>
-        <div className="fb-card" onClick={() => window.open('mailto:rakesh@rasavisio.com?subject=Collaboration')}>
-          <div style={{fontSize:28,marginBottom:12}}>🤝</div>
-          <h4>Collaborate</h4>
-          <p>Sanskrit scholar, game designer, illustrator, storyteller? We are always looking for kindred seekers.</p>
-          <div className="fb-link">Join the Journey →</div>
-        </div>
-      </div>
-
-      {/* Simple message form */}
-      <div className="fb-form reveal">
-        <div style={{fontFamily:"'Cinzel',serif",fontSize:10,letterSpacing:5,
-          color:'rgba(245,220,100,.4)',textTransform:'uppercase',marginBottom:16,textAlign:'center'}}>
-          Or leave a message directly
-        </div>
-        <textarea
-          value={msg} onChange={e => setMsg(e.target.value)}
-          placeholder="What did you want to say to Panditji... or to Rakesh?"
-          rows={4}/>
-        <input
-          value={email} onChange={e => setEmail(e.target.value)}
-          placeholder="Your email (optional — if you'd like a reply)"
-          style={{marginTop:10}}/>
-        <div style={{textAlign:'center'}}>
-          <button className="fb-submit" onClick={submit} disabled={sending}>{sending?'Sending...':'Send Message ✦'}</button>
-        </div>
-        {sent && <div className="fb-sent">✦ Received. Panditji will read it. Thank you, seeker.</div>}
-      </div>
-    </section>
-  );
-}
-
 // ── MAIN ─────────────────────────────────────────────────────────────────────
 export default function LandingPage({onSelectTier}){
   const [scrolled,  setScrolled]  = useState(false);
@@ -841,15 +639,13 @@ export default function LandingPage({onSelectTier}){
       {/* ── NAV ── */}
       <nav className={scrolled?'sc':''}>
         <div className="logo" onClick={()=>window.scrollTo({top:0,behavior:'smooth'})}>
-          <img src="/rasavisio-icon.png" alt="RasaVisio" className="logo-img"/>
           Rasa<em>Visio</em>
         </div>
         <ul className="nav-ul">
           <li><a onClick={()=>go('games')}>Games</a></li>
           <li><a onClick={()=>go('s108')}>The 108</a></li>
           <li><a onClick={()=>go('about')}>About</a></li>
-          <li><a onClick={()=>go('donate')}>Donate</a></li>
-          <li><a onClick={()=>go('feedback')}>Contact</a></li>
+          <li><a onClick={()=>go('footer')}>Contact</a></li>
         </ul>
         <button className="nav-btn" onClick={()=>onSelectTier('moksha')}>Play Now →</button>
       </nav>
@@ -1049,22 +845,7 @@ export default function LandingPage({onSelectTier}){
               ))}
             </div>
           </div>
-          <div className="about-vis reveal-r" style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:28}}>
-            {/* Icon — large, glowing */}
-            <div style={{position:'relative',display:'flex',alignItems:'center',justifyContent:'center'}}>
-              {/* Outer glow */}
-              <div style={{position:'absolute',width:'clamp(200px,28vw,320px)',height:'clamp(200px,28vw,320px)',
-                borderRadius:'50%',background:'radial-gradient(circle,rgba(245,220,100,.08),transparent 70%)',
-                animation:'pulse 4s ease infinite'}}/>
-              <img src="/rasavisio-icon.png" alt="RasaVisio"
-                style={{
-                  width:'clamp(160px,22vw,260px)',height:'clamp(160px,22vw,260px)',
-                  borderRadius:'clamp(28px,4vw,48px)',
-                  border:'1px solid rgba(245,220,100,.2)',
-                  boxShadow:'0 0 60px rgba(245,220,100,.12),0 0 120px rgba(245,220,100,.06),0 20px 50px rgba(0,0,0,.6)',
-                  position:'relative',zIndex:1,
-                }}/>
-            </div>
+          <div className="about-vis reveal-r" style={{display:'flex',alignItems:'center',justifyContent:'center'}}>
             <AboutSVG/>
           </div>
         </div>
@@ -1092,92 +873,14 @@ export default function LandingPage({onSelectTier}){
         </div>
       </section>
 
-      {/* ── DONATE ── */}
-      <section className="donate-sec" id="donate">
-        <div className="donate-icon">🪔</div>
-        <h2 className="donate-h reveal">Keep the Light Burning</h2>
-        <p className="donate-p reveal">
-          Moksha Patam 108 is free to play — and will remain free.
-          If this game taught your child something real, gave you a moment of wonder,
-          or reconnected you to something you had forgotten —
-          consider offering what you can.
-          Even ₹10 from a hundred seekers keeps the flame alive.
-        </p>
-
-        {/* UPI QR */}
-        <div className="reveal" style={{display:'flex',flexDirection:'column',alignItems:'center',gap:16,marginBottom:28}}>
-          <div style={{
-            background:'white',padding:20,borderRadius:12,
-            boxShadow:'0 0 40px rgba(245,220,100,.15), 0 8px 32px rgba(0,0,0,.5)',
-            border:'2px solid rgba(245,220,100,.3)',
-            display:'inline-block',
-          }}>
-            <img src="/upi-qr.png" alt="UPI QR Code — RasaVisio"
-              style={{width:'clamp(180px,35vw,240px)',height:'clamp(180px,35vw,240px)',display:'block'}}/>
-          </div>
-
-          {/* Suggested amounts */}
-          <div style={{display:'flex',gap:10,flexWrap:'wrap',justifyContent:'center'}}>
-            {[
-              {amt:'₹108',label:'One offering',why:'The sacred number'},
-              {amt:'₹500',label:'A month of servers',why:'Keeps us running'},
-              {amt:'₹1,000',label:'Patron of wisdom',why:'Builds a new tier'},
-            ].map(({amt,label,why})=>(
-              <div key={amt} style={{
-                padding:'12px 20px',border:'1px solid rgba(245,220,100,.2)',
-                background:'rgba(245,220,100,.04)',textAlign:'center',
-                minWidth:110,
-              }}>
-                <div style={{fontFamily:"'Cinzel Decorative',serif",fontSize:22,
-                  color:'var(--gold)',marginBottom:4,
-                  textShadow:'0 0 14px rgba(245,220,100,.3)'}}>{amt}</div>
-                <div style={{fontFamily:"'Cinzel',serif",fontSize:9,
-                  letterSpacing:3,color:'rgba(245,220,100,.6)',
-                  textTransform:'uppercase',marginBottom:2}}>{label}</div>
-                <div style={{fontFamily:"'IM Fell English',serif",fontStyle:'italic',
-                  fontSize:11,color:'rgba(220,203,136,.35)'}}>{why}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Scan instructions */}
-        <div className="donate-note reveal" style={{fontSize:14,lineHeight:2,marginBottom:16}}>
-          <span style={{opacity:.5}}>Scan with</span>
-          {' '}<span style={{color:'var(--gold)',fontStyle:'normal'}}>GPay · PhonePe · Paytm · any UPI app</span>
-        </div>
-
-        {/* International note */}
-        <div className="donate-note reveal" style={{marginTop:8}}>
-          <span style={{opacity:.4}}>Outside India?</span>
-          {' '}
-          <a href="https://ko-fi.com/rasavisio" target="_blank" rel="noreferrer"
-            style={{color:'var(--saffron)',fontFamily:"'Cinzel',serif",
-              fontSize:11,letterSpacing:2,textDecoration:'none',
-              borderBottom:'1px solid rgba(232,120,48,.3)'}}>
-            Support on Ko-fi →
-          </a>
-          {' '}<span style={{opacity:.3,fontSize:11}}>(card / PayPal)</span>
-        </div>
-      </section>
-
-      {/* ── FEEDBACK ── */}
-      <FeedbackSection/>
-
       {/* ── FOOTER ── */}
       <footer id="footer">
         <div className="fg">
           <div>
-            <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:14}}>
-              <img src="/rasavisio-icon.png" alt="RasaVisio"
-                style={{width:44,height:44,borderRadius:10,
-                  border:'1px solid rgba(245,220,100,.2)',
-                  boxShadow:'0 0 16px rgba(245,220,100,.1)'}}/>
-              <div className="flogo">Rasa<em>Visio</em></div>
-            </div>
+            <div className="flogo">Rasa<em>Visio</em></div>
             <p className="ftag">Cultural technology restoring India's wisdom traditions through immersive digital experience. Made in India with devotion.</p>
             <div className="fsoc">
-              <a href="mailto:rakesh@rasavisio.com" title="Email Rakesh">✉</a>
+              <a href="mailto:hello@rasavisio.in" title="Email">✉</a>
               <a href="https://instagram.com/rasavisio" target="_blank" rel="noreferrer" title="Instagram">◎</a>
             </div>
           </div>
@@ -1194,9 +897,7 @@ export default function LandingPage({onSelectTier}){
             <ul>
               <li><a onClick={()=>go('about')}>About RasaVisio</a></li>
               <li><a onClick={()=>go('s108')}>The Science of 108</a></li>
-              <li><a onClick={()=>go('donate')}>Support / Donate</a></li>
-              <li><a onClick={()=>go('feedback')}>Feedback</a></li>
-              <li><a href="mailto:rakesh@rasavisio.com">rakesh@rasavisio.com</a></li>
+              <li><a href="mailto:hello@rasavisio.in">Contact Us</a></li>
               <li><a href="https://rasavisio.in">rasavisio.in</a></li>
             </ul>
           </div>
@@ -1211,7 +912,7 @@ export default function LandingPage({onSelectTier}){
         </div>
         <div className="fbot">
           <div className="fcp">© 2024–2026 RasaVisio · All rights reserved</div>
-          <div className="fcp" style={{opacity:.55}}>Made in India 🇮🇳 with devotion for Bharat</div>
+          <div className="fcp" style={{opacity:.18}}>Made in India 🇮🇳 with devotion for Bharat</div>
           <div className="fcp">Moksha Patam 108</div>
         </div>
       </footer>
