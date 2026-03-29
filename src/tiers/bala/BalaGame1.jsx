@@ -15,20 +15,22 @@
 //   · Language: English + Hindi
 // ─────────────────────────────────────────────────────────────────────────────
 import { useState, useCallback, useEffect, useRef } from 'react';
+
 import BalaBoard from './BalaBoard.jsx';
 import {
   CHARS_BALA, SNAKES_BALA, LADDERS_BALA, DLM_SQ_BALA,
-  DILEMMAS_BALA, STAR_MESSAGES, NANI_MESSAGES,
-  BALA_WIN_SQUARE, BALA_WIN_STARS,
-} from './bala.constants.js';
 
-// ── Inline ambient (no external dep needed) ───────────────────────────────
+// ── Inline ambient (no external dep needed) ──────────────────────────────
 function useAmbient(){
   const ref=useRef(null),playing=useRef(false);
   const start=()=>{if(playing.current)return;try{const a=new Audio('/ambient.mp3');a.loop=true;a.volume=0.6;ref.current=a;a.play().then(()=>{playing.current=true}).catch(()=>{})}catch(e){}};
   const stop=()=>{if(!playing.current||!ref.current)return;try{ref.current.pause();ref.current.currentTime=0;playing.current=false;ref.current=null}catch(e){}};
   return{start,stop,duck:()=>{},unduck:()=>{}};
 }
+
+  DILEMMAS_BALA, STAR_MESSAGES, NANI_MESSAGES,
+  BALA_WIN_SQUARE, BALA_WIN_STARS,
+} from './bala.constants.js';
 
 
 // ── CSS for Bala Marg ─────────────────────────────────────────────────────
