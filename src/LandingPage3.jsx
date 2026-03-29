@@ -841,7 +841,8 @@ export default function LandingPage({onSelectTier}){
       {/* ── NAV ── */}
       <nav className={scrolled?'sc':''}>
         <div className="logo" onClick={()=>window.scrollTo({top:0,behavior:'smooth'})}>
-          <img src="/rasavisio-icon.png" alt="RasaVisio" className="logo-img"/>{'Rasa'}<em>{'Visio'}</em>
+          <img src="/rasavisio-icon.png" alt="RasaVisio" className="logo-img"/>
+          Rasa<em>Visio</em>
         </div>
         <ul className="nav-ul">
           <li><a onClick={()=>go('games')}>Games</a></li>
@@ -1172,7 +1173,7 @@ export default function LandingPage({onSelectTier}){
                 style={{width:44,height:44,borderRadius:10,
                   border:'1px solid rgba(245,220,100,.2)',
                   boxShadow:'0 0 16px rgba(245,220,100,.1)'}}/>
-              <div className="flogo">{'Rasa'}<em>{'Visio'}</em></div>
+              <div className="flogo">Rasa<em>Visio</em></div>
             </div>
             <p className="ftag">Cultural technology restoring India's wisdom traditions through immersive digital experience. Made in India with devotion.</p>
             <div className="fsoc">
