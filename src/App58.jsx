@@ -557,35 +557,30 @@ function useAmbient(){
   const start=useCallback(()=>{
     if(playing.current)return;
     try{
-      // ═══════════════════════════════════════════════════════════
-      // 🎵 TO CHANGE THE MUSIC:
-      // Put your audio file in the /public folder and change the
-      // filename below. Supports MP3, OGG, WAV.
-      // Example: "/vedic-chant.mp3" or "/tanpura-drone.ogg"
-      // ═══════════════════════════════════════════════════════════
       const a=new Audio("/ambient.mp3");
-      a.loop=true;
-      a.volume=1.0;
+      a.loop=true; a.volume=1.0;
       audioRef.current=a;
       a.play().then(()=>{playing.current=true}).catch(()=>{});
     }catch(e){}
   },[]);
   const stop=useCallback(()=>{
     if(!playing.current||!audioRef.current)return;
-    try{
-      const a=audioRef.current;
-      a.pause();a.currentTime=0;
-      playing.current=false;audioRef.current=null;
-    }catch(e){}
+    try{const a=audioRef.current;a.pause();a.currentTime=0;playing.current=false;audioRef.current=null;}catch(e){}
   },[]);
-  // Mobile browsers (iOS/Android) ignore volume changes on audio elements.
-  // So we pause/resume instead of duck/unduck for reliable behavior.
-  const duck=useCallback(()=>{
-    if(audioRef.current){try{audioRef.current.pause()}catch(e){}}
+  const duck=useCallback(()=>{if(audioRef.current){try{audioRef.current.pause()}catch(e){}}},[]);
+  const unduck=useCallback(()=>{if(audioRef.current&&playing.current){try{audioRef.current.play().catch(()=>{})}catch(e){}}},[]);
+
+  // ── Pause when tab hidden, resume when visible ──
+  useEffect(()=>{
+    const onVisibility=()=>{
+      if(!audioRef.current||!playing.current) return;
+      if(document.hidden){ try{audioRef.current.pause()}catch(e){} }
+      else { try{audioRef.current.play().catch(()=>{})}catch(e){} }
+    };
+    document.addEventListener('visibilitychange',onVisibility);
+    return()=>document.removeEventListener('visibilitychange',onVisibility);
   },[]);
-  const unduck=useCallback(()=>{
-    if(audioRef.current&&playing.current){try{audioRef.current.play().catch(()=>{})}catch(e){}}
-  },[]);
+
   return{start,stop,duck,unduck,playing};
 }
 
@@ -2988,83 +2983,152 @@ function YamaJudgment({ loser, papa, punya, isYama }) {
 //   Also: DNA uses 3-base codons. Three nucleotides → one amino acid.
 //   Three rings → one number.
 // ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════════
+// 🪶 CHITRAGUPTA INTRO — Three Hidden Riddles
+//
+// RING I  — HYDROGEN SPECTRUM (4 colors, always same order)
+// RING II — GRAVITATIONAL WAVE GW150914 (drawn as actual chirp waveform)
+// RING III— DUAL RIDDLE:
+//             EYES: Symbol ◈ blinks OM in Morse  — — — · — —
+//             EARS: morse-108.wav plays quietly  (1=.———— 0=————— 8=———..)
+//           Two hidden messages. Same ring. Same symbol.
+//           "Those who know will hear. Those who know will see."
+//
+// DEPLOY: put /public/morse-108.wav  in your Vercel public folder
+// ══════════════════════════════════════════════════════════════════════════════
 function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip }) {
-  const canvasRef   = useRef(null);
-  const stateRef    = useRef({
-    t: 0, explode: false,
-    // Each box: how many frames it stays lit after key digit hits apex
-    box: [0, 0, 0],
-    grandFlash: 0,   // frames remaining for grand alignment flash
-    grandDone: false,
-  });
-  const rafRef      = useRef(null);
-  const [done,        setDone]        = useState(false);
-  const [exploding,   setExploding]   = useState(false);
-  const [grandSeen,   setGrandSeen]   = useState(false);
-  const [boxDisplay,  setBoxDisplay]  = useState(['?','?','?']); // what each box shows
+  const canvasRef  = useRef(null);
+  const stateRef   = useRef({ t:0, explode:false });
+  const rafRef     = useRef(null);
+  const morseAudio = useRef(null);
+  const [done,      setDone]      = useState(false);
+  const [exploding, setExploding] = useState(false);
 
-  useEffect(()=>{ const t=setTimeout(()=>setDone(true),30000); return()=>clearTimeout(t); },[]);
+  useEffect(()=>{ const t=setTimeout(()=>setDone(true),34000); return()=>clearTimeout(t); },[]);
+
+  // Voice + morse audio init
   useEffect(()=>{
-    if(!muted) setTimeout(()=>VoiceEngine.speakChitragupta('open',chosenLang),900);
+    if(!muted){
+      setTimeout(()=>VoiceEngine.speakChitragupta('open',chosenLang),900);
+      // Morse 108 audio — quiet, loops with gap
+      try{
+        const audio=new Audio('/morse-108.wav');
+        audio.volume=0.18; // subtle — beneath the voice
+        morseAudio.current=audio;
+        // Play once after 8s, then every 35s
+        const play=()=>{ try{ audio.currentTime=0; audio.play().catch(()=>{}); }catch(e){} };
+        const t1=setTimeout(play,3000);
+        const iv=setInterval(play,12000);
+        return()=>{ clearTimeout(t1); clearInterval(iv); audio.pause(); };
+      }catch(e){}
+    }
     return()=>VoiceEngine.stop();
   },[]);
 
-  // ── KEY DIGITS — the three tumblers ──────────────────────────────────────
-  // Each has a period (in frames) and a phase so key starts at apex (top)
-  const KEY = [
-    { digit:'१', period:108, color:'#f0d050', glow:'rgba(240,200,80,',  ring:1 },
-    { digit:'०', period:216, color:'#80c8f0', glow:'rgba(100,180,240,', ring:2 },
-    { digit:'८', period:324, color:'#f090c0', glow:'rgba(240,120,180,', ring:3 },
+  // ─── HYDROGEN SPECTRUM ────────────────────────────────────────────────
+  const H_LINES=[
+    {nm:656,col:'#ff3520',glow:'rgba(255,53,32,',  phase:0           }, // Hα red
+    {nm:486,col:'#30c8e0',glow:'rgba(48,200,224,', phase:Math.PI/2   }, // Hβ cyan
+    {nm:434,col:'#8840e8',glow:'rgba(136,64,232,', phase:Math.PI     }, // Hγ violet
+    {nm:410,col:'#5018c0',glow:'rgba(80,24,192,',  phase:3*Math.PI/2 }, // Hδ deep violet
   ];
-  // Period of grand alignment = LCM(108,216,324) = 648
-  const GRAND_PERIOD = 648;
+  const H_PERIOD=260, H_FLASH=38;
 
-  // ── PARTICLE FIGURE (scale 3.2, CY shifted down) ─────────────────────────
-  const buildFigure = () => {
-    const pts=[], S=3.2;
-    const add=(x,y,z,type,col)=>pts.push({
-      tx:x*S, ty:y*S, tz:z*S,
-      x:(Math.random()-.5)*10, y:(Math.random()-.5)*10, z:(Math.random()-.5)*10,
-      color:col, type, size:1.2+Math.random()*2.2,
-      baseOpacity:.5+Math.random()*.5, phase:Math.random()*Math.PI*2,
-    });
-    const r=()=>(Math.random()-.5);
-    for(let i=0;i<160;i++){const phi=Math.acos(2*Math.random()-1),th=Math.random()*Math.PI*2,rv=27+r()*5; add(rv*Math.sin(phi)*Math.cos(th),-154+rv*Math.cos(phi),rv*Math.sin(phi)*Math.sin(th),'head','#f0d880');}
-    for(let i=0;i<55;i++) add(r()*17,-150+r()*21,25+r()*9,'face','#fffce0');
-    for(let s2=0;s2<5;s2++){const a=(s2/5)*Math.PI*2,cx=22*Math.cos(a),cz=22*Math.sin(a); for(let j=0;j<14;j++) add(cx*(1-j*.04),-182-j*9+r()*4,cz*(1-j*.04),'crown','#ffe040');}
-    for(let i=0;i<70;i++){const a=(i/70)*Math.PI*2; add(27*Math.cos(a)+r()*3,-187+r()*4,27*Math.sin(a)+r()*3,'crown','#f0c820');}
-    for(let i=0;i<150;i++){const a=(i/150)*Math.PI*2,rv=72+r()*10; add(rv*Math.cos(a)+r()*4,-154+r()*8,-4+rv*Math.sin(a)*.2,'halo','#f0d050');}
-    for(let i=0;i<55;i++){const a=(i/55)*Math.PI*2,rv=50+r()*10; add(rv*Math.cos(a),-154+r()*5,rv*Math.sin(a)*.16,'halo','rgba(240,208,80,0.5)');}
-    for(let i=0;i<230;i++){const t=Math.random(),a=Math.random()*Math.PI*2,y=-120+t*100,rx=31*(1-Math.pow((t-.5)*2,2)*.45); add(rx*Math.cos(a)+r()*6,y+r()*8,rx*.55*Math.sin(a)+r()*5,'body','#ddb84a');}
-    for(let i=0;i<40;i++){const t=i/40,a=t*Math.PI; add(31*Math.cos(a)-6,-120+t*62+r()*4,31*Math.cos(a)*.3+r()*3,'thread','#f0d060');}
-    for(let i=0;i<115;i++){const t=i/115; add(28+t*84+r()*8,-110-t*74+r()*8,t*25+r()*8,'arm','#c8a840');}
-    for(let i=0;i<115;i++){const t=i/115; add(26+t*77+r()*8,-96+t*67+r()*8,t*18+r()*8,'arm','#c8a840');}
-    for(let i=0;i<115;i++){const t=i/115; add(-28-t*77+r()*8,-110-t*62+r()*8,t*18+r()*8,'arm','#c8a840');}
-    for(let i=0;i<115;i++){const t=i/115; add(-26-t*71+r()*8,-94+t*61+r()*8,t*12+r()*8,'arm','#c8a840');}
-    for(let i=0;i<50;i++){const t=i/50; add(114+t*38+r()*5,-186-t*50+r()*5,25+t*7+r()*4,'quill','#ffffff');}
-    for(let i=0;i<34;i++) add(119+i*1.4+r()*5,-194-i*1.9+r()*5,27+r()*4,'quill','#f0e888');
-    for(let i=0;i<52;i++){const a=(i/52)*Math.PI; add(102+18*Math.cos(a)+r()*4,-31+10*Math.sin(a)+r()*4,18+r()*4,'scroll','#e8d070');}
-    for(let i=0;i<62;i++) add(-99+r()*26,-36+r()*27,15+r()*7,'ledger','#c8aa50');
-    for(let i=0;i<90;i++){const t=i/90; add(13+t*54+r()*10,-16+t*35+r()*10,-7+t*7+r()*10,'leg','#c0a030');}
-    for(let i=0;i<90;i++){const t=i/90; add(-13-t*50+r()*10,-16+t*33+r()*10,-7+t*7+r()*10,'leg','#c0a030');}
-    for(let p=0;p<16;p++){const pa=(p/16)*Math.PI*2; for(let j=0;j<24;j++){const t=j/24,rv=52+t*32; add(rv*Math.cos(pa)+r()*7,26+t*26+r()*6,rv*Math.sin(pa)*.55+r()*6,'lotus',p%3===0?'#ff90c0':p%3===1?'#e070a8':'#ff80b8');}}
-    for(let i=0;i<55;i++){const a=Math.random()*Math.PI*2,rv=Math.random()*38; add(rv*Math.cos(a)+r()*4,26+r()*8,rv*Math.sin(a)*.5+r()*4,'lotus','#ffb0d0');}
-    for(let i=0;i<160;i++){const a=Math.random()*Math.PI*2,rv=92+Math.random()*85; add(rv*Math.cos(a)+r()*22,-62+r()*225,rv*Math.sin(a)*.65+r()*22,'aura','#f0d050');}
-    return pts;
+  // ─── GW CHIRP — returns [amplitude 0-1, isChirping, isMerger] ────────
+  const gwState=(t)=>{
+    const phase=t%520;
+    // INSPIRAL 0-310: 8 pulses, spacing 55→18 frames, each brighter
+    if(phase<310){
+      let cum=0;
+      for(let i=0;i<8;i++){
+        const sp=Math.round(55-i*4.6);
+        if(phase>=cum&&phase<cum+18){
+          const frac=(phase-cum)/18;
+          const amp=Math.sin(frac*Math.PI)*(0.25+i*0.09);
+          return {amp,chirp:false,merger:false};
+        }
+        cum+=sp; if(cum>310) break;
+      }
+      return {amp:0,chirp:false,merger:false};
+    }
+    // CHIRP 310-400: rapid pulses, 6-frame period
+    if(phase<400){
+      const cp=phase-310;
+      const amp=cp%6<3?0.55+cp/90*0.4:0;
+      return {amp,chirp:true,merger:false};
+    }
+    // MERGER 400-422: peak flash
+    if(phase<422){
+      const mp=phase-400;
+      const amp=mp<10?0.9+mp*.01:Math.max(0,1-(mp-10)/12);
+      return {amp,chirp:true,merger:true};
+    }
+    // RINGDOWN 422-520: 4 fading echoes
+    if(phase<520){
+      const rd=phase-422;
+      const echo=Math.floor(rd/24);
+      const w=rd%24;
+      if(echo<4&&w<14) return {amp:Math.max(0,(1-w/14)*(0.45-echo*.1)),chirp:false,merger:false};
+    }
+    return {amp:0,chirp:false,merger:false};
   };
 
-  // ── DRAW PLANET ───────────────────────────────────────────────────────────
-  const drawPlanet=(ctx,x,y,sc,p)=>{
+  // ─── MORSE: OM = O(— — —) M(— —) ────────────────────────────────────
+  // DAH=30f  GAP=10f  LETTER=30f  WORD=60f  Total=270f
+  const MORSE_PERIOD=270;
+  const morseState=(t)=>{
+    const p=t%MORSE_PERIOD;
+    // O: dah dah dah
+    if(p<30)  return {on:true,pct:p/30};
+    if(p<40)  return {on:false,pct:0};
+    if(p<70)  return {on:true,pct:(p-40)/30};
+    if(p<80)  return {on:false,pct:0};
+    if(p<110) return {on:true,pct:(p-80)/30};
+    // letter gap
+    if(p<140) return {on:false,pct:0};
+    // M: dah dah
+    if(p<170) return {on:true,pct:(p-140)/30};
+    if(p<180) return {on:false,pct:0};
+    if(p<210) return {on:true,pct:(p-180)/30};
+    // word silence
+    return {on:false,pct:0};
+  };
+
+  // ─── PARTICLE FIGURE (S=3.2, CY=0.60) ───────────────────────────────
+  const buildFigure=useCallback(()=>{
+    const pts=[], S=3.2;
+    const add=(x,y,z,type,col)=>pts.push({tx:x*S,ty:y*S,tz:z*S,x:(Math.random()-.5)*10,y:(Math.random()-.5)*10,z:(Math.random()-.5)*10,color:col,type,size:1.2+Math.random()*2.2,baseOpacity:.5+Math.random()*.5,phase:Math.random()*Math.PI*2});
+    const r=()=>(Math.random()-.5);
+    for(let i=0;i<160;i++){const ph=Math.acos(2*Math.random()-1),th=Math.random()*Math.PI*2,rv=27+r()*5;add(rv*Math.sin(ph)*Math.cos(th),-154+rv*Math.cos(ph),rv*Math.sin(ph)*Math.sin(th),'head','#f0d880');}
+    for(let i=0;i<55;i++)add(r()*17,-150+r()*21,25+r()*9,'face','#fffce0');
+    for(let s=0;s<5;s++){const a=(s/5)*Math.PI*2,cx=22*Math.cos(a),cz=22*Math.sin(a);for(let j=0;j<14;j++)add(cx*(1-j*.04),-182-j*9+r()*4,cz*(1-j*.04),'crown','#ffe040');}
+    for(let i=0;i<70;i++){const a=(i/70)*Math.PI*2;add(27*Math.cos(a)+r()*3,-187+r()*4,27*Math.sin(a)+r()*3,'crown','#f0c820');}
+    for(let i=0;i<150;i++){const a=(i/150)*Math.PI*2,rv=72+r()*10;add(rv*Math.cos(a)+r()*4,-154+r()*8,-4+rv*Math.sin(a)*.2,'halo','#f0d050');}
+    for(let i=0;i<55;i++){const a=(i/55)*Math.PI*2,rv=50+r()*10;add(rv*Math.cos(a),-154+r()*5,rv*Math.sin(a)*.16,'halo','#f0d050');}
+    for(let i=0;i<230;i++){const t=Math.random(),a=Math.random()*Math.PI*2,y=-120+t*100,rx=31*(1-Math.pow((t-.5)*2,2)*.45);add(rx*Math.cos(a)+r()*6,y+r()*8,rx*.55*Math.sin(a)+r()*5,'body','#ddb84a');}
+    for(let i=0;i<40;i++){const t=i/40,a=t*Math.PI;add(31*Math.cos(a)-6,-120+t*62+r()*4,31*Math.cos(a)*.3+r()*3,'thread','#f0d060');}
+    for(let i=0;i<115;i++){const t=i/115;add(28+t*84+r()*8,-110-t*74+r()*8,t*25+r()*8,'arm','#c8a840');}
+    for(let i=0;i<115;i++){const t=i/115;add(26+t*77+r()*8,-96+t*67+r()*8,t*18+r()*8,'arm','#c8a840');}
+    for(let i=0;i<115;i++){const t=i/115;add(-28-t*77+r()*8,-110-t*62+r()*8,t*18+r()*8,'arm','#c8a840');}
+    for(let i=0;i<115;i++){const t=i/115;add(-26-t*71+r()*8,-94+t*61+r()*8,t*12+r()*8,'arm','#c8a840');}
+    for(let i=0;i<50;i++){const t=i/50;add(114+t*38+r()*5,-186-t*50+r()*5,25+t*7+r()*4,'quill','#ffffff');}
+    for(let i=0;i<34;i++)add(119+i*1.4+r()*5,-194-i*1.9+r()*5,27+r()*4,'quill','#f0e888');
+    for(let i=0;i<52;i++){const a=(i/52)*Math.PI;add(102+18*Math.cos(a)+r()*4,-31+10*Math.sin(a)+r()*4,18+r()*4,'scroll','#e8d070');}
+    for(let i=0;i<62;i++)add(-99+r()*26,-36+r()*27,15+r()*7,'ledger','#c8aa50');
+    for(let i=0;i<90;i++){const t=i/90;add(13+t*54+r()*10,-16+t*35+r()*10,-7+t*7+r()*10,'leg','#c0a030');}
+    for(let i=0;i<90;i++){const t=i/90;add(-13-t*50+r()*10,-16+t*33+r()*10,-7+t*7+r()*10,'leg','#c0a030');}
+    for(let p=0;p<16;p++){const pa=(p/16)*Math.PI*2;for(let j=0;j<24;j++){const t=j/24,rv=52+t*32;add(rv*Math.cos(pa)+r()*7,26+t*26+r()*6,rv*Math.sin(pa)*.55+r()*6,'lotus',p%3===0?'#ff90c0':p%3===1?'#e070a8':'#ff80b8');}}
+    for(let i=0;i<55;i++){const a=Math.random()*Math.PI*2,rv=Math.random()*38;add(rv*Math.cos(a)+r()*4,26+r()*8,rv*Math.sin(a)*.5+r()*4,'lotus','#ffb0d0');}
+    for(let i=0;i<160;i++){const a=Math.random()*Math.PI*2,rv=92+Math.random()*85;add(rv*Math.cos(a)+r()*22,-62+r()*225,rv*Math.sin(a)*.65+r()*22,'aura','#f0d050');}
+    return pts;
+  },[]);
+
+  // ─── DRAW PLANET ──────────────────────────────────────────────────────
+  const drawPlanet=useCallback((ctx,x,y,sc,p)=>{
     const rv=p.pr*sc; if(rv<1.2) return;
-    if(p.rings){
-      ctx.save(); ctx.translate(x,y); ctx.scale(1,.28);
-      ctx.beginPath(); ctx.arc(0,0,rv*2.6,0,Math.PI*2); ctx.strokeStyle='rgba(210,185,115,.5)'; ctx.lineWidth=rv*.85/.28; ctx.stroke();
-      ctx.beginPath(); ctx.arc(0,0,rv*1.75,0,Math.PI*2); ctx.strokeStyle='rgba(185,160,90,.38)'; ctx.lineWidth=rv*.42/.28; ctx.stroke();
-      ctx.restore();
-    }
-    const g=ctx.createRadialGradient(x-rv*.38,y-rv*.38,0,x,y,rv);
-    g.addColorStop(0,p.hi); g.addColorStop(.65,p.col); g.addColorStop(1,p.sh);
-    ctx.beginPath(); ctx.arc(x,y,rv,0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
+    if(p.rings){ctx.save();ctx.translate(x,y);ctx.scale(1,.28);ctx.beginPath();ctx.arc(0,0,rv*2.6,0,Math.PI*2);ctx.strokeStyle='rgba(210,185,115,.5)';ctx.lineWidth=rv*.85/.28;ctx.stroke();ctx.beginPath();ctx.arc(0,0,rv*1.75,0,Math.PI*2);ctx.strokeStyle='rgba(185,160,90,.38)';ctx.lineWidth=rv*.42/.28;ctx.stroke();ctx.restore();}
+    const g=ctx.createRadialGradient(x-rv*.38,y-rv*.38,0,x,y,rv);g.addColorStop(0,p.hi);g.addColorStop(.65,p.col);g.addColorStop(1,p.sh);
+    ctx.beginPath();ctx.arc(x,y,rv,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
     if(p.corona){for(let ray=0;ray<8;ray++){const ra=(ray/8)*Math.PI*2;ctx.save();ctx.globalAlpha=.28;ctx.strokeStyle='#f8d840';ctx.lineWidth=rv*.22;ctx.beginPath();ctx.moveTo(x+Math.cos(ra)*rv,y+Math.sin(ra)*rv);ctx.lineTo(x+Math.cos(ra)*rv*1.9,y+Math.sin(ra)*rv*1.9);ctx.stroke();ctx.restore();}}
     if(p.crescent){ctx.save();ctx.beginPath();ctx.arc(x,y,rv,0,Math.PI*2);ctx.clip();ctx.beginPath();ctx.arc(x+rv*.45,y,rv*.98,0,Math.PI*2);ctx.fillStyle='rgba(20,30,55,.78)';ctx.fill();ctx.restore();}
     if(p.polar){ctx.save();ctx.globalAlpha=.55;ctx.beginPath();ctx.arc(x,y-rv*.62,rv*.3,0,Math.PI*2);ctx.fillStyle='#fff8f0';ctx.fill();ctx.beginPath();ctx.arc(x,y+rv*.62,rv*.2,0,Math.PI*2);ctx.fillStyle='#fff8f0';ctx.fill();ctx.restore();}
@@ -3073,31 +3137,21 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
     if(p.shadow){const sg=ctx.createRadialGradient(x,y,rv*.25,x,y,rv*2);sg.addColorStop(0,'transparent');sg.addColorStop(.55,'rgba(40,8,70,.14)');sg.addColorStop(1,'rgba(70,18,110,.28)');ctx.beginPath();ctx.arc(x,y,rv*2,0,Math.PI*2);ctx.fillStyle=sg;ctx.fill();}
     if(p.comet){ctx.save();ctx.globalAlpha=.38;const tg=ctx.createLinearGradient(x,y,x-rv*5,y);tg.addColorStop(0,'rgba(200,130,160,.7)');tg.addColorStop(1,'transparent');ctx.beginPath();ctx.moveTo(x,y-rv*.65);ctx.lineTo(x-rv*5,y);ctx.lineTo(x,y+rv*.65);ctx.fillStyle=tg;ctx.fill();ctx.restore();}
     ctx.save();ctx.globalAlpha=Math.min(sc*.85,.75);ctx.font=`${Math.max(6,8*sc)}px 'Noto Serif Devanagari',serif`;ctx.textAlign='center';ctx.textBaseline='top';ctx.fillStyle='rgba(200,175,90,.6)';ctx.fillText(p.skt,x,y+rv*(p.rings?2.2:1.55));ctx.restore();
-  };
+  },[]);
 
   const NAVAGRAHA=[
-    {name:'Surya',   skt:'☀ सूर्य',   pr:14,col:'#f0b020',hi:'#fff880',sh:'#b05800',corona:true,  speed:.0026,phase:0    },
-    {name:'Chandra', skt:'☽ चन्द्र',  pr:9, col:'#c8d4e0',hi:'#f0f4ff',sh:'#506878',crescent:true,speed:.0020,phase:.70  },
-    {name:'Mangal',  skt:'♂ मंगल',    pr:8, col:'#c83020',hi:'#ff7060',sh:'#601010',polar:true,   speed:.0017,phase:1.40 },
-    {name:'Budh',    skt:'☿ बुध',     pr:6, col:'#7090a0',hi:'#a0c8d8',sh:'#304050',              speed:.0030,phase:2.10 },
-    {name:'Brihaspati',skt:'♃ बृहस्पति',pr:19,col:'#d08020',hi:'#f0c060',sh:'#804810',bands:true,speed:.0015,phase:2.80},
-    {name:'Shukra',  skt:'♀ शुक्र',   pr:10,col:'#e8e098',hi:'#fffff8',sh:'#a09038',              speed:.0023,phase:3.50 },
-    {name:'Shani',   skt:'♄ शनि',     pr:13,col:'#c0a860',hi:'#e8d890',sh:'#7a6428',rings:true,   speed:.0011,phase:4.20 },
-    {name:'Rahu',    skt:'☊ राहु',    pr:10,col:'#302840',hi:'#604880',sh:'#100a18',shadow:true,  speed:.0009,phase:4.90 },
-    {name:'Ketu',    skt:'☋ केतु',    pr:8, col:'#805060',hi:'#c08090',sh:'#401020',comet:true,   speed:.0007,phase:5.60 },
+    {skt:'☀ सूर्य',   pr:14,col:'#f0b020',hi:'#fff880',sh:'#b05800',corona:true,  speed:.0018,phase:.20},
+    {skt:'☽ चन्द्र',  pr:9, col:'#c8d4e0',hi:'#f0f4ff',sh:'#506878',crescent:true,speed:.0014,phase:1.10},
+    {skt:'♂ मंगल',    pr:8, col:'#c83020',hi:'#ff7060',sh:'#601010',polar:true,   speed:.0012,phase:1.85},
+    {skt:'☿ बुध',     pr:6, col:'#7090a0',hi:'#a0c8d8',sh:'#304050',              speed:.0022,phase:2.60},
+    {skt:'♃ बृहस्पति',pr:19,col:'#d08020',hi:'#f0c060',sh:'#804810',bands:true,  speed:.0010,phase:3.30},
+    {skt:'♀ शुक्र',   pr:10,col:'#e8e098',hi:'#fffff8',sh:'#a09038',              speed:.0016,phase:4.05},
+    {skt:'♄ शनि',     pr:13,col:'#c0a860',hi:'#e8d890',sh:'#7a6428',rings:true,   speed:.0008,phase:4.80},
+    {skt:'☊ राहु',    pr:10,col:'#302840',hi:'#604880',sh:'#100a18',shadow:true,  speed:.0006,phase:5.50},
+    {skt:'☋ केतु',    pr:8, col:'#805060',hi:'#c08090',sh:'#401020',comet:true,   speed:.0005,phase:6.00},
   ];
 
-  // ── RING II — science symbols (excluding key digit positions) ─────────────
-  const buildRing2=(keyPhase)=>{
-    const symbols=['∞','DNA','π','⚛','tat','tvam','asi','ħ','Δ','∇','Ψ','∅','E=mc²','∫','☯','ॐ','◎','Ω','∴','∵','lim','∑'];
-    return symbols.map((ch,i,a)=>({
-      ch, radius:310, inclination:.32, speed:(Math.PI*2)/216,
-      phase:keyPhase+(i+1)*(Math.PI*2/a.length),  // never at apex at frame 0
-      sz:ch.length>3?7:11, col:'rgba(140,190,215,0.6)', isKey:false,
-    }));
-  };
-
-  // ── CANVAS LOOP ───────────────────────────────────────────────────────────
+  // ─── CANVAS LOOP ──────────────────────────────────────────────────────
   useEffect(()=>{
     const canvas=canvasRef.current; if(!canvas) return;
     const ctx=canvas.getContext('2d');
@@ -3106,101 +3160,99 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
 
     const particles=buildFigure();
     const stars=Array.from({length:320},()=>({x:Math.random()*2400,y:Math.random()*1500,z:200+Math.random()*900,r:.3+Math.random()*1.8,op:.12+Math.random()*.6}));
-    const FOV=680, ROTY=.0022, SPAWN=100;
+
+    const FOV=680, ROTY=.0018, SPAWN=100;
     const s=stateRef.current; s.t=0;
 
-    // Build ring chars — key digits phase=0 (start at apex)
-    // Ring I  key = १  at phase 0,  speed = 2π/108
-    // Ring II key = ०  at phase 0,  speed = 2π/216
-    // Ring III key = ८  at phase 0,  speed = 2π/324
-    const RING_SPEED = [
-      (Math.PI*2)/108,   // Ring I  — period 108 frames
-      (Math.PI*2)/216,   // Ring II — period 216 frames
-      (Math.PI*2)/324,   // Ring III — period 324 frames
-    ];
-
-    // Ring I characters — planets serve as backdrop, key digit १ orbits independently
-    const keyChars=[
-      { ch:'१', radius:190, inclination:.18, speed:RING_SPEED[0], phase:Math.PI/2, sz:16, isKey:true, keyIdx:0, color:'#f0d050' },
-      { ch:'०', radius:310, inclination:.32, speed:RING_SPEED[1], phase:Math.PI/2, sz:16, isKey:true, keyIdx:1, color:'#80c8f0' },
-      { ch:'८', radius:430, inclination:.50, speed:RING_SPEED[2], phase:Math.PI/2, sz:16, isKey:true, keyIdx:2, color:'#f090c0' },
-    ];
-    // Ring II filler symbols (slow drift, not keys)
-    const ring2fill=['∞','DNA','π','⚛','tat','tvam','asi','ħ','Δ','∇','Ψ','∅','E=mc²','∫','☯','ॐ','◎','Ω','∴','∵'].map((ch,i,a)=>({
-      ch, radius:310, inclination:.32, speed:.0014,
-      phase:(i/a.length)*Math.PI*2+1.2,  // offset so ० has space
-      sz:ch.length>3?7:10, col:'rgba(140,190,215,0.55)', isKey:false,
+    // Ring II symbols — 22 characters, slow
+    const ring2syms=['∞','π','⚛','tat','tvam','asi','ħ','Δ','∇','Ψ','∅','E=mc²','∫','☯','ॐ','Ω','∴','∵','∑','DNA','◎','✦'].map((ch,i,a)=>({
+      ch, phase:(i/a.length)*Math.PI*2, speed:.00085, idx:i, total:a.length,
     }));
-    // Ring III filler
-    const ring3fill=['अ','ग्र','स','ध','नी','ॐ','✦','❊','◈','⬡'].map((ch,i,a)=>({
-      ch, radius:430, inclination:.50, speed:.0008,
-      phase:(i/a.length)*Math.PI*2+1.8,
-      sz:ch==='ॐ'?14:9, col:'rgba(200,175,90,0.28)', isKey:false,
+
+    // Ring III filler (dim, non-blinking)
+    const ring3syms=['✦','❊','⬡','∞','◯','△','▽','◇'].map((ch,i,a)=>({
+      ch, phase:(i/a.length)*Math.PI*2+1.1, speed:.00035,
     }));
 
     const project=(x,y,z,ry,cx,cy)=>{
-      const rx=x*Math.cos(ry)-z*Math.sin(ry), rz=x*Math.sin(ry)+z*Math.cos(ry);
+      const rx=x*Math.cos(ry)-z*Math.sin(ry),rz=x*Math.sin(ry)+z*Math.cos(ry);
       const sc=FOV/(FOV+rz+420);
-      return {sx:cx+rx*sc, sy:cy+y*sc, scale:sc, rz};
+      return {sx:cx+rx*sc,sy:cy+y*sc,scale:sc,rz};
     };
+    const hA=(hex,a)=>{const rv=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgba(${rv},${g},${b},${a})`;};
 
-    // Check if key char is near apex (12-o'clock = angle π/2 in our system)
-    // apex when sin(angle) = 1 → angle ≈ π/2 + 2πn
-    const isAtApex=(t,speed,phase)=>{
-      const angle=phase+t*speed;
-      const norm=((angle%(Math.PI*2))+Math.PI*2)%(Math.PI*2);
-      // apex is at π/2 (sin = 1 → top of orbit in our y-projection)
-      const diff=Math.abs(norm-Math.PI/2);
-      return Math.min(diff, Math.PI*2-diff) < 0.08;
+    // ── GW: Draw chirp as pulsing light that travels around Ring II ──────
+    // No flat line — the wave IS the ring. Pulses sweep around the orbit.
+    // During inspiral: slow pulses, dim. Chirp: rapid bright sweep. Merger: full ring flash.
+    const drawGWRing=(t,rotY,CX,CY,ral)=>{
+      const phase=t%520;
+      const gws=gwState(t);
+      if(gws.amp<0.02&&!gws.merger) return;
+
+      // Draw subtle orbit guide circle
+      ctx.save();ctx.globalAlpha=ral*.06;ctx.strokeStyle='rgba(140,190,255,1)';ctx.lineWidth=.6;
+      ctx.setLineDash([2,14]);
+      ctx.beginPath();
+      for(let i=0;i<=64;i++){
+        const a2=(i/64)*Math.PI*2;
+        const pr2=project(310*Math.cos(a2),-30+310*Math.sin(a2)*Math.sin(.32),310*Math.sin(a2)*Math.cos(.32),rotY,CX,CY);
+        i===0?ctx.moveTo(pr2.sx,pr2.sy):ctx.lineTo(pr2.sx,pr2.sy);
+      }
+      ctx.stroke();ctx.setLineDash([]);ctx.restore();
+
+      // During merger — flash the whole ring
+      if(gws.merger){
+        const mp=(phase-400)/22;
+        const mAl=(1-mp)*.65;
+        ctx.save();ctx.globalAlpha=ral*mAl;
+        ctx.beginPath();
+        for(let i=0;i<=64;i++){
+          const a2=(i/64)*Math.PI*2;
+          const pr2=project(310*Math.cos(a2),-30+310*Math.sin(a2)*Math.sin(.32),310*Math.sin(a2)*Math.cos(.32),rotY,CX,CY);
+          i===0?ctx.moveTo(pr2.sx,pr2.sy):ctx.lineTo(pr2.sx,pr2.sy);
+        }
+        ctx.strokeStyle='rgba(200,220,255,.9)';ctx.lineWidth=3;ctx.shadowBlur=20;ctx.shadowColor='rgba(180,210,255,.8)';ctx.stroke();ctx.shadowBlur=0;
+        ctx.restore();
+        // Label
+        ctx.save();ctx.globalAlpha=ral*mAl*.8;ctx.font=`${Math.max(8,10*Math.min(CX/700,1))}px 'Cinzel',serif`;ctx.textAlign='center';ctx.fillStyle='rgba(200,220,255,.85)';ctx.fillText('GW150914 · MERGER',CX,CY-CY*.52);ctx.restore();
+        return;
+      }
+
+      // Inspiral / chirp — a bright arc sweeps around the ring
+      // Arc width narrows as chirp accelerates (inspiral = wide slow arc, chirp = tight fast arc)
+      const arcFrac=gws.chirp?0.08:0.25; // how much of ring is lit
+      const sweepAngle=(t*.018)%(Math.PI*2); // sweep position
+
+      ctx.save();ctx.globalAlpha=ral*Math.min(gws.amp*1.8,.75);
+      ctx.beginPath();
+      const arcSteps=32;
+      for(let i=0;i<=arcSteps;i++){
+        const a2=sweepAngle+(i/arcSteps)*arcFrac*Math.PI*2;
+        const pr2=project(310*Math.cos(a2),-30+310*Math.sin(a2)*Math.sin(.32),310*Math.sin(a2)*Math.cos(.32),rotY,CX,CY);
+        i===0?ctx.moveTo(pr2.sx,pr2.sy):ctx.lineTo(pr2.sx,pr2.sy);
+      }
+      ctx.strokeStyle=gws.chirp?'rgba(160,200,255,.85)':'rgba(120,170,240,.65)';
+      ctx.lineWidth=gws.chirp?2.2:1.5;ctx.shadowBlur=gws.chirp?14:8;ctx.shadowColor='rgba(140,180,255,.6)';ctx.stroke();ctx.shadowBlur=0;ctx.restore();
+
+      // Subtle GW label
+      if(gws.amp>0.3){
+        ctx.save();ctx.globalAlpha=ral*gws.amp*.3;ctx.font=`${Math.max(7,8*Math.min(CX/700,1))}px 'Cinzel',serif`;ctx.textAlign='center';ctx.fillStyle='rgba(140,190,255,.6)';ctx.fillText('GW150914',CX,CY-CY*.49);ctx.restore();
+      }
     };
 
     const draw=()=>{
       const W=canvas.width, H=canvas.height;
-      const CX=W*.5, CY=H*.60; // shifted down — crown stays visible
+      const CX=W*.5, CY=H*.60;
       s.t++;
       const rotY=s.t*ROTY;
 
-      // ── Check each key digit ──
-      const atApex=[false,false,false];
-      keyChars.forEach((kc,i)=>{
-        if(isAtApex(s.t, kc.speed, kc.phase)){
-          atApex[i]=true;
-          s.box[i]=28; // light box for 28 frames
-        }
-        if(s.box[i]>0) s.box[i]--;
-      });
-
-      // ── Grand Alignment: all three at apex ──
-      if(s.t>120 && atApex[0]&&atApex[1]&&atApex[2]){
-        s.grandFlash=120;
-        if(!s.grandDone){ s.grandDone=true; setGrandSeen(true); }
-      }
-      if(s.grandFlash>0) s.grandFlash--;
-      const gf=s.grandFlash/120; // 0→1
-
-      // Update React box display
-      const disp=s.box.map((b,i)=>b>0?KEY[i].digit:'?');
-      setBoxDisplay([...disp]);
-
       // BG
-      ctx.fillStyle='rgba(4,2,1,1)'; ctx.fillRect(0,0,W,H);
-      const bg=ctx.createRadialGradient(CX,CY,50,CX,CY,Math.min(W,H)*.7);
-      bg.addColorStop(0,`rgba(200,175,90,${.04+gf*.12})`);
-      bg.addColorStop(.7,'rgba(120,95,40,.01)'); bg.addColorStop(1,'transparent');
-      ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+      ctx.fillStyle='rgba(4,2,1,1)';ctx.fillRect(0,0,W,H);
+      const bg=ctx.createRadialGradient(CX,CY,50,CX,CY,Math.min(W,H)*.72);
+      bg.addColorStop(0,'rgba(200,175,90,.036)');bg.addColorStop(.7,'rgba(0,0,0,0)');
+      ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
 
-      // Stars
-      stars.forEach(st=>{const sc=FOV/(FOV+st.z);const sx=W*.5+(st.x-W*.5)*sc,sy=H*.5+(st.y-H*.5)*sc;ctx.beginPath();ctx.arc(sx,sy,st.r*sc,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,220,${st.op*sc})`;ctx.fill();});
-
-      // Grand alignment: expanding rings + screen flash
-      if(gf>0){
-        for(let ring=0;ring<5;ring++){
-          const rAge=((1-gf)*150+ring*30)%150;
-          const rAlpha=Math.max(0,(1-rAge/150))*.5*gf;
-          ctx.beginPath(); ctx.arc(CX,CY,rAge*Math.max(W,H)*.006,0,Math.PI*2);
-          ctx.strokeStyle=`rgba(240,200,80,${rAlpha})`; ctx.lineWidth=2.5; ctx.stroke();
-        }
-      }
+      stars.forEach(st=>{const sc=FOV/(FOV+st.z);ctx.beginPath();ctx.arc(W*.5+(st.x-W*.5)*sc,H*.5+(st.y-H*.5)*sc,st.r*sc,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,220,${st.op*sc})`;ctx.fill();});
 
       // Particles
       const proj=particles.map(p=>{
@@ -3211,108 +3263,111 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
       });
       proj.sort((a,b)=>a.rz-b.rz);
       proj.forEach(({sx,sy,scale,p})=>{
-        if(sx<-100||sx>W+100||sy<-100||sy>H+100) return;
-        const rv=p.size*scale, al=p.baseOpacity*Math.min(1,s.t/55)*scale*1.5;
+        if(sx<-100||sx>W+100||sy<-100||sy>H+100)return;
+        const rv=p.size*scale,al=p.baseOpacity*Math.min(1,s.t/55)*scale*1.5;
         const pulse=1+Math.sin(s.t*.033+p.phase)*.1;
         if(['quill','face','crown','halo'].includes(p.type)){ctx.beginPath();ctx.arc(sx,sy,rv*4*pulse,0,Math.PI*2);ctx.fillStyle=`rgba(240,210,80,${al*.13})`;ctx.fill();}
-        ctx.beginPath(); ctx.arc(sx,sy,rv*pulse,0,Math.PI*2);
-        const hex=p.color.startsWith('#')?p.color:'#d0b050';
-        const rv2=parseInt(hex.slice(1,3),16),gv=parseInt(hex.slice(3,5),16),bv=parseInt(hex.slice(5,7),16);
-        ctx.fillStyle=`rgba(${rv2},${gv},${bv},${al})`; ctx.fill();
+        ctx.beginPath();ctx.arc(sx,sy,rv*pulse,0,Math.PI*2);
+        ctx.fillStyle=hA(p.color.startsWith('#')?p.color:'#d0b050',al);ctx.fill();
       });
 
-      // ── Ring I: Navagraha planets ──
+      // ── RING I: Planets + Hydrogen Spectrum ──
       if(s.t>30){
         const ral=Math.min((s.t-30)/50,1);
         NAVAGRAHA.forEach(pl=>{
-          const angle=pl.phase+s.t*pl.speed;
-          const ox=190*Math.cos(angle), oy=-80+190*Math.sin(angle)*Math.sin(.18), oz=190*Math.sin(angle)*Math.cos(.18);
-          const pr=project(ox,oy,oz,rotY,CX,CY);
-          if(pr.scale<.15) return;
-          ctx.save(); ctx.globalAlpha=ral*Math.min(pr.scale*1.8,1);
-          drawPlanet(ctx,pr.sx,pr.sy,pr.scale,pl);
+          const a=pl.phase+s.t*pl.speed;
+          const pr=project(190*Math.cos(a),-80+190*Math.sin(a)*Math.sin(.18),190*Math.sin(a)*Math.cos(.18),rotY,CX,CY);
+          if(pr.scale<.15)return;
+          ctx.save();ctx.globalAlpha=ral*Math.min(pr.scale*1.8,1);drawPlanet(ctx,pr.sx,pr.sy,pr.scale,pl);ctx.restore();
+        });
+        H_LINES.forEach((hl,i)=>{
+          const a=hl.phase+s.t*.0009;
+          const pr=project(190*Math.cos(a),-80+190*Math.sin(a)*Math.sin(.18),190*Math.sin(a)*Math.cos(.18),rotY,CX,CY);
+          const al=ral*Math.min(pr.scale*1.8,1);if(al<.04)return;
+          const slotStart=i*(H_PERIOD/4);
+          const phase=s.t%H_PERIOD;
+          const w=phase-slotStart;
+          const isFlashing=w>=0&&w<H_FLASH;
+          const fb=isFlashing?Math.sin((w/H_FLASH)*Math.PI):0;
+          ctx.save();ctx.globalAlpha=al*(isFlashing?1:.15);
+          const sz=Math.max(8,11*pr.scale);
+          ctx.font=`bold ${sz}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+          if(isFlashing){
+            const gr=ctx.createRadialGradient(pr.sx,pr.sy,0,pr.sx,pr.sy,sz*2.2);
+            gr.addColorStop(0,hl.glow+fb*.4+')');gr.addColorStop(1,hl.glow+'0)');
+            ctx.beginPath();ctx.arc(pr.sx,pr.sy,sz*2.2,0,Math.PI*2);ctx.fillStyle=gr;ctx.fill();
+            ctx.shadowBlur=18+fb*22;ctx.shadowColor=hl.col;ctx.fillStyle=hl.col;
+            ctx.fillText('✦',pr.sx,pr.sy);
+            if(fb>0.45){ctx.save();ctx.globalAlpha=fb*.65;ctx.font=`${Math.max(6,7*pr.scale)}px 'Cinzel',serif`;ctx.fillStyle=hl.col;ctx.fillText(hl.nm+'nm',pr.sx,pr.sy+sz*1.6);ctx.restore();}
+          } else {
+            ctx.fillStyle='rgba(200,175,90,.18)';ctx.fillText('✦',pr.sx,pr.sy);
+          }
           ctx.restore();
         });
       }
 
-      // ── Ring II filler ──
+      // ── RING II: GW waveform + orbiting symbols ──
       if(s.t>55){
         const ral=Math.min((s.t-55)/50,1);
-        ring2fill.forEach(orb=>{
-          const angle=orb.phase+s.t*orb.speed;
-          const ox=orb.radius*Math.cos(angle), oy=-30+orb.radius*Math.sin(angle)*Math.sin(orb.inclination), oz=orb.radius*Math.sin(angle)*Math.cos(orb.inclination);
-          const pr=project(ox,oy,oz,rotY,CX,CY);
-          const al=ral*Math.min(pr.scale*1.6,.7); if(al<.04) return;
-          ctx.save(); ctx.globalAlpha=al;
-          ctx.font=`${orb.sz*pr.scale}px 'Cinzel',serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
-          ctx.shadowBlur=6; ctx.shadowColor='rgba(140,190,215,.4)'; ctx.fillStyle='rgba(140,190,215,0.65)';
-          ctx.fillText(orb.ch,pr.sx,pr.sy); ctx.restore();
+        // GW ring chirp
+        drawGWRing(s.t,rotY,CX,CY,ral);
+
+        // Orbiting symbols
+        ring2syms.forEach(orb=>{
+          const a=orb.phase+s.t*orb.speed;
+          const pr=project(310*Math.cos(a),-30+310*Math.sin(a)*Math.sin(.32),310*Math.sin(a)*Math.cos(.32),rotY,CX,CY);
+          const al=ral*Math.min(pr.scale*1.5,.7);if(al<.04)return;
+          const gws=gwState(s.t);
+          const bright=gws.amp*(0.4+orb.idx/orb.total*.3);
+          ctx.save();ctx.globalAlpha=al*(bright>0.05?Math.min(1,.12+bright):.12);
+          ctx.font=`${(orb.ch.length>3?7:10)*pr.scale}px 'Cinzel',serif`;
+          ctx.textAlign='center';ctx.textBaseline='middle';
+          if(gws.merger){ctx.shadowBlur=16;ctx.shadowColor='rgba(180,200,255,.8)';ctx.fillStyle='rgba(200,220,255,.9)';}
+          else if(bright>0.1){ctx.fillStyle='rgba(140,190,215,0.7)';}
+          else{ctx.fillStyle='rgba(140,190,215,0.2)';}
+          ctx.fillText(orb.ch,pr.sx,pr.sy);ctx.restore();
         });
       }
 
-      // ── Ring III filler ──
+      // ── RING III: Morse blinker (◈) + filler ──
       if(s.t>80){
         const ral=Math.min((s.t-80)/60,1);
-        ring3fill.forEach(orb=>{
-          const angle=orb.phase+s.t*orb.speed;
-          const ox=orb.radius*Math.cos(angle), oy=orb.radius*Math.sin(angle)*Math.sin(orb.inclination), oz=orb.radius*Math.sin(angle)*Math.cos(orb.inclination);
-          const pr=project(ox,oy,oz,rotY,CX,CY);
-          const al=ral*Math.min(pr.scale*1.8,.85); if(al<.04) return;
-          ctx.save(); ctx.globalAlpha=al;
-          ctx.font=`${orb.sz*pr.scale}px 'Noto Serif Devanagari',serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
-          ctx.fillStyle='rgba(200,175,90,0.32)'; ctx.fillText(orb.ch,pr.sx,pr.sy); ctx.restore();
+        ring3syms.forEach(orb=>{
+          const a=orb.phase+s.t*orb.speed;
+          const pr=project(430*Math.cos(a),430*Math.sin(a)*Math.sin(.5),430*Math.sin(a)*Math.cos(.5),rotY,CX,CY);
+          const al=ral*Math.min(pr.scale*1.8,.6);if(al<.04)return;
+          ctx.save();ctx.globalAlpha=al*.3;ctx.font=`${9*pr.scale}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='rgba(200,175,90,.3)';ctx.fillText(orb.ch,pr.sx,pr.sy);ctx.restore();
         });
+
+        // ◈ — the Morse blinker (no label, no hint)
+        const morseAngle=Math.PI/2+s.t*.00035;
+        const mPr=project(430*Math.cos(morseAngle),430*Math.sin(morseAngle)*Math.sin(.5),430*Math.sin(morseAngle)*Math.cos(.5),rotY,CX,CY);
+        const mAl=ral*Math.min(mPr.scale*1.8,.95);
+        if(mAl>0.04){
+          const ms=morseState(s.t);
+          ctx.save();ctx.globalAlpha=mAl*(ms.on?1:.15);
+          const sz=Math.max(10,17*mPr.scale);
+          ctx.font=`bold ${sz}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+          if(ms.on){
+            const og=ctx.createRadialGradient(mPr.sx,mPr.sy,0,mPr.sx,mPr.sy,sz*2.5);
+            og.addColorStop(0,'rgba(240,200,80,.3)');og.addColorStop(1,'rgba(240,200,80,0)');
+            ctx.beginPath();ctx.arc(mPr.sx,mPr.sy,sz*2.5,0,Math.PI*2);ctx.fillStyle=og;ctx.fill();
+            ctx.shadowBlur=22+ms.pct*18;ctx.shadowColor='rgba(240,200,80,.95)';ctx.fillStyle='rgba(255,225,60,1)';
+          } else {
+            ctx.fillStyle='rgba(200,175,90,.22)';
+          }
+          ctx.fillText('◈',mPr.sx,mPr.sy);ctx.restore();
+        }
       }
-
-      // ── KEY DIGITS — the three cipher tumblers ──
-      keyChars.forEach((kc,i)=>{
-        if(s.t<40+i*20) return;
-        const angle=kc.phase+s.t*kc.speed;
-        const radius=kc.radius;
-        const inclination=kc.keyIdx===0?.18:kc.keyIdx===1?.32:.50;
-        const ox=radius*Math.cos(angle);
-        const oy=(kc.keyIdx===0?-80:kc.keyIdx===1?-30:0)+radius*Math.sin(angle)*Math.sin(inclination);
-        const oz=radius*Math.sin(angle)*Math.cos(inclination);
-        const pr=project(ox,oy,oz,rotY,CX,CY);
-        const isLit=s.box[i]>0;
-        const litPct=isLit?s.box[i]/28:0;
-        const al=Math.min((s.t-(40+i*20))/50,1)*Math.min(pr.scale*2,1)*(isLit?1:0.5);
-        if(al<.04) return;
-        ctx.save(); ctx.globalAlpha=al;
-        const sz=kc.sz*(isLit?1.5:0.9)*Math.max(pr.scale,.35);
-        ctx.font=`bold ${sz}px 'Noto Serif Devanagari',serif`;
-        ctx.textAlign='center'; ctx.textBaseline='middle';
-        if(isLit){
-          // Lit — glow in key colour + grand flash bonus
-          ctx.shadowBlur=25+litPct*20+gf*40; ctx.shadowColor=kc.color;
-          ctx.fillStyle=kc.color;
-          // Draw orbit position circle indicator
-          ctx.beginPath(); ctx.arc(pr.sx,pr.sy,sz*.75,0,Math.PI*2);
-          ctx.strokeStyle=kc.color+'99'; ctx.lineWidth=1.5; ctx.stroke();
-        } else {
-          ctx.shadowBlur=4; ctx.shadowColor=kc.color+'60';
-          ctx.fillStyle=kc.color+'80';
-        }
-        ctx.fillText(kc.ch,pr.sx,pr.sy); ctx.restore();
-
-        // Apex flash beam — vertical line from key to bottom of screen when lit
-        if(isLit&&litPct>0.5){
-          ctx.save(); ctx.globalAlpha=litPct*.25;
-          const lineGrad=ctx.createLinearGradient(pr.sx,pr.sy,pr.sx,H);
-          lineGrad.addColorStop(0,kc.color); lineGrad.addColorStop(1,'transparent');
-          ctx.strokeStyle=lineGrad; ctx.lineWidth=1; ctx.setLineDash([3,8]);
-          ctx.beginPath(); ctx.moveTo(pr.sx,pr.sy); ctx.lineTo(pr.sx,H); ctx.stroke();
-          ctx.setLineDash([]); ctx.restore();
-        }
-      });
 
       // Ink drips
       if(s.t>90&&!s.explode){const ia=Math.min((s.t-90)/40,1);for(let i=0;i<2;i++){const pr=project(115+Math.random()*18,-190+Math.random()*10,24,rotY,CX,CY);ctx.beginPath();ctx.arc(pr.sx,pr.sy,1.8*pr.scale,0,Math.PI*2);ctx.fillStyle=`rgba(240,210,80,${ia*.4*Math.random()})`;ctx.fill();}}
+
       rafRef.current=requestAnimationFrame(draw);
     };
     draw();
     return()=>{ cancelAnimationFrame(rafRef.current); window.removeEventListener('resize',resize); };
-  },[]);
+  },[buildFigure,drawPlanet]);
 
   const handleBegin=()=>{ stateRef.current.explode=true; setExploding(true); setTimeout(onBegin,900); };
   const isHi=chosenLang==='hi';
@@ -3323,68 +3378,32 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
 
       {/* Skip */}
       <button onClick={onSkip} style={{position:'fixed',top:20,right:20,zIndex:20,background:'transparent',border:'1px solid rgba(200,175,90,.15)',color:'rgba(200,175,90,.28)',padding:'5px 16px',fontSize:10,fontFamily:"'Cinzel',serif",cursor:'pointer',borderRadius:3,letterSpacing:2,transition:'all .25s'}}
-      onMouseEnter={e=>{e.currentTarget.style.color='rgba(200,175,90,.65)';e.currentTarget.style.borderColor='rgba(200,175,90,.5)'}}
-      onMouseLeave={e=>{e.currentTarget.style.color='rgba(200,175,90,.28)';e.currentTarget.style.borderColor='rgba(200,175,90,.15)'}}>
+        onMouseEnter={e=>{e.currentTarget.style.color='rgba(200,175,90,.65)';e.currentTarget.style.borderColor='rgba(200,175,90,.5)'}}
+        onMouseLeave={e=>{e.currentTarget.style.color='rgba(200,175,90,.28)';e.currentTarget.style.borderColor='rgba(200,175,90,.15)'}}>
         SKIP ▸
       </button>
 
-      {/* Ring legend */}
-      <div style={{position:'fixed',top:22,left:22,zIndex:10,display:'flex',flexDirection:'column',gap:5}}>
-        {[
-          {col:'rgba(240,190,60,.65)',label:'Navagraha · Nine Planets'},
-          {col:'rgba(140,190,215,.6)',label:'Science · Vedic · Hidden'},
-          {col:'rgba(200,175,90,.5)', label:'The Outer Reaches'},
-        ].map((r,i)=>(
-          <div key={i} style={{display:'flex',alignItems:'center',gap:7,opacity:.4}}>
-            <div style={{width:5,height:5,borderRadius:'50%',background:r.col,boxShadow:`0 0 5px ${r.col}`,flexShrink:0}}/>
-            <span style={{fontSize:7.5,color:'rgba(200,175,90,.4)',fontFamily:"'Cinzel',serif",letterSpacing:1.5}}>{r.label}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* ══ THE THREE-RING CIPHER — indicator boxes ══ */}
+      {/* THE RIDDLE — fades in after 5s, stays subtle */}
       <div style={{
-        position:'fixed', bottom:96, left:'50%', transform:'translateX(-50%)',
-        zIndex:15, display:'flex', flexDirection:'column', alignItems:'center', gap:8,
-        transition:'bottom .5s ease',
+        position:'fixed',bottom:62,left:'50%',transform:'translateX(-50%)',
+        zIndex:15,textAlign:'center',whiteSpace:'nowrap',
       }}>
-        {/* Cipher boxes */}
-        <div style={{display:'flex',gap:10,alignItems:'center'}}>
-          {KEY.map((k,i)=>{
-            const lit=boxDisplay[i]!=='?';
-            return(
-              <div key={i} style={{
-                width:42, height:48, borderRadius:6,
-                border:`1.5px solid ${lit?k.color+'80':'rgba(200,175,90,.12)'}`,
-                background:lit?`${k.color}10`:'rgba(8,5,2,.8)',
-                display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
-                transition:'all .2s',
-                boxShadow:lit?`0 0 18px ${k.color}40, inset 0 0 10px ${k.color}10`:'none',
-              }}>
-                <div style={{
-                  fontSize:lit?20:12,
-                  color:lit?k.color:'rgba(200,175,90,.18)',
-                  fontFamily:"'Noto Serif Devanagari',serif",
-                  fontWeight:700,lineHeight:1,
-                  textShadow:lit?`0 0 15px ${k.color}`:'none',
-                  transition:'all .15s',
-                }}>
-                  {boxDisplay[i]}
-                </div>
-                {/* Ring label */}
-                <div style={{fontSize:6,color:`${k.color}50`,letterSpacing:1,marginTop:2,fontFamily:"'Cinzel',serif"}}>
-                  {i===0?'I':i===1?'II':'III'}
-                </div>
-              </div>
-            );
-          })}
+        <div style={{
+          fontSize:'clamp(9px,1.2vw,11px)',
+          color:'rgba(200,175,90,.28)',
+          fontFamily:"'Cinzel',serif",
+          letterSpacing:'clamp(2px,.4vw,4px)',
+          lineHeight:2,
+        }}>
+          {isHi
+            ?<>जो सुनेंगे — सुनेंगे<br/>जो देखेंगे — देखेंगे</>
+            :<>Those who know will hear.&nbsp;&nbsp;&nbsp;Those who know will see.</>
+          }
         </div>
-
-        {/* Grand alignment message */}
       </div>
 
-      {/* Bottom: players + begin */}
-      <div style={{position:'fixed',bottom:0,left:0,right:0,padding:'10px 24px 18px',background:'linear-gradient(0deg,rgba(4,2,1,.95) 60%,transparent)',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:12,zIndex:10}}>
+      {/* Bottom */}
+      <div style={{position:'fixed',bottom:0,left:0,right:0,padding:'10px 24px 16px',background:'linear-gradient(0deg,rgba(4,2,1,.95) 60%,transparent)',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:12,zIndex:10}}>
         <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
           {players.filter(p=>!p.cpu).map((p,i)=>(
             <div key={i} style={{display:'flex',alignItems:'center',gap:6,padding:'4px 12px',background:'rgba(200,175,90,.04)',border:'1px solid rgba(200,175,90,.1)',borderRadius:16}}>
@@ -3393,19 +3412,20 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
             </div>
           ))}
         </div>
-        {done?(
-          <button onClick={handleBegin} disabled={exploding} style={{background:exploding?'transparent':'linear-gradient(180deg,rgba(200,175,90,.2),rgba(200,175,90,.07))',border:'1.5px solid rgba(200,175,90,.45)',color:'#f0d050',padding:'11px 32px',fontSize:12,fontFamily:"'Cinzel',serif",cursor:exploding?'default':'pointer',borderRadius:4,letterSpacing:4,animation:exploding?'none':'pulse 2.5s ease infinite'}}>
-            {exploding?'✦':'▸ '+(isHi?'खेल आरंभ':'BEGIN')}
-          </button>
-        ):(
-          <div style={{fontSize:8,color:'rgba(200,175,90,.18)',letterSpacing:3,fontFamily:"'Cinzel',serif",animation:'pulse 3s ease infinite'}}>
-            {isHi?'अग्रसंधानी खुल रही है...':'AGRASANDHANI OPENS...'}
-          </div>
-        )}
+        {done
+          ?<button onClick={handleBegin} disabled={exploding} style={{background:exploding?'transparent':'linear-gradient(180deg,rgba(200,175,90,.2),rgba(200,175,90,.07))',border:'1.5px solid rgba(200,175,90,.45)',color:'#f0d050',padding:'11px 32px',fontSize:12,fontFamily:"'Cinzel',serif",cursor:exploding?'default':'pointer',borderRadius:4,letterSpacing:4,animation:exploding?'none':'pulse 2.5s ease infinite'}}>
+              {exploding?'✦':'▸ '+(isHi?'खेल आरंभ':'BEGIN')}
+            </button>
+          :<div style={{fontSize:8,color:'rgba(200,175,90,.18)',letterSpacing:3,fontFamily:"'Cinzel',serif",animation:'pulse 3s ease infinite'}}>
+              {isHi?'अग्रसंधानी खुल रही है...':'AGRASANDHANI OPENS...'}
+            </div>
+        }
       </div>
     </div>
   );
 }
+
+
 /* Yama Image — put yama.png in /public folder */
 function YamaIcon({size=80}){
   return <div style={{width:size,height:size*1.3,display:"flex",alignItems:"center",justifyContent:"center"}}>
@@ -3944,7 +3964,38 @@ export default function MokshaPatam108(){
     GameDB.getLeaderboard().then(d=>setLeaderboard(d));
   },[showProfile]);
 
-  const[screen,setScreen]=useState("title"); // title|story|pickcount|setup|game
+  const[screen,setScreen]=useState("title"); // title|story|pickcount|setup|chitragupta|game
+
+  // ── Browser back button ──────────────────────────────────────────────
+  // Push a history entry on every screen change so back button works
+  // instead of exiting the app entirely
+  const navigateTo=useCallback((newScreen)=>{
+    setScreen(newScreen);
+    // Push state so browser back button fires popstate
+    window.history.pushState({screen:newScreen},'',window.location.pathname);
+  },[]);
+
+  useEffect(()=>{
+    // On mount, replace current history entry with title screen
+    window.history.replaceState({screen:'title'},'',window.location.pathname);
+
+    const onPop=(e)=>{
+      const prev=e.state?.screen;
+      if(!prev){setScreen('title');return;}
+      // Map back: where should each screen go?
+      const backMap={
+        game:'title', chitragupta:'setup', setup:'pickcount',
+        pickcount:'story', story:'title', yama:'pickcount',
+      };
+      navigateTo(backMap[prev]||'title');
+      // Also stop voices and audio on back
+      VoiceEngine.stop();
+      try{window.speechSynthesis.cancel()}catch(e){}
+    };
+    window.addEventListener('popstate',onPop);
+    return()=>window.removeEventListener('popstate',onPop);
+  },[]);
+
   const[nP,setNP]=useState(2);
   const[players,setPlayers]=useState([]);
   const[tempName,setTempName]=useState("");
@@ -4126,7 +4177,7 @@ export default function MokshaPatam108(){
     setCgEntries([]);setShowMoksha(false);
     setMsg(`${pList[0].name} the ${pList[0].char.name} — your journey begins.`);
     gameStats.current={startTime:Date.now(),turns:0,snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0,grahaHits:{sun:0,moon:0,mars:0,mercury:0,jupiter:0,venus:0,saturn:0,rahu:0,ketu:0}};
-    setScreen("game");
+    navigateTo("game");
     setTimeout(()=>{ if(!muted) VoiceEngine.speakChitragupta('open',chosenLang); },2800);
   };
 
@@ -4146,7 +4197,7 @@ export default function MokshaPatam108(){
     setPlayers(np);setUsedChars(uc);setTempName("");setTempChar(-1);
     if(np.length>=nP){
       setPendingPlayers(np); // store for after CG intro
-      setTimeout(()=>setScreen("chitragupta"),100);
+      setTimeout(()=>navigateTo("chitragupta"),100);
     }
   };
 
@@ -4492,7 +4543,7 @@ export default function MokshaPatam108(){
         punya={punya}
         papa={papa}
         muted={muted}
-        onClose={()=>{setShowMoksha(false);setScreen("title");setWin(null);setPlayers([]);ambient.stop();}}
+        onClose={()=>{setShowMoksha(false);navigateTo("title");setWin(null);setPlayers([]);ambient.stop();}}
       />
     )}
     {/* ═══ SACRED BACKGROUND — visible on ALL screens ═══ */}
@@ -4891,11 +4942,11 @@ export default function MokshaPatam108(){
             <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
               <button className="gb gp" onClick={()=>{
                 ambient.start();
-                setScreen("story"); setStoryPage(0);
+                navigateTo("story"); setStoryPage(0);
               }} style={{fontSize:13,padding:"12px 28px",letterSpacing:2}}>
                 📜 BEGIN STORY
               </button>
-              <button className="gb" onClick={()=>{ambient.start();setScreen("pickcount")}} style={{fontSize:13,padding:"12px 28px",letterSpacing:2,opacity:.5}}>⚡ PLAY</button>
+              <button className="gb" onClick={()=>{ambient.start();navigateTo("pickcount")}} style={{fontSize:13,padding:"12px 28px",letterSpacing:2,opacity:.5}}>⚡ PLAY</button>
             </div>
 
             <div style={{marginTop:8,opacity:.12,fontSize:8,textAlign:"center"}}>Screen text = English · Voice = your choice</div>
@@ -4971,7 +5022,7 @@ export default function MokshaPatam108(){
 
         {/* ── Fixed top bar ── */}
         <div style={{position:"fixed",top:0,left:0,right:0,height:56,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 16px",background:"linear-gradient(180deg,rgba(12,10,7,.95),rgba(12,10,7,0))",zIndex:20}}>
-          <button onClick={()=>{VoiceEngine.stop();if(storyPage>0)setStoryPage(storyPage-1);else setScreen("title")}}
+          <button onClick={()=>{VoiceEngine.stop();if(storyPage>0)setStoryPage(storyPage-1);else navigateTo("title")}}
             style={{background:"transparent",border:"1px solid rgba(200,160,60,.18)",color:"#8a7a50",padding:"5px 14px",fontSize:10,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1}}>
             ← Back
           </button>
@@ -5087,7 +5138,7 @@ export default function MokshaPatam108(){
         {/* ── Fixed bottom navigation ── */}
         <div style={{position:"fixed",bottom:0,left:0,right:0,padding:"8px 20px 10px",background:"linear-gradient(0deg,rgba(12,10,7,.98) 60%,rgba(12,10,7,0))",display:"flex",flexDirection:"column",alignItems:"center",gap:4,zIndex:20}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",width:"100%",maxWidth:700,gap:12}}>
-            <button onClick={()=>{VoiceEngine.stop();setScreen("pickcount")}}
+            <button onClick={()=>{VoiceEngine.stop();navigateTo("pickcount")}}
               style={{background:"transparent",border:"none",color:"rgba(90,74,48,.5)",fontSize:9,cursor:"pointer",letterSpacing:2,fontFamily:"'Cinzel',serif",flexShrink:0}}>
               SKIP →
             </button>
@@ -5104,7 +5155,7 @@ export default function MokshaPatam108(){
                   Next →
                 </button>
               ):(
-                <button className="gb gp" onClick={()=>{VoiceEngine.stop();setScreen("pickcount")}}
+                <button className="gb gp" onClick={()=>{VoiceEngine.stop();navigateTo("pickcount")}}
                   style={{padding:"10px 28px",fontSize:12,letterSpacing:3,animation:"pulse 2s ease infinite"}}>
                   ⚡ Play Now
                 </button>
@@ -5126,7 +5177,7 @@ export default function MokshaPatam108(){
       <SineWaveBackground/>
 
       {/* Back */}
-      <button onClick={()=>{VoiceEngine.stop();setScreen("title")}} style={{position:"fixed",top:20,left:20,background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#8a7a50",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
+      <button onClick={()=>{VoiceEngine.stop();navigateTo("title")}} style={{position:"fixed",top:20,left:20,background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#8a7a50",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
 
       <div style={{position:"relative",zIndex:2,display:"flex",flexDirection:"column",alignItems:"center",width:"100%",maxWidth:560,animation:"slideUp .8s ease"}}>
 
@@ -5140,7 +5191,7 @@ export default function MokshaPatam108(){
         <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:12,width:"100%",marginBottom:14}}>
 
           {/* 1 vs Yama — full width, special */}
-          <div onClick={()=>{setNP(2);setIsCPU([false,true]);setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("yama")}}
+          <div onClick={()=>{setNP(2);setIsCPU([false,true]);setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);navigateTo("yama")}}
             style={{
               gridColumn:"1 / -1",
               background:"linear-gradient(135deg,rgba(160,40,40,.18),rgba(80,20,20,.25))",
@@ -5175,7 +5226,7 @@ export default function MokshaPatam108(){
             {n:4,icon:"🕉",label:"4 Players",desc:"Four cardinal paths. Maximum chaos and karma.",tags:["🎭 Full house","🔱 Epic"]}
           ].map(({n,icon,label,desc,tags})=>(
             <div key={n}
-              onClick={()=>{setNP(n);setIsCPU(Array(n).fill(false));setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("setup")}}
+              onClick={()=>{setNP(n);setIsCPU(Array(n).fill(false));setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);navigateTo("setup")}}
               style={{
                 background:"linear-gradient(135deg,rgba(30,24,14,.7),rgba(20,16,10,.8))",
                 border:"1px solid rgba(200,160,60,.18)",
@@ -5237,7 +5288,7 @@ export default function MokshaPatam108(){
     return(
       <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20,minHeight:"100vh",background:"radial-gradient(ellipse at center,#1a0808 0%,#0c0505 40%,#050202 100%)"}}>
         {globalOverlays}
-        <button onClick={()=>{VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){}setScreen("pickcount");setYamaPhase(0)}} style={{position:"fixed",top:20,left:20,background:"transparent",border:"1px solid rgba(160,64,64,.25)",color:"#806060",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
+        <button onClick={()=>{VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){}navigateTo("pickcount");setYamaPhase(0)}} style={{position:"fixed",top:20,left:20,background:"transparent",border:"1px solid rgba(160,64,64,.25)",color:"#806060",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
         <div style={{position:"fixed",inset:0,background:"radial-gradient(ellipse at center,rgba(160,40,40,.08),transparent 60%)",pointerEvents:"none"}}/>
         
         {yamaPhase===0&&<div style={{textAlign:"center",animation:"yamaReveal 2s ease forwards",display:"flex",flexDirection:"column",alignItems:"center"}}>
@@ -5270,7 +5321,7 @@ export default function MokshaPatam108(){
           <div style={{fontSize:"clamp(11px,1.5vw,14px)",color:"#806060",marginBottom:28,fontStyle:"italic",letterSpacing:2}}>
             {chosenLang==='hi'?"अपनी पहचान बताओ, नश्वर प्राणी":"Identify yourself, mortal"}
           </div>
-          <button className="gb gp" onClick={()=>setScreen("setup")} style={{padding:"14px 40px",fontSize:16,letterSpacing:4,background:"rgba(160,64,64,.15)",border:"2px solid rgba(160,64,64,.4)",color:"#e08080"}}>
+          <button className="gb gp" onClick={()=>navigateTo("setup")} style={{padding:"14px 40px",fontSize:16,letterSpacing:4,background:"rgba(160,64,64,.15)",border:"2px solid rgba(160,64,64,.4)",color:"#e08080"}}>
             {chosenLang==='hi'?"अपना योद्धा चुनो ▸":"CHOOSE YOUR SEEKER ▸"}
           </button>
         </div>}
@@ -5288,7 +5339,7 @@ export default function MokshaPatam108(){
         {globalOverlays}
         <div style={{maxWidth:680,width:"100%",animation:"slideUp .6s ease"}} key={pidx}>
           <div style={{textAlign:"center",marginBottom:20}}>
-            <button onClick={()=>{VoiceEngine.stop();setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);setScreen("pickcount")}} style={{position:"absolute",top:20,left:20,background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#8a7a50",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
+            <button onClick={()=>{VoiceEngine.stop();setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);navigateTo("pickcount")}} style={{position:"absolute",top:20,left:20,background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#8a7a50",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
             <div style={{fontSize:10,opacity:.3,letterSpacing:5}}>SEEKER {pidx+1} OF {nP}</div>
             <h2 style={{fontSize:"clamp(20px,4vw,30px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"8px 0"}}>Choose Your Identity</h2>
             {pidx===0&&<div
@@ -5332,7 +5383,7 @@ export default function MokshaPatam108(){
               style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(200,160,60,.3)",color:"#e8c850",padding:"10px 14px",fontSize:14,fontFamily:"'Cinzel',serif",width:"100%",outline:"none",borderRadius:3}}/>
           </div>
           <div style={{display:"flex",justifyContent:"space-between",gap:12}}>
-            <button className="gb" onClick={()=>{if(pidx===0)setScreen("pickcount");else{const lp=players[players.length-1];setPlayers(p=>p.slice(0,-1));setUsedChars(u=>u.filter(x=>x!==lp.charIdx))}}}>← Back</button>
+            <button className="gb" onClick={()=>{if(pidx===0)navigateTo("pickcount");else{const lp=players[players.length-1];setPlayers(p=>p.slice(0,-1));setUsedChars(u=>u.filter(x=>x!==lp.charIdx))}}}>← Back</button>
             <button className="gb gp" onClick={addPlayer} style={{opacity:(!tempName.trim()||tempChar<0)?.4:1}}>{pidx<nP-1?"Next Seeker →":"Begin Journey →"}</button>
           </div>
           {players.length>0&&<div style={{marginTop:16,borderTop:"1px solid rgba(200,160,60,.1)",paddingTop:12}}>
@@ -5572,7 +5623,7 @@ export default function MokshaPatam108(){
               display:"block",width:"100%",animation:"pulse 2s ease infinite",
             }}>✨ View Moksha Ceremony</button>
             <div style={{display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap"}}>
-              <button onClick={()=>{setScreen("title");setWin(null);setPlayers([]);ambient.stop()}} className="gb" style={{padding:"6px 16px",fontSize:10,marginTop:0}}>New Journey</button>
+              <button onClick={()=>{navigateTo("title");setWin(null);setPlayers([]);ambient.stop()}} className="gb" style={{padding:"6px 16px",fontSize:10,marginTop:0}}>New Journey</button>
               {auth.user&&<button onClick={()=>{setShowProfile(true);setProfileTab("history")}} className="gb" style={{padding:"6px 16px",fontSize:10,marginTop:0,opacity:.7}}>📊 Stats</button>}
             </div>
           </div>}

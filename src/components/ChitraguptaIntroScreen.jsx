@@ -1,3 +1,6 @@
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { VoiceEngine } from '../shared/audio.js';
+
 // ══════════════════════════════════════════════════════════════════════════════
 // 🪶 CHITRAGUPTA INTRO — Three Hidden Riddles
 //
@@ -11,7 +14,7 @@
 //
 // DEPLOY: put /public/morse-108.wav  in your Vercel public folder
 // ══════════════════════════════════════════════════════════════════════════════
-function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip }) {
+export default function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip }) {
   const canvasRef  = useRef(null);
   const stateRef   = useRef({ t:0, explode:false });
   const rafRef     = useRef(null);
@@ -32,8 +35,8 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
         morseAudio.current=audio;
         // Play once after 8s, then every 35s
         const play=()=>{ try{ audio.currentTime=0; audio.play().catch(()=>{}); }catch(e){} };
-        const t1=setTimeout(play,8000);
-        const iv=setInterval(play,35000);
+        const t1=setTimeout(play,3000);
+        const iv=setInterval(play,12000);
         return()=>{ clearTimeout(t1); clearInterval(iv); audio.pause(); };
       }catch(e){}
     }
@@ -196,53 +199,63 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
     };
     const hA=(hex,a)=>{const rv=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgba(${rv},${g},${b},${a})`;};
 
-    // ── Pre-bake GW waveform points (2D screen space, drawn each frame) ──
-    // We draw the GW chirp as a flat 2D waveform "ribbon" sitting in the
-    // Ring II orbital plane — a sine wave whose frequency ramps up then explodes
-    const GW_STEPS=300; // samples across waveform
-    const getGWCurve=(t,CX,CY,W,H)=>{
+    // ── GW: Draw chirp as pulsing light that travels around Ring II ──────
+    // No flat line — the wave IS the ring. Pulses sweep around the orbit.
+    // During inspiral: slow pulses, dim. Chirp: rapid bright sweep. Merger: full ring flash.
+    const drawGWRing=(t,rotY,CX,CY,ral)=>{
       const phase=t%520;
-      const gwAl=Math.min((t-55)/50,1);
-      if(gwAl<.04) return;
+      const gws=gwState(t);
+      if(gws.amp<0.02&&!gws.merger) return;
 
-      // Waveform spans horizontally, slightly above center
-      const wX0=CX-W*.28, wX1=CX+W*.28;
-      const wY=CY-H*.36; // above figure head
-      const wH=H*.055; // max amplitude in px
-
-      const pts2=[];
-      for(let i=0;i<=GW_STEPS;i++){
-        const frac=i/GW_STEPS;
-        // Chirp: frequency ramps from 0.012 to 0.22 across the waveform
-        // but only "lit" according to GW phase
-        let freq, amp;
-        if(phase<310){
-          // Inspiral: slow, low amplitude
-          freq=0.012+frac*.04;
-          const {amp:a0}=gwState(t);
-          amp=a0*0.7;
-        } else if(phase<400){
-          // Chirp
-          freq=0.055+frac*.18;
-          const cp=(phase-310)/90;
-          amp=0.4+cp*.55;
-        } else if(phase<422){
-          // Merger — big spike in middle
-          freq=0.18+frac*.12;
-          const mp=(phase-400)/22;
-          const spike=Math.exp(-Math.pow((frac-.5)*4,2))*2.2;
-          amp=(0.95+spike)*(1-mp*.3);
-        } else {
-          // Ringdown
-          const rd=(phase-422)/98;
-          freq=0.16+frac*.08;
-          amp=Math.max(0,(0.5-rd*.45))*Math.exp(-frac*2);
-        }
-        const x=wX0+(wX1-wX0)*frac;
-        const y=wY+Math.sin(frac*Math.PI*2*freq*GW_STEPS*.012)*wH*amp;
-        pts2.push({x,y});
+      // Draw subtle orbit guide circle
+      ctx.save();ctx.globalAlpha=ral*.06;ctx.strokeStyle='rgba(140,190,255,1)';ctx.lineWidth=.6;
+      ctx.setLineDash([2,14]);
+      ctx.beginPath();
+      for(let i=0;i<=64;i++){
+        const a2=(i/64)*Math.PI*2;
+        const pr2=project(310*Math.cos(a2),-30+310*Math.sin(a2)*Math.sin(.32),310*Math.sin(a2)*Math.cos(.32),rotY,CX,CY);
+        i===0?ctx.moveTo(pr2.sx,pr2.sy):ctx.lineTo(pr2.sx,pr2.sy);
       }
-      return {pts2,wY,wX0,wX1,wH,gwAl,phase};
+      ctx.stroke();ctx.setLineDash([]);ctx.restore();
+
+      // During merger — flash the whole ring
+      if(gws.merger){
+        const mp=(phase-400)/22;
+        const mAl=(1-mp)*.65;
+        ctx.save();ctx.globalAlpha=ral*mAl;
+        ctx.beginPath();
+        for(let i=0;i<=64;i++){
+          const a2=(i/64)*Math.PI*2;
+          const pr2=project(310*Math.cos(a2),-30+310*Math.sin(a2)*Math.sin(.32),310*Math.sin(a2)*Math.cos(.32),rotY,CX,CY);
+          i===0?ctx.moveTo(pr2.sx,pr2.sy):ctx.lineTo(pr2.sx,pr2.sy);
+        }
+        ctx.strokeStyle='rgba(200,220,255,.9)';ctx.lineWidth=3;ctx.shadowBlur=20;ctx.shadowColor='rgba(180,210,255,.8)';ctx.stroke();ctx.shadowBlur=0;
+        ctx.restore();
+        // Label
+        ctx.save();ctx.globalAlpha=ral*mAl*.8;ctx.font=`${Math.max(8,10*Math.min(CX/700,1))}px 'Cinzel',serif`;ctx.textAlign='center';ctx.fillStyle='rgba(200,220,255,.85)';ctx.fillText('GW150914 · MERGER',CX,CY-CY*.52);ctx.restore();
+        return;
+      }
+
+      // Inspiral / chirp — a bright arc sweeps around the ring
+      // Arc width narrows as chirp accelerates (inspiral = wide slow arc, chirp = tight fast arc)
+      const arcFrac=gws.chirp?0.08:0.25; // how much of ring is lit
+      const sweepAngle=(t*.018)%(Math.PI*2); // sweep position
+
+      ctx.save();ctx.globalAlpha=ral*Math.min(gws.amp*1.8,.75);
+      ctx.beginPath();
+      const arcSteps=32;
+      for(let i=0;i<=arcSteps;i++){
+        const a2=sweepAngle+(i/arcSteps)*arcFrac*Math.PI*2;
+        const pr2=project(310*Math.cos(a2),-30+310*Math.sin(a2)*Math.sin(.32),310*Math.sin(a2)*Math.cos(.32),rotY,CX,CY);
+        i===0?ctx.moveTo(pr2.sx,pr2.sy):ctx.lineTo(pr2.sx,pr2.sy);
+      }
+      ctx.strokeStyle=gws.chirp?'rgba(160,200,255,.85)':'rgba(120,170,240,.65)';
+      ctx.lineWidth=gws.chirp?2.2:1.5;ctx.shadowBlur=gws.chirp?14:8;ctx.shadowColor='rgba(140,180,255,.6)';ctx.stroke();ctx.shadowBlur=0;ctx.restore();
+
+      // Subtle GW label
+      if(gws.amp>0.3){
+        ctx.save();ctx.globalAlpha=ral*gws.amp*.3;ctx.font=`${Math.max(7,8*Math.min(CX/700,1))}px 'Cinzel',serif`;ctx.textAlign='center';ctx.fillStyle='rgba(140,190,255,.6)';ctx.fillText('GW150914',CX,CY-CY*.49);ctx.restore();
+      }
     };
 
     const draw=()=>{
@@ -314,52 +327,8 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
       // ── RING II: GW waveform + orbiting symbols ──
       if(s.t>55){
         const ral=Math.min((s.t-55)/50,1);
-        const gwCurve=getGWCurve(s.t,CX,CY,W,H);
-
-        if(gwCurve){
-          const {pts2,wY,wX0,wX1,gwAl,phase}=gwCurve;
-          const isMerging=phase>=400&&phase<422;
-          const isChirping=phase>=310&&phase<422;
-          const gwIntensity=gwState(s.t).amp;
-
-          // Glow behind waveform
-          const wGlow=ctx.createLinearGradient(wX0,wY,wX1,wY);
-          wGlow.addColorStop(0,'rgba(100,160,255,0)');
-          wGlow.addColorStop(.35,`rgba(120,180,255,${gwAl*gwIntensity*.18})`);
-          wGlow.addColorStop(.5,`rgba(200,220,255,${gwAl*(isMerging?.45:isChirping?.25:gwIntensity*.12)})`);
-          wGlow.addColorStop(.65,`rgba(120,180,255,${gwAl*gwIntensity*.18})`);
-          wGlow.addColorStop(1,'rgba(100,160,255,0)');
-          ctx.fillStyle=wGlow;
-          ctx.fillRect(wX0,wY-H*.07,wX1-wX0,H*.14);
-
-          // Draw waveform line (thick glow + thin bright)
-          if(pts2.length>1){
-            // Thick glow pass
-            ctx.beginPath();
-            pts2.forEach((pt,i)=>i===0?ctx.moveTo(pt.x,pt.y):ctx.lineTo(pt.x,pt.y));
-            ctx.strokeStyle=isMerging?`rgba(220,230,255,${gwAl*.7})`:`rgba(140,190,255,${gwAl*(isChirping?.55:gwIntensity*.4+.08)})`;
-            ctx.lineWidth=isMerging?4:isChirping?2.5:1.8;
-            ctx.shadowBlur=isMerging?28:isChirping?14:6;
-            ctx.shadowColor=isMerging?'rgba(200,220,255,.8)':'rgba(120,160,255,.5)';
-            ctx.stroke();
-            ctx.shadowBlur=0;
-
-            // Thin bright centre
-            ctx.beginPath();
-            pts2.forEach((pt,i)=>i===0?ctx.moveTo(pt.x,pt.y):ctx.lineTo(pt.x,pt.y));
-            ctx.strokeStyle=`rgba(200,220,255,${gwAl*(isMerging?.95:isChirping?.7:.3)})`;
-            ctx.lineWidth=.8;ctx.stroke();
-          }
-
-          // Label
-          if(gwAl>0.5){
-            ctx.save();ctx.globalAlpha=gwAl*.35;
-            ctx.font=`${Math.max(7,9*Math.min(W/1400,1))}px 'Cinzel',serif`;
-            ctx.textAlign='center';ctx.fillStyle='rgba(140,190,255,.7)';
-            ctx.fillText(isMerging?'GW150914 · MERGER':'GW150914',CX,wY-H*.038);
-            ctx.restore();
-          }
-        }
+        // GW ring chirp
+        drawGWRing(s.t,rotY,CX,CY,ral);
 
         // Orbiting symbols
         ring2syms.forEach(orb=>{
@@ -434,9 +403,8 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
 
       {/* THE RIDDLE — fades in after 5s, stays subtle */}
       <div style={{
-        position:'fixed',bottom:grandText(),left:'50%',transform:'translateX(-50%)',
+        position:'fixed',bottom:62,left:'50%',transform:'translateX(-50%)',
         zIndex:15,textAlign:'center',whiteSpace:'nowrap',
-        opacity:0,animation:'fadeIn 2s ease 5s both',
       }}>
         <div style={{
           fontSize:'clamp(9px,1.2vw,11px)',
@@ -475,4 +443,4 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
   );
 }
 
-function grandText(){ return 62; }
+
