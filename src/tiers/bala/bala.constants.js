@@ -355,3 +355,67 @@ export const STAR_MESSAGES = [
   '⭐ Panditji is writing your name in the Panchatantra!',
 ];
 export const BALA_WIN_STARS = 8;
+
+// ── CROWN RIDDLES (squares 101-107) — like Ashtanga Marga in Moksha ─────────
+// Each riddle: 4 choices, correct index, wisdom revealed on correct answer
+export const CROWN_RIDDLES = {
+  101: {
+    icon:'🐘', title:'The Memory Keeper',
+    skt:'स्मृति', sktM:'Memory',
+    q:'Which animal never forgets — and can recognise itself in a mirror, just like humans?',
+    choices:['Lion 🦁','Elephant 🐘','Snake 🐍','Monkey 🐒'],
+    correct:1,
+    wisdom:'Elephants have the largest brain of any land animal. They remember friends, enemies, and paths for decades. In the Panchatantra, the elephant king listened to the tiny rabbit — because true wisdom always listens.',
+  },
+  102: {
+    icon:'💧', title:'The Ancient Traveller',
+    skt:'जल', sktM:'Water',
+    q:'This has existed for 4.5 billion years. Dinosaurs drank it. You drink it every day. It is never created or destroyed — just borrowed. What is it?',
+    choices:['Milk 🥛','Juice 🍹','Water 💧','Honey 🍯'],
+    correct:2,
+    wisdom:'The water in your body right now was once inside an ancient ocean, then a cloud, then rain, then a dinosaur. You are borrowing it — from the whole history of Earth.',
+  },
+  103: {
+    icon:'🌱', title:'The Hidden Blueprint',
+    skt:'बीज', sktM:'Seed',
+    q:'This tiny thing contains the complete instructions to build a tree taller than your house. What is it?',
+    choices:['A leaf 🍃','A seed 🌱','A flower 🌸','A root 🌿'],
+    correct:1,
+    wisdom:'A seed holds 2 metres of DNA code — more information than a thousand books — in a space smaller than this dot: •  Everything you will become is already inside you, waiting for the right conditions.',
+  },
+  104: {
+    icon:'🐝', title:'The Hardworking Maker',
+    skt:'परिश्रम', sktM:'Hard Work',
+    q:'This tiny creature visits 2,000 flowers to make just ONE teaspoon of something sweet. What does it make?',
+    choices:['Sugar 🍬','Jam 🍓','Juice 🍊','Honey 🍯'],
+    correct:3,
+    wisdom:'Without bees, most of our fruits and vegetables would disappear within 4 years. Every jar of honey is a billion tiny journeys. The lazy bee in the Panchatantra learned this too late.',
+  },
+  105: {
+    icon:'⭐', title:'The Star Secret',
+    skt:'तत् त्वम् असि', sktM:'Thou art That',
+    q:'The calcium in your bones, the iron in your blood — where did they come from originally?',
+    choices:['The Earth 🌍','Exploding stars 💥⭐','The ocean 🌊','Ancient plants 🌿'],
+    correct:1,
+    wisdom:'You are literally made of stardust. Every heavy atom in your body was forged inside a dying star that exploded billions of years ago. The Vedas said it first: Tat Tvam Asi — Thou art That. You are the universe, looking at itself.',
+  },
+  106: {
+    icon:'🌳', title:'The Breathing Partners',
+    skt:'वृक्ष', sktM:'Tree',
+    q:'Trees breathe in what you breathe out. You breathe in what trees breathe out. This exchange happens with every single breath. What do you both share?',
+    choices:['Sunlight ☀️','Oxygen and carbon dioxide 🌿','Water 💧','Soil 🌱'],
+    correct:1,
+    wisdom:'You and every tree on Earth are breathing partners. Trees also communicate underground through a fungal network — scientists call it the Wood Wide Web. A forest is not many trees. It is one living organism.',
+  },
+  107: {
+    icon:'🎵', title:'The First Sound',
+    skt:'नाद ब्रह्म', sktM:'Universe is Sound',
+    q:'The Vedas said "Nada Brahma" — the universe is made of this. Scientists now know that sound creates geometric patterns in matter. What did the ancient rishis say created everything?',
+    choices:['Fire 🔥','Light ✨','Sound / OM 🎵','Water 💧'],
+    correct:2,
+    wisdom:'OM vibrates at 432 Hz. When you pour salt on a metal plate and play this frequency, the salt forms a perfect circle. The rishis discovered this through 3,000 years of meditation. Science confirmed it with modern equipment in the 20th century.',
+  },
+};
+
+// Which squares are crown riddle squares (NOT win square)
+export const CROWN_RIDDLE_SQ = [101, 102, 103, 104, 105, 106, 107];

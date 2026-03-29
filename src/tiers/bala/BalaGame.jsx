@@ -7,7 +7,7 @@ import {
   CHARS_BALA, SNAKES_BALA, LADDERS_BALA, DLM_SQ_BALA, DILEMMAS_BALA,
   DISCOVERY_SQUARES, STAR_MESSAGES, PANDITJI, BALA_STORY_PAGES,
   MAYAVI_TAUNTS_SNAKE, MAYAVI_TAUNTS_WRONG, MAYAVI_TAUNTS_LADDER,
-  BALA_WIN_STARS, getBalaRealm,
+  BALA_WIN_STARS, getBalaRealm, CROWN_RIDDLES, CROWN_RIDDLE_SQ,
 } from './bala.constants.js';
 
 // ── sqP + sqCenter: same layout as Moksha, SVG viewBox 0 0 100 110 ────────
@@ -221,195 +221,112 @@ function MayaviSVG({ size=120 }) {
 }
 
 // ── BOARD with snake SVG paths ────────────────────────────────────────────────
-function BalaBoard({ players, pos, cur }) {
+function BalaBoard({ players, pos, cur, crownRiddle }) {
   const playersSq = players.map((_,pi)=>pos[pi]||1);
-  const gridRow   = (r) => r===-1 ? 1 : r+2;
-  const squares   = Array.from({length:108},(_,i)=>i+1).map(n=>({n,...sqP(n)}));
 
-  // S-curve snake path
-  const snakePath = (f,t) => {
-    const fc=sqCenter(f),tc=sqCenter(t);
-    const dx=tc.x-fc.x,dy=tc.y-fc.y,len=Math.sqrt(dx*dx+dy*dy);
-    const px=-dy/len,py=dx/len,wave=Math.min(len*.35,12);
-    const cp1x=fc.x+dx*.28+px*wave,cp1y=fc.y+dy*.28+py*wave;
-    const cp2x=fc.x+dx*.72-px*wave,cp2y=fc.y+dy*.72-py*wave;
+  // S-curve snake path (viewBox 0 0 100 100 for the 10x10 main grid)
+  const snakePath = (f, t) => {
+    const fc=sqMain(f), tc=sqMain(t);
+    const dx=tc.x-fc.x, dy=tc.y-fc.y, len=Math.sqrt(dx*dx+dy*dy);
+    const px=-dy/len, py=dx/len, wave=Math.min(len*.38,14);
+    const cp1x=fc.x+dx*.28+px*wave, cp1y=fc.y+dy*.28+py*wave;
+    const cp2x=fc.x+dx*.72-px*wave, cp2y=fc.y+dy*.72-py*wave;
     return {fc,tc,d:`M${fc.x.toFixed(1)},${fc.y.toFixed(1)} C${cp1x.toFixed(1)},${cp1y.toFixed(1)} ${cp2x.toFixed(1)},${cp2y.toFixed(1)} ${tc.x.toFixed(1)},${tc.y.toFixed(1)}`};
   };
 
-  // Ladder with dual rails + rungs
-  const ladderParts = (f,t) => {
-    const fc=sqCenter(f),tc=sqCenter(t);
-    const dx=tc.x-fc.x,dy=tc.y-fc.y,len=Math.sqrt(dx*dx+dy*dy);
-    const ux=dx/len,uy=dy/len,px=-uy*1.5,py=ux*1.5;
-    const n=Math.max(3,Math.floor(len/7));
+  const ladderParts = (f, t) => {
+    const fc=sqMain(f), tc=sqMain(t);
+    const dx=tc.x-fc.x, dy=tc.y-fc.y, len=Math.sqrt(dx*dx+dy*dy);
+    const ux=dx/len, uy=dy/len, px=-uy*1.5, py=ux*1.5;
+    const n=Math.max(3,Math.floor(len/8));
     const rungs=[];
-    for(let i=0;i<=n;i++){
-      const t2=i/n;
-      rungs.push({x1:fc.x+t2*dx+px,y1:fc.y+t2*dy+py,x2:fc.x+t2*dx-px,y2:fc.y+t2*dy-py});
-    }
+    for(let i=0;i<=n;i++){const t2=i/n;rungs.push({x1:fc.x+t2*dx+px,y1:fc.y+t2*dy+py,x2:fc.x+t2*dx-px,y2:fc.y+t2*dy-py});}
     return {fc,tc,rungs,r1:{x1:fc.x+px,y1:fc.y+py,x2:tc.x+px,y2:tc.y+py},r2:{x1:fc.x-px,y1:fc.y-py,x2:tc.x-px,y2:tc.y-py}};
   };
 
-  return (
-    <div style={{position:'relative',width:'100%',maxWidth:'100%'}}>
+  // Main board squares (1-100) — for SVG overlay coordinate in viewBox "0 0 100 100"
+  function sqMain(n) {
+    const {r,c} = sqP(n);
+    return { x:(c+0.5)*10, y:(r+0.5)*10 };
+  }
 
-      {/* Forest atmosphere behind the board */}
-      <div style={{position:'absolute',inset:-8,pointerEvents:'none',zIndex:0,overflow:'hidden',borderRadius:20}}>
-        {/* Fireflies */}
-        {Array.from({length:12},(_,i)=>(
-          <div key={i} style={{position:'absolute',width:3,height:3,borderRadius:'50%',
-            background:'#69f0ae',opacity:0,
-            left:`${8+i*8}%`,top:`${10+((i*37)%80)}%`,
-            animation:`firefly ${2.5+i*.4}s ease infinite`,
-            animationDelay:`${i*.35}s`,
-            boxShadow:'0 0 6px 2px #69f0ae'}}/>
-        ))}
-        {/* Tree silhouettes on sides */}
-        <svg style={{position:'absolute',inset:0,width:'100%',height:'100%',opacity:.08}} viewBox="0 0 100 100" preserveAspectRatio="none">
-          {[5,12,88,95].map((x,i)=>(
-            <g key={i} style={{animation:`forestSway ${3+i*.5}s ease infinite`,transformOrigin:`${x}% 100%`}}>
-              <polygon points={`${x},90 ${x-4},60 ${x-6},50 ${x},30 ${x+6},50 ${x+4},60`} fill="#69f0ae"/>
-              <polygon points={`${x},75 ${x-5},55 ${x-3},45 ${x},28 ${x+3},45 ${x+5},55`} fill="#a5d6a7"/>
+  const mainSquares = Array.from({length:100},(_,i)=>i+1).map(n=>({n,...sqP(n)}));
+  const crownSquares = Array.from({length:8},(_,i)=>({n:101+i,ci:i}));
+
+  return (
+    <div style={{position:'relative',width:'100%'}}>
+
+      {/* ── CROWN ROW (101-108) — like Moksha's Ashtanga Marga ── */}
+      <div style={{
+        position:'relative',
+        background:'linear-gradient(180deg,rgba(100,200,120,.08),rgba(10,25,12,.5))',
+        borderBottom:'2px solid rgba(105,240,174,.2)',
+        padding:'6px 4px 4px',
+        overflow:'hidden',
+        borderRadius:'10px 10px 0 0',
+      }}>
+        {/* Jungle vine pattern overlay */}
+        <svg style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',opacity:.06}} viewBox="0 0 200 50" preserveAspectRatio="none">
+          {[0,25,50,75,100,125,150,175].map(x=>(
+            <g key={x}>
+              <path d={`M${x},50 Q${x+12},25 ${x+25},0`} fill="none" stroke="#69f0ae" strokeWidth="1"/>
+              <circle cx={x+6} cy={35} r="4" fill="none" stroke="#69f0ae" strokeWidth=".5"/>
+              <circle cx={x+18} cy={15} r="3" fill="none" stroke="#69f0ae" strokeWidth=".5"/>
             </g>
           ))}
         </svg>
-      </div>
-
-      {/* Board */}
-      <div style={{position:'relative',zIndex:1,
-        borderRadius:16,overflow:'hidden',
-        boxShadow:'0 0 0 2px rgba(105,240,174,.2),0 0 0 4px rgba(105,240,174,.08),0 20px 60px rgba(0,0,0,.6),0 4px 0 rgba(0,80,20,.5)',
-      }}>
-        {/* Deep jungle background gradient per realm */}
-        <div style={{position:'absolute',inset:0,zIndex:0,
-          background:`linear-gradient(to bottom,
-            #1a0f00 0%,#2a1a00 8%,
-            #1a1000 9%,#251800 27%,
-            #05130a 28%,#081f0e 50%,
-            #050f15 51%,#071520 72%,
-            #040d06 73%,#061508 100%)`}}/>
-        {/* Realm labels in background */}
-        <div style={{position:'absolute',inset:0,zIndex:1,pointerEvents:'none',
-          display:'flex',flexDirection:'column',justifyContent:'space-between',padding:'1% 0',opacity:.12}}>
-          {[{l:'✨ Golden Garden',c:'#ffd700'},{l:'🏔️ Mountain',c:'#ce93d8'},{l:'🌊 River',c:'#64b5f6'},{l:'🌿 Jungle',c:'#69f0ae'}].map((r,i)=>(
-            <div key={i} style={{textAlign:'center',fontSize:'clamp(9px,1.4vw,13px)',color:r.c,fontWeight:900,fontFamily:"'Baloo 2',sans-serif",letterSpacing:2}}>{r.l}</div>
-          ))}
+        <div style={{fontSize:'clamp(6px,1vw,9px)',textAlign:'center',letterSpacing:4,
+          color:'#69f0ae',opacity:.5,marginBottom:4,fontFamily:"'Baloo 2',sans-serif",
+          textShadow:'0 0 10px rgba(105,240,174,.3)'}}>
+          ✨ PATH TO THE GOLDEN GARDEN · क्राउन मार्ग ✨
         </div>
-
-        {/* Grid */}
-        <div style={{
-          position:'relative',zIndex:2,
-          display:'grid',
-          gridTemplateColumns:'repeat(10,1fr)',
-          gridTemplateRows:'repeat(11,1fr)',
-          gap:1,padding:4,
-          background:'transparent',
-          aspectRatio:'10/11',
-        }}>
-          {squares.map(({n,r,c})=>{
-            const gr=gridRow(r);
-            const sn=SNAKES_BALA[n],ld=LADDERS_BALA[n];
-            const disc=DISCOVERY_SQUARES[n],dlm=DLM_SQ_BALA.includes(n);
-            const isWin=n===108,isCrown=n>100;
-            const here=players.map((_,pi)=>playersSq[pi]===n?pi:-1).filter(x=>x>=0);
-
-            // Square background
-            let bg='rgba(10,25,12,.75)',border='rgba(105,240,174,.08)';
-            if(isWin){bg='radial-gradient(circle,rgba(255,215,0,.25),rgba(255,140,0,.1))';border='rgba(255,215,0,.5)';}
-            else if(sn){bg='radial-gradient(circle,rgba(180,20,20,.3),rgba(80,10,10,.2))';border=sn.color+'50';}
-            else if(ld){bg='radial-gradient(circle,rgba(50,180,50,.18),rgba(20,80,20,.12))';border='rgba(105,240,174,.3)';}
-            else if(disc){bg='radial-gradient(circle,rgba(140,80,255,.2),rgba(60,20,120,.12))';border='rgba(179,136,255,.3)';}
-            else if(dlm){bg='radial-gradient(circle,rgba(200,150,0,.12),rgba(100,70,0,.08))';border='rgba(255,193,7,.2)';}
-            else if(isCrown){bg='radial-gradient(circle,rgba(255,200,50,.18),rgba(130,100,0,.1))';border='rgba(255,215,0,.3)';}
-
+        <div style={{display:'grid',gridTemplateColumns:'repeat(8,1fr)',gap:3}}>
+          {crownSquares.map(({n,ci})=>{
+            const isWin = n===108;
+            const isRiddle = n>=101 && n<=107;
+            const here = players.map((_,pi)=>playersSq[pi]===n?pi:-1).filter(x=>x>=0);
+            const riddle = CROWN_RIDDLES[n];
             return (
               <div key={n} style={{
-                gridColumn:c+1,gridRow:gr,
-                background:bg,border:`1px solid ${border}`,
-                position:'relative',
+                aspectRatio:'1',
+                background:isWin
+                  ?'radial-gradient(circle,rgba(255,215,0,.25),rgba(255,140,0,.1))'
+                  :'radial-gradient(circle,rgba(105,240,174,.08),transparent)',
+                border:`1px solid ${isWin?'rgba(255,215,0,.5)':'rgba(105,240,174,.18)'}`,
+                borderRadius:4,
                 display:'flex',flexDirection:'column',
                 alignItems:'center',justifyContent:'center',
-                overflow:'hidden',minHeight:0,
-                transition:'background .2s',
+                cursor:'pointer',position:'relative',
+                transition:'all .3s',
+                animation:isWin?'bFloat 3s ease infinite':'none',
+                boxShadow:isWin?'0 0 16px rgba(255,215,0,.15)':'none',
               }}>
-                {/* Square number */}
-                <span style={{
-                  position:'absolute',top:1,left:2,
+                <span style={{position:'absolute',top:1,left:2,
                   fontSize:'clamp(5px,.8vw,8px)',
-                  color:sn?'#ff8a80':ld?'#69f0ae':disc?'#ce93d8':'rgba(105,240,174,.45)',
-                  fontWeight:900,fontFamily:"'Nunito',sans-serif",lineHeight:1,
-                  textShadow:'0 1px 3px rgba(0,0,0,.8)',
-                }}>{n}</span>
-
-                {/* Win square */}
-                {isWin&&(
-                  <div style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
-                    <span style={{fontSize:'clamp(10px,1.8vw,17px)',animation:'bFloat 1.5s ease infinite',filter:'drop-shadow(0 0 6px rgba(255,215,0,.8))'}}>⭐</span>
-                    <span style={{fontSize:'clamp(4px,.7vw,7px)',color:'#ffd700',fontWeight:900,textShadow:'0 0 6px rgba(0,0,0,.9)',letterSpacing:.5,lineHeight:1,marginTop:1,fontFamily:"'Baloo 2',sans-serif"}}>MOKSHA</span>
-                  </div>
-                )}
-
-                {/* Snake square */}
-                {sn&&!here.length&&(
-                  <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:0,padding:'1px 0'}}>
-                    <span style={{fontSize:'clamp(8px,1.4vw,14px)',lineHeight:1,filter:`drop-shadow(0 0 4px ${sn.color}80)`}}>{sn.emoji}</span>
-                    <span style={{fontSize:'clamp(5px,.85vw,8px)',color:sn.color,fontWeight:900,fontFamily:"'Noto Sans Devanagari',sans-serif",lineHeight:1.1,textShadow:'0 0 6px rgba(0,0,0,.9)',textAlign:'center'}}>{sn.skt}</span>
-                    <span style={{fontSize:'clamp(4px,.65vw,6px)',color:'rgba(255,130,100,.7)',fontWeight:700,fontFamily:"'Nunito',sans-serif",lineHeight:1,letterSpacing:.3}}>{sn.en.split('·')[1]?.trim()||sn.en}</span>
-                  </div>
-                )}
-
-                {/* Ladder square */}
-                {ld&&!here.length&&(
-                  <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:0,padding:'1px 0'}}>
-                    <span style={{fontSize:'clamp(8px,1.4vw,14px)',lineHeight:1,filter:'drop-shadow(0 0 4px rgba(105,240,174,.7))'}}>{ld.emoji}</span>
-                    <span style={{fontSize:'clamp(5px,.85vw,8px)',color:'#69f0ae',fontWeight:900,fontFamily:"'Noto Sans Devanagari',sans-serif",lineHeight:1.1,textShadow:'0 0 6px rgba(0,0,0,.9)',textAlign:'center'}}>{ld.skt}</span>
-                    <span style={{fontSize:'clamp(4px,.65vw,6px)',color:'rgba(130,220,130,.6)',fontWeight:700,fontFamily:"'Nunito',sans-serif",lineHeight:1,letterSpacing:.3}}>{ld.en}</span>
-                  </div>
-                )}
-
-                {/* Discovery square */}
-                {disc&&!sn&&!ld&&!here.length&&(
-                  <div style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
-                    <span style={{fontSize:'clamp(8px,1.4vw,14px)',lineHeight:1,animation:'bFloat 2s ease infinite'}}>{disc.icon}</span>
-                    <span style={{fontSize:'clamp(4px,.65vw,6px)',color:'#b39ddb',fontWeight:700,fontFamily:"'Nunito',sans-serif",lineHeight:1,letterSpacing:.5}}>DISCOVER</span>
-                  </div>
-                )}
-
-                {/* Dilemma square */}
-                {dlm&&!sn&&!ld&&!disc&&!here.length&&(
-                  <div style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
-                    <span style={{fontSize:'clamp(7px,1.2vw,12px)',lineHeight:1}}>⚖</span>
-                    <span style={{fontSize:'clamp(4px,.6vw,6px)',color:'rgba(255,193,7,.5)',fontWeight:700,fontFamily:"'Nunito',sans-serif",lineHeight:1,letterSpacing:.3}}>CHOOSE</span>
-                  </div>
-                )}
-
+                  color:isWin?'#ffd700':'rgba(105,240,174,.4)',fontWeight:700}}>
+                  {n}
+                </span>
+                {/* Icon */}
+                {isWin
+                  ?<span style={{fontSize:'clamp(12px,2.2vw,20px)',filter:'drop-shadow(0 0 8px rgba(255,215,0,.8))',animation:'bFloat 1.5s ease infinite'}}>⭐</span>
+                  :<span style={{fontSize:'clamp(11px,2vw,18px)',filter:'drop-shadow(0 0 5px rgba(105,240,174,.5))',animation:`bFloat ${2+ci*.3}s ease infinite`}}>{riddle?.icon||'❓'}</span>
+                }
+                {/* Sanskrit */}
+                {isRiddle&&<span style={{fontSize:'clamp(4px,.6vw,7px)',color:'rgba(105,240,174,.55)',fontFamily:"'Noto Sans Devanagari',sans-serif",fontWeight:700,lineHeight:1}}>{riddle?.skt}</span>}
+                {isWin&&<span style={{fontSize:'clamp(4px,.6vw,7px)',color:'#ffd700',fontWeight:700,fontFamily:"'Baloo 2',sans-serif",lineHeight:1}}>MOKSHA</span>}
                 {/* Player tokens */}
                 {here.length>0&&(
-                  <div style={{display:'flex',flexWrap:'wrap',gap:1,position:'absolute',
-                    inset:0,alignItems:'center',justifyContent:'center',zIndex:8}}>
+                  <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center',gap:1,zIndex:5}}>
                     {here.map(pi=>{
-                      const p=players[pi];
-                      const pc=p.char?.color||'#69f0ae';
-                      const isActive=pi===cur;
-                      return (
-                        <div key={pi} style={{display:'flex',flexDirection:'column',alignItems:'center',
-                          transition:'all .3s',transform:isActive?'scale(1.3) translateY(-3px)':'scale(1)',
-                          zIndex:isActive?10:5}}>
-                          {isActive&&<div style={{position:'absolute',inset:-2,borderRadius:4,
-                            background:`${pc}15`,border:`1.5px solid ${pc}60`,
-                            animation:'bPulse .9s ease infinite'}}/>}
-                          <div style={{
-                            width:'clamp(13px,2.2vw,24px)',height:'clamp(13px,2.2vw,24px)',
-                            borderRadius:'50%',
-                            background:`radial-gradient(circle at 35% 30%,${pc}ee,${pc} 60%,${pc}44)`,
-                            border:`2px solid ${pc}`,
-                            boxShadow:`0 0 ${isActive?14:4}px ${pc}${isActive?'cc':'44'},0 2px 6px rgba(0,0,0,.5)`,
-                            display:'flex',alignItems:'center',justifyContent:'center',
-                            fontSize:'clamp(6px,1vw,11px)',
-                          }}>{p.char?.icon||'●'}</div>
-                          <div style={{fontSize:'clamp(4px,.65vw,6px)',color:pc,fontWeight:900,
-                            textShadow:`0 0 4px #000,0 0 8px ${pc}40`,
-                            opacity:isActive?1:.6,lineHeight:1,marginTop:1}}>{p.name?.slice(0,5)}</div>
+                      const pc=players[pi].char?.color||'#69f0ae';
+                      return(
+                        <div key={pi} style={{width:'clamp(14px,2.5vw,22px)',height:'clamp(14px,2.5vw,22px)',borderRadius:'50%',
+                          background:`radial-gradient(circle at 35% 30%,${pc}ee,${pc})`,
+                          border:`2px solid ${pc}`,boxShadow:`0 0 10px ${pc}99`,
+                          display:'flex',alignItems:'center',justifyContent:'center',
+                          fontSize:'clamp(7px,1.2vw,12px)',
+                          animation:pi===cur?'bPulse .9s ease infinite':'none'}}>
+                          {players[pi].char?.icon}
                         </div>
                       );
                     })}
@@ -421,101 +338,251 @@ function BalaBoard({ players, pos, cur }) {
         </div>
       </div>
 
-      {/* SVG snakes + ladders overlay */}
-      <svg style={{position:'absolute',inset:0,width:'100%',height:'100%',
-        pointerEvents:'none',overflow:'visible',zIndex:10}}
-        viewBox="0 0 100 110" preserveAspectRatio="none">
-        <defs>
-          <filter id="snakeGlow" x="-40%" y="-40%" width="180%" height="180%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="1" result="blur"/>
-            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-          <filter id="ladderGlow" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation=".7" result="blur"/>
-            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-          {Object.entries(LADDERS_BALA).map(([f,ld])=>{
-            const fc=sqCenter(Number(f)),tc=sqCenter(ld.to);
-            return (<linearGradient key={f} id={`lg${f}`}
-              x1={fc.x} y1={fc.y} x2={tc.x} y2={tc.y} gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stopColor={ld.color1}/>
-              <stop offset="50%" stopColor="white" stopOpacity="0.3"/>
-              <stop offset="100%" stopColor={ld.color2}/>
-            </linearGradient>);
+      {/* ── MAIN BOARD (1-100) ── */}
+      <div style={{position:'relative',
+        background:'#0a1a0d',
+        border:'1px solid rgba(105,240,174,.1)',
+        borderTop:'none',
+        borderRadius:'0 0 10px 10px',
+        overflow:'hidden',
+        boxShadow:'0 10px 40px rgba(0,0,0,.6)',
+      }}>
+        {/* Jungle background gradient */}
+        <div style={{position:'absolute',inset:0,
+          background:`linear-gradient(to bottom,
+            #0a1f0d 0%,#0d2510 22%,
+            #060f18 23%,#08131f 45%,
+            #1a0a0e 46%,#220c10 68%,
+            #040d06 69%,#061508 100%)`,
+          zIndex:0}}/>
+        {/* Realm dividers */}
+        <div style={{position:'absolute',left:'2%',right:'2%',top:'33.5%',height:1,
+          background:'linear-gradient(90deg,transparent,rgba(105,240,174,.12),transparent)',zIndex:2,pointerEvents:'none'}}/>
+        <div style={{position:'absolute',left:'2%',right:'2%',top:'67%',height:1,
+          background:'linear-gradient(90deg,transparent,rgba(105,240,174,.12),transparent)',zIndex:2,pointerEvents:'none'}}/>
+
+        {/* CSS Grid */}
+        <div style={{display:'grid',gridTemplateColumns:'repeat(10,1fr)',
+          position:'relative',zIndex:3,aspectRatio:'10/10'}}>
+          {mainSquares.map(({n,r,c})=>{
+            const sn=SNAKES_BALA[n], ld=LADDERS_BALA[n];
+            const disc=DISCOVERY_SQUARES[n], dlm=DLM_SQ_BALA.includes(n);
+            const here=players.map((_,pi)=>playersSq[pi]===n?pi:-1).filter(x=>x>=0);
+            let bg='rgba(10,25,12,.7)', border='rgba(105,240,174,.07)';
+            if(sn){bg='radial-gradient(ellipse at 50% 30%,rgba(180,30,30,.4),rgba(80,10,10,.25))';border=sn.color+'55';}
+            else if(ld){bg='radial-gradient(ellipse at 50% 70%,rgba(30,140,50,.3),rgba(10,60,20,.18))';border='rgba(105,240,174,.3)';}
+            else if(disc){bg='radial-gradient(ellipse at 50% 30%,rgba(120,60,220,.3),rgba(50,20,100,.18))';border='rgba(179,136,255,.3)';}
+            else if(dlm){bg='radial-gradient(ellipse,rgba(180,130,0,.2),rgba(80,60,0,.12))';border='rgba(255,193,7,.2)';}
+            return (
+              <div key={n} style={{
+                aspectRatio:'1',background:bg,
+                border:`0.5px solid ${border}`,
+                display:'flex',flexDirection:'column',
+                alignItems:'center',justifyContent:'center',
+                cursor:'pointer',position:'relative',
+                transition:'background .2s',overflow:'hidden',
+              }}>
+                {/* Number */}
+                <span style={{
+                  position:'absolute',top:1,left:2,
+                  fontSize:'clamp(6px,.9vw,9px)',
+                  color:sn?'#ff8a80':ld?'#69f0ae':disc?'#ce93d8':'rgba(105,240,174,.4)',
+                  fontWeight:900,fontFamily:"'Nunito',sans-serif",
+                  textShadow:'0 1px 4px rgba(0,0,0,.9)',lineHeight:1,
+                }}>{n}</span>
+
+                {/* SNAKE SQUARE — icon + text */}
+                {sn&&!here.length&&(
+                  <div style={{display:'flex',flexDirection:'column',alignItems:'center',width:'100%',padding:'1px'}}>
+                    {/* SVG snake icon */}
+                    <svg width="clamp(14px,2.5vw,22px)" height="clamp(14px,2.5vw,22px)" viewBox="0 0 24 24">
+                      <path d="M6 18 Q8 12 12 10 Q16 8 18 4" stroke={sn.color} strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+                      <circle cx="18" cy="3.5" r="2.8" fill={sn.headColor}/>
+                      <circle cx="16.8" cy="2.8" r=".8" fill="white"/>
+                      <circle cx="19.2" cy="2.8" r=".8" fill="white"/>
+                      <path d="M18,6 L17,8 M18,6 L19,8" stroke="#ff1744" strokeWidth=".8" strokeLinecap="round"/>
+                    </svg>
+                    <span style={{fontSize:'clamp(5px,.85vw,9px)',color:sn.color,fontWeight:900,
+                      fontFamily:"'Noto Sans Devanagari',sans-serif",lineHeight:1.1,
+                      textShadow:'0 0 8px rgba(0,0,0,.9)',textAlign:'center',
+                      whiteSpace:'nowrap',overflow:'hidden',maxWidth:'100%'}}>
+                      {sn.skt}
+                    </span>
+                    <span style={{fontSize:'clamp(4px,.65vw,7px)',color:'rgba(255,130,100,.7)',
+                      fontWeight:700,fontFamily:"'Nunito',sans-serif",lineHeight:1,
+                      textShadow:'0 0 6px rgba(0,0,0,.9)'}}>
+                      {sn.en.split('·')[1]?.trim()||sn.en}
+                    </span>
+                  </div>
+                )}
+
+                {/* LADDER SQUARE — icon + text */}
+                {ld&&!here.length&&(
+                  <div style={{display:'flex',flexDirection:'column',alignItems:'center',width:'100%',padding:'1px'}}>
+                    {/* SVG ladder icon */}
+                    <svg width="clamp(14px,2.5vw,22px)" height="clamp(14px,2.5vw,22px)" viewBox="0 0 24 24">
+                      <defs>
+                        <linearGradient id={`ladIco${n}`} x1="0" y1="22" x2="0" y2="2" gradientUnits="userSpaceOnUse">
+                          <stop offset="0%" stopColor={ld.color1}/>
+                          <stop offset="100%" stopColor={ld.color2}/>
+                        </linearGradient>
+                      </defs>
+                      <line x1="6" y1="22" x2="6" y2="2" stroke={`url(#ladIco${n})`} strokeWidth="2.5" strokeLinecap="round"/>
+                      <line x1="18" y1="22" x2="18" y2="2" stroke={`url(#ladIco${n})`} strokeWidth="2.5" strokeLinecap="round"/>
+                      <line x1="6" y1="19" x2="18" y2="19" stroke="rgba(255,255,255,.6)" strokeWidth="2" strokeLinecap="round"/>
+                      <line x1="6" y1="13" x2="18" y2="13" stroke="rgba(255,255,255,.6)" strokeWidth="2" strokeLinecap="round"/>
+                      <line x1="6" y1="7" x2="18" y2="7" stroke="rgba(255,255,255,.6)" strokeWidth="2" strokeLinecap="round"/>
+                    </svg>
+                    <span style={{fontSize:'clamp(5px,.85vw,9px)',color:'#69f0ae',fontWeight:900,
+                      fontFamily:"'Noto Sans Devanagari',sans-serif",lineHeight:1.1,
+                      textShadow:'0 0 8px rgba(0,0,0,.9)',textAlign:'center',
+                      whiteSpace:'nowrap',overflow:'hidden',maxWidth:'100%'}}>
+                      {ld.skt}
+                    </span>
+                    <span style={{fontSize:'clamp(4px,.65vw,7px)',color:'rgba(130,220,130,.6)',
+                      fontWeight:700,fontFamily:"'Nunito',sans-serif",lineHeight:1}}>
+                      {ld.en}
+                    </span>
+                  </div>
+                )}
+
+                {/* DISCOVERY SQUARE */}
+                {disc&&!sn&&!ld&&!here.length&&(
+                  <div style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+                    <span style={{fontSize:'clamp(12px,2.2vw,20px)',lineHeight:1,
+                      animation:'bFloat 2s ease infinite',
+                      filter:'drop-shadow(0 0 6px rgba(179,136,255,.8))'}}>{disc.icon}</span>
+                    <span style={{fontSize:'clamp(4px,.7vw,7px)',color:'#ce93d8',fontWeight:800,
+                      fontFamily:"'Nunito',sans-serif",letterSpacing:.5,lineHeight:1,marginTop:1}}>DISCOVER</span>
+                    <span style={{fontSize:'clamp(4px,.6vw,6px)',color:'rgba(179,136,255,.5)',
+                      fontFamily:"'Noto Sans Devanagari',sans-serif",lineHeight:1}}>{disc.skt}</span>
+                  </div>
+                )}
+
+                {/* DILEMMA SQUARE */}
+                {dlm&&!sn&&!ld&&!disc&&!here.length&&(
+                  <div style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+                    <span style={{fontSize:'clamp(10px,1.9vw,16px)',lineHeight:1}}>⚖</span>
+                    <span style={{fontSize:'clamp(4px,.65vw,6px)',color:'rgba(255,193,7,.5)',
+                      fontWeight:700,fontFamily:"'Nunito',sans-serif",letterSpacing:.3}}>CHOOSE</span>
+                  </div>
+                )}
+
+                {/* PLAYER TOKENS */}
+                {here.length>0&&(
+                  <div style={{display:'flex',flexWrap:'wrap',gap:1,position:'absolute',
+                    inset:0,alignItems:'center',justifyContent:'center',zIndex:8}}>
+                    {here.map(pi=>{
+                      const p=players[pi];
+                      const pc=p.char?.color||'#69f0ae';
+                      const isActive=pi===cur;
+                      return(
+                        <div key={pi} style={{display:'flex',flexDirection:'column',alignItems:'center',
+                          transition:'all .3s',transform:isActive?'scale(1.4) translateY(-3px)':'scale(1)',
+                          zIndex:isActive?10:5,position:'relative'}}>
+                          {isActive&&<div style={{position:'absolute',inset:-3,borderRadius:4,
+                            background:`${pc}15`,border:`1.5px solid ${pc}60`,
+                            animation:'bPulse .9s ease infinite'}}/>}
+                          <div style={{
+                            width:'clamp(14px,2.4vw,26px)',height:'clamp(14px,2.4vw,26px)',
+                            borderRadius:'50%',
+                            background:`radial-gradient(circle at 35% 30%,${pc}ee,${pc} 60%,${pc}44)`,
+                            border:`2px solid ${pc}`,
+                            boxShadow:`0 0 ${isActive?14:5}px ${pc}${isActive?'cc':'44'},0 2px 6px rgba(0,0,0,.5)`,
+                            display:'flex',alignItems:'center',justifyContent:'center',
+                            fontSize:'clamp(7px,1.2vw,13px)',
+                          }}>{p.char?.icon||'●'}</div>
+                          <div style={{fontSize:'clamp(4px,.65vw,7px)',color:pc,fontWeight:900,
+                            textShadow:`0 0 4px #000,0 0 8px ${pc}40`,
+                            opacity:isActive?1:.6,lineHeight:1,marginTop:1}}>{p.name?.slice(0,5)}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
           })}
-        </defs>
+        </div>
 
-        {/* LADDERS */}
-        {Object.entries(LADDERS_BALA).map(([f,ld])=>{
-          const from=Number(f);
-          const {r1,r2,rungs,fc,tc}=ladderParts(from,ld.to);
-          return (
-            <g key={f} filter="url(#ladderGlow)" style={{animation:'ladderShine 3s ease infinite'}}>
-              <line {...r1} stroke="rgba(0,0,0,.4)" strokeWidth="2.8" strokeLinecap="round"/>
-              <line {...r2} stroke="rgba(0,0,0,.4)" strokeWidth="2.8" strokeLinecap="round"/>
-              <line {...r1} stroke={`url(#lg${f})`} strokeWidth="2" strokeLinecap="round"/>
-              <line {...r2} stroke={`url(#lg${f})`} strokeWidth="2" strokeLinecap="round"/>
-              <line {...r1} stroke="rgba(255,255,255,.35)" strokeWidth=".5" strokeLinecap="round"/>
-              <line {...r2} stroke="rgba(255,255,255,.35)" strokeWidth=".5" strokeLinecap="round"/>
-              {rungs.map((rg,i)=>(
-                <g key={i}>
-                  <line {...rg} stroke="rgba(0,0,0,.3)" strokeWidth="2" strokeLinecap="round"/>
-                  <line {...rg} stroke={i%2===0?ld.color1:ld.color2} strokeWidth="1.5" strokeLinecap="round" opacity=".9"/>
-                  <line {...rg} stroke="rgba(255,255,255,.4)" strokeWidth=".4" strokeLinecap="round"/>
-                </g>
-              ))}
-              <circle cx={fc.x} cy={fc.y} r="2.2" fill={ld.color1} opacity=".9"/>
-              <circle cx={fc.x} cy={fc.y} r="1" fill="white" opacity=".7"/>
-              <circle cx={tc.x} cy={tc.y} r="2.6" fill={ld.color2} opacity=".9"/>
-              <circle cx={tc.x} cy={tc.y} r="1.1" fill="white" opacity=".6"/>
-            </g>
-          );
-        })}
-
-        {/* SNAKES — thinner neon tubes */}
-        {Object.entries(SNAKES_BALA).map(([f,sn])=>{
-          const from=Number(f);
-          const {fc,tc,d}=snakePath(from,sn.to);
-          return (
-            <g key={f} filter="url(#snakeGlow)" style={{animation:'snakePulse 2.5s ease infinite'}}>
-              {/* Outer glow */}
-              <path d={d} stroke={sn.color} strokeWidth="5" fill="none" strokeLinecap="round" opacity=".12"/>
-              {/* Shadow */}
-              <path d={d} stroke="rgba(0,0,0,.5)" strokeWidth="4" fill="none" strokeLinecap="round"/>
-              {/* Dark outline */}
-              <path d={d} stroke={sn.headColor} strokeWidth="3.5" fill="none" strokeLinecap="round" opacity=".5"/>
-              {/* Main body */}
-              <path d={d} stroke={sn.color} strokeWidth="2.8" fill="none" strokeLinecap="round"/>
-              {/* Scales */}
-              <path d={d} stroke="rgba(255,255,255,.18)" strokeWidth=".9" fill="none"
-                strokeDasharray="2.5,3.5" strokeLinecap="round"/>
-              {/* Top highlight */}
-              <path d={d} stroke="rgba(255,255,255,.4)" strokeWidth=".45" fill="none" strokeLinecap="round"/>
-              {/* HEAD */}
-              <circle cx={fc.x} cy={fc.y+.35} r="3.5" fill="rgba(0,0,0,.35)"/>
-              <ellipse cx={fc.x} cy={fc.y} rx="3.3" ry="3" fill={sn.headColor}/>
-              <ellipse cx={fc.x-.6} cy={fc.y-.6} rx="1.1" ry=".7" fill="rgba(255,255,255,.35)" transform={`rotate(-30,${fc.x-.6},${fc.y-.6})`}/>
-              <circle cx={fc.x-1.3} cy={fc.y-.5} r=".9" fill="white"/>
-              <circle cx={fc.x+1.3} cy={fc.y-.5} r=".9" fill="white"/>
-              <circle cx={fc.x-1.3} cy={fc.y-.4} r=".5" fill="#111"/>
-              <circle cx={fc.x+1.3} cy={fc.y-.4} r=".5" fill="#111"/>
-              <circle cx={fc.x-1.05} cy={fc.y-.55} r=".22" fill="white"/>
-              <circle cx={fc.x+1.55} cy={fc.y-.55} r=".22" fill="white"/>
-              <path d={`M${fc.x},${fc.y+2.2} L${fc.x-.8},${fc.y+3.8} M${fc.x},${fc.y+2.2} L${fc.x+.8},${fc.y+3.8}`}
-                stroke="#ff1744" strokeWidth=".7" strokeLinecap="round"/>
-              {/* TAIL */}
-              <circle cx={tc.x} cy={tc.y} r="1.8" fill={sn.color} opacity=".65"/>
-              <circle cx={tc.x} cy={tc.y} r=".8" fill="rgba(255,255,255,.4)"/>
-            </g>
-          );
-        })}
-      </svg>
+        {/* SVG Snake + Ladder overlay (100% × 100% over the 10×10 grid) */}
+        <svg style={{position:'absolute',top:0,left:0,width:'100%',height:'100%',
+          pointerEvents:'none',overflow:'visible',zIndex:10}}
+          viewBox="0 0 100 100" preserveAspectRatio="none">
+          <defs>
+            <filter id="snakeGlow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation=".8" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="ladderGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation=".6" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            {Object.entries(LADDERS_BALA).map(([f,ld])=>{
+              const fc=sqMain(Number(f)), tc=sqMain(ld.to);
+              return (<linearGradient key={f} id={`svgLG${f}`}
+                x1={fc.x} y1={fc.y} x2={tc.x} y2={tc.y} gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor={ld.color1}/>
+                <stop offset="50%" stopColor="white" stopOpacity="0.3"/>
+                <stop offset="100%" stopColor={ld.color2}/>
+              </linearGradient>);
+            })}
+          </defs>
+          {/* Ladders */}
+          {Object.entries(LADDERS_BALA).map(([f,ld])=>{
+            const from=Number(f);
+            const {r1,r2,rungs,fc,tc}=ladderParts(from,ld.to);
+            return (
+              <g key={f} filter="url(#ladderGlow)" style={{animation:'ladderShine 3s ease infinite'}}>
+                <line {...r1} stroke="rgba(0,0,0,.4)" strokeWidth="2.5" strokeLinecap="round"/>
+                <line {...r2} stroke="rgba(0,0,0,.4)" strokeWidth="2.5" strokeLinecap="round"/>
+                <line {...r1} stroke={`url(#svgLG${f})`} strokeWidth="1.8" strokeLinecap="round"/>
+                <line {...r2} stroke={`url(#svgLG${f})`} strokeWidth="1.8" strokeLinecap="round"/>
+                <line {...r1} stroke="rgba(255,255,255,.3)" strokeWidth=".4" strokeLinecap="round"/>
+                <line {...r2} stroke="rgba(255,255,255,.3)" strokeWidth=".4" strokeLinecap="round"/>
+                {rungs.map((rg,i)=>(
+                  <g key={i}>
+                    <line {...rg} stroke="rgba(0,0,0,.3)" strokeWidth="1.8" strokeLinecap="round"/>
+                    <line {...rg} stroke={i%2===0?ld.color1:ld.color2} strokeWidth="1.3" strokeLinecap="round" opacity=".9"/>
+                    <line {...rg} stroke="rgba(255,255,255,.35)" strokeWidth=".35" strokeLinecap="round"/>
+                  </g>
+                ))}
+                <circle cx={fc.x} cy={fc.y} r="2" fill={ld.color1} opacity=".9"/>
+                <circle cx={tc.x} cy={tc.y} r="2.3" fill={ld.color2} opacity=".9"/>
+              </g>
+            );
+          })}
+          {/* Snakes */}
+          {Object.entries(SNAKES_BALA).map(([f,sn])=>{
+            const from=Number(f);
+            const {fc,tc,d}=snakePath(from,sn.to);
+            return (
+              <g key={f} filter="url(#snakeGlow)" style={{animation:'snakePulse 2.5s ease infinite'}}>
+                <path d={d} stroke={sn.color} strokeWidth="4.5" fill="none" strokeLinecap="round" opacity=".1"/>
+                <path d={d} stroke="rgba(0,0,0,.45)" strokeWidth="3.5" fill="none" strokeLinecap="round"/>
+                <path d={d} stroke={sn.headColor} strokeWidth="3" fill="none" strokeLinecap="round" opacity=".5"/>
+                <path d={d} stroke={sn.color} strokeWidth="2.2" fill="none" strokeLinecap="round"/>
+                <path d={d} stroke="rgba(255,255,255,.18)" strokeWidth=".7" fill="none" strokeDasharray="2,3" strokeLinecap="round"/>
+                <path d={d} stroke="rgba(255,255,255,.35)" strokeWidth=".35" fill="none" strokeLinecap="round"/>
+                {/* Head */}
+                <circle cx={fc.x} cy={fc.y+.3} r="3" fill="rgba(0,0,0,.3)"/>
+                <ellipse cx={fc.x} cy={fc.y} rx="2.8" ry="2.5" fill={sn.headColor}/>
+                <circle cx={fc.x-1.1} cy={fc.y-.5} r=".75" fill="white"/>
+                <circle cx={fc.x+1.1} cy={fc.y-.5} r=".75" fill="white"/>
+                <circle cx={fc.x-1.1} cy={fc.y-.4} r=".42" fill="#111"/>
+                <circle cx={fc.x+1.1} cy={fc.y-.4} r=".42" fill="#111"/>
+                <path d={`M${fc.x},${fc.y+1.8} L${fc.x-.7},${fc.y+3.2} M${fc.x},${fc.y+1.8} L${fc.x+.7},${fc.y+3.2}`}
+                  stroke="#ff1744" strokeWidth=".65" strokeLinecap="round"/>
+                <circle cx={tc.x} cy={tc.y} r="1.5" fill={sn.color} opacity=".6"/>
+              </g>
+            );
+          })}
+        </svg>
+      </div>
     </div>
   );
 }
-// Colour helpers
-function lighten(hex){try{const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgb(${Math.min(255,r+50)},${Math.min(255,g+50)},${Math.min(255,b+50)})`}catch{return '#fff'}}
-function darken(hex){try{const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgb(${Math.max(0,r-40)},${Math.max(0,g-40)},${Math.max(0,b-40)})`}catch{return '#000'}}
+
 function DiscoveryPopup({ sq, onClose }) {
   const d = DISCOVERY_SQUARES[sq]; if (!d) return null;
   return (
@@ -533,6 +600,133 @@ function DiscoveryPopup({ sq, onClose }) {
         </div>
         <div style={{textAlign:'center',fontSize:'clamp(11px,1.8vw,13px)',color:'rgba(200,160,255,.7)',fontStyle:'italic',marginBottom:18,lineHeight:1.8,fontFamily:"'Nunito',sans-serif"}}>✦ {d.wonder}</div>
         <div style={{textAlign:'center'}}><button className="bb" onClick={onClose} style={{background:'linear-gradient(135deg,#7c4dff,#651fff)'}}>✨ I will tell someone tonight!</button></div>
+      </div>
+    </div>
+  );
+}
+
+function CrownRiddlePopup({ riddle, sq, onSolve, onSkip }) {
+  const [chosen, setChosen] = useState(null);
+  const [revealed, setRevealed] = useState(false);
+  if (!riddle) return null;
+  const isCorrect = chosen === riddle.correct;
+
+  const handleChoice = (i) => {
+    if (revealed) return;
+    setChosen(i);
+    setRevealed(true);
+  };
+
+  return (
+    <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.85)',display:'flex',
+      alignItems:'center',justifyContent:'center',padding:16,zIndex:300}}>
+      <div style={{
+        background:'linear-gradient(180deg,#0a1f0d,#061408)',
+        border:'2px solid rgba(105,240,174,.3)',
+        borderTop:'4px solid #69f0ae',
+        borderRadius:16,padding:'clamp(20px,4vw,32px)',
+        maxWidth:500,width:'100%',
+        boxShadow:'0 0 60px rgba(105,240,174,.1),0 20px 60px rgba(0,0,0,.6)',
+        animation:'bPop .35s ease',maxHeight:'90vh',overflowY:'auto',
+      }}>
+        {/* Header */}
+        <div style={{textAlign:'center',marginBottom:16}}>
+          <div style={{fontSize:'clamp(6px,1vw,9px)',letterSpacing:4,color:'rgba(105,240,174,.4)',
+            fontWeight:700,marginBottom:6,fontFamily:"'Baloo 2',sans-serif"}}>
+            ✨ CROWN RIDDLE — SQUARE {sq}
+          </div>
+          <div style={{fontSize:52,marginBottom:6,animation:'bFloat 2s ease infinite',
+            filter:'drop-shadow(0 0 12px rgba(105,240,174,.5))'}}>{riddle.icon}</div>
+          <div style={{fontSize:'clamp(16px,3vw,22px)',fontWeight:900,
+            fontFamily:"'Baloo 2',sans-serif",color:'#69f0ae',marginBottom:2}}>
+            {riddle.title}
+          </div>
+          <div style={{fontSize:'clamp(9px,1.4vw,11px)',color:'rgba(105,240,174,.4)',
+            fontFamily:"'Noto Sans Devanagari',sans-serif"}}>
+            {riddle.skt} · {riddle.sktM}
+          </div>
+        </div>
+
+        {/* Question */}
+        <div style={{background:'rgba(105,240,174,.06)',border:'1px solid rgba(105,240,174,.15)',
+          borderRadius:12,padding:'14px 18px',marginBottom:18,
+          fontSize:'clamp(13px,2.2vw,16px)',color:'rgba(255,255,255,.85)',
+          lineHeight:1.9,fontFamily:"'Nunito',sans-serif",fontWeight:700,textAlign:'center'}}>
+          {riddle.q}
+        </div>
+
+        {/* Choices */}
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginBottom:16}}>
+          {riddle.choices.map((ch,i)=>{
+            let bg='rgba(255,255,255,.04)', border='rgba(255,255,255,.12)', color='rgba(255,255,255,.7)';
+            if(revealed){
+              if(i===riddle.correct){bg='rgba(105,240,174,.2)';border='#69f0ae';color='#69f0ae';}
+              else if(i===chosen&&chosen!==riddle.correct){bg='rgba(200,50,50,.2)';border='#ef5350';color='#ef5350';}
+            }
+            if(!revealed&&chosen===null) {/* no override */}
+            return (
+              <button key={i} onClick={()=>handleChoice(i)}
+                disabled={revealed}
+                style={{
+                  background:bg,border:`2px solid ${border}`,borderRadius:10,
+                  padding:'clamp(10px,1.8vw,14px) 10px',
+                  color,fontWeight:800,fontFamily:"'Nunito',sans-serif",
+                  fontSize:'clamp(12px,2vw,15px)',cursor:revealed?'default':'pointer',
+                  transition:'all .2s',textAlign:'center',lineHeight:1.4,
+                  transform:!revealed?'none':i===riddle.correct?'scale(1.04)':'scale(1)',
+                }}>
+                {revealed&&i===riddle.correct&&'✓ '}{ch}
+                {revealed&&i===chosen&&chosen!==riddle.correct&&' ✗'}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Wisdom reveal */}
+        {revealed&&(
+          <div style={{background:isCorrect?'rgba(105,240,174,.1)':'rgba(255,152,0,.08)',
+            border:`1px solid ${isCorrect?'rgba(105,240,174,.3)':'rgba(255,152,0,.3)'}`,
+            borderRadius:12,padding:'12px 16px',marginBottom:16,animation:'bSlide .4s ease'}}>
+            <div style={{fontSize:'clamp(11px,1.8vw,13px)',color:'rgba(255,255,255,.6)',
+              lineHeight:1.9,fontFamily:"'Nunito',sans-serif",fontStyle:'italic'}}>
+              {isCorrect?'🌟 ':'💡 '}{riddle.wisdom}
+            </div>
+          </div>
+        )}
+
+        {/* Actions */}
+        {revealed&&(
+          <div style={{textAlign:'center',display:'flex',gap:10,justifyContent:'center',flexWrap:'wrap'}}>
+            {isCorrect
+              ? <button onClick={()=>onSolve(true)}
+                  style={{background:'linear-gradient(135deg,#1b5e20,#2e7d32)',
+                    border:'1px solid #69f0ae40',color:'#69f0ae',
+                    padding:'12px 28px',fontSize:'clamp(13px,2vw,16px)',fontWeight:800,
+                    borderRadius:8,cursor:'pointer',fontFamily:"'Baloo 2',sans-serif",letterSpacing:1}}>
+                  ✨ Correct! Move Forward →
+                </button>
+              : <>
+                  <button onClick={()=>{setChosen(null);setRevealed(false);}}
+                    style={{background:'rgba(255,255,255,.06)',border:'1px solid rgba(255,255,255,.15)',
+                      color:'rgba(255,255,255,.6)',padding:'10px 20px',fontSize:13,fontWeight:700,
+                      borderRadius:8,cursor:'pointer',fontFamily:"'Baloo 2',sans-serif"}}>
+                    Try Again
+                  </button>
+                  <button onClick={()=>onSolve(false)}
+                    style={{background:'rgba(255,255,255,.03)',border:'1px solid rgba(255,255,255,.1)',
+                      color:'rgba(255,255,255,.35)',padding:'10px 20px',fontSize:12,
+                      borderRadius:8,cursor:'pointer',fontFamily:"'Nunito',sans-serif"}}>
+                    Stay here, try next turn
+                  </button>
+                </>
+            }
+          </div>
+        )}
+        {!revealed&&(
+          <div style={{textAlign:'center',fontSize:11,color:'rgba(255,255,255,.25)',fontStyle:'italic'}}>
+            Choose wisely — Panditji is watching 🧙
+          </div>
+        )}
       </div>
     </div>
   );
@@ -601,9 +795,10 @@ export default function BalaGame({ onExit }) {
   const [busy,      setBusy]      = useState(false);
   const [diceVal,   setDiceVal]   = useState(null);
   const [diceAnim,  setDiceAnim]  = useState(false);
-  const [storyPop,  setStoryPop]  = useState(null);
-  const [discPop,   setDiscPop]   = useState(null);
-  const [dilemma,   setDilemma]   = useState(null);
+  const [storyPop,     setStoryPop]     = useState(null);
+  const [discPop,      setDiscPop]      = useState(null);
+  const [dilemma,      setDilemma]      = useState(null);
+  const [crownRiddle,  setCrownRiddle]  = useState(null); // {sq, pi, nPos, nStars, totalP}
   const [starFlash, setStarFlash] = useState('');
   const [naniKey,   setNaniKey]   = useState('start');
   const [mayaviTxt, setMayaviTxt] = useState('');
@@ -621,7 +816,7 @@ export default function BalaGame({ onExit }) {
 
   // ── CPU Mayavi auto-roll ──────────────────────────────────────────────────
   useEffect(()=>{
-    if(!hasCPU||!players.length||win!==null||busy||dilemma||storyPop||discPop) return;
+    if(!hasCPU||!players.length||win!==null||busy||dilemma||storyPop||discPop||crownRiddle) return;
     const mayaviIdx = players.length - 1; // Mayavi is always last
     if(cur !== mayaviIdx) return;
     cpuTimer.current = setTimeout(()=>{
@@ -682,6 +877,13 @@ export default function BalaGame({ onExit }) {
   };
 
   const checkLanding = useCallback((n,pi,nPos,nStars,totalP)=>{
+    // Crown riddle squares (101-107) — player must solve to advance
+    if(!isMayavi(pi) && CROWN_RIDDLE_SQ.includes(n)){
+      setNaniKey('dilemma');
+      setBusy(false);
+      setCrownRiddle({sq:n, pi, nPos:[...nPos], nStars:[...nStars], totalP});
+      return;
+    }
     if(!isMayavi(pi) && DISCOVERY_SQUARES[n]){
       setNaniKey('discovery'); setDiscPop(n);
       // Discovery = +1 Gyan (learning!)
@@ -697,15 +899,34 @@ export default function BalaGame({ onExit }) {
     if(ch.k==='star'&&ch.fx.star){
       ns[pi]=Math.min(ns[pi]+ch.fx.star,BALA_WIN_STARS); setStars([...ns]);
       setStarFlash(STAR_MESSAGES[Math.floor(Math.random()*STAR_MESSAGES.length)]); setTimeout(()=>setStarFlash(''),2500);
-      // Wise choice = +2 Gyan
       setGyan(g=>{ const ng=[...g]; ng[pi]=Math.min(ng[pi]+2,12); return ng; });
     } else {
-      // Unwise choice = +1 Agyan
       setAgyan(a=>{ const na=[...a]; na[pi]=Math.min(na[pi]+1,12); return na; });
     }
     if(ch.fx.move){ np[pi]=Math.max(1,Math.min((np[pi]||1)+ch.fx.move,108)); setPos([...np]); }
     setDilemma(null);
     if(!checkWin(pi,np,ns,totalP)) nextTurn(np,ns,totalP);
+  };
+
+  // Crown riddle: correct = +2 Gyan + move to next square
+  //              wrong   = stay on square, try next turn
+  const solveCrown = (correct) => {
+    if(!crownRiddle) return;
+    const {sq, pi, nPos:np, nStars:ns, totalP} = crownRiddle;
+    setCrownRiddle(null);
+    if(correct){
+      // +2 Gyan for solving
+      setGyan(g=>{ const ng=[...g]; ng[pi]=Math.min(ng[pi]+2,12); return ng; });
+      setStarFlash('⭐ Correct! +2 Gyan — Wisdom grows!');
+      setTimeout(()=>setStarFlash(''),2500);
+      // Move forward one square (sq+1, capped at 108)
+      np[pi] = Math.min(sq+1, 108);
+      setPos([...np]);
+      if(!checkWin(pi,np,ns,totalP)) nextTurn(np,ns,totalP);
+    } else {
+      // Stay on square — next turn will trigger riddle again
+      nextTurn(np,ns,totalP);
+    }
   };
 
   const doRoll = useCallback((isCpu=false)=>{
@@ -1004,7 +1225,7 @@ export default function BalaGame({ onExit }) {
         minHeight:'100vh',alignItems:'flex-start'}}>
 
         {/* LEFT: Board */}
-        <div style={{flex:'1 1 auto',minWidth:0}}>
+        <div style={{flex:'1 1 340px', maxWidth:680, minWidth:0}}>
           {/* Star flash */}
           {starFlash&&(
             <div style={{textAlign:'center',fontSize:'clamp(12px,2vw,15px)',color:'#ffd700',
@@ -1022,7 +1243,7 @@ export default function BalaGame({ onExit }) {
               🦊 "{mayaviTxt}"
             </div>
           )}
-          <BalaBoard players={players} pos={pos} cur={cur}/>
+          <BalaBoard players={players} pos={pos} cur={cur} crownRiddle={crownRiddle}/>
           {/* Board legend */}
           <div style={{display:'flex',gap:8,justifyContent:'center',marginTop:8,flexWrap:'wrap'}}>
             {[['🐍 Snake — क्रोध','rgba(200,50,50,.15)'],['🌈 Ladder — मैत्री','rgba(50,200,100,.15)'],
@@ -1136,6 +1357,7 @@ export default function BalaGame({ onExit }) {
       {storyPop&&<StoryPopup data={storyPop.data} type={storyPop.type} onClose={closeStory}/>}
       {discPop&&<DiscoveryPopup sq={discPop} onClose={closeDisc}/>}
       {dilemma&&<DilemmaPopup dilemma={dilemma} onSolve={solveD}/>}
+      {crownRiddle&&<CrownRiddlePopup riddle={CROWN_RIDDLES[crownRiddle.sq]} sq={crownRiddle.sq} onSolve={solveCrown} onSkip={()=>solveCrown(false)}/>}
     </div>
   );
 }
