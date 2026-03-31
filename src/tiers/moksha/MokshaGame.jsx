@@ -428,6 +428,7 @@ export default function MokshaPatam108(){
   const isMobile=useIsMobile();
   const[rv,setRv]=useState(null);
   const[gv,setGv]=useState(null);
+  const[diceReveal,setDiceReveal]=useState(null);
   const[msg,setMsg]=useState("");
   const[dil,setDil]=useState(null);
   const[win,setWin]=useState(null);
@@ -771,8 +772,12 @@ export default function MokshaPatam108(){
 
     // Show graha popup — user dismisses, then movement begins
     // On sacred path: skip graha popup entirely
-    if(onSacredPath){startMovement()}
-    else{showEvent({icon:g.icon,title:`${g.n} · ${g.en}`,subtitle:grahaStory,color:g.color,type:"graha",staticKey:GRAHA_STATIC_KEY[g.fx]},startMovement)}
+    setDiceReveal({r,g});
+    setTimeout(()=>{
+      setDiceReveal(null);
+      if(onSacredPath){startMovement()}
+      else{showEvent({icon:g.icon,title:`${g.n} · ${g.en}`,subtitle:grahaStory,color:g.color,type:"graha",staticKey:GRAHA_STATIC_KEY[g.fx]},startMovement)}
+    },1500);
   },[cur,nP,dil,win,busy,punya,papa,pos,shieldA,skipA,play,players,showEvent,chosenLang,muted]);
 
   const solvD=(ci)=>{
@@ -1771,6 +1776,19 @@ export default function MokshaPatam108(){
           <button onClick={dismissEvent} style={{marginTop:16,background:"transparent",border:`1px solid ${eventPopup.color}40`,color:eventPopup.color,padding:"8px 24px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2}}>TAP TO CONTINUE ▸</button>
         </div>
       </div>}
+      {diceReveal&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.82)",zIndex:175,display:"flex",alignItems:"center",justifyContent:"center",animation:"fadeIn .15s ease"}}>
+        <div style={{textAlign:"center",animation:"popIn .3s ease forwards",transform:"translate(-50%,-50%)",position:"absolute",top:"50%",left:"50%"}}>
+          <div style={{fontSize:9,letterSpacing:6,color:"#c0b080",opacity:.5,marginBottom:12}}>YOU ROLLED</div>
+          <div style={{width:100,height:100,background:"linear-gradient(135deg,#2a2015,#0c0a07)",border:"3px solid rgba(200,160,60,.6)",borderRadius:16,display:"flex",alignItems:"center",justifyContent:"center",fontSize:64,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,color:"#f0d050",boxShadow:"0 0 40px rgba(240,200,80,.25), inset 0 0 20px rgba(0,0,0,.4)",margin:"0 auto 16px"}}>{diceReveal.r}</div>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:10,background:`${diceReveal.g.color}15`,border:`1px solid ${diceReveal.g.color}40`,borderRadius:8,padding:"10px 20px"}}>
+            <span style={{fontSize:28}}>{diceReveal.g.icon}</span>
+            <div style={{textAlign:"left"}}>
+              <div style={{fontSize:13,color:diceReveal.g.color,fontWeight:700,letterSpacing:1}}>{diceReveal.g.n}</div>
+              <div style={{fontSize:10,color:"#c0b080",opacity:.7}}>{diceReveal.g.en}</div>
+            </div>
+          </div>
+        </div>
+      </div>}
       {turnBanner&&!dil&&<div style={{position:"fixed",inset:0,zIndex:180,display:"flex",alignItems:"center",justifyContent:"center",pointerEvents:"none"}}>
         <div style={{animation:"turnFlash 2s ease forwards",background:"linear-gradient(180deg,rgba(20,16,10,.95),rgba(12,10,7,.95))",border:`2px solid ${turnBanner.color}60`,borderRadius:12,padding:"24px 48px",textAlign:"center",boxShadow:`0 0 60px ${turnBanner.color}30`}}>
           <div style={{fontSize:44,marginBottom:4}}>{turnBanner.icon}</div>
@@ -1950,6 +1968,51 @@ export default function MokshaPatam108(){
             </div>}
           </div>
         </div>
+        {/* ── MOBILE INFO SECTION: Punya/Papa + Dice Result + Chitragupta ── */}
+        {isMobile&&!win&&<div style={{width:"100%",padding:"8px 0 0"}}>
+          <div style={{overflowX:"auto",display:"flex",gap:8,padding:"0 4px 6px",scrollSnapType:"x mandatory"}}>
+            {players.map((pl,i)=>{const isActive=cur===i;const pn=punya[i]||0;const pp=papa[i]||0;const total=Math.max(pn+pp,1);const pc=pl.char.color;return(
+              <div key={i} style={{minWidth:130,flexShrink:0,scrollSnapAlign:"start",background:isActive?`${pc}12`:"rgba(16,12,8,.85)",border:`1px solid ${isActive?pc+"60":"rgba(200,160,60,.1)"}`,borderTop:`3px solid ${isActive?pc:"rgba(200,160,60,.08)"}`,borderRadius:8,padding:"8px 10px"}}>
+                <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:6}}>
+                  <span style={{fontSize:20}}>{pl.char.icon}</span>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{fontSize:12,color:pc,fontWeight:700,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{pl.name}{isActive?" ◄":""}{pl.cpu?" ☠️":""}</div>
+                    <div style={{fontSize:9,opacity:.45}}>Sq {pos[i]||1}</div>
+                  </div>
+                </div>
+                <div style={{marginBottom:5}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:2}}><span style={{fontSize:9,color:"#f0d050",fontWeight:700}}>पुण्य</span><span style={{fontSize:14,color:"#f0d050",fontWeight:900,lineHeight:1}}>{pn}</span></div>
+                  <div style={{height:5,background:"rgba(0,0,0,.35)",borderRadius:3,overflow:"hidden"}}><div style={{height:"100%",width:`${(pn/total)*100}%`,background:"linear-gradient(90deg,#f0d050,#c0a030)",borderRadius:3,transition:"width .6s"}}/></div>
+                </div>
+                <div>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:2}}><span style={{fontSize:9,color:"#e06030",fontWeight:700}}>पाप</span><span style={{fontSize:14,color:"#e06030",fontWeight:900,lineHeight:1}}>{pp}</span></div>
+                  <div style={{height:5,background:"rgba(0,0,0,.35)",borderRadius:3,overflow:"hidden"}}><div style={{height:"100%",width:`${(pp/total)*100}%`,background:"linear-gradient(90deg,#e06030,#a03020)",borderRadius:3,transition:"width .6s"}}/></div>
+                </div>
+              </div>
+            )})}
+          </div>
+          {rv&&gv&&!busy&&<div style={{margin:"4px 0 6px",background:"linear-gradient(135deg,rgba(36,28,14,.97),rgba(18,14,8,.97))",border:`1px solid ${gv.color}50`,borderLeft:`4px solid ${gv.color}`,borderRadius:8,padding:"12px 14px",animation:"slideUp .3s ease"}}>
+            <div style={{fontSize:8,letterSpacing:4,color:"#c0b080",opacity:.5,marginBottom:8}}>LAST ROLL</div>
+            <div style={{display:"flex",alignItems:"center",gap:14}}>
+              <div style={{width:52,height:52,background:"#0c0a07",border:"2px solid rgba(200,160,60,.5)",borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",fontSize:30,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,color:"#f0d050",flexShrink:0}}>{rv}</div>
+              <div style={{flex:1}}>
+                <div style={{fontSize:14,fontWeight:700,color:"#f0d050",marginBottom:4}}>Moved {rv} square{rv>1?"s":""} forward</div>
+                <div style={{display:"flex",alignItems:"center",gap:8,background:`${gv.color}10`,border:`1px solid ${gv.color}30`,borderRadius:6,padding:"5px 8px"}}>
+                  <span style={{fontSize:20}}>{gv.icon}</span>
+                  <div>
+                    <div style={{fontSize:11,color:gv.color,fontWeight:700}}>{gv.n} · {gv.en}</div>
+                    <div style={{fontSize:10,color:"#c0b080",opacity:.8,lineHeight:1.4}}>{gv.desc}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>}
+          {cgEntries.length>0&&<div style={{margin:"0 0 6px",background:"rgba(14,10,6,.9)",border:"1px solid rgba(200,160,60,.1)",borderLeft:"3px solid rgba(200,160,60,.3)",borderRadius:4,padding:"8px 10px"}}>
+            <div style={{fontSize:7,letterSpacing:4,color:"#f0d050",opacity:.5,marginBottom:3}}>✍ CHITRAGUPTA'S LEDGER</div>
+            <div style={{fontSize:11,color:"#c0b080",lineHeight:1.7}}>{cgEntries[cgEntries.length-1]}</div>
+          </div>}
+          <div style={{height:130}}/>{/* spacer for sticky bar */}
+        </div>}
         {/* PANEL */}
         {!isMobile&&<div style={{flex:"0 1 310px",display:"flex",flexDirection:"column",gap:8,minWidth:"clamp(250px,40vw,310px)",maxWidth:360}}>
           <div style={{borderTop:"1px solid rgba(200,160,60,.15)",padding:8,textAlign:"center",opacity:shF?.7:0,transition:"opacity .8s"}}>
@@ -1976,56 +2039,9 @@ export default function MokshaPatam108(){
                 <div><div style={{fontSize:9,fontWeight:700,color:gv.color,letterSpacing:2}}>{gv.n} · {gv.en.toUpperCase()}</div><div style={{fontSize:11,color:"#e0d0a0"}}>{gv.desc}</div></div>
               </div>
             </div>}
-            {!isMobile&&<button onClick={doRoll} disabled={!!dil||busy} className="gb gp" style={{width:"100%",padding:"clamp(10px,1.5vw,14px)",fontSize:"clamp(14px,2vw,16px)",letterSpacing:4}}>
+            <button onClick={doRoll} disabled={!!dil||busy} className="gb gp" style={{width:"100%",padding:"clamp(10px,1.5vw,14px)",fontSize:"clamp(14px,2vw,16px)",letterSpacing:4}}>
               {busy?"Rolling...":"Roll Dice"}
-            </button>}
-            {isMobile&&!win&&<>
-              {/* ── Mobile: Punya/Papa player cards ── */}
-              <div style={{overflowX:"auto",display:"flex",gap:8,padding:"10px 4px 4px",scrollSnapType:"x mandatory"}}>
-                {players.map((pl,i)=>{const isActive=cur===i;const pn=punya[i]||0;const pp=papa[i]||0;const total=Math.max(pn+pp,1);const pc=pl.char.color;return(
-                  <div key={i} style={{minWidth:130,flexShrink:0,scrollSnapAlign:"start",background:isActive?`${pc}12`:"rgba(16,12,8,.85)",border:`1px solid ${isActive?pc+"60":"rgba(200,160,60,.1)"}`,borderTop:`3px solid ${isActive?pc:"rgba(200,160,60,.08)"}`,borderRadius:8,padding:"8px 10px"}}>
-                    <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:7}}>
-                      <span style={{fontSize:20}}>{pl.char.icon}</span>
-                      <div style={{flex:1,minWidth:0}}>
-                        <div style={{fontSize:12,color:pc,fontWeight:700,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{pl.name}{isActive?" ◄":""}{pl.cpu?" ☠️":""}</div>
-                        <div style={{fontSize:9,opacity:.45}}>Sq {pos[i]||1} · {rlm(pos[i]||1)==="bhuloka"?"भूलोक":rlm(pos[i]||1)==="antarloka"?"अन्तर्लोक":"स्वर्गलोक"}</div>
-                      </div>
-                    </div>
-                    <div style={{marginBottom:5}}>
-                      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:2}}><span style={{fontSize:9,color:"#f0d050",fontWeight:700}}>पुण्य</span><span style={{fontSize:14,color:"#f0d050",fontWeight:900,lineHeight:1}}>{pn}</span></div>
-                      <div style={{height:5,background:"rgba(0,0,0,.35)",borderRadius:3,overflow:"hidden"}}><div style={{height:"100%",width:`${(pn/total)*100}%`,background:"linear-gradient(90deg,#f0d050,#c0a030)",borderRadius:3,transition:"width .6s"}}/></div>
-                    </div>
-                    <div>
-                      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:2}}><span style={{fontSize:9,color:"#e06030",fontWeight:700}}>पाप</span><span style={{fontSize:14,color:"#e06030",fontWeight:900,lineHeight:1}}>{pp}</span></div>
-                      <div style={{height:5,background:"rgba(0,0,0,.35)",borderRadius:3,overflow:"hidden"}}><div style={{height:"100%",width:`${(pp/total)*100}%`,background:"linear-gradient(90deg,#e06030,#a03020)",borderRadius:3,transition:"width .6s"}}/></div>
-                    </div>
-                  </div>
-                )})}
-              </div>
-              {/* ── Mobile: Dice result card (prominent) ── */}
-              {rv&&gv&&!busy&&<div style={{margin:"6px 4px 0",background:"linear-gradient(135deg,rgba(36,28,14,.97),rgba(18,14,8,.97))",border:`1px solid ${gv.color}50`,borderLeft:`4px solid ${gv.color}`,borderRadius:8,padding:"12px 14px",animation:"slideUp .3s ease"}}>
-                <div style={{fontSize:8,letterSpacing:4,color:"#c0b080",opacity:.5,marginBottom:8}}>LAST ROLL</div>
-                <div style={{display:"flex",alignItems:"center",gap:14}}>
-                  <div style={{width:56,height:56,background:"#0c0a07",border:"2px solid rgba(200,160,60,.5)",borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",fontSize:34,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,color:"#f0d050",flexShrink:0,boxShadow:"0 0 20px rgba(240,200,80,.15)"}}>{rv}</div>
-                  <div style={{flex:1}}>
-                    <div style={{fontSize:15,fontWeight:700,color:"#f0d050",marginBottom:4}}>Moved {rv} square{rv>1?"s":""} forward</div>
-                    <div style={{display:"flex",alignItems:"center",gap:8,background:`${gv.color}10`,border:`1px solid ${gv.color}30`,borderRadius:6,padding:"5px 8px"}}>
-                      <span style={{fontSize:22}}>{gv.icon}</span>
-                      <div>
-                        <div style={{fontSize:11,color:gv.color,fontWeight:700}}>{gv.n} · {gv.en}</div>
-                        <div style={{fontSize:10,color:"#c0b080",opacity:.8,lineHeight:1.4}}>{gv.desc}</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>}
-              {/* ── Mobile: Chitragupta's latest entry ── */}
-              {cgEntries.length>0&&<div style={{margin:"6px 4px 0",background:"rgba(14,10,6,.9)",border:"1px solid rgba(200,160,60,.1)",borderLeft:"3px solid rgba(200,160,60,.3)",borderRadius:4,padding:"8px 10px"}}>
-                <div style={{fontSize:7,letterSpacing:4,color:"#f0d050",opacity:.5,marginBottom:3}}>✍ CHITRAGUPTA'S LEDGER</div>
-                <div style={{fontSize:11,color:"#c0b080",lineHeight:1.7,opacity:.85}}>{cgEntries[cgEntries.length-1]}</div>
-              </div>}
-              <div style={{height:140}}/>{/* spacer for sticky bar */}
-            </>}
+            </button>
             {/* Donate / Feedback — subtle */}
             <button onClick={()=>setShowPostGame(true)} style={{
               width:"100%",marginTop:6,background:"transparent",
@@ -2055,36 +2071,6 @@ export default function MokshaPatam108(){
             <div style={{display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap"}}>
               <button onClick={()=>{navigateTo("title");setWin(null);setPlayers([]);ambient.stop()}} className="gb" style={{padding:"6px 16px",fontSize:10,marginTop:0}}>New Journey</button>
               {auth.user&&<button onClick={()=>{setShowProfile(true);setProfileTab("history")}} className="gb" style={{padding:"6px 16px",fontSize:10,marginTop:0,opacity:.7}}>📊 Stats</button>}
-            </div>
-          </div>}
-          {dil&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.85)",zIndex:250,display:"flex",alignItems:"center",justifyContent:"center",padding:16,overflowY:"auto"}}>
-            <div style={{background:"linear-gradient(180deg,#2a2015,#12100a)",border:"2px solid rgba(220,180,80,.3)",borderRadius:8,padding:"clamp(20px,4vw,32px)",maxWidth:480,width:"100%",boxShadow:"0 0 80px rgba(200,160,60,.15), 0 0 200px rgba(0,0,0,.9)",animation:"dharmaIn .5s ease forwards",position:"relative"}}>
-              <div style={{position:"absolute",top:-1,left:"50%",transform:"translateX(-50%)",width:60,height:3,background:"linear-gradient(90deg,transparent,rgba(220,180,80,.5),transparent)"}}/>
-              <div style={{textAlign:"center",marginBottom:16}}>
-                <div style={{fontSize:48,marginBottom:6,filter:"drop-shadow(0 0 15px rgba(200,160,60,.4))"}}>⚖</div>
-                <div style={{fontSize:8,letterSpacing:5,color:"#d0b870",opacity:.6,fontWeight:700,marginBottom:4}}>DHARMA DILEMMA</div>
-                <div style={{fontSize:"clamp(18px,4vw,24px)",fontFamily:"'Yatra One',serif",color:"#f0d050",letterSpacing:2}}>{dil.t}</div>
-                <div style={{fontSize:13,color:"#d0b870",fontWeight:700,marginTop:4,letterSpacing:1}}>{dil.en}</div>
-              </div>
-              <div style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",background:"rgba(200,160,60,.06)",border:"1px solid rgba(200,160,60,.12)",borderRadius:4,marginBottom:16}}>
-                <span style={{fontSize:24}}>{players[dil.pi]?.char?.icon}</span>
-                <div>
-                  <div style={{fontSize:13,color:players[dil.pi]?.char?.color,fontWeight:700}}>{players[dil.pi]?.name}</div>
-                  <div style={{fontSize:10,opacity:.5}}>{players[dil.pi]?.char?.name} · Square {pos[dil.pi]||1} · पुण्य {punya[dil.pi]||0} · पाप {papa[dil.pi]||0}</div>
-                </div>
-              </div>
-              <div style={{fontSize:"clamp(12px,1.5vw,14px)",color:"#e0d0a0",lineHeight:2,marginBottom:20,fontStyle:"italic",padding:"0 4px",maxHeight:200,overflowY:"auto"}}>{dil.txt}</div>
-              <div style={{display:"flex",flexDirection:"column",gap:10}}>
-                {dil.c.map((ch,ci)=>{
-                  const isAshtanga=!!dil.ashtanga;
-                  const btnBg=isAshtanga?"rgba(200,160,60,.08)":ch.k==="punya"?"rgba(200,160,60,.1)":"rgba(180,50,20,.1)";
-                  const btnBorder=isAshtanga?"rgba(200,160,60,.3)":ch.k==="punya"?"rgba(220,180,80,.4)":"rgba(200,60,30,.4)";
-                  const btnColor=isAshtanga?"#e0c860":ch.k==="punya"?"#f0d050":"#e08040";
-                  return <button key={ci} onClick={()=>solvD(ci)} style={{display:"block",width:"100%",background:btnBg,border:`2px solid ${btnBorder}`,color:btnColor,padding:"14px 16px",fontSize:"clamp(12px,1.4vw,14px)",fontFamily:"'Cinzel',serif",cursor:"pointer",textAlign:"left",lineHeight:1.7,borderRadius:6,transition:"all .2s",letterSpacing:1}}>
-                    {ch.l}
-                  </button>})}
-              </div>
-              <div style={{textAlign:"center",marginTop:14,fontSize:9,opacity:.25,letterSpacing:2}}>CHOOSE YOUR PATH WISELY</div>
             </div>
           </div>}
           {/* ══ CHITRAGUPTA'S AGRASANDHANI — the living ledger ══ */}
@@ -2164,6 +2150,37 @@ export default function MokshaPatam108(){
           </div>
         </div>}
       </div>
+      {/* ── DHARMA DILEMMA popup — fixed overlay, works on all screen sizes ── */}
+      {dil&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.85)",zIndex:250,display:"flex",alignItems:"flex-end",justifyContent:"center",padding:0,overflowY:"auto"}}>
+        <div style={{background:"linear-gradient(180deg,#2a2015,#12100a)",border:"2px solid rgba(220,180,80,.3)",borderTop:"none",borderRadius:isMobile?"16px 16px 0 0":8,padding:isMobile?"20px 16px max(20px,env(safe-area-inset-bottom,20px))":"clamp(20px,4vw,32px)",maxWidth:480,width:"100%",boxShadow:"0 0 80px rgba(200,160,60,.15)",animation:"dharmaIn .5s ease forwards",position:"relative",maxHeight:"92vh",overflowY:"auto"}}>
+          <div style={{width:40,height:3,background:"linear-gradient(90deg,transparent,rgba(220,180,80,.5),transparent)",margin:isMobile?"0 auto 14px":"0 auto 0",display:isMobile?"block":"none"}}/>
+          <div style={{textAlign:"center",marginBottom:16}}>
+            <div style={{fontSize:48,marginBottom:6,filter:"drop-shadow(0 0 15px rgba(200,160,60,.4))"}}>⚖</div>
+            <div style={{fontSize:8,letterSpacing:5,color:"#d0b870",opacity:.6,fontWeight:700,marginBottom:4}}>DHARMA DILEMMA</div>
+            <div style={{fontSize:"clamp(18px,4vw,24px)",fontFamily:"'Yatra One',serif",color:"#f0d050",letterSpacing:2}}>{dil.t}</div>
+            <div style={{fontSize:13,color:"#d0b870",fontWeight:700,marginTop:4,letterSpacing:1}}>{dil.en}</div>
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",background:"rgba(200,160,60,.06)",border:"1px solid rgba(200,160,60,.12)",borderRadius:4,marginBottom:16}}>
+            <span style={{fontSize:24}}>{players[dil.pi]?.char?.icon}</span>
+            <div>
+              <div style={{fontSize:13,color:players[dil.pi]?.char?.color,fontWeight:700}}>{players[dil.pi]?.name}</div>
+              <div style={{fontSize:10,opacity:.5}}>{players[dil.pi]?.char?.name} · Square {pos[dil.pi]||1} · पुण्य {punya[dil.pi]||0} · पाप {papa[dil.pi]||0}</div>
+            </div>
+          </div>
+          <div style={{fontSize:"clamp(12px,1.5vw,14px)",color:"#e0d0a0",lineHeight:2,marginBottom:20,fontStyle:"italic",padding:"0 4px",maxHeight:160,overflowY:"auto"}}>{dil.txt}</div>
+          <div style={{display:"flex",flexDirection:"column",gap:10}}>
+            {dil.c.map((ch,ci)=>{
+              const isAshtanga=!!dil.ashtanga;
+              const btnBg=isAshtanga?"rgba(200,160,60,.08)":ch.k==="punya"?"rgba(200,160,60,.1)":"rgba(180,50,20,.1)";
+              const btnBorder=isAshtanga?"rgba(200,160,60,.3)":ch.k==="punya"?"rgba(220,180,80,.4)":"rgba(200,60,30,.4)";
+              const btnColor=isAshtanga?"#e0c860":ch.k==="punya"?"#f0d050":"#e08040";
+              return <button key={ci} onClick={()=>solvD(ci)} style={{display:"block",width:"100%",background:btnBg,border:`2px solid ${btnBorder}`,color:btnColor,padding:"16px",fontSize:"clamp(12px,1.4vw,14px)",fontFamily:"'Cinzel',serif",cursor:"pointer",textAlign:"left",lineHeight:1.7,borderRadius:6,transition:"all .2s",letterSpacing:1,minHeight:isMobile?56:0}}>
+                {ch.l}
+              </button>})}
+          </div>
+          <div style={{textAlign:"center",marginTop:14,fontSize:9,opacity:.25,letterSpacing:2}}>CHOOSE YOUR PATH WISELY</div>
+        </div>
+      </div>}
       {/* Mobile: ☰ Menu bottom sheet */}
       {isMobile&&showMobileMenu&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.7)",zIndex:200}} onClick={()=>setShowMobileMenu(false)}>
         <div className="mb-sheet" onClick={e=>e.stopPropagation()} style={{maxHeight:"70vh"}}>
