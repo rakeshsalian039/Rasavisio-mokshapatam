@@ -85,7 +85,12 @@ const CSS=`
 .gb:hover{background:rgba(200,160,60,.08);border-color:rgba(240,200,80,.6)}
 .gp{background:linear-gradient(180deg,rgba(200,160,60,.2),rgba(200,160,60,.08));border-color:rgba(200,160,60,.5)}
 .gp:hover{box-shadow:0 0 25px rgba(240,200,80,.12)}
+.gb:active{opacity:.7;transform:scale(.97) !important}
+.mb-roll{position:fixed;bottom:0;left:0;right:0;padding:12px 16px;padding-bottom:max(12px,env(safe-area-inset-bottom,12px));background:linear-gradient(0deg,#0c0a07 80%,transparent);border-top:1px solid rgba(200,160,60,.25);z-index:100;display:flex;flex-direction:column;gap:6px}
+@keyframes sheetUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+.mb-sheet{position:fixed;bottom:0;left:0;right:0;background:#1a1408;border-top:2px solid rgba(200,160,60,.35);border-radius:16px 16px 0 0;padding:16px 16px max(16px,env(safe-area-inset-bottom,16px));z-index:120;animation:sheetUp .25s ease;max-height:50vh;overflow-y:auto}
 `;
+function useIsMobile(){const[m,setM]=useState(window.innerWidth<640);useEffect(()=>{const fn=()=>setM(window.innerWidth<640);window.addEventListener('resize',fn);return()=>window.removeEventListener('resize',fn)},[]);return m}
 const PG={minHeight:"100vh",background:"linear-gradient(170deg,#0c0a07,#1a1408,#0c0a07)",fontFamily:"'Cinzel',serif",color:"#e8c850",position:"relative",overflow:"hidden"};
 
 // ═══ AUTH HOOK ═══
@@ -418,6 +423,7 @@ export default function MokshaPatam108(){
   const[shieldA,setShieldA]=useState([]);
   const[skipA,setSkipA]=useState([]);
   const[hov,setHov]=useState(null);
+  const[tapInfo,setTapInfo]=useState(null);
   const[rv,setRv]=useState(null);
   const[gv,setGv]=useState(null);
   const[msg,setMsg]=useState("");
@@ -1749,6 +1755,7 @@ export default function MokshaPatam108(){
   }
   if(screen!=="game"||players.length===0)return null;
   const cp=players[cur]||players[0];
+  const isMobile=useIsMobile();
   const hd=hov?(SNAKES[hov]?{type:"𓆙 NĀGA",label:`${SNAKES[hov].skt} — ${SNAKES[hov].en}`,desc:SNAKES[hov].tale,to:`Falls to ${SNAKES[hov].to}`,cl:"#e08040"}:LADDERS[hov]?{type:"🪔 VIRTUE",label:`${LADDERS[hov].skt} — ${LADDERS[hov].en}`,desc:LADDERS[hov].tale,to:`Rises to ${LADDERS[hov].to}`,cl:"#f0d050"}:DLM_SQ.includes(hov)?{type:"⚖ DHARMA",label:"Moral crossroads",desc:"A dilemma from the Mahābhārata.",cl:"#d0b870"}:hov===108?{type:"ॐ MOKSHA",label:"Square 108 — Liberation",desc:"The 108th square. Punya must ≥ Papa. The sacred number of the cosmos.",cl:"#f0d050"}:hov>100?{type:`${SACRED_PATH[hov-101]?.icon} ${SACRED_PATH[hov-101]?.en}`,label:`${SACRED_PATH[hov-101]?.skt} — ${SACRED_PATH[hov-101]?.desc}`,desc:"The Ashtanga Marga — 8-fold path of Patanjali. Only the purest souls walk here.",cl:"#f0d050"}:null):null;
 
   return(
@@ -1781,8 +1788,8 @@ export default function MokshaPatam108(){
           </button>:<button onClick={()=>setShowProfile(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.15)",color:"#8a7a50",padding:"3px 10px",fontSize:10,cursor:"pointer",borderRadius:16,fontFamily:"'Cinzel',serif"}}>Sign In</button>}
         </div>
         <div style={{display:"flex",justifyContent:"center",gap:10,marginTop:6,flexWrap:"wrap"}}>
-          <button onClick={()=>setShowGuide(true)} style={{background:"rgba(200,160,60,.08)",border:"1px solid rgba(200,160,60,.25)",color:"#e8c850",padding:"5px 14px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2}}>📜 How to Play</button>
-          <button onClick={()=>setShowInfo(true)} style={{background:"rgba(200,160,60,.08)",border:"1px solid rgba(200,160,60,.25)",color:"#e8c850",padding:"5px 14px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2}}>📖 Encyclopaedia</button>
+          <button onClick={()=>setShowGuide(true)} style={{background:"rgba(200,160,60,.08)",border:"1px solid rgba(200,160,60,.25)",color:"#e8c850",padding:isMobile?"8px 12px":"5px 14px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2,minWidth:44,minHeight:44}}>{isMobile?"📜":"📜 How to Play"}</button>
+          <button onClick={()=>setShowInfo(true)} style={{background:"rgba(200,160,60,.08)",border:"1px solid rgba(200,160,60,.25)",color:"#e8c850",padding:isMobile?"8px 12px":"5px 14px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2,minWidth:44,minHeight:44}}>{isMobile?"📖":"📖 Encyclopaedia"}</button>
         </div>
         <div style={{fontSize:8,letterSpacing:5,opacity:.3,color:"#c0b080",marginTop:4}}>{rlm(pos[cur]||1)==="bhuloka"?"भूलोक EARTHLY":rlm(pos[cur]||1)==="antarloka"?"अन्तर्लोक INNER":rlm(pos[cur]||1)==="moksha_path"?"अष्टांग मार्ग SACRED PATH":"स्वर्गलोक CELESTIAL"}</div>
         <div style={{marginTop:4}}><InstaBadge/></div>
@@ -1790,7 +1797,7 @@ export default function MokshaPatam108(){
       <div style={{background:"linear-gradient(90deg,transparent,rgba(30,24,14,.6),transparent)",borderTop:"1px solid rgba(200,160,60,.2)",borderBottom:"1px solid rgba(200,160,60,.2)",padding:"8px 14px",marginBottom:8,textAlign:"center",fontSize:"clamp(10px,1.4vw,12px)",maxWidth:780,width:"100%",fontStyle:"italic",lineHeight:1.7,color:"#c0b080"}}>{msg}</div>
       <div style={{display:"flex",gap:14,flexWrap:"wrap",justifyContent:"center",width:"100%",maxWidth:1140}}>
         {/* BOARD */}
-        <div style={{flex:"1 1 340px",maxWidth:720,minWidth:300}}>
+        <div style={{flex:"1 1 340px",maxWidth:isMobile?"100%":720,minWidth:300,width:isMobile?"100%":undefined}}>
           <div style={{border:"2px solid rgba(200,160,60,.3)",background:"radial-gradient(ellipse at 30% 30%,rgba(60,45,20,.2),transparent 50%),radial-gradient(ellipse at 70% 70%,rgba(60,45,20,.15),transparent 50%),#1e1810",boxShadow:"0 0 60px rgba(0,0,0,.5),inset 0 0 40px rgba(0,0,0,.3)",borderRadius:2,overflow:"hidden"}}>
             {/* ═══ SACRED CROWN — Ashtanga Marga (101-108) ═══ */}
             <div style={{position:"relative",background:"linear-gradient(180deg,rgba(240,200,80,.08),rgba(20,16,10,.3))",borderBottom:"2px solid rgba(240,200,80,.25)",padding:"6px 4px 4px",overflow:"hidden"}}>
@@ -1805,7 +1812,7 @@ export default function MokshaPatam108(){
                   const ph=[];for(let i=0;i<nP;i++){if((pos[i]||1)===sq.num)ph.push(i)}
                   const isMoksha=sq.num===108;
                   const stepIdx=sq.num-101;
-                  return(<div key={sq.num} onMouseEnter={()=>setHov(sq.num)} onMouseLeave={()=>setHov(null)} style={{aspectRatio:"1",background:isMoksha?"radial-gradient(circle,rgba(240,200,80,.2),rgba(240,200,80,.04))":"radial-gradient(circle,rgba(240,200,80,.06),transparent)",border:`1px solid ${hov===sq.num?"rgba(240,200,80,.7)":isMoksha?"rgba(240,200,80,.4)":"rgba(240,200,80,.12)"}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .3s",borderRadius:isMoksha?4:2,animation:isMoksha?"mp 3s ease infinite":"sacredGlow 4s ease infinite",animationDelay:`${stepIdx*0.3}s`,boxShadow:isMoksha?"0 0 20px rgba(240,200,80,.15)":"none"}}>
+                  return(<div key={sq.num} onMouseEnter={()=>!isMobile&&setHov(sq.num)} onMouseLeave={()=>!isMobile&&setHov(null)} onClick={()=>{if(isMobile){setHov(h=>h===sq.num?null:sq.num)}}} style={{aspectRatio:"1",background:isMoksha?"radial-gradient(circle,rgba(240,200,80,.2),rgba(240,200,80,.04))":"radial-gradient(circle,rgba(240,200,80,.06),transparent)",border:`1px solid ${hov===sq.num?"rgba(240,200,80,.7)":isMoksha?"rgba(240,200,80,.4)":"rgba(240,200,80,.12)"}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .3s",borderRadius:isMoksha?4:2,animation:isMoksha?"mp 3s ease infinite":"sacredGlow 4s ease infinite",animationDelay:`${stepIdx*0.3}s`,boxShadow:isMoksha?"0 0 20px rgba(240,200,80,.15)":"none"}}>
                     <span style={{position:"absolute",top:1,left:2,fontSize:"clamp(6px,1vw,9px)",color:"rgba(240,210,130,.5)",fontWeight:700}}>{sq.num}</span>
                     {/* Custom SVG icon for each step */}
                     <svg width="clamp(20px,3.5vw,32px)" height="clamp(20px,3.5vw,32px)" viewBox="0 0 24 24" fill="none" style={{marginBottom:2}}>
@@ -1890,7 +1897,7 @@ export default function MokshaPatam108(){
                 else if(sn){bg="radial-gradient(circle,rgba(180,60,20,.2),transparent)";bdr="rgba(180,60,20,.3)"}
                 else if(ld){bg="radial-gradient(circle,rgba(200,160,60,.15),transparent)";bdr="rgba(200,160,60,.2)"}
                 else if(dl){bg="radial-gradient(circle,rgba(120,80,180,.2),transparent)";bdr="rgba(140,100,200,.35)"}
-                return(<div key={num} onMouseEnter={()=>setHov(num)} onMouseLeave={()=>setHov(null)} style={{aspectRatio:"1",background:bg,border:`0.5px solid ${hov===num?"rgba(240,200,80,.6)":bdr}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .2s"}}>
+                return(<div key={num} onMouseEnter={()=>!isMobile&&setHov(num)} onMouseLeave={()=>!isMobile&&setHov(null)} onClick={()=>{if(isMobile){setHov(h=>h===num?null:num)}}} style={{aspectRatio:"1",background:bg,border:`0.5px solid ${hov===num?"rgba(240,200,80,.6)":bdr}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .2s"}}>
                   <span style={{position:"absolute",top:1,left:2,fontSize:"clamp(7px,1.2vw,11px)",color:"rgba(240,210,130,.5)",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:700}}>{num}</span>
                   {mk&&<span style={{fontSize:"clamp(14px,2.5vw,22px)",animation:"mp 3s ease infinite",color:"#f0d050"}}>ॐ</span>}
                   {sn&&<><span style={{fontSize:"clamp(10px,2vw,16px)",lineHeight:1}}>𓆙</span><span style={{fontSize:"clamp(7px,1.2vw,11px)",color:"#ffb040",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 1px 4px #000,0 0 12px rgba(180,60,20,.5)"}}>{sn.skt}</span><span style={{fontSize:"clamp(5px,.9vw,8px)",color:"#ffa040",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1.1,textShadow:"0 0 6px #000,0 0 10px rgba(180,60,20,.4)"}}>{sn.en}</span></>}
@@ -1899,8 +1906,8 @@ export default function MokshaPatam108(){
                   {ph.length>0&&<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",gap:2,zIndex:15,pointerEvents:"none"}}>
                     {ph.map(pi=>{const c=players[pi]?.char;const isMoving=pi===cur&&busy;const isActive=pi===cur;const pc=c?.color||"#fff";return <div key={pi} style={{display:"flex",flexDirection:"column",alignItems:"center",transition:"all .3s ease",transform:isMoving?"scale(1.6) translateY(-6px)":isActive?"scale(1.25)":"scale(0.9)",zIndex:isActive?20:15}}>
                       {isActive&&<div style={{position:"absolute",inset:-2,borderRadius:4,background:`${pc}15`,border:`1.5px solid ${pc}40`,animation:"activeGlow 1.5s ease infinite","--pc":pc}}/>}
-                      <div style={{width:"clamp(20px,3.2vw,30px)",height:"clamp(20px,3.2vw,30px)",borderRadius:"50%",background:`radial-gradient(circle at 35% 30%,${pc},${pc}40 70%,#0c0a07)`,border:`2.5px solid ${pc}`,boxShadow:`0 0 ${isMoving?20:isActive?12:5}px ${pc}${isMoving?"dd":isActive?"99":"30"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"clamp(11px,2vw,17px)",lineHeight:1,animation:isActive&&!isMoving?"activeGlow 1.5s ease infinite":"none","--pc":pc}}>{c?.icon}</div>
-                      <div style={{fontSize:"clamp(5px,.8vw,8px)",color:pc,fontWeight:900,marginTop:1,textShadow:`0 0 4px #000,0 0 8px #000,0 0 12px ${pc}40`,whiteSpace:"nowrap",letterSpacing:1,opacity:isActive?1:.7}}>{players[pi]?.name?.slice(0,6)}</div>
+                      <div style={{width:isMobile?"clamp(22px,6vw,28px)":"clamp(20px,3.2vw,30px)",height:isMobile?"clamp(22px,6vw,28px)":"clamp(20px,3.2vw,30px)",borderRadius:"50%",background:`radial-gradient(circle at 35% 30%,${pc},${pc}40 70%,#0c0a07)`,border:`2.5px solid ${pc}`,boxShadow:`0 0 ${isMoving?20:isActive?12:5}px ${pc}${isMoving?"dd":isActive?"99":"30"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"clamp(11px,2vw,17px)",lineHeight:1,animation:isActive&&!isMoving?"activeGlow 1.5s ease infinite":"none","--pc":pc}}>{c?.icon}</div>
+                      {!isMobile&&<div style={{fontSize:"clamp(5px,.8vw,8px)",color:pc,fontWeight:900,marginTop:1,textShadow:`0 0 4px #000,0 0 8px #000,0 0 12px ${pc}40`,whiteSpace:"nowrap",letterSpacing:1,opacity:isActive?1:.7}}>{players[pi]?.name?.slice(0,6)}</div>}
                     </div>})}
                   </div>}
                 </div>);
@@ -1927,7 +1934,7 @@ export default function MokshaPatam108(){
           </div>
         </div>
         {/* PANEL */}
-        <div style={{flex:"0 1 310px",display:"flex",flexDirection:"column",gap:8,minWidth:"clamp(250px,40vw,310px)",maxWidth:360}}>
+        {!isMobile&&<div style={{flex:"0 1 310px",display:"flex",flexDirection:"column",gap:8,minWidth:"clamp(250px,40vw,310px)",maxWidth:360}}>
           <div style={{borderTop:"1px solid rgba(200,160,60,.15)",padding:8,textAlign:"center",opacity:shF?.7:0,transition:"opacity .8s"}}>
             <div style={{fontSize:"clamp(11px,1.5vw,13px)",fontFamily:"'Noto Serif Devanagari',serif",lineHeight:1.9,color:"#f0d050"}}>{shl.s}</div>
             <div style={{fontSize:8,opacity:.35,fontFamily:"'Noto Serif Devanagari',serif"}}>{shl.r}</div>
@@ -1952,9 +1959,10 @@ export default function MokshaPatam108(){
                 <div><div style={{fontSize:9,fontWeight:700,color:gv.color,letterSpacing:2}}>{gv.n} · {gv.en.toUpperCase()}</div><div style={{fontSize:11,color:"#e0d0a0"}}>{gv.desc}</div></div>
               </div>
             </div>}
-            <button onClick={doRoll} disabled={!!dil||busy} className="gb gp" style={{width:"100%",padding:"clamp(10px,1.5vw,14px)",fontSize:"clamp(14px,2vw,16px)",letterSpacing:4}}>
+            {!isMobile&&<button onClick={doRoll} disabled={!!dil||busy} className="gb gp" style={{width:"100%",padding:"clamp(10px,1.5vw,14px)",fontSize:"clamp(14px,2vw,16px)",letterSpacing:4}}>
               {busy?"Rolling...":"Roll Dice"}
-            </button>
+            </button>}
+            {isMobile&&!win&&<div style={{height:88}}/>}{/* spacer for sticky bar */}
             {/* Donate / Feedback — subtle */}
             <button onClick={()=>setShowPostGame(true)} style={{
               width:"100%",marginTop:6,background:"transparent",
@@ -2091,8 +2099,33 @@ export default function MokshaPatam108(){
             <InstaBadge/>
             <div style={{fontSize:9,color:"#6a5a38",letterSpacing:1,marginTop:3}}>© {new Date().getFullYear()} RasaVisio · Moksha Patam 108 · All rights reserved</div>
           </div>
-        </div>
+        </div>}
       </div>
+      {/* Mobile: Square info bottom sheet */}
+      {isMobile&&hov&&hd&&<div className="mb-sheet" onClick={()=>setHov(null)}>
+        <div style={{width:40,height:4,background:"rgba(200,160,60,.3)",borderRadius:2,margin:"0 auto 12px"}} onClick={e=>e.stopPropagation()}/>
+        <div style={{fontSize:8,opacity:.5,letterSpacing:3,color:hd.cl,fontWeight:700,marginBottom:4}}>{hd.type}</div>
+        <div style={{fontSize:16,fontWeight:700,margin:"4px 0",fontFamily:"'Noto Serif Devanagari',serif",color:"#f0d050"}}>{hd.label}</div>
+        <div style={{fontSize:12,fontStyle:"italic",lineHeight:1.8,color:"#c0b080"}}>{hd.desc}</div>
+        {hd.to&&<div style={{fontSize:11,opacity:.6,marginTop:6,color:hd.cl,fontWeight:700}}>{hd.to}</div>}
+      </div>}
+      {/* Mobile: Sticky dice roll bar */}
+      {isMobile&&!win&&<div className="mb-roll">
+        <div style={{display:"flex",alignItems:"center",gap:10,background:"rgba(20,16,10,.95)",border:`1px solid ${cp.char.color}30`,borderRadius:8,padding:"8px 12px"}}>
+          <span style={{fontSize:22}}>{cp.char.icon}</span>
+          <div style={{flex:1}}>
+            <div style={{fontSize:12,color:cp.char.color,fontWeight:700}}>{cp.name}</div>
+            <div style={{fontSize:10,opacity:.5}}>Square {pos[cur]||1}{rv&&!busy?` · Rolled ${rv}`:""}</div>
+          </div>
+          {rv&&gv&&!busy&&<div style={{display:"flex",gap:6,alignItems:"center"}}>
+            <div style={{width:32,height:32,border:"1.5px solid rgba(200,160,60,.4)",borderRadius:4,background:"#12100a",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,color:"#f0d050"}}>{rv}</div>
+            <div style={{width:32,height:32,border:"1.5px solid rgba(150,120,60,.3)",borderRadius:4,background:"#12100a",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,color:gv.color}}>{gv.icon}</div>
+          </div>}
+        </div>
+        <button onClick={doRoll} disabled={!!dil||busy} className="gb gp" style={{width:"100%",padding:16,fontSize:16,letterSpacing:3}}>
+          {busy?"Rolling...":"🎲 Roll Dice"}
+        </button>
+      </div>}
     </div>
   );
 }
