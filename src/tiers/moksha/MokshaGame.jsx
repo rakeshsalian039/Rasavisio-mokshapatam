@@ -176,7 +176,7 @@ function useAuth(){
     return()=>{clearTimeout(timeout);subscription.unsubscribe()};
   },[]);
   const signInGoogle=useCallback(async()=>{
-    if(!supabase){alert("Supabase not configured. Set REACT_APP_SUPABASE_URL and REACT_APP_SUPABASE_ANON_KEY in Vercel env vars.");return}
+    if(!supabase){alert("Sign-in unavailable. Please continue as guest.");return}
     try{const{error}=await supabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.origin}});if(error){console.error("Google sign-in error:",error);alert("Google sign-in failed: "+error.message)}}catch(e){console.error("Sign-in error:",e);alert("Sign-in error: "+e.message)}
   },[]);
   const signOut=useCallback(async()=>{if(!supabase)return;await supabase.auth.signOut();setUser(null);setProfile(null)},[]);
