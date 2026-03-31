@@ -17,10 +17,11 @@ import { SNAKES_BALA, LADDERS_BALA, BALA_WIN_SQUARE } from './bala.constants.js'
 
 // Square color by realm
 const sqColor = (n) => {
-  if (n === BALA_WIN_SQUARE) return { bg:'#ffd700', border:'#ff8c00', text:'#8b4513' };
-  if (n <= 24) return { bg:'#fff9e6', border:'#ffd54f', text:'#e65100' };
-  if (n <= 48) return { bg:'#e3f2fd', border:'#64b5f6', text:'#1565c0' };
-  return { bg:'#e8f5e9', border:'#81c784', text:'#2e7d32' };
+  if (n === BALA_WIN_SQUARE || n === 108) return {bg:'radial-gradient(circle,#3d2800,#5c3a00)',border:'#f0a500',text:'#f0a500'};
+  if (n <= 27) return {bg:'#1b3d18',border:'#3a6b2a',text:'rgba(200,240,150,.6)'};
+  if (n <= 54) return {bg:'#112a4a',border:'#2a5580',text:'rgba(150,200,255,.6)'};
+  if (n <= 81) return {bg:'#3d1a0e',border:'#7a3520',text:'rgba(255,180,150,.6)'};
+  return {bg:'#3d2a00',border:'#8a5c00',text:'rgba(255,215,100,.6)'};
 };
 
 // Small animal emoji for snake squares
@@ -58,11 +59,11 @@ export default function BalaBoard({ players, pos, cur, win }) {
         gridTemplateColumns: `repeat(${COLS}, ${sqSize})`,
         gridTemplateRows: `repeat(${ROWS}, ${sqSize})`,
         gap: 3,
-        background: 'linear-gradient(135deg, #fff8e1, #e3f2fd)',
+        background: 'linear-gradient(170deg,#1a0d00,#2a1505)',
         borderRadius: 16,
         padding: 8,
-        border: '3px solid rgba(255,200,50,.5)',
-        boxShadow: '0 8px 32px rgba(0,0,0,.12)',
+        border: '3px solid rgba(240,165,0,.25)',
+        boxShadow: '0 8px 32px rgba(0,0,0,.4)',
         justifyContent: 'center',
       }}>
         {squares.map(({ n, row, col }) => {
@@ -89,7 +90,7 @@ export default function BalaBoard({ players, pos, cur, win }) {
                   : isSnake ? `${colors.bg}`
                   : isLadder ? `${colors.bg}`
                   : colors.bg,
-                border: `2px solid ${hov === n ? '#ff8c00' : isWin ? '#ff8c00' : colors.border}`,
+                border: `2px solid ${hov === n ? '#f0a500' : isWin ? '#f0a500' : colors.border}`,
                 borderRadius: isWin ? 12 : 8,
                 display: 'flex',
                 flexDirection: 'column',
@@ -99,7 +100,7 @@ export default function BalaBoard({ players, pos, cur, win }) {
                 cursor: 'pointer',
                 transition: 'transform .15s, box-shadow .15s',
                 transform: hov === n ? 'scale(1.08)' : 'scale(1)',
-                boxShadow: isActive ? `0 0 0 3px #ff8c00, 0 4px 12px rgba(0,0,0,.2)` : isWin ? '0 0 16px #ffd70080' : 'none',
+                boxShadow: isActive ? `0 0 0 3px #f0a500, 0 4px 12px rgba(0,0,0,.4)` : isWin ? '0 0 16px rgba(240,165,0,.5)' : 'none',
                 overflow: 'hidden',
               }}
             >
@@ -110,7 +111,7 @@ export default function BalaBoard({ players, pos, cur, win }) {
                 fontSize: 'clamp(7px,1vw,10px)',
                 color: colors.text,
                 fontWeight: 700,
-                fontFamily: "'Nunito', sans-serif",
+                fontFamily: isWin ? "'Cinzel Decorative', serif" : "'Baloo 2', sans-serif",
                 opacity: .7,
               }}>{n}</div>
 
@@ -162,12 +163,13 @@ export default function BalaBoard({ players, pos, cur, win }) {
       <div style={{
         position: 'absolute',
         top: 8, left: '50%', transform: 'translateX(-50%)',
-        background: 'linear-gradient(135deg, #ffd700, #ff8c00)',
+        background: 'linear-gradient(135deg, #3d2800, #6a4500)',
         borderRadius: 20, padding: '2px 12px',
-        fontSize: 10, fontFamily: "'Nunito', sans-serif",
-        fontWeight: 800, color: '#fff',
-        boxShadow: '0 2px 8px rgba(255,140,0,.4)',
+        fontSize: 10, fontFamily: "'Cinzel Decorative', serif",
+        fontWeight: 800, color: '#f0a500',
+        boxShadow: '0 2px 8px rgba(240,165,0,.3)',
         letterSpacing: 1, whiteSpace: 'nowrap',
+        border: '1px solid rgba(240,165,0,.3)',
       }}>
         🌟 Garden of Stars — Square 72 🌟
       </div>
@@ -187,10 +189,11 @@ function BalaNagaSvg({ players, pos }) {
           <path
             d={`M ${getGridX(from)} ${getGridY(from)} Q ${(getGridX(from)+getGridX(to))/2+5} ${(getGridY(from)+getGridY(to))/2-8} ${getGridX(to)} ${getGridY(to)}`}
             fill="none"
-            stroke="rgba(255,80,50,.4)"
+            stroke="rgba(200,60,20,.5)"
             strokeWidth="1.2"
             strokeDasharray="3,2"
           />
+          <circle cx={getGridX(from)} cy={getGridY(from)} r="1.5" fill="#c03010" opacity=".7"/>
         </g>
       ))}
     </svg>
@@ -208,7 +211,7 @@ function BalaLadderSvg({ players, pos }) {
           key={from}
           x1={getGridX(from)} y1={getGridY(from)}
           x2={getGridX(to)}   y2={getGridY(to)}
-          stroke="rgba(50,200,100,.45)"
+          stroke="rgba(240,165,0,.5)"
           strokeWidth="1.5"
           strokeDasharray="4,2"
         />
