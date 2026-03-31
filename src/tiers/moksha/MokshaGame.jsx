@@ -1,4 +1,7 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
+const haptic=(style=ImpactStyle.Medium)=>{try{Haptics.impact({style})}catch(e){}};
+
 import HowToPlay    from "../../components/HowToPlay.jsx";
 import Encyclopedia from "../../components/Encyclopedia.jsx";
 import Naga         from "../../components/Naga.jsx";
@@ -706,7 +709,7 @@ export default function MokshaPatam108(){
 
           if(SNAKES[p]){const sn=SNAKES[p];if(nShield[cur]){nShield[cur]=false;eMsg=`𓆙 ${sn.skt} — Shield!`;play("ladder");
             showEvent({icon:"🛡",title:`Shield Saved ${pName}!`,subtitle:`The serpent ${sn.skt} (${sn.en}) struck — but Shukra's shield absorbed the venom! Shield is now gone.`,color:"#d0a0c0",staticKey:"shield_save"},()=>{addCGEntry('punya',p,`${sn.skt} — shield`);speakCG('punya',500);finishTurn(true)});
-          }else{const o=p;p=sn.to;eMsg=`𓆙 ${o}→${p}`;nPapa[cur]+=2;gameStats.current.snakes++;play("snake");play("yamaLaugh");
+          }else{const o=p;p=sn.to;eMsg=`𓆙 ${o}→${p}`;nPapa[cur]+=2;gameStats.current.snakes++;play("snake");play("yamaLaugh");haptic(ImpactStyle.Heavy);
             // Yama taunts the player with voice
             if(!muted){setTimeout(()=>VoiceEngine.playYamaTaunt("snake",chosenLang),800)}
             showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} caught you! ${sn.tale} Dragged from ${o} to ${p}. +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`,staticKey:"snake_hit"},()=>{addCGEntry('snake',p,`${sn.skt} · ${o}→${p}`);speakCG('snake',4000);finishTurn(true)});
@@ -2057,7 +2060,7 @@ export default function MokshaPatam108(){
                 <div><div style={{fontSize:9,fontWeight:700,color:gv.color,letterSpacing:2}}>{gv.n} · {gv.en.toUpperCase()}</div><div style={{fontSize:11,color:"#e0d0a0"}}>{gv.desc}</div></div>
               </div>
             </div>}
-            <button onClick={doRoll} disabled={!!dil||busy} className="gb gp" style={{width:"100%",padding:"clamp(10px,1.5vw,14px)",fontSize:"clamp(14px,2vw,16px)",letterSpacing:4}}>
+            <button onClick={()=>{haptic();doRoll()}} disabled={!!dil||busy} className="gb gp" style={{width:"100%",padding:"clamp(10px,1.5vw,14px)",fontSize:"clamp(14px,2vw,16px)",letterSpacing:4}}>
               {busy?"Rolling...":"Roll Dice"}
             </button>
             {/* Donate / Feedback — subtle */}
@@ -2247,7 +2250,7 @@ export default function MokshaPatam108(){
             <div style={{width:30,height:30,border:`1.5px solid ${gv.color}40`,borderRadius:6,background:"#0c0a07",display:"flex",alignItems:"center",justifyContent:"center",fontSize:17,color:gv.color}}>{gv.icon}</div>
           </div>}
         </div>
-        <button onClick={doRoll} disabled={!!dil||busy} className="gb gp" style={{width:"100%",padding:"14px",fontSize:17,letterSpacing:3,minHeight:52}}>
+        <button onClick={()=>{haptic();doRoll()}} disabled={!!dil||busy} className="gb gp" style={{width:"100%",padding:"14px",fontSize:17,letterSpacing:3,minHeight:52}}>
           {busy?"Rolling…":"🎲 Roll Dice"}
         </button>
       </div>}
