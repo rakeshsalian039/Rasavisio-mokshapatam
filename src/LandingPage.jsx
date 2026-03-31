@@ -2,6 +2,7 @@
 // src/LandingPage.jsx — RasaVisio · Moksha Patam 108
 // ─────────────────────────────────────────────────────────────────────────────
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { version } from '../package.json';
 
 // ── CSS ──────────────────────────────────────────────────────────────────────
 const CSS = `
@@ -1211,7 +1212,7 @@ export default function LandingPage({onSelectTier}){
         <div className="fbot">
           <div className="fcp">© 2024–2026 RasaVisio · All rights reserved</div>
           <div className="fcp" style={{opacity:.55}}>Made in India 🇮🇳 with devotion for Bharat</div>
-          <div className="fcp">Moksha Patam 108</div>
+          <div className="fcp">Moksha Patam 108 <span style={{opacity:.4,fontSize:'11px',letterSpacing:'1px'}}>v{version}</span></div>
         </div>
       </footer>
 
