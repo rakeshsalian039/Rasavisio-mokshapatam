@@ -429,6 +429,7 @@ export default function MokshaPatam108(){
   const[rv,setRv]=useState(null);
   const[gv,setGv]=useState(null);
   const[diceReveal,setDiceReveal]=useState(null);
+  const[lastRollBy,setLastRollBy]=useState(null);
   const[msg,setMsg]=useState("");
   const[dil,setDil]=useState(null);
   const[win,setWin]=useState(null);
@@ -772,7 +773,8 @@ export default function MokshaPatam108(){
 
     // Show graha popup — user dismisses, then movement begins
     // On sacred path: skip graha popup entirely
-    setDiceReveal({r,g});
+    const rollInfo={r,g,name:players[cur]?.name,icon:players[cur]?.char?.icon,color:players[cur]?.char?.color||"#f0d050"};
+    setDiceReveal(rollInfo);setLastRollBy(rollInfo);
     setTimeout(()=>{
       setDiceReveal(null);
       if(onSacredPath){startMovement()}
@@ -1776,17 +1778,22 @@ export default function MokshaPatam108(){
           <button onClick={dismissEvent} style={{marginTop:16,background:"transparent",border:`1px solid ${eventPopup.color}40`,color:eventPopup.color,padding:"8px 24px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2}}>TAP TO CONTINUE ▸</button>
         </div>
       </div>}
-      {diceReveal&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.82)",zIndex:175,display:"flex",alignItems:"center",justifyContent:"center",animation:"fadeIn .15s ease"}}>
-        <div style={{textAlign:"center",animation:"popIn .3s ease forwards",transform:"translate(-50%,-50%)",position:"absolute",top:"50%",left:"50%"}}>
-          <div style={{fontSize:9,letterSpacing:6,color:"#c0b080",opacity:.5,marginBottom:12}}>YOU ROLLED</div>
-          <div style={{width:100,height:100,background:"linear-gradient(135deg,#2a2015,#0c0a07)",border:"3px solid rgba(200,160,60,.6)",borderRadius:16,display:"flex",alignItems:"center",justifyContent:"center",fontSize:64,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,color:"#f0d050",boxShadow:"0 0 40px rgba(240,200,80,.25), inset 0 0 20px rgba(0,0,0,.4)",margin:"0 auto 16px"}}>{diceReveal.r}</div>
-          <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:10,background:`${diceReveal.g.color}15`,border:`1px solid ${diceReveal.g.color}40`,borderRadius:8,padding:"10px 20px"}}>
-            <span style={{fontSize:28}}>{diceReveal.g.icon}</span>
+      {diceReveal&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.88)",zIndex:185,display:"flex",alignItems:"center",justifyContent:"center",animation:"fadeIn .15s ease"}}>
+        <div style={{textAlign:"center",animation:"dharmaIn .3s ease forwards"}}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginBottom:14}}>
+            <span style={{fontSize:22}}>{diceReveal.icon}</span>
+            <span style={{fontSize:14,color:diceReveal.color,fontWeight:700,letterSpacing:1}}>{diceReveal.name}</span>
+            <span style={{fontSize:11,color:"#c0b080",opacity:.5}}>rolled</span>
+          </div>
+          <div style={{width:110,height:110,background:"linear-gradient(135deg,#2a2015,#0c0a07)",border:"3px solid rgba(200,160,60,.7)",borderRadius:18,display:"flex",alignItems:"center",justifyContent:"center",fontSize:72,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,color:"#f0d050",boxShadow:"0 0 50px rgba(240,200,80,.3), inset 0 0 20px rgba(0,0,0,.5)",margin:"0 auto 18px"}}>{diceReveal.r}</div>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:10,background:`${diceReveal.g.color}18`,border:`1px solid ${diceReveal.g.color}50`,borderRadius:10,padding:"12px 20px"}}>
+            <span style={{fontSize:30}}>{diceReveal.g.icon}</span>
             <div style={{textAlign:"left"}}>
-              <div style={{fontSize:13,color:diceReveal.g.color,fontWeight:700,letterSpacing:1}}>{diceReveal.g.n}</div>
-              <div style={{fontSize:10,color:"#c0b080",opacity:.7}}>{diceReveal.g.en}</div>
+              <div style={{fontSize:14,color:diceReveal.g.color,fontWeight:700,letterSpacing:1}}>{diceReveal.g.n}</div>
+              <div style={{fontSize:11,color:"#c0b080",opacity:.7}}>{diceReveal.g.en}</div>
             </div>
           </div>
+          <div style={{fontSize:9,color:"#c0b080",opacity:.3,marginTop:14,letterSpacing:3}}>CALCULATING KARMA…</div>
         </div>
       </div>}
       {turnBanner&&!dil&&<div style={{position:"fixed",inset:0,zIndex:180,display:"flex",alignItems:"center",justifyContent:"center",pointerEvents:"none"}}>
@@ -1992,7 +1999,10 @@ export default function MokshaPatam108(){
             )})}
           </div>
           {rv&&gv&&!busy&&<div style={{margin:"4px 0 6px",background:"linear-gradient(135deg,rgba(36,28,14,.97),rgba(18,14,8,.97))",border:`1px solid ${gv.color}50`,borderLeft:`4px solid ${gv.color}`,borderRadius:8,padding:"12px 14px",animation:"slideUp .3s ease"}}>
-            <div style={{fontSize:8,letterSpacing:4,color:"#c0b080",opacity:.5,marginBottom:8}}>LAST ROLL</div>
+            <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}>
+              {lastRollBy&&<span style={{fontSize:14}}>{lastRollBy.icon}</span>}
+              <span style={{fontSize:8,letterSpacing:3,color:lastRollBy?.color||"#c0b080",fontWeight:700,opacity:.8}}>{lastRollBy?.name||"LAST"} ROLLED</span>
+            </div>
             <div style={{display:"flex",alignItems:"center",gap:14}}>
               <div style={{width:52,height:52,background:"#0c0a07",border:"2px solid rgba(200,160,60,.5)",borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",fontSize:30,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,color:"#f0d050",flexShrink:0}}>{rv}</div>
               <div style={{flex:1}}>
@@ -2007,10 +2017,10 @@ export default function MokshaPatam108(){
               </div>
             </div>
           </div>}
-          {cgEntries.length>0&&<div style={{margin:"0 0 6px",background:"rgba(14,10,6,.9)",border:"1px solid rgba(200,160,60,.1)",borderLeft:"3px solid rgba(200,160,60,.3)",borderRadius:4,padding:"8px 10px"}}>
+          {cgEntries.length>0&&(()=>{const e=cgEntries[cgEntries.length-1];const typeIcon={moksha:"ॐ",snake:"𓆙",ladder:"🪔",punya:"☀",papa:"🌑",dharma_p:"⚖",dharma_x:"⚖",balance:"⚖",reject:"⚠",sacred:"🪷"}[e.type]||"✍";return(<div style={{margin:"0 0 6px",background:"rgba(14,10,6,.9)",border:"1px solid rgba(200,160,60,.1)",borderLeft:"3px solid rgba(200,160,60,.3)",borderRadius:4,padding:"8px 10px"}}>
             <div style={{fontSize:7,letterSpacing:4,color:"#f0d050",opacity:.5,marginBottom:3}}>✍ CHITRAGUPTA'S LEDGER</div>
-            <div style={{fontSize:11,color:"#c0b080",lineHeight:1.7}}>{cgEntries[cgEntries.length-1]}</div>
-          </div>}
+            <div style={{fontSize:11,color:"#c0b080",lineHeight:1.7}}>{typeIcon} Sq {e.sq} — {e.detail}</div>
+          </div>)})()
           <div style={{height:130}}/>{/* spacer for sticky bar */}
         </div>}
         {/* PANEL */}
@@ -2211,7 +2221,7 @@ export default function MokshaPatam108(){
           <div style={{width:34,height:34,borderRadius:"50%",background:`${cp.char.color}20`,border:`1.5px solid ${cp.char.color}50`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0}}>{cp.char.icon}</div>
           <div style={{flex:1,minWidth:0}}>
             <div style={{fontSize:12,color:cp.char.color,fontWeight:700,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{cp.name}{cp.cpu?" ☠️":""}</div>
-            <div style={{fontSize:9,opacity:.45}}>Square {pos[cur]||1}{busy?" · Rolling…":rv&&gv?` · Rolled ${rv} · ${gv.n}`:""}</div>
+            <div style={{fontSize:9,opacity:.45}}>Square {pos[cur]||1}{busy?" · Rolling…":rv&&gv&&lastRollBy?` · ${lastRollBy.name} rolled ${rv}`:""}</div>
           </div>
           {rv&&gv&&!busy&&<div style={{display:"flex",gap:5,alignItems:"center",flexShrink:0}}>
             <div style={{width:30,height:30,border:"1.5px solid rgba(200,160,60,.5)",borderRadius:6,background:"#0c0a07",display:"flex",alignItems:"center",justifyContent:"center",fontSize:17,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,color:"#f0d050"}}>{rv}</div>
