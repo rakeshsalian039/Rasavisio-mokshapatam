@@ -2,10 +2,8 @@
 // src/tiers/moksha/constants.ts
 // Game data for Moksha Patam — Moksha tier
 // ─────────────────────────────────────────────────────────────────────────────
-import type { Dilemma, GrahaEffect } from '../../types/game';
-
 // ═══ DHARMA DILEMMAS ═══
-export const DILEMMAS: Dilemma[] = [
+export const DILEMMAS = [
   {t:"यक्ष-प्रश्न",en:"The Yaksha's Riddle",
     txt:"At the cursed lake of Dvaitavana, a Yaksha (nature spirit) has killed your four brothers for drinking without answering his riddle. He asks: 'What is the greatest wonder in the world?' Answer with the humility of Yudhishthira — that all men see death around them yet live as though immortal — or shove past this guardian and seize the water by force.",
     c:[{l:"🙏 Answer humbly — skip turn, +3 Punya",k:"punya",fx:{punya:3,skip:true}},{l:"💀 Shove past by force — ADVANCE 10, +3 Papa",k:"papa",fx:{papa:3,move:10}}]},
@@ -100,7 +98,7 @@ export const DILEMMAS: Dilemma[] = [
 ];
 
 // ═══ NAVAGRAHA — 9 Planets ═══
-export const GRAHA: GrahaEffect[] = [
+export const GRAHA = [
   {n:"सूर्य",en:"Surya — The Sun",icon:"☀",desc:"The king of planets blazes your path forward. As Surya illuminated Karna with divine armour, his radiance grants you +2 extra steps. The Sun sees all — nothing hides from his gaze.",color:"#f0b840",fx:"sun"},
   {n:"चन्द्र",en:"Chandra — The Moon",icon:"☾",desc:"Chandra, who waxes and wanes like karma itself, bathes you in lunar grace. The Moon purifies — you receive +1 Punya. As Chandra calmed Shiva's burning third eye, his light soothes your soul.",color:"#a0c8e0",fx:"moon"},
   {n:"मंगल",en:"Mangal — Mars",icon:"♂",desc:"Mars, the warrior planet born from Shiva's sweat, fills you with battle fury. The nearest seeker retreats 3 squares. But violence has a price — you gain +1 Papa. Even righteous war leaves karmic scars.",color:"#e07050",fx:"mars"},
