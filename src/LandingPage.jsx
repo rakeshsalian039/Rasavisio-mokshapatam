@@ -2,7 +2,8 @@
 // src/LandingPage.jsx — RasaVisio · Moksha Patam 108
 // ─────────────────────────────────────────────────────────────────────────────
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { version } from '../package.json';
+import pkg from '../package.json';
+const version = pkg.version;
 
 // ── CSS ──────────────────────────────────────────────────────────────────────
 const CSS = `
