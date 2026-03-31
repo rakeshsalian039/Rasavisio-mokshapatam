@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { SplashScreen } from "@capacitor/splash-screen";
 
 const CSS = `
 @keyframes splashFadeIn{0%{opacity:1}100%{opacity:1}}
@@ -37,6 +38,8 @@ export default function AppSplash({ onDone }) {
   const [phase, setPhase] = useState("in"); // "in" | "hold" | "out"
 
   useEffect(() => {
+    // Hide the native Capacitor splash immediately — our React splash takes over
+    SplashScreen.hide({ fadeOutDuration: 0 }).catch(() => {});
     const t1 = setTimeout(() => setPhase("out"), 3000);
     const t2 = setTimeout(() => onDone && onDone(), 3600);
     return () => { clearTimeout(t1); clearTimeout(t2); };
