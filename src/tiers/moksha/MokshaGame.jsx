@@ -443,7 +443,8 @@ export default function MokshaPatam108(){
   const[hist,setHist]=useState([]);
   const[shI,setShI]=useState(0);
   const[shF,setShF]=useState(true);
-  const[muted,setMuted]=useState(false);
+  const[muted,setMuted]=useState(false); // voice muted
+  const[bgMuted,setBgMuted]=useState(false); // bg music + SFX muted
   const[showInfo,setShowInfo]=useState(false);
   const[showGuide,setShowGuide]=useState(false);
   const[showRiddles,setShowRiddles]=useState(false);
@@ -463,14 +464,15 @@ export default function MokshaPatam108(){
 
   const sfx=useSound();
   const ambient=useAmbient();
-  const play=useCallback((t)=>{if(!muted)sfx(t)},[muted,sfx]);
+  const play=useCallback((t)=>{if(!bgMuted)sfx(t)},[bgMuted,sfx]);
 
-  // Toggle mute
+  // Toggle voice only
   const toggleMute=useCallback(()=>{
-    setMuted(m=>{
-      if(!m){ambient.stop();VoiceEngine.stop()}
-      return !m;
-    });
+    setMuted(m=>{if(!m)VoiceEngine.stop();return !m});
+  },[]);
+  // Toggle bg music + SFX
+  const toggleBG=useCallback(()=>{
+    setBgMuted(m=>{if(!m){ambient.stop()}else{ambient.start()};return !m});
   },[ambient]);
 
   // ── Chitragupta helpers ──
@@ -496,13 +498,12 @@ export default function MokshaPatam108(){
     setEventPopup(popup);
     eventCallback.current=onDismiss||null;
     if(!muted&&popup.subtitle){
-      ambient.duck();
+      if(!bgMuted)ambient.duck();
       const lang=chosenLang==='hi'?'hi':'en';
       const tryStatic=()=>{
         if(popup.staticKey){
           const sv=STATIC_VOICES[popup.staticKey];
           if(sv&&sv[lang]){
-            // Use speakNarrator with the static URL — same bass+reverb+drone processing as onboarding
             VoiceEngine.speakNarrator(popup.subtitle,chosenLang,sv[lang]);
             return true;
           }
@@ -512,12 +513,11 @@ export default function MokshaPatam108(){
       voiceTimerRef.current=setTimeout(()=>{
         voiceTimerRef.current=null;
         if(!tryStatic()){
-          // Fall back to dynamic TTS (cached in IndexedDB after first play)
           VoiceEngine.speakNarrator(popup.subtitle,chosenLang,null);
         }
       },200);
     }
-  }, [muted,chosenLang,ambient]);
+  }, [muted,bgMuted,chosenLang,ambient]);
   const dismissEvent = useCallback(() => {
     // Cancel any pending voice timeout + stop any playing voice
     if(voiceTimerRef.current){clearTimeout(voiceTimerRef.current);voiceTimerRef.current=null}
@@ -528,9 +528,9 @@ export default function MokshaPatam108(){
       const cb=eventCallback.current;eventCallback.current=null;
       setTimeout(()=>{cb()},300);
     }else{
-      ambient.unduck();
+      if(!bgMuted)ambient.unduck();
     }
-  }, [ambient]);
+  }, [ambient,bgMuted]);
 
   useEffect(()=>{try{window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices()}catch(e){}},[]);
   useEffect(()=>{const iv=setInterval(()=>{setShF(false);setTimeout(()=>{setShI(i=>(i+1)%SHLOKAS.length);setShF(true)},700)},6e3);return()=>clearInterval(iv)},[]);
@@ -779,7 +779,7 @@ export default function MokshaPatam108(){
       setDiceReveal(null);
       if(onSacredPath){startMovement()}
       else{showEvent({icon:g.icon,title:`${g.n} · ${g.en}`,subtitle:grahaStory,color:g.color,type:"graha",staticKey:GRAHA_STATIC_KEY[g.fx]},startMovement)}
-    },1500);
+    },3000);
   },[cur,nP,dil,win,busy,punya,papa,pos,shieldA,skipA,play,players,showEvent,chosenLang,muted]);
 
   const solvD=(ci)=>{
@@ -1805,13 +1805,14 @@ export default function MokshaPatam108(){
       </div>}
       {isMobile?(
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",width:"100%",padding:"4px 8px 6px",borderBottom:"1px solid rgba(200,160,60,.12)"}}>
-          <button onClick={()=>setShowMobileMenu(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",width:38,height:38,fontSize:16,cursor:"pointer",borderRadius:6,display:"flex",alignItems:"center",justifyContent:"center"}}>☰</button>
+          <button onClick={()=>setShowMobileMenu(true)} style={{background:"rgba(200,160,60,.12)",border:"1.5px solid rgba(200,160,60,.55)",color:"#f0d050",width:38,height:38,fontSize:18,cursor:"pointer",borderRadius:6,display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 0 10px rgba(200,160,60,.12)"}}>☰</button>
           <div style={{textAlign:"center"}}>
             <div style={{fontSize:16,fontFamily:"'Yatra One',serif",letterSpacing:2,color:"#f0d050",lineHeight:1}}>{cp.char.icon} मोक्ष पटम्</div>
             <div style={{fontSize:8,letterSpacing:4,opacity:.4,color:"#c0b080"}}>{rlm(pos[cur]||1)==="bhuloka"?"भूलोक":rlm(pos[cur]||1)==="antarloka"?"अन्तर्लोक":rlm(pos[cur]||1)==="moksha_path"?"अष्टांग मार्ग":"स्वर्गलोक"}</div>
           </div>
           <div style={{display:"flex",gap:6}}>
-            <button onClick={toggleMute} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",width:38,height:38,fontSize:14,cursor:"pointer",borderRadius:6}}>{muted?"🔇":"🔊"}</button>
+            <button onClick={toggleMute} title="Voice" style={{background:muted?"rgba(200,80,60,.12)":"transparent",border:`1px solid ${muted?"rgba(200,80,60,.4)":"rgba(200,160,60,.2)"}`,color:muted?"#e08060":"#c0b080",width:38,height:38,fontSize:14,cursor:"pointer",borderRadius:6}}>{muted?"🔇":"🗣️"}</button>
+            <button onClick={toggleBG} title="Music" style={{background:bgMuted?"rgba(200,80,60,.12)":"transparent",border:`1px solid ${bgMuted?"rgba(200,80,60,.4)":"rgba(200,160,60,.2)"}`,color:bgMuted?"#e08060":"#c0b080",width:38,height:38,fontSize:14,cursor:"pointer",borderRadius:6}}>{bgMuted?"🔕":"🎵"}</button>
             {auth.user?<button onClick={()=>{setShowProfile(true);setProfileTab("overview")}} style={{background:"rgba(240,200,80,.05)",border:"1px solid rgba(200,160,60,.2)",borderRadius:6,cursor:"pointer",width:38,height:38,display:"flex",alignItems:"center",justifyContent:"center"}}>
               {auth.profile?.avatar_url?<img src={auth.profile.avatar_url} alt="" style={{width:26,height:26,borderRadius:"50%"}} referrerPolicy="no-referrer"/>:<span style={{fontSize:16}}>🪷</span>}
             </button>:<button onClick={()=>setShowProfile(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.15)",color:"#8a7a50",width:38,height:38,fontSize:11,cursor:"pointer",borderRadius:6,fontFamily:"'Cinzel',serif"}}>👤</button>}
@@ -1821,7 +1822,8 @@ export default function MokshaPatam108(){
         <div style={{textAlign:"center",marginBottom:4,width:"100%"}}>
           <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:10}}>
             <div onClick={()=>setShowRiddles(true)} style={{fontSize:"clamp(18px,3.5vw,28px)",fontFamily:"'Yatra One',serif",letterSpacing:3,color:"#f0d050",cursor:"pointer"}}>मोक्ष पटम् १०८</div>
-            <button onClick={toggleMute} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"2px 8px",fontSize:12,cursor:"pointer",borderRadius:3}}>{muted?"🔇":"🔊"}</button>
+            <button onClick={toggleMute} title="Voice" style={{background:muted?"rgba(200,80,60,.1)":"transparent",border:`1px solid ${muted?"rgba(200,80,60,.3)":"rgba(200,160,60,.2)"}`,color:muted?"#e08060":"#c0b080",padding:"2px 8px",fontSize:12,cursor:"pointer",borderRadius:3}}>{muted?"🔇":"🗣️"}</button>
+            <button onClick={toggleBG} title="Music" style={{background:bgMuted?"rgba(200,80,60,.1)":"transparent",border:`1px solid ${bgMuted?"rgba(200,80,60,.3)":"rgba(200,160,60,.2)"}`,color:bgMuted?"#e08060":"#c0b080",padding:"2px 8px",fontSize:12,cursor:"pointer",borderRadius:3}}>{bgMuted?"🔕":"🎵"}</button>
             {auth.user?<button onClick={()=>{setShowProfile(true);setProfileTab("overview")}} style={{display:"flex",alignItems:"center",gap:6,padding:"3px 10px 3px 3px",background:"rgba(240,200,80,.05)",border:"1px solid rgba(200,160,60,.15)",borderRadius:16,cursor:"pointer",color:"#e8c850",fontSize:10,fontFamily:"'Cinzel',serif"}}>
               {auth.profile?.avatar_url?<img src={auth.profile.avatar_url} alt="" style={{width:20,height:20,borderRadius:"50%",border:"1px solid rgba(240,200,80,.2)"}} referrerPolicy="no-referrer"/>:<div style={{width:20,height:20,borderRadius:"50%",background:"rgba(240,200,80,.12)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10}}>🪷</div>}
               <span>{(auth.profile?.display_name||auth.user?.user_metadata?.full_name||"").split(" ")[0]||"Profile"}</span>
@@ -1999,9 +2001,12 @@ export default function MokshaPatam108(){
             )})}
           </div>
           {rv&&gv&&!busy&&<div style={{margin:"4px 0 6px",background:"linear-gradient(135deg,rgba(36,28,14,.97),rgba(18,14,8,.97))",border:`1px solid ${gv.color}50`,borderLeft:`4px solid ${gv.color}`,borderRadius:8,padding:"12px 14px",animation:"slideUp .3s ease"}}>
-            <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}>
-              {lastRollBy&&<span style={{fontSize:14}}>{lastRollBy.icon}</span>}
-              <span style={{fontSize:8,letterSpacing:3,color:lastRollBy?.color||"#c0b080",fontWeight:700,opacity:.8}}>{lastRollBy?.name||"LAST"} ROLLED</span>
+            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+              {lastRollBy&&<span style={{fontSize:22}}>{lastRollBy.icon}</span>}
+              <div>
+                <div style={{fontSize:13,color:lastRollBy?.color||"#f0d050",fontWeight:900,letterSpacing:1}}>{lastRollBy?.name||"Player"}</div>
+                <div style={{fontSize:9,letterSpacing:3,color:"#c0b080",opacity:.6,fontWeight:700}}>ROLLED</div>
+              </div>
             </div>
             <div style={{display:"flex",alignItems:"center",gap:14}}>
               <div style={{width:52,height:52,background:"#0c0a07",border:"2px solid rgba(200,160,60,.5)",borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",fontSize:30,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,color:"#f0d050",flexShrink:0}}>{rv}</div>
@@ -2017,10 +2022,13 @@ export default function MokshaPatam108(){
               </div>
             </div>
           </div>}
-          {cgEntries.length>0&&(()=>{const e=cgEntries[cgEntries.length-1];const typeIcon={moksha:"ॐ",snake:"𓆙",ladder:"🪔",punya:"☀",papa:"🌑",dharma_p:"⚖",dharma_x:"⚖",balance:"⚖",reject:"⚠",sacred:"🪷"}[e.type]||"✍";return(<div style={{margin:"0 0 6px",background:"rgba(14,10,6,.9)",border:"1px solid rgba(200,160,60,.1)",borderLeft:"3px solid rgba(200,160,60,.3)",borderRadius:4,padding:"8px 10px"}}>
+          {cgEntries.length>0&&<div style={{margin:"0 0 6px",background:"rgba(14,10,6,.9)",border:"1px solid rgba(200,160,60,.1)",borderLeft:"3px solid rgba(200,160,60,.3)",borderRadius:4,padding:"8px 10px"}}>
             <div style={{fontSize:7,letterSpacing:4,color:"#f0d050",opacity:.5,marginBottom:3}}>✍ CHITRAGUPTA'S LEDGER</div>
-            <div style={{fontSize:11,color:"#c0b080",lineHeight:1.7}}>{typeIcon} Sq {e.sq} — {e.detail}</div>
-          </div>)})()
+            <div style={{fontSize:11,color:"#c0b080",lineHeight:1.7}}>
+              {({moksha:"ॐ",snake:"𓆙",ladder:"🪔",punya:"☀",papa:"🌑",dharma_p:"⚖",dharma_x:"⚖",balance:"⚖",reject:"⚠",sacred:"🪷"})[cgEntries[cgEntries.length-1].type]||"✍"}
+              {" Sq "}{cgEntries[cgEntries.length-1].sq}{" — "}{String(cgEntries[cgEntries.length-1].detail)}
+            </div>
+          </div>}
           <div style={{height:130}}/>{/* spacer for sticky bar */}
         </div>}
         {/* PANEL */}
@@ -2161,7 +2169,7 @@ export default function MokshaPatam108(){
         </div>}
       </div>
       {/* ── DHARMA DILEMMA popup — fixed overlay, works on all screen sizes ── */}
-      {dil&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.85)",zIndex:250,display:"flex",alignItems:"flex-end",justifyContent:"center",padding:0,overflowY:"auto"}}>
+      {dil&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.85)",zIndex:250,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?0:"20px",overflowY:"auto"}}>
         <div style={{background:"linear-gradient(180deg,#2a2015,#12100a)",border:"2px solid rgba(220,180,80,.3)",borderTop:"none",borderRadius:isMobile?"16px 16px 0 0":8,padding:isMobile?"20px 16px max(20px,env(safe-area-inset-bottom,20px))":"clamp(20px,4vw,32px)",maxWidth:480,width:"100%",boxShadow:"0 0 80px rgba(200,160,60,.15)",animation:"dharmaIn .5s ease forwards",position:"relative",maxHeight:"92vh",overflowY:"auto"}}>
           <div style={{width:40,height:3,background:"linear-gradient(90deg,transparent,rgba(220,180,80,.5),transparent)",margin:isMobile?"0 auto 14px":"0 auto 0",display:isMobile?"block":"none"}}/>
           <div style={{textAlign:"center",marginBottom:16}}>
@@ -2196,6 +2204,17 @@ export default function MokshaPatam108(){
         <div className="mb-sheet" onClick={e=>e.stopPropagation()} style={{maxHeight:"70vh"}}>
           <div style={{width:40,height:4,background:"rgba(200,160,60,.3)",borderRadius:2,margin:"0 auto 14px"}}/>
           <div style={{fontSize:9,letterSpacing:5,color:"#f0d050",opacity:.4,textAlign:"center",marginBottom:14}}>MENU</div>
+          {/* Audio toggles */}
+          <div style={{display:"flex",gap:8,marginBottom:10}}>
+            <button onClick={toggleMute} style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:8,background:muted?"rgba(200,80,60,.12)":"rgba(200,160,60,.06)",border:`1.5px solid ${muted?"rgba(200,80,60,.4)":"rgba(200,160,60,.2)"}`,color:muted?"#e08060":"#e8c850",padding:"11px 8px",fontSize:12,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:6,letterSpacing:1}}>
+              <span style={{fontSize:18}}>{muted?"🔇":"🗣️"}</span>
+              <span>{muted?"Voice Off":"Voice On"}</span>
+            </button>
+            <button onClick={toggleBG} style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:8,background:bgMuted?"rgba(200,80,60,.12)":"rgba(200,160,60,.06)",border:`1.5px solid ${bgMuted?"rgba(200,80,60,.4)":"rgba(200,160,60,.2)"}`,color:bgMuted?"#e08060":"#e8c850",padding:"11px 8px",fontSize:12,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:6,letterSpacing:1}}>
+              <span style={{fontSize:18}}>{bgMuted?"🔕":"🎵"}</span>
+              <span>{bgMuted?"Music Off":"Music On"}</span>
+            </button>
+          </div>
           {[["📜","How to Play",()=>{setShowGuide(true);setShowMobileMenu(false)}],["📖","Encyclopaedia",()=>{setShowInfo(true);setShowMobileMenu(false)}],["🔱","Ashtanga Riddles",()=>{setShowRiddles(true);setShowMobileMenu(false)}],["📊","Feedback / Support",()=>{setShowPostGame(true);setShowMobileMenu(false)}]].map(([icon,label,action])=>(
             <button key={label} onClick={action} style={{display:"flex",alignItems:"center",gap:12,width:"100%",background:"rgba(200,160,60,.04)",border:"1px solid rgba(200,160,60,.1)",color:"#e8c850",padding:"13px 16px",fontSize:13,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:6,marginBottom:8,textAlign:"left",letterSpacing:1}}>
               <span style={{fontSize:20,width:28}}>{icon}</span>{label}

@@ -660,7 +660,12 @@ export const VoiceEngine = {
       const arrayBuf = await blob.arrayBuffer();
 
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      if (ctx.state === 'suspended') await ctx.resume();
+      if (ctx.state === 'suspended') {
+        await ctx.resume();
+        // iOS Safari: if context stays suspended after resume (no recent user gesture),
+        // throw so we fall through to the simple Audio element fallback which does work
+        if (ctx.state === 'suspended') throw new Error('AudioContext suspended — no user gesture');
+      }
       this._yamaCtx = ctx; // reuse cleanup ref
 
       const buffer = await ctx.decodeAudioData(arrayBuf);
