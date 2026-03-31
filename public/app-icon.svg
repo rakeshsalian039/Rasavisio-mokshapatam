@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="45%" r="60%">
+      <stop offset="0%" stop-color="#2a1e08"/>
+      <stop offset="60%" stop-color="#0c0a07"/>
+      <stop offset="100%" stop-color="#060504"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f0d050" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#f0d050" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="omGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffe080" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#c08020" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="goldGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1024" height="1024" rx="220" fill="url(#bg)"/>
+
+  <!-- Ambient center glow -->
+  <ellipse cx="512" cy="490" rx="320" ry="300" fill="url(#glow)"/>
+
+  <!-- Outer decorative ring -->
+  <circle cx="512" cy="512" r="460" fill="none" stroke="#c0a030" stroke-width="1.5" stroke-opacity="0.25"/>
+  <circle cx="512" cy="512" r="445" fill="none" stroke="#c0a030" stroke-width="0.8" stroke-opacity="0.12"/>
+
+  <!-- 8 lotus petals -->
+  <g transform="translate(512,512)" fill="none" stroke="#d4a830" stroke-width="1.8" stroke-opacity="0.45">
+    <ellipse rx="48" ry="130" transform="rotate(0)   translate(0,-310)"/>
+    <ellipse rx="48" ry="130" transform="rotate(45)  translate(0,-310)"/>
+    <ellipse rx="48" ry="130" transform="rotate(90)  translate(0,-310)"/>
+    <ellipse rx="48" ry="130" transform="rotate(135) translate(0,-310)"/>
+    <ellipse rx="48" ry="130" transform="rotate(180) translate(0,-310)"/>
+    <ellipse rx="48" ry="130" transform="rotate(225) translate(0,-310)"/>
+    <ellipse rx="48" ry="130" transform="rotate(270) translate(0,-310)"/>
+    <ellipse rx="48" ry="130" transform="rotate(315) translate(0,-310)"/>
+  </g>
+
+  <!-- Inner lotus petals (smaller) -->
+  <g transform="translate(512,512)" fill="rgba(200,160,40,.07)" stroke="#d4a830" stroke-width="1.2" stroke-opacity="0.3">
+    <ellipse rx="30" ry="90" transform="rotate(22.5)  translate(0,-200)"/>
+    <ellipse rx="30" ry="90" transform="rotate(67.5)  translate(0,-200)"/>
+    <ellipse rx="30" ry="90" transform="rotate(112.5) translate(0,-200)"/>
+    <ellipse rx="30" ry="90" transform="rotate(157.5) translate(0,-200)"/>
+    <ellipse rx="30" ry="90" transform="rotate(202.5) translate(0,-200)"/>
+    <ellipse rx="30" ry="90" transform="rotate(247.5) translate(0,-200)"/>
+    <ellipse rx="30" ry="90" transform="rotate(292.5) translate(0,-200)"/>
+    <ellipse rx="30" ry="90" transform="rotate(337.5) translate(0,-200)"/>
+  </g>
+
+  <!-- Cardinal point diamonds -->
+  <g fill="#c8a030" fill-opacity="0.5">
+    <polygon points="512,42  522,56  512,70  502,56"/>
+    <polygon points="982,512 968,522 954,512 968,502"/>
+    <polygon points="512,982 522,968 512,954 502,968"/>
+    <polygon points="42,512  56,522  70,512  56,502"/>
+  </g>
+
+  <!-- Inner circle border -->
+  <circle cx="512" cy="512" r="200" fill="rgba(200,160,40,.04)" stroke="#c8a030" stroke-width="1.5" stroke-opacity="0.3"/>
+
+  <!-- OM glow backdrop -->
+  <ellipse cx="512" cy="505" rx="155" ry="145" fill="url(#omGlow)"/>
+
+  <!-- OM symbol — main -->
+  <text
+    x="512" y="590"
+    text-anchor="middle"
+    font-family="'Noto Serif Devanagari', 'serif'"
+    font-size="320"
+    font-weight="700"
+    fill="#f0d050"
+    filter="url(#softGlow)"
+    opacity="0.95"
+  >ॐ</text>
+
+  <!-- Subtle snake motif — thin coil around OM -->
+  <path d="M 512,290 C 590,285 640,330 645,390 C 650,455 610,500 560,510 C 510,520 470,500 468,460"
+    fill="none" stroke="#c06030" stroke-width="3" stroke-opacity="0.35" stroke-linecap="round"/>
+
+  <!-- App name — bottom -->
+  <text x="512" y="890"
+    text-anchor="middle"
+    font-family="'Cinzel', 'Georgia', serif"
+    font-size="52"
+    font-weight="700"
+    letter-spacing="6"
+    fill="#c8a030"
+    fill-opacity="0.7"
+  >MOKSHA PATAM</text>
+
+  <!-- Dot separators -->
+  <circle cx="232" cy="930" r="3" fill="#c8a030" fill-opacity="0.4"/>
+  <circle cx="792" cy="930" r="3" fill="#c8a030" fill-opacity="0.4"/>
+  <text x="512" y="940"
+    text-anchor="middle"
+    font-family="'Cinzel', serif"
+    font-size="22"
+    letter-spacing="8"
+    fill="#c8a030"
+    fill-opacity="0.35"
+  >१०८</text>
+</svg>

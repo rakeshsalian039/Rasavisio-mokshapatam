@@ -376,10 +376,8 @@ export const VoiceEngine = {
     const myToken = this._stopToken;
 
     let audioUrl = null;
-    // 1. Try static file (instant, zero cost)
-    if (staticUrl) {
-      try { const r=await fetch(staticUrl,{method:'HEAD'}); if(r.ok) audioUrl=staticUrl; } catch(e){}
-    }
+    // 1. Trust the static path directly — HEAD is unreliable on Capacitor's capacitor:// server
+    if (staticUrl) { audioUrl = staticUrl; }
     if (this._stopToken !== myToken || this.speaking) return;
     // 2. Fallback: browser speech (always instant)
     if (!audioUrl) { this._browserSpeak(text, lang); return; }
@@ -630,13 +628,8 @@ export const VoiceEngine = {
 
     let audioUrl = null;
 
-    // 1. Static pre-generated file (highest priority — always free)
-    if (staticUrl) {
-      try {
-        const r = await fetch(staticUrl, { method: 'HEAD' });
-        if (r.ok) { audioUrl = staticUrl; console.log('[Voice] Static:', staticUrl); }
-      } catch(e) {}
-    }
+    // 1. Static pre-generated file (highest priority — trust path directly, HEAD unreliable on Capacitor)
+    if (staticUrl) { audioUrl = staticUrl; }
 
     if (this._stopToken !== myToken) return;
 

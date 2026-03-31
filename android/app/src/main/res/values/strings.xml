@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Moksha Patam 108</string>
+    <string name="title_activity_main">Moksha Patam 108</string>
+    <string name="package_name">com.rasavisio.mokshapatam</string>
+    <string name="custom_url_scheme">com.rasavisio.mokshapatam</string>
+</resources>
