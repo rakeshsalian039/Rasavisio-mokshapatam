@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 const CSS = `
-@keyframes splashFadeIn{0%{opacity:0}100%{opacity:1}}
+@keyframes splashFadeIn{0%{opacity:1}100%{opacity:1}}
 @keyframes splashFadeOut{0%{opacity:1}100%{opacity:0}}
 @keyframes omPulse{0%,100%{text-shadow:0 0 30px rgba(240,200,80,.4),0 0 60px rgba(240,200,80,.2);transform:scale(1)}50%{text-shadow:0 0 60px rgba(240,200,80,.8),0 0 120px rgba(240,200,80,.4),0 0 200px rgba(240,200,80,.15);transform:scale(1.06)}}
 @keyframes omReveal{0%{opacity:0;transform:scale(.3) rotate(-30deg);filter:blur(20px)}60%{opacity:1;transform:scale(1.08) rotate(2deg);filter:blur(0)}100%{opacity:1;transform:scale(1) rotate(0deg)}}
@@ -48,7 +48,7 @@ export default function AppSplash({ onDone }) {
       background: "radial-gradient(ellipse at 50% 40%, #1e180a 0%, #0c0a07 65%, #060504 100%)",
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
       overflow: "hidden",
-      animation: phase === "out" ? "splashFadeOut .6s ease forwards" : "splashFadeIn .4s ease forwards",
+      animation: phase === "out" ? "splashFadeOut .6s ease forwards" : undefined,
     }}>
       <style>{CSS}</style>
 
