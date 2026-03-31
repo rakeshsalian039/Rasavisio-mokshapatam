@@ -424,6 +424,7 @@ export default function MokshaPatam108(){
   const[skipA,setSkipA]=useState([]);
   const[hov,setHov]=useState(null);
   const[tapInfo,setTapInfo]=useState(null);
+  const isMobile=useIsMobile();
   const[rv,setRv]=useState(null);
   const[gv,setGv]=useState(null);
   const[msg,setMsg]=useState("");
@@ -1755,7 +1756,6 @@ export default function MokshaPatam108(){
   }
   if(screen!=="game"||players.length===0)return null;
   const cp=players[cur]||players[0];
-  const isMobile=useIsMobile();
   const hd=hov?(SNAKES[hov]?{type:"𓆙 NĀGA",label:`${SNAKES[hov].skt} — ${SNAKES[hov].en}`,desc:SNAKES[hov].tale,to:`Falls to ${SNAKES[hov].to}`,cl:"#e08040"}:LADDERS[hov]?{type:"🪔 VIRTUE",label:`${LADDERS[hov].skt} — ${LADDERS[hov].en}`,desc:LADDERS[hov].tale,to:`Rises to ${LADDERS[hov].to}`,cl:"#f0d050"}:DLM_SQ.includes(hov)?{type:"⚖ DHARMA",label:"Moral crossroads",desc:"A dilemma from the Mahābhārata.",cl:"#d0b870"}:hov===108?{type:"ॐ MOKSHA",label:"Square 108 — Liberation",desc:"The 108th square. Punya must ≥ Papa. The sacred number of the cosmos.",cl:"#f0d050"}:hov>100?{type:`${SACRED_PATH[hov-101]?.icon} ${SACRED_PATH[hov-101]?.en}`,label:`${SACRED_PATH[hov-101]?.skt} — ${SACRED_PATH[hov-101]?.desc}`,desc:"The Ashtanga Marga — 8-fold path of Patanjali. Only the purest souls walk here.",cl:"#f0d050"}:null):null;
 
   return(
