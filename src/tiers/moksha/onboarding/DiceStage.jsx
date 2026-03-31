@@ -1,8 +1,28 @@
-// ───────────────────────────────────────────────────────────────────────────
-// onboarding/DiceStage.jsx
-// ───────────────────────────────────────────────────────────────────────────
 import { useState, useEffect, useRef } from 'react';
-import { GRAHA, GRAHA_NARRATE_TIMING } from '../shared/constants.js';
+
+// ═══════════════════════════════════════════════════════════════════════
+// DICE STAGE — 3D karma die + narration-synced graha showcase
+// Graha order matches the spoken narration exactly:
+//   Surya→Chandra→Mangal→Budh→Brihaspati→Shukra→Shani→Rahu→Ketu
+// Each graha is highlighted and held until narration moves to the next one.
+// ═══════════════════════════════════════════════════════════════════════
+
+// Approximate spoken duration (ms) per graha segment at slow narrator pace
+// Tuned to match the English narration script for story page 2.
+const GRAHA_NARRATE_TIMING = [
+  // [grahaIndex, holdDurationMs]
+  // Intro "Every turn ... living god..." — show karma die only (grahaIdx = -1)
+  [-1, 9000],   // 0–9s  : intro, no planet highlighted
+  [0,  5500],   // Surya — "+2 extra steps"
+  [1,  4500],   // Chandra — "purifies with Punya"
+  [2,  6500],   // Mangal — "battle fury, pushing rival back"
+  [3,  5000],   // Budh — "swaps your position"
+  [4,  4500],   // Brihaspati — "blesses everyone"
+  [5,  5000],   // Shukra — "divine Shield"
+  [6,  5500],   // Shani — "back 3 squares, Papa"
+  [7,  5000],   // Rahu — "steals from leader"
+  [8,  4500],   // Ketu — "strips all shields"
+];
 
 export default function DiceStage({ GRAHA_INFO, chosenLang, isNarrating, narrateStartedAt }) {
   const [karmaDie, setKarmaDie] = useState(4);
@@ -239,9 +259,3 @@ export default function DiceStage({ GRAHA_INFO, chosenLang, isNarrating, narrate
     </div>
   );
 }
-
-// ═══════════════════════════════════════════════════════════════════════
-// DHARMA STAGE — cinematic moral choice experience
-// Shows: the dilemma → player chooses → consequence plays out visually
-// The balance scale animates, token moves, karma shifts in real time
-// ═══════════════════════════════════════════════════════════════════════

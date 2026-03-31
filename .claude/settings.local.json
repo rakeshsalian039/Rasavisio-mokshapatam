@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/rakeshsalian/Documents/Projects/moksha-patam/.claire/worktrees/friendly-poincare/src/tiers/moksha/**)",
+      "Bash(sed -n '4260,4420p' /Users/rakeshsalian/Documents/Projects/moksha-patam/.claude/worktrees/friendly-poincare/src/tiers/moksha/MokshaGame.jsx)",
+      "Bash(sed -n '5280,5450p' /Users/rakeshsalian/Documents/Projects/moksha-patam/.claire/worktrees/friendly-poincare/src/tiers/moksha/MokshaGame.jsx)",
+      "Bash(sed -n '5280,5450p' /Users/rakeshsalian/Documents/Projects/moksha-patam/.claude/worktrees/friendly-poincare/src/tiers/moksha/MokshaGame.jsx)",
+      "Bash(python3:*)",
+      "Bash(grep -n \"useAmbient\\\\|useSound\" /Users/rakeshsalian/Documents/Projects/moksha-patam/.claude/worktrees/friendly-poincare/src/shared/*.js)",
+      "Bash(BASE=/Users/rakeshsalian/Documents/Projects/moksha-patam/.claude/worktrees/friendly-poincare/src echo '=== src/ root ===' ls $BASE/*.jsx $BASE/*.js)",
+      "Bash(xargs -I{} basename {} echo \"\" echo \"=== src/components/ ===\" ls \"$BASE/components/\" echo \"\" echo \"=== src/tiers/ ===\" find \"$BASE/tiers\" -name \"*.jsx\" -o -name \"*.js\")",
+      "Bash(ls -la /Users/rakeshsalian/Documents/Projects/moksha-patam/.claude/worktrees/friendly-poincare/.env*)",
+      "Read(//Users/rakeshsalian/Documents/Projects/moksha-patam/**)"
+    ]
+  }
+}

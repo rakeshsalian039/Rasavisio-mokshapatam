@@ -2,7 +2,7 @@
 // shared/useSound.js
 // Game sound effects hook — dice roll, snake bite, ladder chime, victory
 // ─────────────────────────────────────────────────────────────────────────────
-import { useCallback } from 'react';
+import { useRef, useCallback } from 'react';
 
 export function useSound(){
   const ctx=useRef(null);

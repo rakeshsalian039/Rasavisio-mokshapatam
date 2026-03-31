@@ -282,6 +282,7 @@ export default function ChitraguptaIntroScreen({ players, chosenLang, muted, onB
       proj.sort((a,b)=>a.rz-b.rz);
       proj.forEach(({sx,sy,scale,p})=>{
         if(sx<-100||sx>W+100||sy<-100||sy>H+100)return;
+        if(scale<=0)return; // skip objects projected behind the viewer
         const rv=p.size*scale,al=p.baseOpacity*Math.min(1,s.t/55)*scale*1.5;
         const pulse=1+Math.sin(s.t*.033+p.phase)*.1;
         if(['quill','face','crown','halo'].includes(p.type)){ctx.beginPath();ctx.arc(sx,sy,rv*4*pulse,0,Math.PI*2);ctx.fillStyle=`rgba(240,210,80,${al*.13})`;ctx.fill();}

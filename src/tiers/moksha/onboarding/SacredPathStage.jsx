@@ -1,9 +1,8 @@
-// ───────────────────────────────────────────────────────────────────────────
-// onboarding/SacredPathStage.jsx
-// ───────────────────────────────────────────────────────────────────────────
-import { useState } from 'react';
-import { SACRED_PATH } from '../shared/constants.js';
+import { useState, useEffect, useRef } from 'react';
 
+// ═══════════════════════════════════════════════════════════════════════
+// SACRED PATH STAGE — cinematic Ashtanga gate ascension
+// ═══════════════════════════════════════════════════════════════════════
 export default function SacredPathStage({SACRED_PATH}) {
   const [active,setActive]=useState(0);
   const [entering,setEntering]=useState(false);
@@ -173,8 +172,3 @@ export default function SacredPathStage({SACRED_PATH}) {
     </div>
   );
 }
-
-// ══════════════════════════════════════════════════════════════════════
-// 🪶 CHITRAGUPTA'S AGRASANDHANI — The Living Cosmic Ledger
-//    Real-time balance scale + quill-written entries + soul purity ring
-// ══════════════════════════════════════════════════════════════════════

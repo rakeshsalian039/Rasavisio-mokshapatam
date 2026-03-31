@@ -2,7 +2,6 @@
 // src/components/YamaJudgment.jsx
 // ───────────────────────────────────────────────────────────────────────────
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { useEffect, useRef } from 'react';
 
 export default function YamaJudgment({ loser, papa, punya, isYama }) {
   const canvasRef = useRef(null);

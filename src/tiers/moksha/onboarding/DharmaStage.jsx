@@ -1,9 +1,10 @@
-// ───────────────────────────────────────────────────────────────────────────
-// onboarding/DharmaStage.jsx
-// ───────────────────────────────────────────────────────────────────────────
-import { useState, useRef } from 'react';
-import { DILEMMAS } from '../shared/constants.js';
+import { useState, useEffect, useRef } from 'react';
 
+// ═══════════════════════════════════════════════════════════════════════
+// DHARMA STAGE — cinematic moral choice experience
+// Shows: the dilemma → player chooses → consequence plays out visually
+// The balance scale animates, token moves, karma shifts in real time
+// ═══════════════════════════════════════════════════════════════════════
 export default function DharmaStage() {
   const CARDS=[
     {skt:"कर्णकवच",en:"Karna's Armour",era:"Mahabharata",
@@ -270,7 +271,3 @@ export default function DharmaStage() {
     </div>
   );
 }
-
-// ═══════════════════════════════════════════════════════════════════════
-// SACRED PATH STAGE — cinematic Ashtanga gate ascension
-// ═══════════════════════════════════════════════════════════════════════
