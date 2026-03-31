@@ -1,12 +1,19 @@
 {
   "name": "moksha-patam",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "dependencies": {
+    "@lottiefiles/react-lottie-player": "^3.6.0",
     "@supabase/supabase-js": "^2.100.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.5",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@types/node": "^16.18.0"
   },
   "scripts": {
     "start": "react-scripts start",
