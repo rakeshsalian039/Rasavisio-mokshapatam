@@ -424,6 +424,7 @@ export default function MokshaPatam108(){
   const[skipA,setSkipA]=useState([]);
   const[hov,setHov]=useState(null);
   const[tapInfo,setTapInfo]=useState(null);
+  const[showMobileMenu,setShowMobileMenu]=useState(false);
   const isMobile=useIsMobile();
   const[rv,setRv]=useState(null);
   const[gv,setGv]=useState(null);
@@ -1777,23 +1778,39 @@ export default function MokshaPatam108(){
           <div style={{fontSize:11,opacity:.5,letterSpacing:4,marginTop:4}}>{turnBanner.cpu?"🤖 CPU THINKING...":"YOUR TURN"}</div>
         </div>
       </div>}
-      <div style={{textAlign:"center",marginBottom:4,width:"100%"}}>
-        <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:10}}>
-          <div onClick={()=>setShowRiddles(true)} style={{fontSize:"clamp(18px,3.5vw,28px)",fontFamily:"'Yatra One',serif",letterSpacing:3,color:"#f0d050",cursor:"pointer"}}>मोक्ष पटम् १०८</div>
-          <button onClick={toggleMute} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"2px 8px",fontSize:12,cursor:"pointer",borderRadius:3}}>{muted?"🔇":"🔊"}</button>
-          {auth.user?<button onClick={()=>{setShowProfile(true);setProfileTab("overview")}} style={{display:"flex",alignItems:"center",gap:6,padding:"3px 10px 3px 3px",background:"rgba(240,200,80,.05)",border:"1px solid rgba(200,160,60,.15)",borderRadius:16,cursor:"pointer",color:"#e8c850",fontSize:10,fontFamily:"'Cinzel',serif"}}>
-            {auth.profile?.avatar_url?<img src={auth.profile.avatar_url} alt="" style={{width:20,height:20,borderRadius:"50%",border:"1px solid rgba(240,200,80,.2)"}} referrerPolicy="no-referrer"/>:<div style={{width:20,height:20,borderRadius:"50%",background:"rgba(240,200,80,.12)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10}}>🪷</div>}
-            <span>{(auth.profile?.display_name||auth.user?.user_metadata?.full_name||"").split(" ")[0]||"Profile"}</span>
-            {auth.profile?.total_games>0&&<span style={{fontSize:8,padding:"1px 5px",background:(auth.profile.total_punya_earned-auth.profile.total_papa_earned)>=0?"rgba(100,200,100,.12)":"rgba(200,80,60,.12)",borderRadius:6,color:(auth.profile.total_punya_earned-auth.profile.total_papa_earned)>=0?"#80c080":"#e08060"}}>{(auth.profile.total_punya_earned-auth.profile.total_papa_earned)>=0?"+":""}{(auth.profile.total_punya_earned||0)-(auth.profile.total_papa_earned||0)}</span>}
-          </button>:<button onClick={()=>setShowProfile(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.15)",color:"#8a7a50",padding:"3px 10px",fontSize:10,cursor:"pointer",borderRadius:16,fontFamily:"'Cinzel',serif"}}>Sign In</button>}
+      {isMobile?(
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",width:"100%",padding:"4px 8px 6px",borderBottom:"1px solid rgba(200,160,60,.12)"}}>
+          <button onClick={()=>setShowMobileMenu(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",width:38,height:38,fontSize:16,cursor:"pointer",borderRadius:6,display:"flex",alignItems:"center",justifyContent:"center"}}>☰</button>
+          <div style={{textAlign:"center"}}>
+            <div style={{fontSize:16,fontFamily:"'Yatra One',serif",letterSpacing:2,color:"#f0d050",lineHeight:1}}>{cp.char.icon} मोक्ष पटम्</div>
+            <div style={{fontSize:8,letterSpacing:4,opacity:.4,color:"#c0b080"}}>{rlm(pos[cur]||1)==="bhuloka"?"भूलोक":rlm(pos[cur]||1)==="antarloka"?"अन्तर्लोक":rlm(pos[cur]||1)==="moksha_path"?"अष्टांग मार्ग":"स्वर्गलोक"}</div>
+          </div>
+          <div style={{display:"flex",gap:6}}>
+            <button onClick={toggleMute} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",width:38,height:38,fontSize:14,cursor:"pointer",borderRadius:6}}>{muted?"🔇":"🔊"}</button>
+            {auth.user?<button onClick={()=>{setShowProfile(true);setProfileTab("overview")}} style={{background:"rgba(240,200,80,.05)",border:"1px solid rgba(200,160,60,.2)",borderRadius:6,cursor:"pointer",width:38,height:38,display:"flex",alignItems:"center",justifyContent:"center"}}>
+              {auth.profile?.avatar_url?<img src={auth.profile.avatar_url} alt="" style={{width:26,height:26,borderRadius:"50%"}} referrerPolicy="no-referrer"/>:<span style={{fontSize:16}}>🪷</span>}
+            </button>:<button onClick={()=>setShowProfile(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.15)",color:"#8a7a50",width:38,height:38,fontSize:11,cursor:"pointer",borderRadius:6,fontFamily:"'Cinzel',serif"}}>👤</button>}
+          </div>
         </div>
-        <div style={{display:"flex",justifyContent:"center",gap:10,marginTop:6,flexWrap:"wrap"}}>
-          <button onClick={()=>setShowGuide(true)} style={{background:"rgba(200,160,60,.08)",border:"1px solid rgba(200,160,60,.25)",color:"#e8c850",padding:isMobile?"8px 12px":"5px 14px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2,minWidth:44,minHeight:44}}>{isMobile?"📜":"📜 How to Play"}</button>
-          <button onClick={()=>setShowInfo(true)} style={{background:"rgba(200,160,60,.08)",border:"1px solid rgba(200,160,60,.25)",color:"#e8c850",padding:isMobile?"8px 12px":"5px 14px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2,minWidth:44,minHeight:44}}>{isMobile?"📖":"📖 Encyclopaedia"}</button>
+      ):(
+        <div style={{textAlign:"center",marginBottom:4,width:"100%"}}>
+          <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:10}}>
+            <div onClick={()=>setShowRiddles(true)} style={{fontSize:"clamp(18px,3.5vw,28px)",fontFamily:"'Yatra One',serif",letterSpacing:3,color:"#f0d050",cursor:"pointer"}}>मोक्ष पटम् १०८</div>
+            <button onClick={toggleMute} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"2px 8px",fontSize:12,cursor:"pointer",borderRadius:3}}>{muted?"🔇":"🔊"}</button>
+            {auth.user?<button onClick={()=>{setShowProfile(true);setProfileTab("overview")}} style={{display:"flex",alignItems:"center",gap:6,padding:"3px 10px 3px 3px",background:"rgba(240,200,80,.05)",border:"1px solid rgba(200,160,60,.15)",borderRadius:16,cursor:"pointer",color:"#e8c850",fontSize:10,fontFamily:"'Cinzel',serif"}}>
+              {auth.profile?.avatar_url?<img src={auth.profile.avatar_url} alt="" style={{width:20,height:20,borderRadius:"50%",border:"1px solid rgba(240,200,80,.2)"}} referrerPolicy="no-referrer"/>:<div style={{width:20,height:20,borderRadius:"50%",background:"rgba(240,200,80,.12)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10}}>🪷</div>}
+              <span>{(auth.profile?.display_name||auth.user?.user_metadata?.full_name||"").split(" ")[0]||"Profile"}</span>
+              {auth.profile?.total_games>0&&<span style={{fontSize:8,padding:"1px 5px",background:(auth.profile.total_punya_earned-auth.profile.total_papa_earned)>=0?"rgba(100,200,100,.12)":"rgba(200,80,60,.12)",borderRadius:6,color:(auth.profile.total_punya_earned-auth.profile.total_papa_earned)>=0?"#80c080":"#e08060"}}>{(auth.profile.total_punya_earned-auth.profile.total_papa_earned)>=0?"+":""}{(auth.profile.total_punya_earned||0)-(auth.profile.total_papa_earned||0)}</span>}
+            </button>:<button onClick={()=>setShowProfile(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.15)",color:"#8a7a50",padding:"3px 10px",fontSize:10,cursor:"pointer",borderRadius:16,fontFamily:"'Cinzel',serif"}}>Sign In</button>}
+          </div>
+          <div style={{display:"flex",justifyContent:"center",gap:10,marginTop:6,flexWrap:"wrap"}}>
+            <button onClick={()=>setShowGuide(true)} style={{background:"rgba(200,160,60,.08)",border:"1px solid rgba(200,160,60,.25)",color:"#e8c850",padding:"5px 14px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2}}>📜 How to Play</button>
+            <button onClick={()=>setShowInfo(true)} style={{background:"rgba(200,160,60,.08)",border:"1px solid rgba(200,160,60,.25)",color:"#e8c850",padding:"5px 14px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2}}>📖 Encyclopaedia</button>
+          </div>
+          <div style={{fontSize:8,letterSpacing:5,opacity:.3,color:"#c0b080",marginTop:4}}>{rlm(pos[cur]||1)==="bhuloka"?"भूलोक EARTHLY":rlm(pos[cur]||1)==="antarloka"?"अन्तर्लोक INNER":rlm(pos[cur]||1)==="moksha_path"?"अष्टांग मार्ग SACRED PATH":"स्वर्गलोक CELESTIAL"}</div>
+          <div style={{marginTop:4}}><InstaBadge/></div>
         </div>
-        <div style={{fontSize:8,letterSpacing:5,opacity:.3,color:"#c0b080",marginTop:4}}>{rlm(pos[cur]||1)==="bhuloka"?"भूलोक EARTHLY":rlm(pos[cur]||1)==="antarloka"?"अन्तर्लोक INNER":rlm(pos[cur]||1)==="moksha_path"?"अष्टांग मार्ग SACRED PATH":"स्वर्गलोक CELESTIAL"}</div>
-        <div style={{marginTop:4}}><InstaBadge/></div>
-      </div>
+      )}
       <div style={{background:"linear-gradient(90deg,transparent,rgba(30,24,14,.6),transparent)",borderTop:"1px solid rgba(200,160,60,.2)",borderBottom:"1px solid rgba(200,160,60,.2)",padding:"8px 14px",marginBottom:8,textAlign:"center",fontSize:"clamp(10px,1.4vw,12px)",maxWidth:780,width:"100%",fontStyle:"italic",lineHeight:1.7,color:"#c0b080"}}>{msg}</div>
       <div style={{display:"flex",gap:14,flexWrap:"wrap",justifyContent:"center",width:"100%",maxWidth:1140}}>
         {/* BOARD */}
@@ -1962,7 +1979,53 @@ export default function MokshaPatam108(){
             {!isMobile&&<button onClick={doRoll} disabled={!!dil||busy} className="gb gp" style={{width:"100%",padding:"clamp(10px,1.5vw,14px)",fontSize:"clamp(14px,2vw,16px)",letterSpacing:4}}>
               {busy?"Rolling...":"Roll Dice"}
             </button>}
-            {isMobile&&!win&&<div style={{height:88}}/>}{/* spacer for sticky bar */}
+            {isMobile&&!win&&<>
+              {/* ── Mobile: Punya/Papa player cards ── */}
+              <div style={{overflowX:"auto",display:"flex",gap:8,padding:"10px 4px 4px",scrollSnapType:"x mandatory"}}>
+                {players.map((pl,i)=>{const isActive=cur===i;const pn=punya[i]||0;const pp=papa[i]||0;const total=Math.max(pn+pp,1);const pc=pl.char.color;return(
+                  <div key={i} style={{minWidth:130,flexShrink:0,scrollSnapAlign:"start",background:isActive?`${pc}12`:"rgba(16,12,8,.85)",border:`1px solid ${isActive?pc+"60":"rgba(200,160,60,.1)"}`,borderTop:`3px solid ${isActive?pc:"rgba(200,160,60,.08)"}`,borderRadius:8,padding:"8px 10px"}}>
+                    <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:7}}>
+                      <span style={{fontSize:20}}>{pl.char.icon}</span>
+                      <div style={{flex:1,minWidth:0}}>
+                        <div style={{fontSize:12,color:pc,fontWeight:700,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{pl.name}{isActive?" ◄":""}{pl.cpu?" ☠️":""}</div>
+                        <div style={{fontSize:9,opacity:.45}}>Sq {pos[i]||1} · {rlm(pos[i]||1)==="bhuloka"?"भूलोक":rlm(pos[i]||1)==="antarloka"?"अन्तर्लोक":"स्वर्गलोक"}</div>
+                      </div>
+                    </div>
+                    <div style={{marginBottom:5}}>
+                      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:2}}><span style={{fontSize:9,color:"#f0d050",fontWeight:700}}>पुण्य</span><span style={{fontSize:14,color:"#f0d050",fontWeight:900,lineHeight:1}}>{pn}</span></div>
+                      <div style={{height:5,background:"rgba(0,0,0,.35)",borderRadius:3,overflow:"hidden"}}><div style={{height:"100%",width:`${(pn/total)*100}%`,background:"linear-gradient(90deg,#f0d050,#c0a030)",borderRadius:3,transition:"width .6s"}}/></div>
+                    </div>
+                    <div>
+                      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:2}}><span style={{fontSize:9,color:"#e06030",fontWeight:700}}>पाप</span><span style={{fontSize:14,color:"#e06030",fontWeight:900,lineHeight:1}}>{pp}</span></div>
+                      <div style={{height:5,background:"rgba(0,0,0,.35)",borderRadius:3,overflow:"hidden"}}><div style={{height:"100%",width:`${(pp/total)*100}%`,background:"linear-gradient(90deg,#e06030,#a03020)",borderRadius:3,transition:"width .6s"}}/></div>
+                    </div>
+                  </div>
+                )})}
+              </div>
+              {/* ── Mobile: Dice result card (prominent) ── */}
+              {rv&&gv&&!busy&&<div style={{margin:"6px 4px 0",background:"linear-gradient(135deg,rgba(36,28,14,.97),rgba(18,14,8,.97))",border:`1px solid ${gv.color}50`,borderLeft:`4px solid ${gv.color}`,borderRadius:8,padding:"12px 14px",animation:"slideUp .3s ease"}}>
+                <div style={{fontSize:8,letterSpacing:4,color:"#c0b080",opacity:.5,marginBottom:8}}>LAST ROLL</div>
+                <div style={{display:"flex",alignItems:"center",gap:14}}>
+                  <div style={{width:56,height:56,background:"#0c0a07",border:"2px solid rgba(200,160,60,.5)",borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",fontSize:34,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,color:"#f0d050",flexShrink:0,boxShadow:"0 0 20px rgba(240,200,80,.15)"}}>{rv}</div>
+                  <div style={{flex:1}}>
+                    <div style={{fontSize:15,fontWeight:700,color:"#f0d050",marginBottom:4}}>Moved {rv} square{rv>1?"s":""} forward</div>
+                    <div style={{display:"flex",alignItems:"center",gap:8,background:`${gv.color}10`,border:`1px solid ${gv.color}30`,borderRadius:6,padding:"5px 8px"}}>
+                      <span style={{fontSize:22}}>{gv.icon}</span>
+                      <div>
+                        <div style={{fontSize:11,color:gv.color,fontWeight:700}}>{gv.n} · {gv.en}</div>
+                        <div style={{fontSize:10,color:"#c0b080",opacity:.8,lineHeight:1.4}}>{gv.desc}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>}
+              {/* ── Mobile: Chitragupta's latest entry ── */}
+              {cgEntries.length>0&&<div style={{margin:"6px 4px 0",background:"rgba(14,10,6,.9)",border:"1px solid rgba(200,160,60,.1)",borderLeft:"3px solid rgba(200,160,60,.3)",borderRadius:4,padding:"8px 10px"}}>
+                <div style={{fontSize:7,letterSpacing:4,color:"#f0d050",opacity:.5,marginBottom:3}}>✍ CHITRAGUPTA'S LEDGER</div>
+                <div style={{fontSize:11,color:"#c0b080",lineHeight:1.7,opacity:.85}}>{cgEntries[cgEntries.length-1]}</div>
+              </div>}
+              <div style={{height:140}}/>{/* spacer for sticky bar */}
+            </>}
             {/* Donate / Feedback — subtle */}
             <button onClick={()=>setShowPostGame(true)} style={{
               width:"100%",marginTop:6,background:"transparent",
@@ -2101,6 +2164,22 @@ export default function MokshaPatam108(){
           </div>
         </div>}
       </div>
+      {/* Mobile: ☰ Menu bottom sheet */}
+      {isMobile&&showMobileMenu&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.7)",zIndex:200}} onClick={()=>setShowMobileMenu(false)}>
+        <div className="mb-sheet" onClick={e=>e.stopPropagation()} style={{maxHeight:"70vh"}}>
+          <div style={{width:40,height:4,background:"rgba(200,160,60,.3)",borderRadius:2,margin:"0 auto 14px"}}/>
+          <div style={{fontSize:9,letterSpacing:5,color:"#f0d050",opacity:.4,textAlign:"center",marginBottom:14}}>MENU</div>
+          {[["📜","How to Play",()=>{setShowGuide(true);setShowMobileMenu(false)}],["📖","Encyclopaedia",()=>{setShowInfo(true);setShowMobileMenu(false)}],["🔱","Ashtanga Riddles",()=>{setShowRiddles(true);setShowMobileMenu(false)}],["📊","Feedback / Support",()=>{setShowPostGame(true);setShowMobileMenu(false)}]].map(([icon,label,action])=>(
+            <button key={label} onClick={action} style={{display:"flex",alignItems:"center",gap:12,width:"100%",background:"rgba(200,160,60,.04)",border:"1px solid rgba(200,160,60,.1)",color:"#e8c850",padding:"13px 16px",fontSize:13,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:6,marginBottom:8,textAlign:"left",letterSpacing:1}}>
+              <span style={{fontSize:20,width:28}}>{icon}</span>{label}
+            </button>
+          ))}
+          <div style={{marginTop:8,padding:"10px 0",borderTop:"1px solid rgba(200,160,60,.1)",textAlign:"center"}}>
+            <div style={{fontSize:8,letterSpacing:4,opacity:.3,color:"#c0b080"}}>{rlm(pos[cur]||1)==="bhuloka"?"भूलोक EARTHLY":rlm(pos[cur]||1)==="antarloka"?"अन्तर्लोक INNER":rlm(pos[cur]||1)==="moksha_path"?"अष्टांग मार्ग SACRED PATH":"स्वर्गलोक CELESTIAL"}</div>
+            <div style={{marginTop:8}}><InstaBadge/></div>
+          </div>
+        </div>
+      </div>}
       {/* Mobile: Square info bottom sheet */}
       {isMobile&&hov&&hd&&<div className="mb-sheet" onClick={()=>setHov(null)}>
         <div style={{width:40,height:4,background:"rgba(200,160,60,.3)",borderRadius:2,margin:"0 auto 12px"}} onClick={e=>e.stopPropagation()}/>
@@ -2109,21 +2188,21 @@ export default function MokshaPatam108(){
         <div style={{fontSize:12,fontStyle:"italic",lineHeight:1.8,color:"#c0b080"}}>{hd.desc}</div>
         {hd.to&&<div style={{fontSize:11,opacity:.6,marginTop:6,color:hd.cl,fontWeight:700}}>{hd.to}</div>}
       </div>}
-      {/* Mobile: Sticky dice roll bar */}
+      {/* Mobile: Sticky bottom roll bar */}
       {isMobile&&!win&&<div className="mb-roll">
-        <div style={{display:"flex",alignItems:"center",gap:10,background:"rgba(20,16,10,.95)",border:`1px solid ${cp.char.color}30`,borderRadius:8,padding:"8px 12px"}}>
-          <span style={{fontSize:22}}>{cp.char.icon}</span>
-          <div style={{flex:1}}>
-            <div style={{fontSize:12,color:cp.char.color,fontWeight:700}}>{cp.name}</div>
-            <div style={{fontSize:10,opacity:.5}}>Square {pos[cur]||1}{rv&&!busy?` · Rolled ${rv}`:""}</div>
+        <div style={{display:"flex",alignItems:"center",gap:10,paddingBottom:4}}>
+          <div style={{width:34,height:34,borderRadius:"50%",background:`${cp.char.color}20`,border:`1.5px solid ${cp.char.color}50`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0}}>{cp.char.icon}</div>
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{fontSize:12,color:cp.char.color,fontWeight:700,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{cp.name}{cp.cpu?" ☠️":""}</div>
+            <div style={{fontSize:9,opacity:.45}}>Square {pos[cur]||1}{busy?" · Rolling…":rv&&gv?` · Rolled ${rv} · ${gv.n}`:""}</div>
           </div>
-          {rv&&gv&&!busy&&<div style={{display:"flex",gap:6,alignItems:"center"}}>
-            <div style={{width:32,height:32,border:"1.5px solid rgba(200,160,60,.4)",borderRadius:4,background:"#12100a",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,color:"#f0d050"}}>{rv}</div>
-            <div style={{width:32,height:32,border:"1.5px solid rgba(150,120,60,.3)",borderRadius:4,background:"#12100a",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,color:gv.color}}>{gv.icon}</div>
+          {rv&&gv&&!busy&&<div style={{display:"flex",gap:5,alignItems:"center",flexShrink:0}}>
+            <div style={{width:30,height:30,border:"1.5px solid rgba(200,160,60,.5)",borderRadius:6,background:"#0c0a07",display:"flex",alignItems:"center",justifyContent:"center",fontSize:17,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,color:"#f0d050"}}>{rv}</div>
+            <div style={{width:30,height:30,border:`1.5px solid ${gv.color}40`,borderRadius:6,background:"#0c0a07",display:"flex",alignItems:"center",justifyContent:"center",fontSize:17,color:gv.color}}>{gv.icon}</div>
           </div>}
         </div>
-        <button onClick={doRoll} disabled={!!dil||busy} className="gb gp" style={{width:"100%",padding:16,fontSize:16,letterSpacing:3}}>
-          {busy?"Rolling...":"🎲 Roll Dice"}
+        <button onClick={doRoll} disabled={!!dil||busy} className="gb gp" style={{width:"100%",padding:"14px",fontSize:17,letterSpacing:3,minHeight:52}}>
+          {busy?"Rolling…":"🎲 Roll Dice"}
         </button>
       </div>}
     </div>
