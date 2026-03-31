@@ -1,6 +1,10 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { Capacitor } from '@capacitor/core';
+import { App as CapApp } from '@capacitor/app';
+import { Browser } from '@capacitor/browser';
 const haptic=(style=ImpactStyle.Medium)=>{try{Haptics.impact({style})}catch(e){}};
+const OAUTH_REDIRECT='com.rasavisio.mokshapatam://login-callback';
 
 import HowToPlay    from "../../components/HowToPlay.jsx";
 import Encyclopedia from "../../components/Encyclopedia.jsx";
@@ -175,9 +179,46 @@ function useAuth(){
 
     return()=>{clearTimeout(timeout);subscription.unsubscribe()};
   },[]);
+
+  // Deep link listener — catches OAuth callback on native (iOS/Android)
+  useEffect(()=>{
+    if(!supabase||!Capacitor.isNativePlatform())return;
+    const listenerPromise=CapApp.addListener('appUrlOpen',async({url})=>{
+      if(!url.startsWith(OAUTH_REDIRECT))return;
+      try{await Browser.close()}catch(e){}
+      // PKCE flow: ?code=... | Implicit flow: #access_token=...
+      const urlObj=new URL(url);
+      const code=urlObj.searchParams.get('code');
+      if(code){
+        const{data,error}=await supabase.auth.exchangeCodeForSession(code);
+        if(data?.session?.user){setUser(data.session.user);setLoading(false);await loadProfile(data.session.user.id)}
+        if(error)console.error('OAuth code exchange error:',error);
+      }else{
+        const hash=new URLSearchParams(url.split('#')[1]||'');
+        const access_token=hash.get('access_token');
+        const refresh_token=hash.get('refresh_token');
+        if(access_token&&refresh_token){
+          const{data,error}=await supabase.auth.setSession({access_token,refresh_token});
+          if(data?.session?.user){setUser(data.session.user);setLoading(false);await loadProfile(data.session.user.id)}
+          if(error)console.error('OAuth setSession error:',error);
+        }
+      }
+    });
+    return()=>{listenerPromise.then(h=>h.remove()).catch(()=>{})};
+  },[]);
+
   const signInGoogle=useCallback(async()=>{
     if(!supabase){alert("Sign-in unavailable. Please continue as guest.");return}
-    try{const{error}=await supabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.origin}});if(error){console.error("Google sign-in error:",error);alert("Google sign-in failed: "+error.message)}}catch(e){console.error("Sign-in error:",e);alert("Sign-in error: "+e.message)}
+    try{
+      if(Capacitor.isNativePlatform()){
+        const{data,error}=await supabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:OAUTH_REDIRECT,skipBrowserRedirect:true}});
+        if(error)throw error;
+        if(data?.url)await Browser.open({url:data.url,windowName:'_self'});
+      }else{
+        const{error}=await supabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.origin}});
+        if(error)throw error;
+      }
+    }catch(e){console.error("Sign-in error:",e);alert("Sign-in error: "+e.message)}
   },[]);
   const signOut=useCallback(async()=>{if(!supabase)return;await supabase.auth.signOut();setUser(null);setProfile(null)},[]);
   const refresh=useCallback(async()=>{
