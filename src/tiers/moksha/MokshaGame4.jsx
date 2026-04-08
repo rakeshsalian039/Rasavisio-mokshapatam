@@ -4268,7 +4268,6 @@ export default function MokshaPatam108(){
   const[showMoksha,setShowMoksha]=useState(false);
   const cgEntryId=useRef(0);
   const[busy,setBusy]=useState(false);
-  const gameReadyRef=useRef(false); // prevents timer auto-roll on game init
   const[lastRollBy,setLastRollBy]=useState(null);        // {name,icon,color} for "ROLLED" display
   const[bgMuted,setBgMuted]=useState(false);             // background music/SFX mute
   const[showMobileMenu,setShowMobileMenu]=useState(false); // bottom sheet menu on mobile
@@ -4318,7 +4317,7 @@ export default function MokshaPatam108(){
 
   // ── 30-second turn timer (online only) ──────────────────────────────────
   const { secondsLeft: timerSecs, pct: timerPct, isDanger: timerDanger, isWarning: timerWarn } = useTurnTimer({
-    isActive: isOnline && isMyTurn && !busy && !dil && !win && players.length>0 && gameReadyRef.current,
+    isActive: isOnline && isMyTurn && !busy && !dil && !win && players.length>0,
     timeoutSeconds: 30,
     onTimeout: ()=>{ doRollRef.current?.(true); },
   });
@@ -4517,7 +4516,6 @@ export default function MokshaPatam108(){
 
   const startGame=(pList)=>{
     const n=pList.length;
-    gameReadyRef.current=false; // block timer until game is settled
     setPos(Array(n).fill(1));setDisplayPos(Array(n).fill(1));setPunya(Array(n).fill(0));setPapa(Array(n).fill(0));
     setShieldA(Array(n).fill(false));setSkipA(Array(n).fill(false));
     setCur(0);setWin(null);setHist([]);setRv(null);setGv(null);setBusy(false);setDil(null);setUsedDharma([]);
@@ -4525,7 +4523,6 @@ export default function MokshaPatam108(){
     setMsg(`${pList[0].name} the ${pList[0].char.name} — your journey begins.`);
     gameStats.current={startTime:Date.now(),turns:0,snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0,grahaHits:{sun:0,moon:0,mars:0,mercury:0,jupiter:0,venus:0,saturn:0,rahu:0,ketu:0}};
     navigateTo("game");
-    setTimeout(()=>{ gameReadyRef.current=true; },3000); // allow timer after 3s
     setTimeout(()=>{ if(!muted) VoiceEngine.speakChitragupta('open',chosenLang); },2800);
   };
 
@@ -4553,9 +4550,8 @@ export default function MokshaPatam108(){
 
   const doRoll=useCallback((autoRoll=false)=>{
     if(dil||win||busy||players.length===0)return;
-    // Online: only the active player may roll; block auto-roll until game is settled
+    // Online: only the active player may roll
     if(isOnline&&!isMyTurn)return;
-    if(autoRoll&&!gameReadyRef.current)return; // block timer auto-roll during init
     if(skipA[cur]){
       const ns=[...skipA];ns[cur]=false;setSkipA(ns);
       const nextCurS=(cur+1)%nP;
@@ -5934,8 +5930,7 @@ export default function MokshaPatam108(){
           </div>
         </div>
       </div>}
-      {/* ── Desktop header — hidden on mobile ── */}
-      {!isMobile&&<div style={{textAlign:"center",marginBottom:4,width:"100%"}}>
+      <div style={{textAlign:"center",marginBottom:4,width:"100%"}}>
         <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:10}}>
           <div onClick={()=>setShowRiddles(true)} style={{fontSize:"clamp(18px,3.5vw,28px)",fontFamily:"'Yatra One',serif",letterSpacing:3,color:"#f0d050",cursor:"pointer"}}>मोक्ष पटम् १०८</div>
           <button onClick={toggleMute} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#c0b080",padding:"2px 8px",fontSize:12,cursor:"pointer",borderRadius:3}}>{muted?"🔇":"🔊"}</button>
@@ -5951,7 +5946,7 @@ export default function MokshaPatam108(){
         </div>
         <div style={{fontSize:8,letterSpacing:5,opacity:.3,color:"#c0b080",marginTop:4}}>{rlm(pos[cur]||1)==="bhuloka"?"भूलोक EARTHLY":rlm(pos[cur]||1)==="antarloka"?"अन्तर्लोक INNER":rlm(pos[cur]||1)==="moksha_path"?"अष्टांग मार्ग SACRED PATH":"स्वर्गलोक CELESTIAL"}</div>
         <div style={{marginTop:4}}><InstaBadge/></div>
-      </div>}
+      </div>
 
       {/* ── Mobile compact header ── */}
       {isMobile&&(
@@ -6375,7 +6370,7 @@ export default function MokshaPatam108(){
                   <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:6}}>
                     <span style={{fontSize:20}}>{pl.char.icon}</span>
                     <div style={{flex:1,minWidth:0}}>
-                      <div style={{fontSize:12,color:pc,fontWeight:700,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",maxWidth:90}}>{pl.name.split(" ")[0]}{pl.cpu?" ☠️":""}</div>
+                      <div style={{fontSize:12,color:pc,fontWeight:700,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{pl.name}{pl.cpu?" ☠️":""}</div>
                       <div style={{fontSize:9,opacity:.45}}>Sq {pos[i]||1}{shieldA[i]?" 🛡":""}{skipA[i]?" ⏭":""}</div>
                     </div>
                   </div>
@@ -6448,7 +6443,7 @@ export default function MokshaPatam108(){
           <div style={{display:"flex",alignItems:"center",gap:10,paddingBottom:4}}>
             <div style={{width:36,height:36,borderRadius:"50%",background:`${cp.char.color}20`,border:`1.5px solid ${cp.char.color}50`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:19,flexShrink:0}}>{cp.char.icon}</div>
             <div style={{flex:1,minWidth:0}}>
-              <div style={{fontSize:12,color:cp.char.color,fontWeight:700,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{cp.name.split(" ")[0]}{cp.cpu?" ☠️":""}</div>
+              <div style={{fontSize:12,color:cp.char.color,fontWeight:700,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{cp.name}{cp.cpu?" ☠️":""}</div>
               <div style={{fontSize:9,opacity:.45}}>Square {pos[cur]||1}{busy?" · Rolling…":rv&&gv&&lastRollBy?` · ${lastRollBy.name} rolled ${rv}`:""}</div>
             </div>
             {rv&&gv&&!busy&&(
