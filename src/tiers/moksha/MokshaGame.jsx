@@ -5,7 +5,7 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import HowToPlay    from "../../components/HowToPlay.jsx";
 import Encyclopedia from "../../components/Encyclopedia.jsx";
-import MultiplayerLobby from "../../multiplayer/MultiplayerLobby.jsx";
+import MultiplayerLobby from "../../components/MultiplayerLobby";
 // ═══ AUTH + DATABASE (Supabase) ═══
 // npm install @supabase/supabase-js
 // Set REACT_APP_SUPABASE_URL and REACT_APP_SUPABASE_ANON_KEY in Vercel env vars
@@ -5048,7 +5048,6 @@ export default function MokshaPatam108(){
       userName={auth?.profile?.display_name || auth?.user?.user_metadata?.full_name || "Seeker"}
       onGameStart={(players, roomId, myPlayerIndex) => {
         setShowMultiplayer(false);
-        // Wire into existing game: set players and navigate to game
         setPlayers(players);
         navigateTo("chitragupta");
       }}
