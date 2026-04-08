@@ -240,7 +240,7 @@ function CodeCard({ code }) {
       <div style={{
         fontFamily:"'Cinzel Decorative',serif",
         fontSize:'clamp(22px,5.5vw,34px)',
-        color:'#f0d050',letterSpacing:winW<380?'4px':'clamp(6px,1.8vw,12px)',
+        color:'#f0d050',letterSpacing:'clamp(4px,1.8vw,12px)',
         textShadow:'0 0 22px rgba(240,200,80,.28)',marginBottom:9,
       }}>{code}</div>
       <button onClick={copy} style={{
