@@ -4169,8 +4169,6 @@ export default function MokshaPatam108(){
   const[longPressPct,setLongPressPct]=useState(0);
   const longPressRaf=useRef(null);
   const longPressStart=useRef(null);
-  const[guestUnlocked,setGuestUnlocked]=useState(false);
-  const guestBuf=useRef('');
 
   // ── Browser back button ──────────────────────────────────────────────
   // Push a history entry on every screen change so back button works
@@ -5028,21 +5026,15 @@ export default function MokshaPatam108(){
   </>;
 
   // ═══ TITLE ═══
-  // ── Secret codes on title screen ──
-  // "OM"  → opens multiplayer (private, only Rakesh)
-  // "108" → reveals guest play (only when not signed in)
+  // ── Secret code: type "OM" on title screen → opens multiplayer (private) ──
   const _omBuf = useRef("");
   useEffect(()=>{
     if(screen!=="title") return;
     const handler = (e) => {
-      _omBuf.current = (_omBuf.current + e.key).slice(-3);
-      if(_omBuf.current.toUpperCase().slice(-2) === "OM") {
+      _omBuf.current = (_omBuf.current + e.key.toUpperCase()).slice(-2);
+      if(_omBuf.current === "OM") {
         _omBuf.current = "";
         setShowMultiplayer(true);
-      }
-      if(_omBuf.current === "108") {
-        _omBuf.current = "";
-        setGuestUnlocked(true);
       }
     };
     window.addEventListener("keydown", handler);
@@ -5132,24 +5124,8 @@ export default function MokshaPatam108(){
                 Sign in to save your karma across lifetimes<br/>
                 Track Punya, Papa, and climb the sacred leaderboard
               </div>
-              {/* Guest play — revealed by typing "108" on login screen */}
-              {guestUnlocked && (
-              <div style={{marginTop:16,paddingTop:14,borderTop:"1px solid rgba(200,160,60,.08)"}}>
-                <button onClick={()=>navigateTo("pickcount")} style={{
-                  background:"transparent",border:"none",
-                  color:"rgba(180,140,60,.35)",fontSize:10,
-                  fontFamily:"'Cinzel',serif",letterSpacing:2,
-                  cursor:"pointer",textDecoration:"underline",
-                  textDecorationColor:"rgba(180,140,60,.2)",
-                  WebkitTapHighlightColor:"transparent",
-                }}>
-                  Continue without signing in
-                </button>
-                <div style={{fontSize:8,color:"rgba(140,110,50,.25)",marginTop:4,letterSpacing:1}}>
-                  Progress will not be saved
-                </div>
-              </div>
-              )}
+            </div>
+          </div>
         ) : auth.loading ? (
           <div style={{fontSize:12,color:"#8a7a50",opacity:.5,animation:"pulse 1.5s ease infinite"}}>Connecting to the cosmos...</div>
         ) : (
