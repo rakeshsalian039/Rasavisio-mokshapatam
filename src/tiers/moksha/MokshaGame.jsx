@@ -24,6 +24,7 @@ import OnboardingBoard from "./onboarding/OnboardingBoard.jsx";
 import DiceStage       from "./onboarding/DiceStage.jsx";
 import DharmaStage     from "./onboarding/DharmaStage.jsx";
 import SacredPathStage from "./onboarding/SacredPathStage.jsx";
+import MultiplayerLobby from "../../components/MultiplayerLobby.jsx";
 import { DILEMMAS, GRAHA, DLM_SQ, SHLOKAS, SNAKES, LADDERS, YAMA_TAUNTS_SNAKE, YAMA_TAUNTS_WRONG, CHARS, STORY_PAGES, SACRED_PATH, ASHTANGA_RIDDLES, RASHI } from "./constants";
 // ═══ AUTH + DATABASE (Supabase) ═══
 // npm install @supabase/supabase-js
@@ -1270,6 +1271,48 @@ export default function MokshaPatam108(){
     </div>}
   </>;
 
+  // ═══ ONLINE LOBBY ═══
+  if(screen==="online_lobby"){
+    // Online play requires authentication (Supabase needs a real UUID)
+    if(!auth.user){
+      return(
+        <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:20}}>
+          <div style={{fontSize:28}}>🔒</div>
+          <div style={{fontSize:14,fontFamily:"'Cinzel',serif",letterSpacing:2,color:"#c0a040",textAlign:"center"}}>Sign in to play online</div>
+          <div style={{fontSize:10,color:"#5a4a30",textAlign:"center",maxWidth:300,lineHeight:1.8}}>
+            Online multiplayer requires an account so other seekers can find you on the sacred board.
+          </div>
+          <button onClick={auth.signInGoogle} style={{display:"flex",alignItems:"center",gap:10,padding:"12px 28px",background:"rgba(255,255,255,.06)",border:"1px solid rgba(200,160,60,.25)",borderRadius:8,cursor:"pointer",color:"#e8c850",fontSize:14,fontFamily:"'Cinzel',serif",letterSpacing:2}}>
+            <GoogleIcon/>Sign in with Google
+          </button>
+          <button onClick={()=>navigateTo("title")} style={{background:"transparent",border:"none",color:"#4a3a20",fontSize:9,cursor:"pointer",fontFamily:"'Cinzel',serif",letterSpacing:2}}>
+            ← Return to Temple
+          </button>
+        </div>
+      );
+    }
+    return(
+    <MultiplayerLobby
+      userId={auth.user.id}
+      userName={auth.profile?.display_name||auth.user?.user_metadata?.full_name||auth.user?.email?.split("@")[0]||"Seeker"}
+      onGameStart={(players,roomId,myPlayerIndex)=>{
+        // Future: launch MokshaGame in online mode with these players
+        // For now navigate to local game setup with the room players
+        setNP(players.length);
+        setPlayers(players.map((p,i)=>({name:p.name,char:CHARS[p.charIdx]||CHARS[i%CHARS.length],charIdx:p.charIdx||i,cpu:p.cpu||false})));
+        setPos(Array(players.length).fill(1));
+        setPunya(Array(players.length).fill(0));
+        setPapa(Array(players.length).fill(0));
+        setShieldA(Array(players.length).fill(false));
+        setSkipA(Array(players.length).fill(false));
+        setCur(0);setWin(null);setDil(null);setHist([]);
+        navigateTo("chitragupta");
+      }}
+      onBack={()=>navigateTo("title")}
+    />
+  );
+  }
+
   // ═══ TITLE ═══
   if(screen==="title")return(
     <div style={{...PG,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 20px 60px",minHeight:"100vh",overflowY:"auto"}}>
@@ -1353,6 +1396,7 @@ export default function MokshaPatam108(){
                 📜 BEGIN STORY
               </button>
               <button className="gb" onClick={()=>{ambient.start();navigateTo("pickcount")}} style={{fontSize:13,padding:"12px 28px",letterSpacing:2,opacity:.5}}>⚡ PLAY</button>
+              <button className="gb" onClick={()=>{ambient.start();navigateTo("online_lobby")}} style={{fontSize:13,padding:"12px 28px",letterSpacing:2,background:"linear-gradient(180deg,rgba(200,160,60,.12),rgba(200,160,60,.04))",borderColor:"rgba(200,160,60,.4)"}}>🌐 PLAY ONLINE</button>
             </div>
 
             <div style={{marginTop:8,opacity:.12,fontSize:8,textAlign:"center"}}>Screen text = English · Voice = your choice</div>
