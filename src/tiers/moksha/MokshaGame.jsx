@@ -4315,6 +4315,13 @@ export default function MokshaPatam108(){
   // doRoll ref — used by timer to avoid circular dependency
   const doRollRef = useRef(null);
 
+  // ── 30-second turn timer (online only) ──────────────────────────────────
+  const { secondsLeft: timerSecs, pct: timerPct, isDanger: timerDanger, isWarning: timerWarn } = useTurnTimer({
+    isActive: isOnline && isMyTurn && !busy && !dil && !win && players.length>0,
+    timeoutSeconds: 30,
+    onTimeout: ()=>{ doRollRef.current?.(true); },
+  });
+
   // Timer warning sound — 3 beeps at 5s remaining (online only)
   const prevTimerDangerRef = useRef(false);
   useEffect(()=>{
@@ -4343,13 +4350,11 @@ export default function MokshaPatam108(){
     if(!isOnline||!remoteGameState?.pos)return;
     const newPos=remoteGameState.pos;
     setDisplayPos(prev=>{
-      if(prev.length===0)return newPos; // first load, snap
-      // Find which player moved
+      if(prev.length===0)return newPos;
       const movedIdx=prev.findIndex((p,i)=>p!==newPos[i]&&i!==myPlayerIndex);
-      if(movedIdx<0)return newPos; // no opponent move, snap
+      if(movedIdx<0)return newPos;
       const from=prev[movedIdx],to=newPos[movedIdx];
       if(from===to||animatingOpponentRef.current)return newPos;
-      // Animate step by step
       animatingOpponentRef.current=true;
       const steps=Math.abs(to-from);const dir=to>from?1:-1;
       let step=0;
@@ -4360,9 +4365,9 @@ export default function MokshaPatam108(){
         else animatingOpponentRef.current=false;
       };
       setTimeout(animate,200);
-      return prev; // return unchanged; animation updates it
+      return prev;
     });
-  },[isOnline,remoteGameState?.pos,myPlayerIndex]);
+  },[isOnline,remoteGameState?.pos,myPlayerIndex]); // eslint-disable-line
 
   // Apply remote game state when a new turn arrives from Supabase
   useEffect(()=>{
@@ -4370,13 +4375,11 @@ export default function MokshaPatam108(){
     const seq=remoteGameState.turnSeq??-1;
     if(seq<=lastAppliedSeqRef.current)return;
     lastAppliedSeqRef.current=seq;
-    // If this state is for our own next turn, just advance cur — don't overwrite state we already set
     if(remoteGameState.cur===myPlayerIndex){
       setCur(remoteGameState.cur??0);
       setBusy(false);
       return;
     }
-    // Opponent's turn completed — apply their state
     setPos(remoteGameState.pos||[]);
     setPunya(remoteGameState.punya||[]);
     setPapa(remoteGameState.papa||[]);
@@ -4386,15 +4389,7 @@ export default function MokshaPatam108(){
     if(remoteGameState.win!==null&&remoteGameState.win!==undefined)setWin(remoteGameState.win);
     if(remoteGameState.dil)setDil(remoteGameState.dil); else setDil(null);
     setBusy(false);
-  },[isOnline, remoteGameState?.turnSeq]); // eslint-disable-line
-
-  // ── 30-second turn timer (online only) ──────────────────────────────────
-  // Using doRollRef to avoid circular dependency (doRoll defined below)
-  const { secondsLeft: timerSecs, pct: timerPct, isDanger: timerDanger, isWarning: timerWarn } = useTurnTimer({
-    isActive: isOnline && isMyTurn && !busy && !dil && !win && players.length>0,
-    timeoutSeconds: 30,
-    onTimeout: ()=>{ doRollRef.current?.(true); },
-  });
+  },[isOnline,remoteGameState?.turnSeq]); // eslint-disable-line
 
   // Toggle voice mute
   const toggleMute=useCallback(()=>{
