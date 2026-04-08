@@ -35,8 +35,10 @@ const CSS = `
   background: radial-gradient(ellipse at 50% 35%, #1e180a 0%, #0c0a07 55%, #050403 100%);
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  overflow: hidden; font-family: 'Cinzel', serif;
-  color: var(--gold);
+  overflow-x: hidden; overflow-y: auto;
+  font-family: 'Cinzel', serif; color: var(--gold);
+  padding: env(safe-area-inset-top,0) env(safe-area-inset-right,0) env(safe-area-inset-bottom,0) env(safe-area-inset-left,0);
+  -webkit-overflow-scrolling: touch;
 }
 .ml-canvas { position: absolute; inset: 0; pointer-events: none; }
 
@@ -116,7 +118,7 @@ const CSS = `
   padding: 0 12px;
 }
 @media (max-width: 680px) {
-  .ml-gates { flex-direction: column; align-items: center; gap: 10px; }
+  .ml-gates { flex-direction: column; align-items: center; gap: 8px; }
 }
 
 /* ── Temple Gate ── */
@@ -127,9 +129,49 @@ const CSS = `
   transform-style: preserve-3d;
   transition: transform .42s cubic-bezier(.34,1.56,.64,1), filter .35s ease;
   user-select: none; -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 @media (max-width: 680px) {
-  .ml-gate { width: min(85vw, 320px); }
+  .ml-gate { width: min(88vw, 340px); }
+}
+/* ── Mobile gate: horizontal card layout ── */
+@media (max-width: 520px) {
+  .ml-gate { width: min(92vw, 360px); }
+  .ml-gate-arch {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    padding: 14px 18px !important;
+    min-height: 72px;
+  }
+  .ml-gate-content {
+    flex-direction: row !important;
+    padding: 0 !important;
+    gap: 14px;
+    align-items: center;
+    justify-content: flex-start !important;
+    width: 100%;
+  }
+  .ml-gate-icon { font-size: 32px !important; margin-bottom: 0 !important; flex-shrink: 0; }
+  .ml-gate-ornament { display: none; }
+  .ml-gate-skt { font-size: 16px !important; text-align: left !important; }
+  .ml-gate-en  { font-size: 9px  !important; text-align: left !important; margin: 2px 0 !important; }
+  .ml-gate-sub { font-size: 10px !important; text-align: left !important; }
+  .ml-gate-center .ml-gate-arch { min-height: 80px; }
+  .ml-gate-center .ml-gate-icon { font-size: 36px !important; }
+  .ml-gate-carving { font-size: 40px !important; }
+  /* Hide arch SVG on small mobile — it wastes 38px per door */
+  .ml-gate-arch-svg { display: none; }
+  /* Left accent bar replaces arch */
+  .ml-gate-arch::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: currentColor;
+    border-radius: 2px 0 0 2px;
+    opacity: .5;
+  }
 }
 
 .ml-gate-arch {
@@ -223,9 +265,23 @@ const CSS = `
   color: rgba(180,140,60,.28); font-size: 9px;
   font-family: 'Cinzel', serif; letter-spacing: 3px;
   cursor: pointer; transition: color .25s; text-transform: uppercase;
+  min-height: 44px; min-width: 44px; padding: 10px 16px;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
 }
 .ml-back-btn:hover { color: rgba(180,140,60,.65); }
 
+/* ── Mobile header compact ── */
+@media (max-width: 520px) {
+  .ml-trident { font-size: 32px !important; margin-bottom: 4px; }
+  .ml-title-skt { font-size: 24px !important; letter-spacing: 2px !important; }
+  .ml-title-en  { font-size: 8px  !important; letter-spacing: 4px !important; }
+  .ml-tagline   { font-size: 11px !important; }
+  .ml-divider   { margin: 10px auto !important; }
+  .ml-footer    { margin-top: 10px !important; }
+}
+@media (max-width: 380px) {
+  .ml-title-skt { font-size: 20px !important; }
+}
 /* ── Mute button ── */
 .ml-mute {
   position: fixed; top: 16px; right: 16px; z-index: 20;
@@ -251,7 +307,7 @@ const CSS = `
 }
 .ml-seeker-btns { display: flex; gap: 14px; justify-content: center; margin-bottom: 20px; }
 .ml-seeker-btn {
-  width: clamp(80px, 18vw, 100px); height: clamp(80px, 18vw, 100px);
+  width: clamp(80px, 22vw, 100px); height: clamp(80px, 22vw, 100px);
   background: radial-gradient(ellipse at 50% 30%, rgba(200,160,60,.12), rgba(200,160,60,.02) 70%);
   border: 1.5px solid rgba(200,160,60,.3); cursor: pointer;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
@@ -305,6 +361,8 @@ const CSS = `
   font-family: 'Cinzel', serif; font-size: clamp(10px,1.6vw,12px);
   letter-spacing: 4px; text-transform: uppercase; cursor: pointer;
   transition: all .3s; border: 1px solid;
+  min-height: 44px; touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 .ml-btn-gold {
   background: linear-gradient(180deg, rgba(240,200,80,.18), rgba(200,160,50,.07));
@@ -675,8 +733,8 @@ function TempleGate({ icon, sanskrit, english, subtitle, carving,
       role="button" tabIndex={0}
       onKeyDown={e => e.key === 'Enter' && onPress()}
     >
-      {/* Arch top */}
-      <ArchTop color={archCol} glowColor={hov ? glowCol : 'transparent'}/>
+      {/* Arch top — hidden on mobile via CSS */}
+      <div className="ml-gate-arch-svg"><ArchTop color={archCol} glowColor={hov ? glowCol : 'transparent'}/></div>
 
       {/* Main body */}
       <div className="ml-gate-arch" style={{
@@ -823,7 +881,7 @@ export default function MultiplayerLobby({ userId, userName, onGameStart, onBack
 
   const doCreate = (max) => handle('create', async () => {
     const { room, code } = await createRoom({ userId, maxPlayers: max, isPublic: false, playerName: userName || 'Seeker', charIdx: 0, char: myChar });
-    setRoomData({ roomId: room.id, roomCode: code, myPlayerIndex: 0, maxPlayers: max });
+    setRoomData({ roomId: room.id, roomCode: code, myPlayerIndex: 0, maxPlayers: max, isPrivate: true });
     goTo('waiting');
   });
 
@@ -844,6 +902,7 @@ export default function MultiplayerLobby({ userId, userName, onGameStart, onBack
         roomCode={roomData.roomCode}
         userId={userId}
         myPlayerIndex={roomData.myPlayerIndex}
+        isPrivate={roomData.isPrivate}
         maxPlayers={roomData.maxPlayers}
         onGameStart={onGameStart}
         onLeave={() => { setRoomData(null); setView('home'); Audio.bells(); }}
@@ -889,7 +948,7 @@ export default function MultiplayerLobby({ userId, userName, onGameStart, onBack
           <div className="ml-create-label" style={{marginBottom:16}}>Enter the Sabha</div>
           <div className="ml-join-frame">
             <div className="ml-code-hint">Sabha Code</div>
-            <div className="ml-code-slots">
+            <div className="ml-code-slots" onClick={() => codeRef.current?.focus()} style={{cursor:'pointer'}}>
               {Array.from({length:6}).map((_,i) => (
                 <div key={i} className={`ml-code-slot ${joinCode[i] ? 'filled' : ''} ${i === joinCode.length ? 'active' : ''}`}>
                   {joinCode[i] || ''}
@@ -898,7 +957,7 @@ export default function MultiplayerLobby({ userId, userName, onGameStart, onBack
             </div>
             {/* Hidden real input */}
             <input ref={codeRef} value={joinCode} maxLength={6}
-              onChange={e => setJoinCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,''))}
+              onChange={e => setJoinCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,''))} inputMode="text" autoCapitalize="characters" autoComplete="off" autoCorrect="off" spellCheck={false}
               onKeyDown={e => e.key === 'Enter' && doJoin()}
               style={{position:'absolute',opacity:.01,width:1,height:1,pointerEvents:'none'}}
             />

@@ -115,7 +115,7 @@ function GhostBot({ char }) {
       </svg>
       {/* Ghost orb */}
       <div style={{
-        width:62,height:62,borderRadius:'50%',
+        width:'clamp(48px,14vw,62px)',height:'clamp(48px,14vw,62px)',borderRadius:'50%',
         background:'radial-gradient(circle at 38% 32%, rgba(210,195,255,.16), rgba(120,100,220,.06) 55%, rgba(50,30,140,.03))',
         border:'1.5px solid rgba(180,165,255,.32)',
         display:'flex',alignItems:'center',justifyContent:'center',
@@ -151,7 +151,7 @@ function HumanAvatar({ player, isMe, isOnline, justJoined }) {
   const col = player?.char_color||'#c0a030';
   return (
     <div style={{
-      width:62,height:62,borderRadius:'50%',position:'relative',
+      width:'clamp(48px,14vw,62px)',height:'clamp(48px,14vw,62px)',borderRadius:'50%',position:'relative',
       background:`radial-gradient(circle at 36% 32%, ${col}24, ${col}08 58%, rgba(12,10,7,.65))`,
       border:`2px solid ${player?.is_ready?'rgba(80,200,80,.7)':isMe?`${col}80`:`${col}38`}`,
       display:'flex',alignItems:'center',justifyContent:'center',
@@ -184,7 +184,7 @@ function HumanAvatar({ player, isMe, isOnline, justJoined }) {
 function EmptySeat() {
   return (
     <div style={{
-      width:62,height:62,borderRadius:'50%',
+      width:'clamp(48px,14vw,62px)',height:'clamp(48px,14vw,62px)',borderRadius:'50%',
       border:'1.5px dashed rgba(200,160,60,.16)',
       display:'flex',alignItems:'center',justifyContent:'center',
       background:'rgba(12,10,7,.28)',opacity:.5,
@@ -232,7 +232,7 @@ function CodeCard({ code }) {
       <div style={{
         fontFamily:"'Cinzel Decorative',serif",
         fontSize:'clamp(22px,5.5vw,34px)',
-        color:'#f0d050',letterSpacing:'clamp(6px,1.8vw,12px)',
+        color:'#f0d050',letterSpacing:winW<380?'4px':'clamp(6px,1.8vw,12px)',
         textShadow:'0 0 22px rgba(240,200,80,.28)',marginBottom:9,
       }}>{code}</div>
       <button onClick={copy} style={{
@@ -250,7 +250,7 @@ function CodeCard({ code }) {
 }
 
 // ── MAIN ──────────────────────────────────────────────────────────────────────
-export default function WaitingRoom({ roomId, roomCode, userId, myPlayerIndex, maxPlayers=2, onGameStart, onLeave }) {
+export default function WaitingRoom({ roomId, roomCode, userId, myPlayerIndex, maxPlayers=2, isPrivate=false, onGameStart, onLeave }) {
   const [isReady,    setIsReadyLocal]  = useState(false);
   const [charIdx,    setCharIdx]       = useState(myPlayerIndex%CHARS.length);
   const [charOpen,   setCharOpen]      = useState(false);
@@ -269,7 +269,12 @@ export default function WaitingRoom({ roomId, roomCode, userId, myPlayerIndex, m
   rpRef.current = roomPlayers;
 
   const isHost   = roomPlayers[0]?.user_id===userId;
-  const allReady = roomPlayers.length>=2 && roomPlayers.every(p=>p.is_ready);
+  // Private rooms: all seats must be filled with real humans AND all ready
+  // Public/quick rooms: any 2+ players all ready is enough
+  const allSeated = isPrivate
+    ? roomPlayers.filter(p=>!p.is_bot).length >= maxPlayers
+    : roomPlayers.length >= 2;
+  const allReady = allSeated && roomPlayers.filter(p=>!p.is_bot).every(p=>p.is_ready);
   const mySlot   = roomPlayers.find(p=>p.user_id===userId);
   const fireIntensity = 0.5 + (roomPlayers.length/maxPlayers)*0.85;
 
@@ -293,7 +298,8 @@ export default function WaitingRoom({ roomId, roomCode, userId, myPlayerIndex, m
   },[roomStatus,onGameStart,myPlayerIndex,roomId]);
 
   useEffect(()=>{
-    if(!isHost||rpRef.current.length>=maxPlayers){ clearInterval(botRef.current); return; }
+    // Private rooms (Create Hall) never auto-fill bots — host must wait for real players
+    if(isPrivate||!isHost||rpRef.current.length>=maxPlayers){ clearInterval(botRef.current); return; }
     clearInterval(botRef.current); setBotTimer(30);
     botRef.current=setInterval(()=>{
       setBotTimer(t=>{ if(t<=1){ clearInterval(botRef.current); fillBots(); return 0; } return t-1; });
@@ -325,19 +331,28 @@ export default function WaitingRoom({ roomId, roomCode, userId, myPlayerIndex, m
     await updateCharacter({roomId,userId,charIdx:idx,char:CHARS[idx]}).catch(()=>{});
   };
 
-  // Responsive orbit
-  const orbitR = typeof window!=='undefined' ? Math.min(120,Math.max(74,window.innerWidth*.27)) : 105;
+  // Responsive orbit — updates on resize/rotation
+  const [winW, setWinW] = useState(typeof window!=='undefined'?window.innerWidth:400);
+  useEffect(()=>{
+    const fn=()=>setWinW(window.innerWidth);
+    window.addEventListener('resize',fn,{passive:true});
+    window.addEventListener('orientationchange',fn,{passive:true});
+    return()=>{window.removeEventListener('resize',fn);window.removeEventListener('orientationchange',fn);};
+  },[]);
+  const orbitR = Math.min(115, Math.max(58, winW * 0.25));
   const ANGLES = {2:[-90,90],3:[-90,150,30],4:[-90,0,90,180]};
   const angles = ANGLES[maxPlayers]||ANGLES[2];
-  const dim = orbitR*2+110;
+  const dim = Math.min(orbitR*2+110, winW-16);
 
   return (
     <div style={{
       minHeight:'100vh',
       background:'radial-gradient(ellipse at 50% 28%,#1c1608 0%,#0c0a07 55%,#060504 100%)',
       display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
-      padding:'20px 14px',fontFamily:"'Cinzel',serif",color:'#e8c850',
-      position:'relative',overflow:'hidden',
+      padding:`max(20px, env(safe-area-inset-top, 20px)) 14px max(20px, env(safe-area-inset-bottom, 20px))`,
+      fontFamily:"'Cinzel',serif",color:'#e8c850',
+      position:'relative',overflowX:'hidden',overflowY:'auto',
+      WebkitOverflowScrolling:'touch',
     }}>
       <style>{CSS}</style>
 
@@ -428,7 +443,7 @@ export default function WaitingRoom({ roomId, roomCode, userId, myPlayerIndex, m
                 color:isBot?'rgba(190,170,255,.5)':isMe?'#f0d050':'#8a7a50',
                 textAlign:'center',letterSpacing:.8,maxWidth:90,
                 overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',
-                fontStyle:isBot?'italic':'normal',
+                fontStyle:isBot?'italic':'normal',maxWidth:'100%',
               }}>
                 {p ? (isBot?'Spirit Guide':(isMe?`${p.player_name} ✦`:p.player_name))
                    : <span style={{opacity:.3,animation:'wr-pulse 2.5s ease infinite'}}>Awaiting...</span>}
@@ -465,6 +480,7 @@ export default function WaitingRoom({ roomId, roomCode, userId, myPlayerIndex, m
             fontSize:10,fontFamily:"'Cinzel',serif",letterSpacing:4,
             cursor:'pointer',transition:'all .3s',textTransform:'uppercase',
             boxShadow:isReady?'0 0 16px rgba(80,180,80,.1)':'none',
+            minHeight:44,WebkitTapHighlightColor:'transparent',touchAction:'manipulation',
           }}>
             {isReady?'✦ Ready':'Mark Ready'}
           </button>
@@ -479,14 +495,20 @@ export default function WaitingRoom({ roomId, roomCode, userId, myPlayerIndex, m
             fontSize:11,fontFamily:"'Cinzel',serif",letterSpacing:4,
             cursor:allReady?'pointer':'not-allowed',transition:'all .3s',textTransform:'uppercase',
             boxShadow:allReady?'0 0 22px rgba(240,200,80,.1)':'none',
+            minHeight:44,WebkitTapHighlightColor:'transparent',touchAction:'manipulation',
           }}>
             {starting?'◌ Beginning...':'🔔 प्रारम्भ — Begin'}
           </button>
         )}
 
-        {isHost&&roomPlayers.length<maxPlayers&&botTimer>0&&(
+        {isHost&&roomPlayers.length<maxPlayers&&botTimer>0&&!isPrivate&&(
           <div style={{fontSize:8,color:'rgba(190,170,255,.38)',letterSpacing:2,textAlign:'center',fontStyle:'italic'}}>
             Spirit Guides enter in {botTimer}s if seats remain empty
+          </div>
+        )}
+        {isHost&&isPrivate&&roomPlayers.filter(p=>!p.is_bot).length<maxPlayers&&(
+          <div style={{fontSize:8,color:'rgba(240,200,80,.35)',letterSpacing:2,textAlign:'center',fontStyle:'italic'}}>
+            Waiting for {maxPlayers - roomPlayers.filter(p=>!p.is_bot).length} more seeker{maxPlayers - roomPlayers.filter(p=>!p.is_bot).length!==1?'s':''} to join via the code above...
           </div>
         )}
         {!isHost&&allReady&&(
@@ -529,7 +551,7 @@ export default function WaitingRoom({ roomId, roomCode, userId, myPlayerIndex, m
               Choose Your Soul
             </div>
             <div style={{
-              display:'grid',gridTemplateColumns:`repeat(${Math.min(CHARS.length,3)},1fr)`,
+              display:'grid',gridTemplateColumns:winW<380?'repeat(2,1fr)':`repeat(${Math.min(CHARS.length,3)},1fr)`,
               gap:9,maxWidth:340,margin:'0 auto',
             }}>
               {CHARS.map((ch,idx)=>(
