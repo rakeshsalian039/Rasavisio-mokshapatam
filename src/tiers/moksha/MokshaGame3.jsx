@@ -6,8 +6,6 @@ import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import HowToPlay    from "../../components/HowToPlay.jsx";
 import Encyclopedia from "../../components/Encyclopedia.jsx";
 import MultiplayerLobby from "../../components/MultiplayerLobby";
-import { useMultiplayer } from "../../components/useMultiplayer";
-import { useTurnTimer }   from "../../components/useTurnTimer";
 // ═══ AUTH + DATABASE (Supabase) ═══
 // npm install @supabase/supabase-js
 // Set REACT_APP_SUPABASE_URL and REACT_APP_SUPABASE_ANON_KEY in Vercel env vars
@@ -3858,21 +3856,8 @@ const CSS=`
 .gb:hover{background:rgba(200,160,60,.08);border-color:rgba(240,200,80,.6)}
 .gp{background:linear-gradient(180deg,rgba(200,160,60,.2),rgba(200,160,60,.08));border-color:rgba(200,160,60,.5)}
 .gp:hover{box-shadow:0 0 25px rgba(240,200,80,.12)}
-.mb-roll{position:fixed;bottom:0;left:0;right:0;padding:12px 16px;padding-bottom:max(12px,env(safe-area-inset-bottom,12px));background:linear-gradient(0deg,#0c0a07 80%,transparent);border-top:1px solid rgba(200,160,60,.15);z-index:30}
-.mb-sheet{position:fixed;bottom:0;left:0;right:0;background:#1a1408;border-top:2px solid rgba(200,160,60,.35);border-radius:16px 16px 0 0;padding:16px 16px max(16px,env(safe-area-inset-bottom,16px));z-index:100;animation:slideUp .3s ease}
 `;
 const PG={minHeight:"100vh",background:"linear-gradient(170deg,#0c0a07,#1a1408,#0c0a07)",fontFamily:"'Cinzel',serif",color:"#e8c850",position:"relative",overflow:"hidden"};
-
-// ═══ useIsMobile ═══
-function useIsMobile(){
-  const[m,setM]=useState(typeof window!=='undefined'&&window.innerWidth<640);
-  useEffect(()=>{
-    const fn=()=>setM(window.innerWidth<640);
-    window.addEventListener('resize',fn,{passive:true});
-    return()=>window.removeEventListener('resize',fn);
-  },[]);
-  return m;
-}
 
 // ═══ AUTH HOOK ═══
 function useAuth(){
@@ -4179,7 +4164,6 @@ export default function MokshaPatam108(){
   },[showProfile]);
 
   const[screen,setScreen]=useState("title"); // title|story|pickcount|setup|chitragupta|game
-  const isMobile=useIsMobile();
   const[showMultiplayer,setShowMultiplayer]=useState(false); // secret: long-press 5s on PLAY ONLINE
   const[showComingSoon,setShowComingSoon]=useState(false);
   const[longPressPct,setLongPressPct]=useState(0);
@@ -4187,11 +4171,6 @@ export default function MokshaPatam108(){
   const longPressStart=useRef(null);
   const[guestUnlocked,setGuestUnlocked]=useState(false);
   const guestBuf=useRef('');
-  // ── Online game session ──────────────────────────────────────────────────
-  const[onlineRoomId,setOnlineRoomId]=useState(null);
-  const[myPlayerIndex,setMyPlayerIndex]=useState(null);
-  const isOnline=!!onlineRoomId;
-  const lastAppliedSeqRef=useRef(-1);
 
   // ── Browser back button ──────────────────────────────────────────────
   // Push a history entry on every screen change so back button works
@@ -4257,7 +4236,6 @@ export default function MokshaPatam108(){
   const[hov,setHov]=useState(null);
   const[rv,setRv]=useState(null);
   const[gv,setGv]=useState(null);
-  const[opponentDice,setOpponentDice]=useState(null); // {diceVal, grahaIdx, playerName} shown after opponent rolls
   const[msg,setMsg]=useState("");
   const[dil,setDil]=useState(null);
   const[win,setWin]=useState(null);
@@ -4268,9 +4246,6 @@ export default function MokshaPatam108(){
   const[showMoksha,setShowMoksha]=useState(false);
   const cgEntryId=useRef(0);
   const[busy,setBusy]=useState(false);
-  const[lastRollBy,setLastRollBy]=useState(null);        // {name,icon,color} for "ROLLED" display
-  const[bgMuted,setBgMuted]=useState(false);             // background music/SFX mute
-  const[showMobileMenu,setShowMobileMenu]=useState(false); // bottom sheet menu on mobile
   const[hist,setHist]=useState([]);
   const[shI,setShI]=useState(0);
   const[shF,setShF]=useState(true);
@@ -4294,133 +4269,15 @@ export default function MokshaPatam108(){
 
   const sfx=useSound();
   const ambient=useAmbient();
-  const play=useCallback((t)=>{if(!muted&&!bgMuted)sfx(t)},[muted,bgMuted,sfx]);
+  const play=useCallback((t)=>{if(!muted)sfx(t)},[muted,sfx]);
 
-  // ── Online multiplayer hook ──────────────────────────────────────────────
-  const {
-    remoteGameState, broadcastState: onlineBroadcast,
-    broadcastRolling, broadcastDilemmaPick, broadcastEmoji,
-    submitTurn, isConnected: onlineConnected, reconnectAttempts,
-  } = useMultiplayer({
-    roomId: onlineRoomId,
-    userId: auth?.user?.id,
-    playerName: players[myPlayerIndex ?? 0]?.name || '',
-    myPlayerIndex: myPlayerIndex ?? 0,
-    enabled: isOnline,
-  });
-
-  // Is it this device's turn?
-  const isMyTurn = isOnline ? cur === myPlayerIndex : true;
-
-  // doRoll ref — used by timer to avoid circular dependency
-  const doRollRef = useRef(null);
-
-  // Timer warning sound — 3 beeps at 5s remaining (online only)
-  const prevTimerDangerRef = useRef(false);
-  useEffect(()=>{
-    if(!isOnline||!isMyTurn)return;
-    if(timerDanger&&!prevTimerDangerRef.current&&!muted){
-      try{
-        const ctx=new(window.AudioContext||window.webkitAudioContext)();
-        [0,0.18,0.36].forEach((delay,i)=>{
-          const o=ctx.createOscillator(),g=ctx.createGain();
-          o.connect(g);g.connect(ctx.destination);
-          o.type='sine';
-          o.frequency.value=i===1?1320:880;
-          g.gain.setValueAtTime(0.12,ctx.currentTime+delay);
-          g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+delay+0.14);
-          o.start(ctx.currentTime+delay);o.stop(ctx.currentTime+delay+0.15);
-        });
-      }catch(e){}
-    }
-    prevTimerDangerRef.current=timerDanger;
-  },[timerDanger,isOnline,isMyTurn,muted]);
-
-  // Opponent position animation — animate opponent piece step-by-step
-  const [displayPos, setDisplayPos] = useState([]);
-  const animatingOpponentRef = useRef(false);
-  useEffect(()=>{
-    if(!isOnline||!remoteGameState?.pos)return;
-    const newPos=remoteGameState.pos;
-    setDisplayPos(prev=>{
-      if(prev.length===0)return newPos; // first load, snap
-      // Find which player moved
-      const movedIdx=prev.findIndex((p,i)=>p!==newPos[i]&&i!==myPlayerIndex);
-      if(movedIdx<0)return newPos; // no opponent move, snap
-      const from=prev[movedIdx],to=newPos[movedIdx];
-      if(from===to||animatingOpponentRef.current)return newPos;
-      // Animate step by step
-      animatingOpponentRef.current=true;
-      const steps=Math.abs(to-from);const dir=to>from?1:-1;
-      let step=0;
-      const animate=()=>{
-        step++;
-        setDisplayPos(dp=>{const nd=[...dp];nd[movedIdx]=from+dir*step;return nd;});
-        if(step<steps)setTimeout(animate,180);
-        else animatingOpponentRef.current=false;
-      };
-      setTimeout(animate,200);
-      return prev; // return unchanged; animation updates it
-    });
-  },[isOnline,remoteGameState?.pos,myPlayerIndex]);
-
-  // Apply remote game state when a new turn arrives from Supabase
-  useEffect(()=>{
-    if(!isOnline||!remoteGameState)return;
-    const seq=remoteGameState.turnSeq??-1;
-    if(seq<=lastAppliedSeqRef.current)return;
-    lastAppliedSeqRef.current=seq;
-    // If this state is for our own next turn, just advance cur — don't overwrite state we already set
-    if(remoteGameState.cur===myPlayerIndex){
-      setCur(remoteGameState.cur??0);
-      setBusy(false);
-      return;
-    }
-    // Opponent's turn completed — apply their state
-    setPos(remoteGameState.pos||[]);
-    setPunya(remoteGameState.punya||[]);
-    setPapa(remoteGameState.papa||[]);
-    setShieldA(remoteGameState.shieldA||[]);
-    setSkipA(remoteGameState.skipA||[]);
-    setCur(remoteGameState.cur??0);
-    if(remoteGameState.win!==null&&remoteGameState.win!==undefined)setWin(remoteGameState.win);
-    if(remoteGameState.dil)setDil(remoteGameState.dil); else setDil(null);
-    setBusy(false);
-  },[isOnline, remoteGameState?.turnSeq]); // eslint-disable-line
-
-  // ── 30-second turn timer (online only) ──────────────────────────────────
-  // Using doRollRef to avoid circular dependency (doRoll defined below)
-  const { secondsLeft: timerSecs, pct: timerPct, isDanger: timerDanger, isWarning: timerWarn } = useTurnTimer({
-    isActive: isOnline && isMyTurn && !busy && !dil && !win && players.length>0,
-    timeoutSeconds: 30,
-    onTimeout: ()=>{ doRollRef.current?.(true); },
-  });
-
-  // Toggle voice mute
+  // Toggle mute
   const toggleMute=useCallback(()=>{
     setMuted(m=>{
       if(!m){ambient.stop();VoiceEngine.stop()}
       return !m;
     });
   },[ambient]);
-
-  // Toggle background music/SFX mute
-  const toggleBG=useCallback(()=>{
-    setBgMuted(m=>{
-      if(!m)ambient.duck(); else ambient.unduck();
-      return !m;
-    });
-  },[ambient]);
-
-  // Haptic feedback (Capacitor — graceful no-op on web)
-  const haptic=useCallback(()=>{
-    try{
-      // Dynamic import so it doesn't break web builds
-      import('@capacitor/haptics').then(({Haptics,ImpactStyle})=>{
-        Haptics.impact({style:ImpactStyle.Medium});
-      }).catch(()=>{});
-    }catch(e){}
-  },[]);
 
   // ── Chitragupta helpers ──
   const addCGEntry=useCallback((type,sq,detail)=>{
@@ -4521,7 +4378,7 @@ export default function MokshaPatam108(){
 
   const startGame=(pList)=>{
     const n=pList.length;
-    setPos(Array(n).fill(1));setDisplayPos(Array(n).fill(1));setPunya(Array(n).fill(0));setPapa(Array(n).fill(0));
+    setPos(Array(n).fill(1));setPunya(Array(n).fill(0));setPapa(Array(n).fill(0));
     setShieldA(Array(n).fill(false));setSkipA(Array(n).fill(false));
     setCur(0);setWin(null);setHist([]);setRv(null);setGv(null);setBusy(false);setDil(null);setUsedDharma([]);
     setCgEntries([]);setShowMoksha(false);setShowPostGame(false);
@@ -4553,38 +4410,18 @@ export default function MokshaPatam108(){
 
   const nearest=(positions,ci,count)=>{let m=Infinity,idx=-1;for(let i=0;i<count;i++){if(i!==ci&&positions[i]<101){const d=Math.abs(positions[i]-positions[ci]);if(d>0&&d<m){m=d;idx=i}}}return idx};
 
-  const doRoll=useCallback((autoRoll=false)=>{
+  const doRoll=useCallback(()=>{
     if(dil||win||busy||players.length===0)return;
-    // Online: only the active player may roll
-    if(isOnline&&!isMyTurn)return;
-    if(skipA[cur]){
-      const ns=[...skipA];ns[cur]=false;setSkipA(ns);
-      const nextCurS=(cur+1)%nP;
-      setMsg(`${players[cur].name}'s turn is skipped.`);setCur(nextCurS);
-      // Online: submit skip
-      if(isOnline){
-        const skipState={cur:nextCurS,pos:[...pos],punya:[...punya],papa:[...papa],
-          shieldA:[...shieldA],skipA:ns,win,dil:null,usedDharma};
-        submitTurn(skipState,{moveType:'roll',diceVal:0}).catch(console.error);
-        lastAppliedSeqRef.current=(lastAppliedSeqRef.current??0)+1;
-      }
-      return;
-    }
+    if(skipA[cur]){const ns=[...skipA];ns[cur]=false;setSkipA(ns);setMsg(`${players[cur].name}'s turn is skipped.`);setCur(c=>(c+1)%nP);return}
     // Kill ALL audio before rolling
     if(voiceTimerRef.current){clearTimeout(voiceTimerRef.current);voiceTimerRef.current=null}
     VoiceEngine.stop();
     try{window.speechSynthesis.cancel()}catch(e){}
     ambient.duck();
-    // Broadcast to opponents that we're rolling
-    if(isOnline)broadcastRolling(players[cur]?.name);
     setBusy(true);play("dice");
     gameStats.current.turns=(gameStats.current.turns||0)+1;
     const r=Math.floor(Math.random()*6)+1,gi=Math.floor(Math.random()*9),g=GRAHA[gi];
     setRv(r);setGv(g);
-    setLastRollBy({name:pName,icon:players[cur]?.char?.icon,color:players[cur]?.char?.color});
-    // Animate dice — spin for 600ms then show result
-    setDiceAnim(true);setDiceVal(null);
-    setTimeout(()=>{setDiceAnim(false);setDiceVal(r);},600);
     const pName=players[cur]?.name||"Seeker";
 
     // Compute graha effects first
@@ -4638,22 +4475,15 @@ export default function MokshaPatam108(){
         // At the final gate — need EXACT roll of 1
         if(r===1){newP=108;extras.push("ॐ Exact 1! Moksha gate opens!")}
         else{newP=107;extras.push(`Rolled ${r} — need exact 1 for Moksha`);
-          setMsg(`${pName} rolled ${r} at the final gate. Only a roll of 1 opens Moksha!`);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);setSkipA(nSkip);setBusy(false);
-          const ncGate=(cur+1)%nP;setCur(ncGate);
-          if(isOnline){const gs107={cur:ncGate,pos:[...nPos],punya:[...nPunya],papa:[...nPapa],shieldA:[...nShield],skipA:[...nSkip],win:null,dil:null,usedDharma};submitTurn(gs107,{moveType:'roll',diceVal:r,grahaIdx:gi}).catch(console.error);lastAppliedSeqRef.current=(lastAppliedSeqRef.current??0)+1;}
+          setMsg(`${pName} rolled ${r} at the final gate. Only a roll of 1 opens Moksha!`);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);setSkipA(nSkip);setBusy(false);setCur(c=>(c+1)%nP);
           showEvent({icon:"🚪",title:"The Gate of Moksha",subtitle:`${pName}, you stand at the final gate — ध्यान Dhyana, Square 107. You rolled ${r}. But Moksha demands EXACT 1. Only absolute surrender opens this gate. Roll again next turn.`,color:"#f0d050"});
           return}
       }
       else if(newP>100&&oldP<=100){newP=101;extras.push("Entered Sacred Path!")}
-      if(newP>108){setMsg(`Overshot Moksha. ${extras.join(" · ")}`);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);setSkipA(nSkip);setBusy(false);
-        const ncOver=(cur+1)%nP;setCur(ncOver);
-        if(isOnline){const gsOver={cur:ncOver,pos:[...nPos],punya:[...nPunya],papa:[...nPapa],shieldA:[...nShield],skipA:[...nSkip],win:null,dil:null,usedDharma};submitTurn(gsOver,{moveType:'roll',diceVal:r,grahaIdx:gi}).catch(console.error);lastAppliedSeqRef.current=(lastAppliedSeqRef.current??0)+1;}
-        return}
+      if(newP>108){setMsg(`Overshot Moksha. ${extras.join(" · ")}`);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);setSkipA(nSkip);setBusy(false);setCur(c=>(c+1)%nP);return}
       if(newP<1)newP=1;
       let step=0;const steps=Math.abs(newP-oldP);const dir=newP>oldP?1:-1;
-      if(steps===0){const ncZero=(cur+1)%nP;setBusy(false);setCur(ncZero);setMsg(extras.join(" · ")||"No movement.");setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);
-        if(isOnline){const gsZero={cur:ncZero,pos:[...nPos],punya:[...nPunya],papa:[...nPapa],shieldA:[...nShield],skipA:[...nSkip],win:null,dil:null,usedDharma};submitTurn(gsZero,{moveType:'roll',diceVal:r,grahaIdx:gi}).catch(console.error);lastAppliedSeqRef.current=(lastAppliedSeqRef.current??0)+1;}
-        return}
+      if(steps===0){setBusy(false);setCur(c=>(c+1)%nP);setMsg(extras.join(" · ")||"No movement.");setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);return}
       // ═══ STEP 2: Animate movement ═══
       const iv=setInterval(()=>{
         step++;nPos[cur]=oldP+dir*step;setPos([...nPos]);play("move");
@@ -4670,30 +4500,25 @@ export default function MokshaPatam108(){
               addCGEntry('moksha',p,`30 पुण्य · कर्म विजय`);
               showEvent({icon:"ॐ",title:"KARMA VICTORY!",subtitle:`${pName} has accumulated 30 Punya! The board dissolves. Instant Moksha!`,color:"#f0d050"},()=>{speakCG('moksha',300);setTimeout(()=>setShowMoksha(true),1200);});
             }
-            // Balance warning
+            // Balance warning — Chitragupta watches when it's knife-edge
             const pu=nPunya[cur],pa=nPapa[cur];
-            if(pu>0&&pa>0&&Math.abs(pu-pa)<=2&&p<100&&!win){addCGEntry('balance',p,`${pu}P·${pa}X तुला`);speakCG('balance',5500);}
-            const nextCur=(skipDharmaCheck||(!DLM_SQ.includes(p)&&!(p>100&&p<108)))?(cur+1)%nP:cur;
-            if(skipDharmaCheck||(!DLM_SQ.includes(p)&&!(p>100&&p<108)))setCur(nextCur);
-            // ── Online: write state to Supabase so opponents update ──────
-            if(isOnline){
-              const newState={cur:nextCur,pos:[...nPos],punya:[...nPunya],papa:[...nPapa],
-                shieldA:[...nShield],skipA:[...nSkip],win:nPunya[cur]>=30?cur:null,dil:null,usedDharma};
-              submitTurn(newState,{moveType:'roll',diceVal:r,grahaIdx:gi}).catch(console.error);
-              lastAppliedSeqRef.current=(lastAppliedSeqRef.current??0)+1;
+            if(pu>0&&pa>0&&Math.abs(pu-pa)<=2&&p<100&&!win){
+              addCGEntry('balance',p,`${pu}P·${pa}X तुला`);
+              speakCG('balance',5500);
             }
+            if(skipDharmaCheck||(!DLM_SQ.includes(p)&&!(p>100&&p<108)))setCur(c=>(c+1)%nP);
             setBusy(false);
           };
 
           if(SNAKES[p]){const sn=SNAKES[p];if(nShield[cur]){nShield[cur]=false;eMsg=`𓆙 ${sn.skt} — Shield!`;play("ladder");
-            showEvent({icon:"🛡",title:`Shield Saved ${pName}!`,subtitle:`The serpent ${sn.skt} (${sn.en}) struck — but Shukra's shield absorbed the venom! Shield is now gone.`,color:"#d0a0c0",staticKey:"shield_save"},()=>{addCGEntry('punya',p,`${sn.skt} — shield`);speakCG('punya',500);setTimeout(()=>ambient.unduck(),2800);finishTurn(true)});
-          }else{const o=p;p=sn.to;eMsg=`𓆙 ${o}→${p}`;nPapa[cur]+=2;gameStats.current.snakes++;play("snake");setTimeout(()=>play("yamaLaugh"),320);
+            showEvent({icon:"🛡",title:`Shield Saved ${pName}!`,subtitle:`The serpent ${sn.skt} (${sn.en}) struck — but Shukra's shield absorbed the venom! Shield is now gone.`,color:"#d0a0c0",staticKey:"shield_save"},()=>{addCGEntry('punya',p,`${sn.skt} — shield`);speakCG('punya',500);finishTurn(true)});
+          }else{const o=p;p=sn.to;eMsg=`𓆙 ${o}→${p}`;nPapa[cur]+=2;gameStats.current.snakes++;play("snake");play("yamaLaugh");
             // Yama taunts the player with voice
-            if(!muted){setTimeout(()=>{VoiceEngine.stop();VoiceEngine.playYamaTaunt("snake",chosenLang);},800)}
-            showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} caught you! ${sn.tale} Dragged from ${o} to ${p}. +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`,staticKey:"snake_hit"},()=>{addCGEntry('snake',p,`${sn.skt} · ${o}→${p}`);speakCG('snake',4000);setTimeout(()=>ambient.unduck(),6500);finishTurn(true)});
+            if(!muted){setTimeout(()=>VoiceEngine.playYamaTaunt("snake",chosenLang),800)}
+            showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} caught you! ${sn.tale} Dragged from ${o} to ${p}. +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`,staticKey:"snake_hit"},()=>{addCGEntry('snake',p,`${sn.skt} · ${o}→${p}`);speakCG('snake',4000);finishTurn(true)});
           }}
           else if(LADDERS[p]){const ld=LADDERS[p];const o=p;p=ld.to;eMsg=`🪔 ${o}→${p}`;nPunya[cur]+=1;gameStats.current.ladders++;play("ladder");
-            showEvent({icon:"🪔",title:`${ld.skt} — ${ld.en}`,subtitle:`${pName}, the virtue of ${ld.en} lifts you! ${ld.tale} Rise from ${o} to ${p}. +1 PUNYA.`,color:"#f0d050",extra:`${o} → ${p}`,staticKey:"ladder_rise"},()=>{addCGEntry('ladder',p,`${ld.skt} · ${o}→${p}`);speakCG('ladder',500);setTimeout(()=>ambient.unduck(),3200);finishTurn(true)});
+            showEvent({icon:"🪔",title:`${ld.skt} — ${ld.en}`,subtitle:`${pName}, the virtue of ${ld.en} lifts you! ${ld.tale} Rise from ${o} to ${p}. +1 PUNYA.`,color:"#f0d050",extra:`${o} → ${p}`,staticKey:"ladder_rise"},()=>{addCGEntry('ladder',p,`${ld.skt} · ${o}→${p}`);speakCG('ladder',500);finishTurn(true)});
           }
           else if(DLM_SQ.includes(p)){
             // No-repeat dharma: pick from unused pool, reset if all used
@@ -4742,10 +4567,10 @@ export default function MokshaPatam108(){
             });
           }
           else if(p===108){if(nPunya[cur]>=nPapa[cur]){setWin(cur);eMsg=`ॐ MOKSHA!`;play("victory");
-            showEvent({icon:"ॐ",title:"मोक्ष प्राप्त — MOKSHA!",subtitle:`${pName} reached Square 108 — Moksha! Punya (${nPunya[cur]}) ≥ Papa (${nPapa[cur]}). Liberation! The cycle of Samsara ends.`,color:"#f0d050",staticKey:"moksha_gate"},()=>{addCGEntry('moksha',108,`${nPunya[cur]} पुण्य · मुक्ति`);speakCG('moksha',600);setTimeout(()=>ambient.unduck(),5000);setTimeout(()=>setShowMoksha(true),1200);finishTurn()});
-          }else{p=67;eMsg="Impure → 67";play("snake");setTimeout(()=>play("yamaLaugh"),320);
-            if(!muted)setTimeout(()=>{VoiceEngine.stop();VoiceEngine.playYamaTaunt("reject",chosenLang);},800);
-            showEvent({icon:"⚠",title:"Gates of Moksha REJECT You!",subtitle:`${pName}, your soul is impure! Punya (${nPunya[cur]}) < Papa (${nPapa[cur]}). Cast back to 67.`,color:"#e06030"},()=>{addCGEntry('reject',67,`${nPunya[cur]}P < ${nPapa[cur]}X`);speakCG('reject',600);setTimeout(()=>ambient.unduck(),3500);finishTurn()});
+            showEvent({icon:"ॐ",title:"मोक्ष प्राप्त — MOKSHA!",subtitle:`${pName} reached Square 108 — Moksha! Punya (${nPunya[cur]}) ≥ Papa (${nPapa[cur]}). Liberation! The cycle of Samsara ends.`,color:"#f0d050",staticKey:"moksha_gate"},()=>{addCGEntry('moksha',108,`${nPunya[cur]} पुण्य · मुक्ति`);speakCG('moksha',600);setTimeout(()=>setShowMoksha(true),1200);finishTurn()});
+          }else{p=67;eMsg="Impure → 67";play("snake");play("yamaLaugh");
+            if(!muted)setTimeout(()=>VoiceEngine.playYamaTaunt("reject",chosenLang),800);
+            showEvent({icon:"⚠",title:"Gates of Moksha REJECT You!",subtitle:`${pName}, your soul is impure! Punya (${nPunya[cur]}) < Papa (${nPapa[cur]}). Cast back to 67.`,color:"#e06030"},()=>{addCGEntry('reject',67,`${nPunya[cur]}P < ${nPapa[cur]}X`);speakCG('reject',600);finishTurn()});
           }}
           else{finishTurn()}
         }
@@ -4756,14 +4581,10 @@ export default function MokshaPatam108(){
     // On sacred path: skip graha popup entirely
     if(onSacredPath){startMovement()}
     else{showEvent({icon:g.icon,title:`${g.n} · ${g.en}`,subtitle:grahaStory,color:g.color,type:"graha",staticKey:GRAHA_STATIC_KEY[g.fx]},startMovement)}
-  },[cur,nP,dil,win,busy,punya,papa,pos,shieldA,skipA,play,players,showEvent,chosenLang,muted,isOnline,isMyTurn,broadcastRolling,submitTurn,usedDharma]);
-  // Keep ref in sync so timer can call it without circular dependency
-  doRollRef.current = doRoll;
+  },[cur,nP,dil,win,busy,punya,papa,pos,shieldA,skipA,play,players,showEvent,chosenLang,muted]);
 
   const solvD=(ci)=>{
     if(!dil)return;const ch=dil.c[ci],fx=ch.fx||{};
-    // Broadcast choice to opponents
-    if(isOnline)broadcastDilemmaPick(ci);
     const np=[...punya],npa=[...papa],nsk=[...skipA],npos=[...pos],nsh=[...shieldA];
     const pName=players[dil.pi]?.name||"Seeker";
 
@@ -4800,15 +4621,7 @@ export default function MokshaPatam108(){
       if(np[dil.pi]>=30&&!win){setWin(dil.pi);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory")}
       // Clear dil FIRST so useEffect cleanup doesn't kill the voice we just started
       const dilRef=dil;
-      const nextCurA=(dil.pi+1)%nP;
-      setDil(null);setCur(nextCurA);
-      // Online: submit ashtanga result
-      if(isOnline){
-        const newStateA={cur:nextCurA,pos:[...npos],punya:[...np],papa:[...npa],
-          shieldA:[...nsh],skipA:[...nsk],win:np[dil.pi]>=30?dil.pi:null,dil:null,usedDharma};
-        submitTurn(newStateA,{moveType:'dilemma_pick',dilemmaPick:ci}).catch(console.error);
-        lastAppliedSeqRef.current=(lastAppliedSeqRef.current??0)+1;
-      }
+      setDil(null);setCur(c=>(c+1)%nP);
       return;
     }
 
@@ -4824,18 +4637,10 @@ export default function MokshaPatam108(){
     setPunya(np);setPapa(npa);setSkipA(nsk);setPos(npos);setShieldA(nsh);
     const parts=[];if(fx.punya)parts.push(`+${fx.punya} Punya`);if(fx.papa)parts.push(`+${fx.papa} Papa`);if(fx.move)parts.push(fx.move>0?`advance ${fx.move}`:`back ${Math.abs(fx.move)}`);if(fx.skip)parts.push("skip next");if(fx.loseShield)parts.push("lost Shield");if(fx.giveShield)parts.push("gained Shield");
     setMsg(parts.join(", ")||"Balanced.");
-    if(ch.k==="punya"){play("chime");gameStats.current.riddlesC++;addCGEntry('dharma_p',npos[dil.pi]||1,dil.en||'');speakCG('dharma_p',600);setTimeout(()=>ambient.unduck(),3200);}
-    else if(ch.k==="papa"){play("yamaLaugh");gameStats.current.riddlesW++;addCGEntry('dharma_x',npos[dil.pi]||1,dil.en||'');speakCG('dharma_x',4000);setTimeout(()=>ambient.unduck(),6500);}
+    if(ch.k==="punya"){play("chime");gameStats.current.riddlesC++;addCGEntry('dharma_p',npos[dil.pi]||1,dil.en||'');speakCG('dharma_p',600);}
+    else if(ch.k==="papa"){play("yamaLaugh");gameStats.current.riddlesW++;addCGEntry('dharma_x',npos[dil.pi]||1,dil.en||'');speakCG('dharma_x',4000);}
     if(np[dil.pi]>=30&&!win){setWin(dil.pi);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory")}
-    const nextCurD=(cur+1)%nP;
-    setDil(null);setCur(nextCurD);
-    // Online: write state after dharma resolution
-    if(isOnline){
-      const newState={cur:nextCurD,pos:[...npos],punya:[...np],papa:[...npa],
-        shieldA:[...nsh],skipA:[...nsk],win:np[dil.pi]>=30?dil.pi:null,dil:null,usedDharma};
-      submitTurn(newState,{moveType:'dilemma_pick',dilemmaPick:ci}).catch(console.error);
-      lastAppliedSeqRef.current=(lastAppliedSeqRef.current??0)+1;
-    }
+    setDil(null);setCur(c=>(c+1)%nP);
   };
 
   // ═══ AUTO-SAVE GAME ON WIN ═══
@@ -4952,7 +4757,7 @@ export default function MokshaPatam108(){
     {showPostGame&&(
       <MokshaPostGamePopup
         onClose={()=>setShowPostGame(false)}
-        onNewJourney={()=>{setShowPostGame(false);navigateTo("title");setWin(null);setPlayers([]);setOnlineRoomId(null);setMyPlayerIndex(null);lastAppliedSeqRef.current=-1;ambient.stop();}}
+        onNewJourney={()=>{setShowPostGame(false);navigateTo("title");setWin(null);setPlayers([]);ambient.stop();}}
       />
     )}
     {/* ═══ SACRED BACKGROUND — visible on ALL screens ═══ */}
@@ -5252,7 +5057,6 @@ export default function MokshaPatam108(){
       onGameStart={(players, roomId, myPlayerIndex) => {
         setShowMultiplayer(false);
         setPlayers(players);
-        if(roomId){setOnlineRoomId(roomId);setMyPlayerIndex(myPlayerIndex);}
         navigateTo("chitragupta");
       }}
       onBack={() => setShowMultiplayer(false)}
@@ -5905,15 +5709,7 @@ export default function MokshaPatam108(){
   const hd=hov?(SNAKES[hov]?{type:"𓆙 NĀGA",label:`${SNAKES[hov].skt} — ${SNAKES[hov].en}`,desc:SNAKES[hov].tale,to:`Falls to ${SNAKES[hov].to}`,cl:"#e08040"}:LADDERS[hov]?{type:"🪔 VIRTUE",label:`${LADDERS[hov].skt} — ${LADDERS[hov].en}`,desc:LADDERS[hov].tale,to:`Rises to ${LADDERS[hov].to}`,cl:"#f0d050"}:DLM_SQ.includes(hov)?{type:"⚖ DHARMA",label:"Moral crossroads",desc:"A dilemma from the Mahābhārata.",cl:"#d0b870"}:hov===108?{type:"ॐ MOKSHA",label:"Square 108 — Liberation",desc:"The 108th square. Punya must ≥ Papa. The sacred number of the cosmos.",cl:"#f0d050"}:hov>100?{type:`${SACRED_PATH[hov-101]?.icon} ${SACRED_PATH[hov-101]?.en}`,label:`${SACRED_PATH[hov-101]?.skt} — ${SACRED_PATH[hov-101]?.desc}`,desc:"The Ashtanga Marga — 8-fold path of Patanjali. Only the purest souls walk here.",cl:"#f0d050"}:null):null;
 
   return(
-    <div style={{...PG,
-      padding:"10px 8px",
-      paddingTop:"max(10px, env(safe-area-inset-top, 10px))",
-      paddingBottom:"max(20px, env(safe-area-inset-bottom, 20px))",
-      paddingLeft:"max(8px, env(safe-area-inset-left, 8px))",
-      paddingRight:"max(8px, env(safe-area-inset-right, 8px))",
-      display:"flex",flexDirection:"column",alignItems:"center",
-      WebkitOverflowScrolling:"touch",
-    }}>
+    <div style={{...PG,padding:"10px 8px",display:"flex",flexDirection:"column",alignItems:"center"}}>
       {globalOverlays}
       {eventPopup&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.6)",zIndex:200,pointerEvents:"auto"}} onClick={dismissEvent}>
         <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",animation:"popIn .4s ease forwards",background:"linear-gradient(180deg,#2a2015,#12100a)",border:`2px solid ${eventPopup.color}50`,borderRadius:8,padding:"28px 36px",textAlign:"center",maxWidth:380,width:"90vw",boxShadow:`0 0 60px ${eventPopup.color}30, 0 0 120px rgba(0,0,0,.8)`}} onClick={e=>e.stopPropagation()}>
@@ -5921,18 +5717,14 @@ export default function MokshaPatam108(){
           <div style={{fontSize:18,fontFamily:"'Yatra One',serif",color:eventPopup.color,marginBottom:4,letterSpacing:2}}>{eventPopup.title}</div>
           {eventPopup.extra&&<div style={{fontSize:16,fontWeight:900,color:eventPopup.color,marginBottom:6,letterSpacing:4}}>{eventPopup.extra}</div>}
           <div style={{fontSize:11,color:"#d0c090",lineHeight:1.9,fontStyle:"italic",opacity:.8,maxHeight:200,overflowY:"auto"}}>{eventPopup.subtitle}</div>
-          <button onClick={dismissEvent} style={{marginTop:16,background:"transparent",border:`1px solid ${eventPopup.color}40`,color:eventPopup.color,padding:"12px 28px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2,minHeight:44,touchAction:"manipulation",WebkitTapHighlightColor:"transparent"}}>TAP TO CONTINUE ▸</button>
+          <button onClick={dismissEvent} style={{marginTop:16,background:"transparent",border:`1px solid ${eventPopup.color}40`,color:eventPopup.color,padding:"8px 24px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2}}>TAP TO CONTINUE ▸</button>
         </div>
       </div>}
       {turnBanner&&!dil&&<div style={{position:"fixed",inset:0,zIndex:180,display:"flex",alignItems:"center",justifyContent:"center",pointerEvents:"none"}}>
         <div style={{animation:"turnFlash 2s ease forwards",background:"linear-gradient(180deg,rgba(20,16,10,.95),rgba(12,10,7,.95))",border:`2px solid ${turnBanner.color}60`,borderRadius:12,padding:"24px 48px",textAlign:"center",boxShadow:`0 0 60px ${turnBanner.color}30`}}>
           <div style={{fontSize:44,marginBottom:4}}>{turnBanner.icon}</div>
           <div style={{fontSize:22,fontFamily:"'Yatra One',serif",color:turnBanner.color,letterSpacing:3}}>{turnBanner.name}</div>
-          <div style={{fontSize:11,opacity:.5,letterSpacing:4,marginTop:4}}>
-            {turnBanner.cpu?"🤖 SPIRIT GUIDE THINKING...":
-             isOnline&&cur!==myPlayerIndex?"⏳ THEIR TURN":
-             isOnline&&cur===myPlayerIndex?"✦ YOUR TURN":"YOUR TURN"}
-          </div>
+          <div style={{fontSize:11,opacity:.5,letterSpacing:4,marginTop:4}}>{turnBanner.cpu?"🤖 CPU THINKING...":"YOUR TURN"}</div>
         </div>
       </div>}
       <div style={{textAlign:"center",marginBottom:4,width:"100%"}}>
@@ -5952,34 +5744,10 @@ export default function MokshaPatam108(){
         <div style={{fontSize:8,letterSpacing:5,opacity:.3,color:"#c0b080",marginTop:4}}>{rlm(pos[cur]||1)==="bhuloka"?"भूलोक EARTHLY":rlm(pos[cur]||1)==="antarloka"?"अन्तर्लोक INNER":rlm(pos[cur]||1)==="moksha_path"?"अष्टांग मार्ग SACRED PATH":"स्वर्गलोक CELESTIAL"}</div>
         <div style={{marginTop:4}}><InstaBadge/></div>
       </div>
-
-      {/* ── Mobile compact header ── */}
-      {isMobile&&(
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",width:"100%",padding:"4px 8px 6px",borderBottom:"1px solid rgba(200,160,60,.12)",marginBottom:4}}>
-          <button onClick={()=>setShowMobileMenu(true)} style={{background:"rgba(200,160,60,.1)",border:"1.5px solid rgba(200,160,60,.3)",color:"#e8c850",padding:"6px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2,minHeight:36,touchAction:"manipulation",WebkitTapHighlightColor:"transparent"}}>
-            ☰ MENU
-          </button>
-          <div style={{textAlign:"center"}}>
-            <div style={{fontSize:14,fontFamily:"'Yatra One',serif",letterSpacing:2,color:"#f0d050",lineHeight:1}}>{cp.char.icon} मोक्ष पटम्</div>
-            <div style={{fontSize:7,letterSpacing:4,opacity:.4,color:"#c0b080"}}>{rlm(pos[cur]||1)==="bhuloka"?"भूलोक":rlm(pos[cur]||1)==="antarloka"?"अन्तर्लोक":rlm(pos[cur]||1)==="svargaloka"?"स्वर्गलोक":"मोक्ष मार्ग"}</div>
-          </div>
-          <div style={{display:"flex",gap:6,alignItems:"center"}}>
-            <button onClick={toggleMute} style={{background:muted?"rgba(200,80,60,.12)":"transparent",border:`1px solid ${muted?"rgba(200,80,60,.4)":"rgba(200,160,60,.2)"}`,color:muted?"#e08060":"#e8c850",padding:"5px 8px",fontSize:14,cursor:"pointer",borderRadius:4,minHeight:36,minWidth:36,touchAction:"manipulation",WebkitTapHighlightColor:"transparent"}}>{muted?"🔇":"🗣️"}</button>
-            <button onClick={toggleBG} style={{background:bgMuted?"rgba(200,80,60,.12)":"transparent",border:`1px solid ${bgMuted?"rgba(200,80,60,.4)":"rgba(200,160,60,.2)"}`,color:bgMuted?"#e08060":"#e8c850",padding:"5px 8px",fontSize:14,cursor:"pointer",borderRadius:4,minHeight:36,minWidth:36,touchAction:"manipulation",WebkitTapHighlightColor:"transparent"}}>{bgMuted?"🔕":"🎵"}</button>
-            {auth.user
-              ?<button onClick={()=>{setShowProfile(true);setProfileTab("overview")}} style={{background:"rgba(240,200,80,.06)",border:"1px solid rgba(200,160,60,.2)",padding:2,cursor:"pointer",borderRadius:"50%",minHeight:36,minWidth:36,display:"flex",alignItems:"center",justifyContent:"center",touchAction:"manipulation",WebkitTapHighlightColor:"transparent"}}>
-                {auth.profile?.avatar_url?<img src={auth.profile.avatar_url} alt="" style={{width:26,height:26,borderRadius:"50%"}} referrerPolicy="no-referrer"/>:<span style={{fontSize:14}}>🪷</span>}
-              </button>
-              :<button onClick={()=>setShowProfile(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.15)",color:"#8a7a50",padding:"4px 8px",fontSize:9,cursor:"pointer",fontFamily:"'Cinzel',serif",borderRadius:3,minHeight:36}}>Sign In</button>
-            }
-          </div>
-        </div>
-      )}
-
       <div style={{background:"linear-gradient(90deg,transparent,rgba(30,24,14,.6),transparent)",borderTop:"1px solid rgba(200,160,60,.2)",borderBottom:"1px solid rgba(200,160,60,.2)",padding:"8px 14px",marginBottom:8,textAlign:"center",fontSize:"clamp(10px,1.4vw,12px)",maxWidth:780,width:"100%",fontStyle:"italic",lineHeight:1.7,color:"#c0b080"}}>{msg}</div>
       <div style={{display:"flex",gap:14,flexWrap:"wrap",justifyContent:"center",width:"100%",maxWidth:1140}}>
         {/* BOARD */}
-        <div style={{flex:"1 1 340px",maxWidth:isMobile?"100%":720,minWidth:300,width:isMobile?"100%":undefined}}>
+        <div style={{flex:"1 1 340px",maxWidth:720,minWidth:300}}>
           <div style={{border:"2px solid rgba(200,160,60,.3)",background:"radial-gradient(ellipse at 30% 30%,rgba(60,45,20,.2),transparent 50%),radial-gradient(ellipse at 70% 70%,rgba(60,45,20,.15),transparent 50%),#1e1810",boxShadow:"0 0 60px rgba(0,0,0,.5),inset 0 0 40px rgba(0,0,0,.3)",borderRadius:2,overflow:"hidden"}}>
             {/* ═══ SACRED CROWN — Ashtanga Marga (101-108) ═══ */}
             <div style={{position:"relative",background:"linear-gradient(180deg,rgba(240,200,80,.08),rgba(20,16,10,.3))",borderBottom:"2px solid rgba(240,200,80,.25)",padding:"6px 4px 4px",overflow:"hidden"}}>
@@ -5991,10 +5759,10 @@ export default function MokshaPatam108(){
               <div style={{fontSize:"clamp(6px,1vw,9px)",textAlign:"center",letterSpacing:5,color:"#f0d050",opacity:.5,marginBottom:4,fontFamily:"'Cinzel',serif",textShadow:"0 0 10px rgba(240,200,80,.3)"}}>꧁ अष्टांग मार्ग · ASHTANGA MARGA · The 8-Fold Sacred Path ꧂</div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(8,1fr)",gap:2}}>
                 {SACRED_PATH.map((sq)=>{
-                  const rPos=isOnline&&displayPos.length>0?displayPos:pos;const ph=[];for(let i=0;i<nP;i++){if((rPos[i]||1)===sq.num)ph.push(i)}
+                  const ph=[];for(let i=0;i<nP;i++){if((pos[i]||1)===sq.num)ph.push(i)}
                   const isMoksha=sq.num===108;
                   const stepIdx=sq.num-101;
-                  return(<div key={sq.num} onMouseEnter={()=>!isMobile&&setHov(sq.num)} onMouseLeave={()=>!isMobile&&setHov(null)} onClick={()=>{if(isMobile)setHov(h=>h===sq.num?null:sq.num)}} style={{aspectRatio:"1",background:isMoksha?"radial-gradient(circle,rgba(240,200,80,.2),rgba(240,200,80,.04))":"radial-gradient(circle,rgba(240,200,80,.06),transparent)",border:`1px solid ${hov===sq.num?"rgba(240,200,80,.7)":isMoksha?"rgba(240,200,80,.4)":"rgba(240,200,80,.12)"}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .3s",borderRadius:isMoksha?4:2,animation:isMoksha?"mp 3s ease infinite":"sacredGlow 4s ease infinite",animationDelay:`${stepIdx*0.3}s`,boxShadow:isMoksha?"0 0 20px rgba(240,200,80,.15)":"none"}}>
+                  return(<div key={sq.num} onMouseEnter={()=>setHov(sq.num)} onMouseLeave={()=>setHov(null)} style={{aspectRatio:"1",background:isMoksha?"radial-gradient(circle,rgba(240,200,80,.2),rgba(240,200,80,.04))":"radial-gradient(circle,rgba(240,200,80,.06),transparent)",border:`1px solid ${hov===sq.num?"rgba(240,200,80,.7)":isMoksha?"rgba(240,200,80,.4)":"rgba(240,200,80,.12)"}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .3s",borderRadius:isMoksha?4:2,animation:isMoksha?"mp 3s ease infinite":"sacredGlow 4s ease infinite",animationDelay:`${stepIdx*0.3}s`,boxShadow:isMoksha?"0 0 20px rgba(240,200,80,.15)":"none"}}>
                     <span style={{position:"absolute",top:1,left:2,fontSize:"clamp(6px,1vw,9px)",color:"rgba(240,210,130,.5)",fontWeight:700}}>{sq.num}</span>
                     {/* Custom SVG icon for each step */}
                     <svg width="clamp(20px,3.5vw,32px)" height="clamp(20px,3.5vw,32px)" viewBox="0 0 24 24" fill="none" style={{marginBottom:2}}>
@@ -6073,13 +5841,13 @@ export default function MokshaPatam108(){
               <div style={{display:"grid",gridTemplateColumns:"repeat(10,1fr)",position:"relative",zIndex:6}}>
               {board.map(({num})=>{
                 const sn=SNAKES[num],ld=LADDERS[num],dl=DLM_SQ.includes(num),mk=num===108;
-                const rPos2=isOnline&&displayPos.length>0?displayPos:pos;const ph=[];for(let i=0;i<nP;i++){if((rPos2[i]||1)===num)ph.push(i)}
+                const ph=[];for(let i=0;i<nP;i++){if((pos[i]||1)===num)ph.push(i)}
                 let bg="transparent",bdr="rgba(200,160,60,.08)";
                 if(mk){bg="radial-gradient(circle,rgba(240,200,80,.2),transparent)";bdr="rgba(240,200,80,.5)"}
                 else if(sn){bg="radial-gradient(circle,rgba(180,60,20,.2),transparent)";bdr="rgba(180,60,20,.3)"}
                 else if(ld){bg="radial-gradient(circle,rgba(200,160,60,.15),transparent)";bdr="rgba(200,160,60,.2)"}
                 else if(dl){bg="radial-gradient(circle,rgba(120,80,180,.2),transparent)";bdr="rgba(140,100,200,.35)"}
-                return(<div key={num} onMouseEnter={()=>!isMobile&&setHov(num)} onMouseLeave={()=>!isMobile&&setHov(null)} onClick={()=>{if(isMobile)setHov(h=>h===num?null:num)}} style={{aspectRatio:"1",background:bg,border:`0.5px solid ${hov===num?"rgba(240,200,80,.6)":bdr}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .2s"}}>
+                return(<div key={num} onMouseEnter={()=>setHov(num)} onMouseLeave={()=>setHov(null)} style={{aspectRatio:"1",background:bg,border:`0.5px solid ${hov===num?"rgba(240,200,80,.6)":bdr}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .2s"}}>
                   <span style={{position:"absolute",top:1,left:2,fontSize:"clamp(7px,1.2vw,11px)",color:"rgba(240,210,130,.5)",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:700}}>{num}</span>
                   {mk&&<span style={{fontSize:"clamp(14px,2.5vw,22px)",animation:"mp 3s ease infinite",color:"#f0d050"}}>ॐ</span>}
                   {sn&&<><span style={{fontSize:"clamp(10px,2vw,16px)",lineHeight:1}}>𓆙</span><span style={{fontSize:"clamp(7px,1.2vw,11px)",color:"#ffb040",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 1px 4px #000,0 0 12px rgba(180,60,20,.5)"}}>{sn.skt}</span><span style={{fontSize:"clamp(5px,.9vw,8px)",color:"#ffa040",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1.1,textShadow:"0 0 6px #000,0 0 10px rgba(180,60,20,.4)"}}>{sn.en}</span></>}
@@ -6088,9 +5856,9 @@ export default function MokshaPatam108(){
                   {ph.length>0&&<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",gap:2,zIndex:15,pointerEvents:"none"}}>
                     {ph.map(pi=>{const c=players[pi]?.char;const isMoving=pi===cur&&busy;const isActive=pi===cur;const pc=c?.color||"#fff";return <div key={pi} style={{display:"flex",flexDirection:"column",alignItems:"center",transition:"all .3s ease",transform:isMoving?"scale(1.6) translateY(-6px)":isActive?"scale(1.25)":"scale(0.9)",zIndex:isActive?20:15}}>
                       {isActive&&<div style={{position:"absolute",inset:-2,borderRadius:4,background:`${pc}15`,border:`1.5px solid ${pc}40`,animation:"activeGlow 1.5s ease infinite","--pc":pc}}/>}
-                      <div style={{width:isMobile?"clamp(22px,6vw,28px)":"clamp(20px,3.2vw,30px)",height:isMobile?"clamp(22px,6vw,28px)":"clamp(20px,3.2vw,30px)",borderRadius:"50%",background:`radial-gradient(circle at 35% 30%,${pc},${pc}40 70%,#0c0a07)`,border:`2.5px solid ${pc}`,boxShadow:`0 0 ${isMoving?20:isActive?12:5}px ${pc}${isMoving?"dd":isActive?"99":"30"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"clamp(11px,2vw,17px)",lineHeight:1,animation:isActive&&!isMoving?"activeGlow 1.5s ease infinite":"none","--pc":pc}}>{c?.icon}</div>
-                      {!isMobile&&<div style={{fontSize:"clamp(5px,.8vw,8px)",color:pc,fontWeight:900,marginTop:1,textShadow:`0 0 4px #000,0 0 8px #000,0 0 12px ${pc}40`,whiteSpace:"nowrap",letterSpacing:1,opacity:isActive?1:.7}}>{players[pi]?.name?.slice(0,6)}</div>
-                    </div>}})}
+                      <div style={{width:"clamp(20px,3.2vw,30px)",height:"clamp(20px,3.2vw,30px)",borderRadius:"50%",background:`radial-gradient(circle at 35% 30%,${pc},${pc}40 70%,#0c0a07)`,border:`2.5px solid ${pc}`,boxShadow:`0 0 ${isMoving?20:isActive?12:5}px ${pc}${isMoving?"dd":isActive?"99":"30"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"clamp(11px,2vw,17px)",lineHeight:1,animation:isActive&&!isMoving?"activeGlow 1.5s ease infinite":"none","--pc":pc}}>{c?.icon}</div>
+                      <div style={{fontSize:"clamp(5px,.8vw,8px)",color:pc,fontWeight:900,marginTop:1,textShadow:`0 0 4px #000,0 0 8px #000,0 0 12px ${pc}40`,whiteSpace:"nowrap",letterSpacing:1,opacity:isActive?1:.7}}>{players[pi]?.name?.slice(0,6)}</div>
+                    </div>})}
                   </div>}
                 </div>);
               })}
@@ -6115,8 +5883,8 @@ export default function MokshaPatam108(){
             </div>}
           </div>
         </div>
-        {/* PANEL — desktop only */}
-        {!isMobile&&<div style={{flex:"0 1 310px",display:"flex",flexDirection:"column",gap:8,minWidth:"clamp(250px,40vw,310px)",maxWidth:360,overflowY:"auto",WebkitOverflowScrolling:"touch"}}>
+        {/* PANEL */}
+        <div style={{flex:"0 1 310px",display:"flex",flexDirection:"column",gap:8,minWidth:"clamp(250px,40vw,310px)",maxWidth:360}}>
           <div style={{borderTop:"1px solid rgba(200,160,60,.15)",padding:8,textAlign:"center",opacity:shF?.7:0,transition:"opacity .8s"}}>
             <div style={{fontSize:"clamp(11px,1.5vw,13px)",fontFamily:"'Noto Serif Devanagari',serif",lineHeight:1.9,color:"#f0d050"}}>{shl.s}</div>
             <div style={{fontSize:8,opacity:.35,fontFamily:"'Noto Serif Devanagari',serif"}}>{shl.r}</div>
@@ -6141,81 +5909,8 @@ export default function MokshaPatam108(){
                 <div><div style={{fontSize:9,fontWeight:700,color:gv.color,letterSpacing:2}}>{gv.n} · {gv.en.toUpperCase()}</div><div style={{fontSize:11,color:"#e0d0a0"}}>{gv.desc}</div></div>
               </div>
             </div>}
-            {/* Online: opponent rolling overlay */}
-            {isOnline&&onlineBroadcast?.type==='rolling'&&onlineBroadcast.playerIndex!==myPlayerIndex&&(
-              <div style={{position:'fixed',inset:0,zIndex:120,display:'flex',alignItems:'center',justifyContent:'center',pointerEvents:'none'}}>
-                <div style={{background:'rgba(12,10,7,.88)',border:'1px solid rgba(240,208,80,.2)',padding:'20px 32px',textAlign:'center',backdropFilter:'blur(8px)'}}>
-                  <div style={{fontSize:36,animation:'pulse 1s ease infinite'}}>🎲</div>
-                  <div style={{fontFamily:"'Cinzel',serif",fontSize:11,letterSpacing:3,color:'rgba(240,208,80,.6)',marginTop:8}}>
-                    {players[onlineBroadcast.playerIndex]?.name||'Opponent'} is rolling...
-                  </div>
-                </div>
-              </div>
-            )}
-            {/* Online: opponent dharma choice overlay */}
-            {isOnline&&onlineBroadcast?.type==='dilemma_pick'&&onlineBroadcast.playerIndex!==myPlayerIndex&&(
-              <div style={{position:'fixed',top:80,left:'50%',transform:'translateX(-50%)',zIndex:120,
-                background:'rgba(12,10,7,.88)',border:'1px solid rgba(240,208,80,.15)',
-                padding:'10px 22px',textAlign:'center',backdropFilter:'blur(8px)',animation:'reveal .3s ease'}}>
-                <div style={{fontFamily:"'Cinzel',serif",fontSize:10,letterSpacing:3,color:'rgba(240,208,80,.55)'}}>
-                  {players[onlineBroadcast.playerIndex]?.name} chose&nbsp;
-                  <strong style={{color:'#f0d050'}}>{onlineBroadcast.choice===0?'Dharma ✦':'Adharma ✕'}</strong>
-                </div>
-              </div>
-            )}
-            {/* Online: turn timer arc */}
-            {isOnline&&isMyTurn&&!busy&&!dil&&!win&&(
-              <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6,padding:'6px 10px',
-                background:'rgba(12,10,7,.6)',border:`1px solid ${timerDanger?'rgba(200,60,60,.4)':timerWarn?'rgba(224,120,32,.35)':'rgba(240,208,80,.12)'}`,
-                transition:'border-color .5s'}}>
-                <svg width={36} height={36} style={{flexShrink:0,transform:'rotate(-90deg)'}}>
-                  <circle cx={18} cy={18} r={14} fill="none" stroke="rgba(240,208,80,.08)" strokeWidth={3}/>
-                  <circle cx={18} cy={18} r={14} fill="none"
-                    stroke={timerDanger?'#e04030':timerWarn?'#e07820':'#f0d050'}
-                    strokeWidth={3} strokeLinecap="round"
-                    strokeDasharray={2*Math.PI*14}
-                    strokeDashoffset={2*Math.PI*14*(1-timerPct)}
-                    style={{transition:'stroke-dashoffset .9s linear,stroke .5s'}}/>
-                </svg>
-                <div>
-                  <div style={{fontFamily:"'Cinzel',serif",fontSize:9,letterSpacing:3,
-                    color:timerDanger?'#e04030':timerWarn?'#e07820':'rgba(240,208,80,.5)',textTransform:'uppercase'}}>
-                    Your Turn
-                  </div>
-                  <div style={{fontFamily:"'Cinzel Decorative',serif",fontSize:16,
-                    color:timerDanger?'#e04030':timerWarn?'#e07820':'#f0d050',fontWeight:700}}>
-                    {timerSecs}s {timerDanger&&'⚠'}
-                  </div>
-                </div>
-              </div>
-            )}
-            {/* Online: waiting for opponent */}
-            {isOnline&&!isMyTurn&&!busy&&!dil&&(
-              <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6,padding:'8px 10px',
-                background:'rgba(12,10,7,.4)',border:'1px solid rgba(240,208,80,.08)'}}>
-                <div style={{fontSize:20,animation:'pulse 2s ease infinite'}}>
-                  {players[cur]?.char?.icon||'🔱'}
-                </div>
-                <div style={{fontFamily:"'Cinzel',serif",fontSize:9,letterSpacing:2,color:'rgba(240,208,80,.35)'}}>
-                  Waiting for {players[cur]?.name||'opponent'}...
-                </div>
-              </div>
-            )}
-            {/* Disconnection warning */}
-            {isOnline&&!onlineConnected&&(
-              <div style={{padding:'7px 10px',background:'rgba(160,40,40,.15)',
-                border:'1px solid rgba(200,60,60,.25)',marginBottom:6,
-                fontFamily:"'Cinzel',serif",fontSize:9,letterSpacing:2,color:'#e08080',textTransform:'uppercase'}}>
-                ⚡ Reconnecting{reconnectAttempts>0?` (${reconnectAttempts}/5)`:''}...
-              </div>
-            )}
-            <button onClick={()=>doRoll(false)}
-              disabled={!!dil||busy||(isOnline&&!isMyTurn)}
-              className="gb gp"
-              style={{width:"100%",padding:"clamp(10px,1.5vw,14px)",fontSize:"clamp(14px,2vw,16px)",letterSpacing:4,
-                minHeight:48,touchAction:"manipulation",WebkitTapHighlightColor:"transparent",
-                opacity:(isOnline&&!isMyTurn)?0.3:1,transition:'opacity .3s'}}>
-              {busy?"Rolling...":(isOnline&&!isMyTurn)?`${players[cur]?.name||'Opponent'}'s turn`:"Roll Dice"}
+            <button onClick={doRoll} disabled={!!dil||busy} className="gb gp" style={{width:"100%",padding:"clamp(10px,1.5vw,14px)",fontSize:"clamp(14px,2vw,16px)",letterSpacing:4}}>
+              {busy?"Rolling...":"Roll Dice"}
             </button>
             {/* Donate / Feedback — subtle */}
             <button onClick={()=>setShowPostGame(true)} style={{
@@ -6244,7 +5939,7 @@ export default function MokshaPatam108(){
               display:"block",width:"100%",animation:"pulse 2s ease infinite",
             }}>✨ View Moksha Ceremony</button>
             <div style={{display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap"}}>
-              <button onClick={()=>{navigateTo("title");setWin(null);setPlayers([]);setOnlineRoomId(null);setMyPlayerIndex(null);lastAppliedSeqRef.current=-1;ambient.stop()}} className="gb" style={{padding:"6px 16px",fontSize:10,marginTop:0}}>New Journey</button>
+              <button onClick={()=>{navigateTo("title");setWin(null);setPlayers([]);ambient.stop()}} className="gb" style={{padding:"6px 16px",fontSize:10,marginTop:0}}>New Journey</button>
               {auth.user&&<button onClick={()=>{setShowProfile(true);setProfileTab("history")}} className="gb" style={{padding:"6px 16px",fontSize:10,marginTop:0,opacity:.7}}>📊 Stats</button>}
             </div>
           </div>}
@@ -6271,12 +5966,8 @@ export default function MokshaPatam108(){
                   const btnBg=isAshtanga?"rgba(200,160,60,.08)":ch.k==="punya"?"rgba(200,160,60,.1)":"rgba(180,50,20,.1)";
                   const btnBorder=isAshtanga?"rgba(200,160,60,.3)":ch.k==="punya"?"rgba(220,180,80,.4)":"rgba(200,60,30,.4)";
                   const btnColor=isAshtanga?"#e0c860":ch.k==="punya"?"#f0d050":"#e08040";
-                  const isMyDilemma = !isOnline || dil.pi === myPlayerIndex;
-                  return <button key={ci} onClick={()=>isMyDilemma&&solvD(ci)}
-                    disabled={!isMyDilemma}
-                    style={{display:"block",width:"100%",background:btnBg,border:`2px solid ${btnBorder}`,color:btnColor,padding:"14px 16px",fontSize:"clamp(12px,1.4vw,14px)",fontFamily:"'Cinzel',serif",cursor:isMyDilemma?"pointer":"not-allowed",textAlign:"left",lineHeight:1.7,borderRadius:6,transition:"all .2s",letterSpacing:1,opacity:isMyDilemma?1:0.45,minHeight:52,touchAction:"manipulation",WebkitTapHighlightColor:"transparent"}}>
+                  return <button key={ci} onClick={()=>solvD(ci)} style={{display:"block",width:"100%",background:btnBg,border:`2px solid ${btnBorder}`,color:btnColor,padding:"14px 16px",fontSize:"clamp(12px,1.4vw,14px)",fontFamily:"'Cinzel',serif",cursor:"pointer",textAlign:"left",lineHeight:1.7,borderRadius:6,transition:"all .2s",letterSpacing:1}}>
                     {ch.l}
-                    {!isMyDilemma&&<span style={{float:'right',fontSize:9,opacity:.4,fontFamily:"'Cinzel',serif"}}>Watching...</span>}
                   </button>})}
               </div>
               <div style={{textAlign:"center",marginTop:14,fontSize:9,opacity:.25,letterSpacing:2}}>CHOOSE YOUR PATH WISELY</div>
@@ -6357,171 +6048,8 @@ export default function MokshaPatam108(){
             <InstaBadge/>
             <div style={{fontSize:9,color:"#6a5a38",letterSpacing:1,marginTop:3}}>© {new Date().getFullYear()} RasaVisio · Moksha Patam 108 · All rights reserved</div>
           </div>
-        </div>}{/* end !isMobile panel */}
-      </div>{/* end board+panel flex */}
-
-      {/* ── MOBILE: Horizontal player karma cards ── */}
-      {isMobile&&!win&&(
-        <div style={{width:"100%",padding:"8px 0 0"}}>
-          <div style={{overflowX:"auto",display:"flex",gap:8,padding:"0 8px 6px",scrollSnapType:"x mandatory",WebkitOverflowScrolling:"touch"}}>
-            {players.map((pl,i)=>{
-              const isActive=cur===i;const pn=punya[i]||0;const pp=papa[i]||0;
-              const total=Math.max(pn+pp,1);const pc=pl.char.color;
-              return(
-                <div key={i} style={{minWidth:140,flexShrink:0,scrollSnapAlign:"start",
-                  background:isActive?`${pc}12`:"rgba(16,12,8,.85)",
-                  border:`1.5px solid ${isActive?pc+"60":"rgba(200,160,60,.12)"}`,
-                  borderRadius:6,padding:"10px 12px",transition:"all .3s"}}>
-                  <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:6}}>
-                    <span style={{fontSize:20}}>{pl.char.icon}</span>
-                    <div style={{flex:1,minWidth:0}}>
-                      <div style={{fontSize:12,color:pc,fontWeight:700,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{pl.name}{pl.cpu?" ☠️":""}</div>
-                      <div style={{fontSize:9,opacity:.45}}>Sq {pos[i]||1}{shieldA[i]?" 🛡":""}{skipA[i]?" ⏭":""}</div>
-                    </div>
-                  </div>
-                  <div style={{marginBottom:4}}>
-                    <div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}>
-                      <span style={{fontSize:9,color:"#f0d050"}}>पुण्य</span>
-                      <span style={{fontSize:13,color:"#f0d050",fontWeight:900}}>{pn}</span>
-                    </div>
-                    <div style={{height:5,background:"rgba(0,0,0,.35)",borderRadius:3,overflow:"hidden"}}>
-                      <div style={{height:"100%",width:`${(pn/total)*100}%`,background:"linear-gradient(90deg,#f0d050,#c0a030)",borderRadius:3,transition:"width .6s"}}/>
-                    </div>
-                  </div>
-                  <div>
-                    <div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}>
-                      <span style={{fontSize:9,color:"#e08060"}}>पाप</span>
-                      <span style={{fontSize:13,color:"#e08060",fontWeight:900}}>{pp}</span>
-                    </div>
-                    <div style={{height:5,background:"rgba(0,0,0,.35)",borderRadius:3,overflow:"hidden"}}>
-                      <div style={{height:"100%",width:`${(pp/total)*100}%`,background:"linear-gradient(90deg,#e08060,#c05030)",borderRadius:3,transition:"width .6s"}}/>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Last roll display on mobile */}
-          {rv&&gv&&!busy&&lastRollBy&&(
-            <div style={{margin:"4px 8px 6px",background:"linear-gradient(135deg,rgba(36,28,14,.97),rgba(18,14,8,.97))",border:"1px solid rgba(200,160,60,.2)",borderRadius:6,padding:"10px 14px"}}>
-              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
-                <span style={{fontSize:22}}>{lastRollBy.icon}</span>
-                <div>
-                  <div style={{fontSize:13,color:lastRollBy.color||"#f0d050",fontWeight:900,letterSpacing:1}}>{lastRollBy.name}</div>
-                  <div style={{fontSize:9,letterSpacing:3,color:"#c0b080",opacity:.6,fontWeight:700}}>ROLLED</div>
-                </div>
-              </div>
-              <div style={{display:"flex",alignItems:"center",gap:14}}>
-                <div style={{width:52,height:52,background:"#0c0a07",border:"2px solid rgba(200,160,60,.5)",borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",fontSize:30,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,color:"#f0d050",flexShrink:0}}>{rv}</div>
-                <div style={{flex:1}}>
-                  <div style={{fontSize:13,fontWeight:700,color:"#f0d050",marginBottom:4}}>Moved {rv} square{rv>1?"s":""} forward</div>
-                  <div style={{display:"flex",alignItems:"center",gap:8,background:`${gv.color}10`,border:`1px solid ${gv.color}30`,borderRadius:6,padding:"6px 10px"}}>
-                    <span style={{fontSize:20}}>{gv.icon}</span>
-                    <div>
-                      <div style={{fontSize:11,color:gv.color,fontWeight:700}}>{gv.n} · {gv.en}</div>
-                      <div style={{fontSize:10,color:"#c0b080",lineHeight:1.4}}>{gv.desc}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Chitragupta last entry on mobile */}
-          {cgEntries.length>0&&(
-            <div style={{margin:"0 8px 6px",background:"rgba(14,10,6,.9)",border:"1px solid rgba(200,160,60,.1)",borderRadius:4,padding:"8px 10px"}}>
-              <div style={{fontSize:7,letterSpacing:4,color:"#f0d050",opacity:.5,marginBottom:3}}>✍ CHITRAGUPTA'S LEDGER</div>
-              <div style={{fontSize:11,color:"#c0b080",lineHeight:1.7}}>
-                {({moksha:"ॐ",snake:"𓆙",ladder:"🪔",punya:"☀",papa:"🌑",dharma_p:"⚖",dharma_x:"⚖",balance:"⚖",reject:"⚠",sacred:"🪷"})[cgEntries[cgEntries.length-1].type]||"·"}
-                {" Sq "}{cgEntries[cgEntries.length-1].sq}{" — "}{String(cgEntries[cgEntries.length-1].detail).slice(0,40)}
-              </div>
-            </div>
-          )}
-          <div style={{height:90}}/>{/* spacer for mb-roll sticky bar */}
         </div>
-      )}
-
-      {/* ── mb-roll: Mobile sticky bottom roll bar ── */}
-      {isMobile&&!win&&(
-        <div className="mb-roll">
-          <div style={{display:"flex",alignItems:"center",gap:10,paddingBottom:4}}>
-            <div style={{width:36,height:36,borderRadius:"50%",background:`${cp.char.color}20`,border:`1.5px solid ${cp.char.color}50`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:19,flexShrink:0}}>{cp.char.icon}</div>
-            <div style={{flex:1,minWidth:0}}>
-              <div style={{fontSize:12,color:cp.char.color,fontWeight:700,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{cp.name}{cp.cpu?" ☠️":""}</div>
-              <div style={{fontSize:9,opacity:.45}}>Square {pos[cur]||1}{busy?" · Rolling…":rv&&gv&&lastRollBy?` · ${lastRollBy.name} rolled ${rv}`:""}</div>
-            </div>
-            {rv&&gv&&!busy&&(
-              <div style={{display:"flex",gap:5,alignItems:"center",flexShrink:0}}>
-                <div style={{width:30,height:30,border:"1.5px solid rgba(200,160,60,.5)",borderRadius:6,background:"#0c0a07",display:"flex",alignItems:"center",justifyContent:"center",fontSize:17,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,color:"#f0d050"}}>{rv}</div>
-                <div style={{width:30,height:30,border:`1.5px solid ${gv.color}40`,borderRadius:6,background:"#0c0a07",display:"flex",alignItems:"center",justifyContent:"center",fontSize:17,color:gv.color}}>{gv.icon}</div>
-              </div>
-            )}
-          </div>
-          {/* Timer arc on mobile */}
-          {isOnline&&isMyTurn&&!busy&&!dil&&(
-            <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:5,padding:"4px 8px",background:timerDanger?"rgba(200,60,60,.1)":"rgba(12,10,7,.4)",border:`1px solid ${timerDanger?"rgba(200,60,60,.3)":timerWarn?"rgba(224,120,32,.25)":"rgba(240,208,80,.1)"}`,borderRadius:4}}>
-              <svg width={22} height={22} style={{flexShrink:0,transform:"rotate(-90deg)"}}>
-                <circle cx={11} cy={11} r={8} fill="none" stroke="rgba(240,208,80,.08)" strokeWidth={2}/>
-                <circle cx={11} cy={11} r={8} fill="none" stroke={timerDanger?"#e04030":timerWarn?"#e07820":"#f0d050"} strokeWidth={2} strokeLinecap="round"
-                  strokeDasharray={2*Math.PI*8} strokeDashoffset={2*Math.PI*8*(1-timerPct)}
-                  style={{transition:"stroke-dashoffset .9s linear,stroke .5s"}}/>
-              </svg>
-              <span style={{fontFamily:"'Cinzel',serif",fontSize:9,color:timerDanger?"#e04030":"rgba(240,208,80,.5)",letterSpacing:2}}>{timerSecs}s</span>
-            </div>
-          )}
-          <button
-            onClick={()=>{haptic();doRoll(false);}}
-            disabled={!!dil||busy||(isOnline&&!isMyTurn)}
-            className="gb gp"
-            style={{width:"100%",padding:"13px",fontSize:15,letterSpacing:4,
-              minHeight:50,touchAction:"manipulation",WebkitTapHighlightColor:"transparent",
-              opacity:(isOnline&&!isMyTurn)?0.3:1,transition:"opacity .3s"}}>
-            {busy?"Rolling…":(isOnline&&!isMyTurn)?`${players[cur]?.name||"Opponent"}'s turn`:"Roll Dice"}
-          </button>
-        </div>
-      )}
-
-      {/* ── mb-sheet: Mobile slide-up menu ── */}
-      {isMobile&&showMobileMenu&&(
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.6)",zIndex:99,touchAction:"none"}}
-          onClick={()=>setShowMobileMenu(false)}>
-          <div className="mb-sheet" onClick={e=>e.stopPropagation()}>
-            <div style={{width:40,height:4,background:"rgba(200,160,60,.3)",borderRadius:2,margin:"0 auto 14px"}}/>
-            <div style={{fontSize:9,letterSpacing:5,color:"#f0d050",opacity:.4,textAlign:"center",marginBottom:14}}>MENU</div>
-
-            {/* Audio toggles */}
-            <div style={{display:"flex",gap:8,marginBottom:10}}>
-              <button onClick={toggleMute} style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:8,background:muted?"rgba(200,80,60,.12)":"rgba(200,160,60,.06)",border:`1.5px solid ${muted?"rgba(200,80,60,.4)":"rgba(200,160,60,.2)"}`,color:muted?"#e08060":"#e8c850",padding:"11px 8px",fontSize:12,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:6,letterSpacing:1,minHeight:44,touchAction:"manipulation",WebkitTapHighlightColor:"transparent"}}>
-                <span style={{fontSize:18}}>{muted?"🔇":"🗣️"}</span>
-                <span>{muted?"Voice Off":"Voice On"}</span>
-              </button>
-              <button onClick={toggleBG} style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:8,background:bgMuted?"rgba(200,80,60,.12)":"rgba(200,160,60,.06)",border:`1.5px solid ${bgMuted?"rgba(200,80,60,.4)":"rgba(200,160,60,.2)"}`,color:bgMuted?"#e08060":"#e8c850",padding:"11px 8px",fontSize:12,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:6,letterSpacing:1,minHeight:44,touchAction:"manipulation",WebkitTapHighlightColor:"transparent"}}>
-                <span style={{fontSize:18}}>{bgMuted?"🔕":"🎵"}</span>
-                <span>{bgMuted?"Music Off":"Music On"}</span>
-              </button>
-            </div>
-
-            {/* Nav buttons */}
-            <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:12}}>
-              <button onClick={()=>{setShowMobileMenu(false);setShowGuide(true);}} style={{display:"flex",alignItems:"center",gap:10,background:"rgba(200,160,60,.06)",border:"1px solid rgba(200,160,60,.15)",color:"#c0b080",padding:"12px 14px",fontSize:12,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:6,letterSpacing:1,minHeight:44,touchAction:"manipulation",WebkitTapHighlightColor:"transparent"}}>
-                <span>📜</span><span>How to Play</span>
-              </button>
-              <button onClick={()=>{setShowMobileMenu(false);setShowInfo(true);}} style={{display:"flex",alignItems:"center",gap:10,background:"rgba(200,160,60,.06)",border:"1px solid rgba(200,160,60,.15)",color:"#c0b080",padding:"12px 14px",fontSize:12,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:6,letterSpacing:1,minHeight:44,touchAction:"manipulation",WebkitTapHighlightColor:"transparent"}}>
-                <span>📖</span><span>Encyclopaedia</span>
-              </button>
-              <button onClick={()=>{setShowMobileMenu(false);setShowPostGame(true);}} style={{display:"flex",alignItems:"center",gap:10,background:"rgba(200,160,60,.06)",border:"1px solid rgba(200,160,60,.15)",color:"#c0b080",padding:"12px 14px",fontSize:12,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:6,letterSpacing:1,minHeight:44,touchAction:"manipulation",WebkitTapHighlightColor:"transparent"}}>
-                <span>🪔</span><span>Support · Feedback</span>
-              </button>
-            </div>
-
-            <button onClick={()=>{setShowMobileMenu(false);VoiceEngine.stop();navigateTo("title");}} style={{width:"100%",background:"transparent",border:"1px solid rgba(200,100,80,.2)",color:"rgba(200,100,80,.5)",padding:"10px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:3,minHeight:44,touchAction:"manipulation",WebkitTapHighlightColor:"transparent"}}>
-              ← Leave Game
-            </button>
-          </div>
-        </div>
-      )}
-
+      </div>
     </div>
   );
 }
