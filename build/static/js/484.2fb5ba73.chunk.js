@@ -1,2 +1,0 @@
-"use strict";(globalThis.webpackChunkmoksha_patam=globalThis.webpackChunkmoksha_patam||[]).push([[484],{484(a,s,h){h.d(s,{SplashScreenWeb:()=>c});var e=h(403);class c extends e.E_{async show(a){}async hide(a){}}}}]);
-//# sourceMappingURL=484.2fb5ba73.chunk.js.map
