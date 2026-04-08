@@ -10,7 +10,15 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useMultiplayer } from '../hooks/useMultiplayer';
 import { setReady, startGame, promoteBotForSlot, updateCharacter } from '../services/roomService';
-import { CHARS } from '../tiers/moksha/constants';
+// CHARS defined locally — constants file does not export this
+const CHARS = [
+  {name:'Kshatriya',skt:'क्षत्रिय',icon:'⚔', color:'#e04830'},
+  {name:'Rishi',    skt:'ऋषि',     icon:'🔱',color:'#f0c030'},
+  {name:'Vaidya',   skt:'वैद्य',   icon:'🌿',color:'#30c0b0'},
+  {name:'Nartaki',  skt:'नर्तकी',  icon:'💃',color:'#c060d0'},
+  {name:'Vanik',    skt:'वणिक्',   icon:'⚖', color:'#e08030'},
+  {name:'Sannyasi', skt:'संन्यासी',icon:'🪷',color:'#70c030'},
+];
 
 const CSS = `
 @keyframes wr-appear{0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}70%{transform:translate(-50%,-50%) scale(1.06)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}

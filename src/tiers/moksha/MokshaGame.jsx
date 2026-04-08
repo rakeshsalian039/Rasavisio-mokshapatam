@@ -5150,6 +5150,8 @@ export default function MokshaPatam108(){
                 </div>
               </div>
               )}
+            </div>
+          </div>
         ) : auth.loading ? (
           <div style={{fontSize:12,color:"#8a7a50",opacity:.5,animation:"pulse 1.5s ease infinite"}}>Connecting to the cosmos...</div>
         ) : (

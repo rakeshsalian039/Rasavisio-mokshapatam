@@ -14,7 +14,15 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { createRoom, joinRoom, quickMatch, getActiveSeekerCount } from '../services/roomService';
 import WaitingRoom from './WaitingRoom';
-import { CHARS } from '../tiers/moksha/constants';
+// CHARS defined locally — constants file does not export this
+const CHARS = [
+  {name:'Kshatriya',skt:'क्षत्रिय',icon:'⚔', color:'#e04830'},
+  {name:'Rishi',    skt:'ऋषि',     icon:'🔱',color:'#f0c030'},
+  {name:'Vaidya',   skt:'वैद्य',   icon:'🌿',color:'#30c0b0'},
+  {name:'Nartaki',  skt:'नर्तकी',  icon:'💃',color:'#c060d0'},
+  {name:'Vanik',    skt:'वणिक्',   icon:'⚖', color:'#e08030'},
+  {name:'Sannyasi', skt:'संन्यासी',icon:'🪷',color:'#70c030'},
+];
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CSS
