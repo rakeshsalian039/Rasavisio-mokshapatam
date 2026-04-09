@@ -3465,10 +3465,10 @@ function ChitraguptaIntroScreen({ players, chosenLang, muted, onBegin, onSkip })
       proj.sort((a,b)=>a.rz-b.rz);
       proj.forEach(({sx,sy,scale,p})=>{
         if(sx<-100||sx>W+100||sy<-100||sy>H+100)return;
-        const rv=p.size*scale,al=p.baseOpacity*Math.min(1,s.t/55)*scale*1.5;
+        const rv=Math.max(0,p.size*scale),al=p.baseOpacity*Math.min(1,s.t/55)*scale*1.5;
         const pulse=1+Math.sin(s.t*.033+p.phase)*.1;
-        if(['quill','face','crown','halo'].includes(p.type)){ctx.beginPath();ctx.arc(sx,sy,rv*4*pulse,0,Math.PI*2);ctx.fillStyle=`rgba(240,210,80,${al*.13})`;ctx.fill();}
-        ctx.beginPath();ctx.arc(sx,sy,rv*pulse,0,Math.PI*2);
+        if(['quill','face','crown','halo'].includes(p.type)){const r1=Math.max(0,rv*4*pulse);ctx.beginPath();ctx.arc(sx,sy,r1,0,Math.PI*2);ctx.fillStyle=`rgba(240,210,80,${al*.13})`;ctx.fill();}
+        const r2=Math.max(0,rv*pulse);ctx.beginPath();ctx.arc(sx,sy,r2,0,Math.PI*2);
         ctx.fillStyle=hA(p.color.startsWith('#')?p.color:'#d0b050',al);ctx.fill();
       });
 
@@ -6490,7 +6490,7 @@ export default function MokshaPatam108(){
             {[{top:"1%",t:"स्वर्गलोक CELESTIAL"},{top:"34.5%",t:"अन्तर्लोक INNER"},{top:"67.5%",t:"भूलोक EARTHLY"}].map((r,i)=><div key={i} style={{position:"absolute",top:r.top,left:"50%",transform:"translateX(-50%)",fontSize:"clamp(6px,1vw,9px)",letterSpacing:4,opacity:.22,color:"#f0d050",zIndex:10,pointerEvents:"none",whiteSpace:"nowrap"}}>{r.t}</div>)}
 
             <div style={{display:"grid",gridTemplateColumns:"repeat(10,1fr)",gap:2,background:"rgba(0,0,0,.3)",border:"1px solid rgba(200,160,60,.2)",borderRadius:"0 0 4px 4px",padding:2,position:"relative"}}>
-              {mainBoard.map((sq,idx)=>{
+              {board.map((sq,idx)=>{
                 const num=sq.num;
                 const snake=SNAKES[num];const ladder=LADDERS[num];const isDharma=DLM_SQ.includes(num);
                 const ph=[];for(let i=0;i<nP;i++){const rp=isOnline&&i!==myPlayerIndex&&displayPos.length>0?displayPos[i]:pos[i];if((rp||1)===num)ph.push(i)}
