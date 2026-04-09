@@ -4555,6 +4555,7 @@ export default function MokshaPatam108(){
   const eventCallback=useRef(null);
   const voiceTimerRef=useRef(null);
   const yamaTimerRef=useRef(null);
+  const startMovementRef=useRef(null); // stores startMovement fn for graha_zoom phase
   const autoAdvanceTimerRef=useRef(null);
   const showEvent = useCallback((popup, onDismiss) => {
     // Kill ANY pending or playing voice + previous auto-advance
@@ -4883,7 +4884,8 @@ export default function MokshaPatam108(){
 
     // Show graha popup — user dismisses, then movement begins
     // On sacred path: skip graha popup entirely
-    const rollInfo={r,g,name:players[cur]?.name,icon:players[cur]?.char?.icon,color:players[cur]?.char?.color||"#f0d050"};
+    const rollInfo={r,g,name:players[cur]?.name,icon:players[cur]?.char?.icon,color:players[cur]?.char?.color||"#f0d050",grahaStory,sacredPath:onSacredPath};
+    startMovementRef.current=startMovement;
     setDiceReveal(rollInfo);setLastRollBy(rollInfo);
     if(isOnline)broadcastRolling(players[cur]?.name); // broadcast to opponents
 
@@ -6246,9 +6248,10 @@ export default function MokshaPatam108(){
       {diceReveal&&rollingPhase==='graha_zoom'&&(
         <div
           onClick={()=>{
+            const sm=startMovementRef.current;
             setDiceReveal(null);setRollingPhase(null);
-            if(!onSacredPath){showEvent({icon:diceReveal.g.icon,title:`${diceReveal.g.n} · ${diceReveal.g.en}`,subtitle:grahaStory,color:diceReveal.g.color,type:"graha",staticKey:GRAHA_STATIC_KEY[diceReveal.g.fx]},startMovement)}
-            else startMovement();
+            if(!diceReveal?.sacredPath){showEvent({icon:diceReveal.g.icon,title:`${diceReveal.g.n} · ${diceReveal.g.en}`,subtitle:diceReveal.grahaStory||"",color:diceReveal.g.color,type:"graha",staticKey:GRAHA_STATIC_KEY[diceReveal.g.fx]},sm)}
+            else if(sm)sm();
           }}
           style={{position:"fixed",inset:0,zIndex:186,cursor:"pointer",
             display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
@@ -6311,25 +6314,7 @@ export default function MokshaPatam108(){
           }}>TAP TO CONTINUE</div>
         </div>
       )}
-            {turnBanner&&!dil&&!busy&&!diceReveal&&<div style={{position:"fixed",inset:0,zIndex:180,display:"flex",alignItems:"center",justifyContent:"center",pointerEvents:"none"}}>
-        <div style={{animation:"turnFlash 2.2s ease forwards",
-          background:"linear-gradient(180deg,rgba(20,16,10,.97),rgba(12,10,7,.97))",
-          border:`2px solid ${isOnline&&cur===myPlayerIndex?"rgba(240,200,80,.9)":turnBanner.color+"60"}`,
-          borderRadius:12,padding:"28px 52px",textAlign:"center",
-          boxShadow:isOnline&&cur===myPlayerIndex
-            ?`0 0 80px rgba(240,200,80,.4), 0 0 160px rgba(240,200,80,.1)`
-            :`0 0 60px ${turnBanner.color}30`}}>
-          <div style={{fontSize:48,marginBottom:4,filter:`drop-shadow(0 0 16px ${turnBanner.color})`}}>{turnBanner.icon}</div>
-          <div style={{fontSize:24,fontFamily:"'Yatra One',serif",color:turnBanner.color,letterSpacing:3}}>{turnBanner.name}</div>
-          <div style={{fontSize:isOnline&&cur===myPlayerIndex?14:11,
-            letterSpacing:4,marginTop:6,fontFamily:"'Cinzel',serif",fontWeight:700,
-            color:isOnline&&cur===myPlayerIndex?"#f0d050":turnBanner.cpu?"#7986cb":"rgba(240,200,80,.5)"}}>
-            {turnBanner.cpu?"🤖 SPIRIT GUIDE THINKING...":
-             isOnline&&cur!==myPlayerIndex?`⏳ ${turnBanner.name.split(" ")[0]}'s turn — wait...`:
-             isOnline&&cur===myPlayerIndex?"✦ YOUR TURN — ROLL NOW ✦":"YOUR TURN"}
-          </div>
-        </div>
-      </div>}
+
       {/* ── Desktop header — single slim bar ── */}
       {!isMobile&&<div style={{
         display:"flex",alignItems:"center",justifyContent:"space-between",
@@ -6952,9 +6937,6 @@ export default function MokshaPatam108(){
         </div>
       )}
 
-    </div>
-  );
-}
 
       {turnBanner&&!dil&&!busy&&!diceReveal&&<div style={{position:"fixed",inset:0,zIndex:180,display:"flex",alignItems:"center",justifyContent:"center",pointerEvents:"none"}}>
         <div style={{animation:"turnFlash 2.2s ease forwards",
@@ -7409,3 +7391,4 @@ export default function MokshaPatam108(){
       </div>}
     </div>
   );
+}
