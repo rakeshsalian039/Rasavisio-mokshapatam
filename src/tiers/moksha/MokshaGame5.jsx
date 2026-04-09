@@ -4300,8 +4300,8 @@ export default function MokshaPatam108(){
   // ── Online multiplayer hook ──────────────────────────────────────────────
   const {
     remoteGameState, broadcastState: onlineBroadcast,
-    broadcastRolling: _broadcastRolling, broadcastDilemmaPick: _broadcastDilemmaPick, broadcastEmoji,
-    submitTurn: _submitTurn, isConnected: onlineConnected, reconnectAttempts,
+    broadcastRolling, broadcastDilemmaPick, broadcastEmoji,
+    submitTurn, isConnected: onlineConnected, reconnectAttempts,
   } = useMultiplayer({
     roomId: onlineRoomId,
     userId: auth?.user?.id,
@@ -4309,10 +4309,6 @@ export default function MokshaPatam108(){
     myPlayerIndex: myPlayerIndex ?? 0,
     enabled: isOnline,
   });
-  // Safe no-ops when offline so doRoll deps stay stable
-  const broadcastRolling = useCallback(_broadcastRolling || (()=>{}), [_broadcastRolling]);
-  const broadcastDilemmaPick = useCallback(_broadcastDilemmaPick || (()=>{}), [_broadcastDilemmaPick]);
-  const submitTurn = useCallback(_submitTurn || (()=>Promise.resolve()), [_submitTurn]);
 
   // Is it this device's turn?
   const isMyTurn = isOnline ? cur === myPlayerIndex : true;
@@ -4759,7 +4755,7 @@ export default function MokshaPatam108(){
     // On sacred path: skip graha popup entirely
     if(onSacredPath){startMovement()}
     else{showEvent({icon:g.icon,title:`${g.n} · ${g.en}`,subtitle:grahaStory,color:g.color,type:"graha",staticKey:GRAHA_STATIC_KEY[g.fx]},startMovement)}
-  },[cur,nP,dil,win,busy,punya,papa,pos,shieldA,skipA,play,players,showEvent,chosenLang,muted,isOnline,isMyTurn,usedDharma]);
+  },[cur,nP,dil,win,busy,punya,papa,pos,shieldA,skipA,play,players,showEvent,chosenLang,muted,isOnline,isMyTurn,broadcastRolling,submitTurn,usedDharma]);
   // Keep ref in sync so timer can call it without circular dependency
   doRollRef.current = doRoll;
 
