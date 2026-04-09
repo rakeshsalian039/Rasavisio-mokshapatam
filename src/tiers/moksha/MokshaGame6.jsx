@@ -4437,11 +4437,9 @@ export default function MokshaPatam108(){
 
   const eventCallback=useRef(null);
   const voiceTimerRef=useRef(null);
-  const autoAdvanceTimerRef=useRef(null);
   const showEvent = useCallback((popup, onDismiss) => {
-    // Kill ANY pending or playing voice + previous auto-advance
+    // Kill ANY pending or playing voice
     if(voiceTimerRef.current){clearTimeout(voiceTimerRef.current);voiceTimerRef.current=null}
-    if(autoAdvanceTimerRef.current){clearTimeout(autoAdvanceTimerRef.current);autoAdvanceTimerRef.current=null}
     VoiceEngine.stop();
     try{window.speechSynthesis.cancel()}catch(e){}
     setEventPopup(popup);
@@ -4463,26 +4461,15 @@ export default function MokshaPatam108(){
       voiceTimerRef.current=setTimeout(()=>{
         voiceTimerRef.current=null;
         if(!tryStatic()){
+          // Fall back to dynamic TTS (cached in IndexedDB after first play)
           VoiceEngine.speakNarrator(popup.subtitle,chosenLang,null);
         }
       },200);
-    }
-    // Graha popups auto-advance after 8s so busy never gets stuck
-    if(popup.type==="graha"&&onDismiss){
-      autoAdvanceTimerRef.current=setTimeout(()=>{
-        autoAdvanceTimerRef.current=null;
-        if(eventCallback.current){
-          const cb=eventCallback.current;eventCallback.current=null;
-          setEventPopup(null);
-          setTimeout(()=>cb(),150);
-        }
-      },8000);
     }
   }, [muted,chosenLang,ambient]);
   const dismissEvent = useCallback(() => {
     // Cancel any pending voice timeout + stop any playing voice
     if(voiceTimerRef.current){clearTimeout(voiceTimerRef.current);voiceTimerRef.current=null}
-    if(autoAdvanceTimerRef.current){clearTimeout(autoAdvanceTimerRef.current);autoAdvanceTimerRef.current=null}
     VoiceEngine.stop();
     try{window.speechSynthesis.cancel()}catch(e){}
     setEventPopup(null);
@@ -4537,7 +4524,7 @@ export default function MokshaPatam108(){
     gameReadyRef.current=false; // block timer until game is settled
     setPos(Array(n).fill(1));setDisplayPos(Array(n).fill(1));setPunya(Array(n).fill(0));setPapa(Array(n).fill(0));
     setShieldA(Array(n).fill(false));setSkipA(Array(n).fill(false));
-    setCur(0);setWin(null);setHist([]);setRv(null);setGv(null);setLastRollBy(null);setBusy(false);setDil(null);setUsedDharma([]);
+    setCur(0);setWin(null);setHist([]);setRv(null);setGv(null);setBusy(false);setDil(null);setUsedDharma([]);
     setCgEntries([]);setShowMoksha(false);setShowPostGame(false);
     setMsg(`${pList[0].name} the ${pList[0].char.name} — your journey begins.`);
     gameStats.current={startTime:Date.now(),turns:0,snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0,grahaHits:{sun:0,moon:0,mars:0,mercury:0,jupiter:0,venus:0,saturn:0,rahu:0,ketu:0}};
@@ -4910,33 +4897,13 @@ export default function MokshaPatam108(){
     // Show turn banner
     setTurnBanner({name:p.name,icon:p.char.icon,color:p.char.color,cpu:!!p.cpu});
     const bannerTimer=setTimeout(()=>setTurnBanner(null),2000);
-    // Online: notify THIS player when it becomes their turn
-    if(isOnline&&cur===myPlayerIndex&&!p.cpu){
-      // Vibrate pattern: attention pulse
-      try{if(navigator.vibrate)navigator.vibrate([120,60,120,60,200]);}catch(e){}
-      // Play a distinct chime so they know it's their turn
-      if(!muted){
-        try{
-          const ctx=new(window.AudioContext||window.webkitAudioContext)();
-          // Two rising tones — "your turn"
-          [[523,0],[659,0.2],[784,0.4]].forEach(([freq,delay])=>{
-            const o=ctx.createOscillator(),g=ctx.createGain();
-            o.connect(g);g.connect(ctx.destination);
-            o.type='sine';o.frequency.value=freq;
-            g.gain.setValueAtTime(0.15,ctx.currentTime+delay);
-            g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+delay+0.35);
-            o.start(ctx.currentTime+delay);o.stop(ctx.currentTime+delay+0.4);
-          });
-        }catch(e){}
-      }
-    }
     // CPU auto-play after a delay
     if(p.cpu&&!dil&&!busy){
       const cpuTimer=setTimeout(()=>{doRoll()},2500);
       return()=>{clearTimeout(bannerTimer);clearTimeout(cpuTimer)};
     }
     return()=>clearTimeout(bannerTimer);
-  },[cur,screen,win,players,dil,busy,isOnline,myPlayerIndex,muted]);
+  },[cur,screen,win,players,dil,busy]);
 
   // CPU auto-solve dharma dilemmas (picks randomly, leans papa for difficulty)
   useEffect(()=>{
@@ -5958,25 +5925,16 @@ export default function MokshaPatam108(){
           {eventPopup.extra&&<div style={{fontSize:16,fontWeight:900,color:eventPopup.color,marginBottom:6,letterSpacing:4}}>{eventPopup.extra}</div>}
           <div style={{fontSize:11,color:"#d0c090",lineHeight:1.9,fontStyle:"italic",opacity:.8,maxHeight:200,overflowY:"auto"}}>{eventPopup.subtitle}</div>
           <button onClick={dismissEvent} style={{marginTop:16,background:"transparent",border:`1px solid ${eventPopup.color}40`,color:eventPopup.color,padding:"12px 28px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2,minHeight:44,touchAction:"manipulation",WebkitTapHighlightColor:"transparent"}}>TAP TO CONTINUE ▸</button>
-          {eventPopup.type==="graha"&&<div style={{marginTop:8,fontSize:9,opacity:.35,letterSpacing:2,fontFamily:"'Cinzel',serif"}}>auto-continues in 8s</div>}
         </div>
       </div>}
       {turnBanner&&!dil&&<div style={{position:"fixed",inset:0,zIndex:180,display:"flex",alignItems:"center",justifyContent:"center",pointerEvents:"none"}}>
-        <div style={{animation:"turnFlash 2.2s ease forwards",
-          background:"linear-gradient(180deg,rgba(20,16,10,.97),rgba(12,10,7,.97))",
-          border:`2px solid ${isOnline&&cur===myPlayerIndex?"rgba(240,200,80,.9)":turnBanner.color+"60"}`,
-          borderRadius:12,padding:"28px 52px",textAlign:"center",
-          boxShadow:isOnline&&cur===myPlayerIndex
-            ?`0 0 80px rgba(240,200,80,.4), 0 0 160px rgba(240,200,80,.1)`
-            :`0 0 60px ${turnBanner.color}30`}}>
-          <div style={{fontSize:48,marginBottom:4,filter:`drop-shadow(0 0 16px ${turnBanner.color})`}}>{turnBanner.icon}</div>
-          <div style={{fontSize:24,fontFamily:"'Yatra One',serif",color:turnBanner.color,letterSpacing:3}}>{turnBanner.name}</div>
-          <div style={{fontSize:isOnline&&cur===myPlayerIndex?14:11,
-            letterSpacing:4,marginTop:6,fontFamily:"'Cinzel',serif",fontWeight:700,
-            color:isOnline&&cur===myPlayerIndex?"#f0d050":turnBanner.cpu?"#7986cb":"rgba(240,200,80,.5)"}}>
+        <div style={{animation:"turnFlash 2s ease forwards",background:"linear-gradient(180deg,rgba(20,16,10,.95),rgba(12,10,7,.95))",border:`2px solid ${turnBanner.color}60`,borderRadius:12,padding:"24px 48px",textAlign:"center",boxShadow:`0 0 60px ${turnBanner.color}30`}}>
+          <div style={{fontSize:44,marginBottom:4}}>{turnBanner.icon}</div>
+          <div style={{fontSize:22,fontFamily:"'Yatra One',serif",color:turnBanner.color,letterSpacing:3}}>{turnBanner.name}</div>
+          <div style={{fontSize:11,opacity:.5,letterSpacing:4,marginTop:4}}>
             {turnBanner.cpu?"🤖 SPIRIT GUIDE THINKING...":
-             isOnline&&cur!==myPlayerIndex?`⏳ ${turnBanner.name.split(" ")[0]}'s turn — wait...`:
-             isOnline&&cur===myPlayerIndex?"✦ YOUR TURN — ROLL NOW ✦":"YOUR TURN"}
+             isOnline&&cur!==myPlayerIndex?"⏳ THEIR TURN":
+             isOnline&&cur===myPlayerIndex?"✦ YOUR TURN":"YOUR TURN"}
           </div>
         </div>
       </div>}
