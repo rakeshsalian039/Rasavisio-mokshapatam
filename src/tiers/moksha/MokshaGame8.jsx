@@ -6037,7 +6037,7 @@ export default function MokshaPatam108(){
               <div style={{fontSize:"clamp(6px,1vw,9px)",textAlign:"center",letterSpacing:5,color:"#f0d050",opacity:.5,marginBottom:4,fontFamily:"'Cinzel',serif",textShadow:"0 0 10px rgba(240,200,80,.3)"}}>꧁ अष्टांग मार्ग · ASHTANGA MARGA · The 8-Fold Sacred Path ꧂</div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(8,1fr)",gap:2}}>
                 {SACRED_PATH.map((sq)=>{
-                  const ph=[];for(let i=0;i<nP;i++){const rp=isOnline&&i!==myPlayerIndex&&displayPos.length>0?displayPos[i]:pos[i];if((rp||1)===sq.num)ph.push(i)}
+                  const rPos=isOnline&&displayPos.length>0?displayPos:pos;const ph=[];for(let i=0;i<nP;i++){if((rPos[i]||1)===sq.num)ph.push(i)}
                   const isMoksha=sq.num===108;
                   const stepIdx=sq.num-101;
                   return(<div key={sq.num} onMouseEnter={()=>!isMobile&&setHov(sq.num)} onMouseLeave={()=>!isMobile&&setHov(null)} onClick={()=>{if(isMobile)setHov(h=>h===sq.num?null:sq.num)}} style={{aspectRatio:"1",background:isMoksha?"radial-gradient(circle,rgba(240,200,80,.2),rgba(240,200,80,.04))":"radial-gradient(circle,rgba(240,200,80,.06),transparent)",border:`1px solid ${hov===sq.num?"rgba(240,200,80,.7)":isMoksha?"rgba(240,200,80,.4)":"rgba(240,200,80,.12)"}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .3s",borderRadius:isMoksha?4:2,animation:isMoksha?"mp 3s ease infinite":"sacredGlow 4s ease infinite",animationDelay:`${stepIdx*0.3}s`,boxShadow:isMoksha?"0 0 20px rgba(240,200,80,.15)":"none"}}>
@@ -6119,7 +6119,7 @@ export default function MokshaPatam108(){
               <div style={{display:"grid",gridTemplateColumns:"repeat(10,1fr)",position:"relative",zIndex:6}}>
               {board.map(({num})=>{
                 const sn=SNAKES[num],ld=LADDERS[num],dl=DLM_SQ.includes(num),mk=num===108;
-                const ph=[];for(let i=0;i<nP;i++){const rp=isOnline&&i!==myPlayerIndex&&displayPos.length>0?displayPos[i]:pos[i];if((rp||1)===num)ph.push(i)}
+                const rPos2=isOnline&&displayPos.length>0?displayPos:pos;const ph=[];for(let i=0;i<nP;i++){if((rPos2[i]||1)===num)ph.push(i)}
                 let bg="transparent",bdr="rgba(200,160,60,.08)";
                 if(mk){bg="radial-gradient(circle,rgba(240,200,80,.2),transparent)";bdr="rgba(240,200,80,.5)"}
                 else if(sn){bg="radial-gradient(circle,rgba(180,60,20,.2),transparent)";bdr="rgba(180,60,20,.3)"}
