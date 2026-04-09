@@ -4269,8 +4269,7 @@ export default function MokshaPatam108(){
   const cgEntryId=useRef(0);
   const[busy,setBusy]=useState(false);
   const gameReadyRef=useRef(false); // prevents timer auto-roll on game init
-  const[lastRollBy,setLastRollBy]=useState(null);
-  const[diceReveal,setDiceReveal]=useState(null);        // {name,icon,color} for "ROLLED" display
+  const[lastRollBy,setLastRollBy]=useState(null);        // {name,icon,color} for "ROLLED" display
   const[bgMuted,setBgMuted]=useState(false);             // background music/SFX mute
   const[showMobileMenu,setShowMobileMenu]=useState(false); // bottom sheet menu on mobile
   const[hist,setHist]=useState([]);
@@ -4448,7 +4447,7 @@ export default function MokshaPatam108(){
     setEventPopup(popup);
     eventCallback.current=onDismiss||null;
     if(!muted&&popup.subtitle){
-      if(!bgMuted)ambient.duck();
+      ambient.duck();
       const lang=chosenLang==='hi'?'hi':'en';
       const tryStatic=()=>{
         if(popup.staticKey){
@@ -4538,7 +4537,7 @@ export default function MokshaPatam108(){
     gameReadyRef.current=false; // block timer until game is settled
     setPos(Array(n).fill(1));setDisplayPos(Array(n).fill(1));setPunya(Array(n).fill(0));setPapa(Array(n).fill(0));
     setShieldA(Array(n).fill(false));setSkipA(Array(n).fill(false));
-    setCur(0);setWin(null);setHist([]);setRv(null);setGv(null);setLastRollBy(null);setDiceReveal(null);setBusy(false);setDil(null);setUsedDharma([]);
+    setCur(0);setWin(null);setHist([]);setRv(null);setGv(null);setLastRollBy(null);setBusy(false);setDil(null);setUsedDharma([]);
     setCgEntries([]);setShowMoksha(false);setShowPostGame(false);
     setMsg(`${pList[0].name} the ${pList[0].char.name} — your journey begins.`);
     gameStats.current={startTime:Date.now(),turns:0,snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0,grahaHits:{sun:0,moon:0,mars:0,mercury:0,jupiter:0,venus:0,saturn:0,rahu:0,ketu:0}};
@@ -4571,18 +4570,37 @@ export default function MokshaPatam108(){
 
   const doRoll=useCallback((autoRoll=false)=>{
     if(dil||win||busy||players.length===0)return;
-    if(isOnline&&!isMyTurn)return; // online: only active player rolls
+    // Online: only the active player may roll; block auto-roll until game is settled
+    if(isOnline&&!isMyTurn)return;
     if(autoRoll&&!gameReadyRef.current)return; // block timer auto-roll during init
-    if(skipA[cur]){const ns=[...skipA];ns[cur]=false;setSkipA(ns);setMsg(`${players[cur].name}'s turn is skipped.`);setCur(c=>(c+1)%nP);return}
+    if(skipA[cur]){
+      const ns=[...skipA];ns[cur]=false;setSkipA(ns);
+      const nextCurS=(cur+1)%nP;
+      setMsg(`${players[cur].name}'s turn is skipped.`);setCur(nextCurS);
+      // Online: submit skip
+      if(isOnline){
+        const skipState={cur:nextCurS,pos:[...pos],punya:[...punya],papa:[...papa],
+          shieldA:[...shieldA],skipA:ns,win,dil:null,usedDharma};
+        submitTurn(skipState,{moveType:'roll',diceVal:0}).catch(console.error);
+        lastAppliedSeqRef.current=(lastAppliedSeqRef.current??0)+1;
+      }
+      return;
+    }
     // Kill ALL audio before rolling
     if(voiceTimerRef.current){clearTimeout(voiceTimerRef.current);voiceTimerRef.current=null}
     VoiceEngine.stop();
     try{window.speechSynthesis.cancel()}catch(e){}
     ambient.duck();
+    // Broadcast to opponents that we're rolling
+    if(isOnline)broadcastRolling(players[cur]?.name);
     setBusy(true);play("dice");
     gameStats.current.turns=(gameStats.current.turns||0)+1;
     const r=Math.floor(Math.random()*6)+1,gi=Math.floor(Math.random()*9),g=GRAHA[gi];
     setRv(r);setGv(g);
+    setLastRollBy({name:pName,icon:players[cur]?.char?.icon,color:players[cur]?.char?.color});
+    // Animate dice — spin for 600ms then show result
+    setDiceAnim(true);setDiceVal(null);
+    setTimeout(()=>{setDiceAnim(false);setDiceVal(r);},600);
     const pName=players[cur]?.name||"Seeker";
 
     // Compute graha effects first
@@ -4636,15 +4654,22 @@ export default function MokshaPatam108(){
         // At the final gate — need EXACT roll of 1
         if(r===1){newP=108;extras.push("ॐ Exact 1! Moksha gate opens!")}
         else{newP=107;extras.push(`Rolled ${r} — need exact 1 for Moksha`);
-          setMsg(`${pName} rolled ${r} at the final gate. Only a roll of 1 opens Moksha!`);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);setSkipA(nSkip);setBusy(false);setCur(c=>(c+1)%nP);
+          setMsg(`${pName} rolled ${r} at the final gate. Only a roll of 1 opens Moksha!`);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);setSkipA(nSkip);setBusy(false);
+          const ncGate=(cur+1)%nP;setCur(ncGate);
+          if(isOnline){const gs107={cur:ncGate,pos:[...nPos],punya:[...nPunya],papa:[...nPapa],shieldA:[...nShield],skipA:[...nSkip],win:null,dil:null,usedDharma};submitTurn(gs107,{moveType:'roll',diceVal:r,grahaIdx:gi}).catch(console.error);lastAppliedSeqRef.current=(lastAppliedSeqRef.current??0)+1;}
           showEvent({icon:"🚪",title:"The Gate of Moksha",subtitle:`${pName}, you stand at the final gate — ध्यान Dhyana, Square 107. You rolled ${r}. But Moksha demands EXACT 1. Only absolute surrender opens this gate. Roll again next turn.`,color:"#f0d050"});
           return}
       }
       else if(newP>100&&oldP<=100){newP=101;extras.push("Entered Sacred Path!")}
-      if(newP>108){setMsg(`Overshot Moksha. ${extras.join(" · ")}`);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);setSkipA(nSkip);setBusy(false);setCur(c=>(c+1)%nP);return}
+      if(newP>108){setMsg(`Overshot Moksha. ${extras.join(" · ")}`);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);setSkipA(nSkip);setBusy(false);
+        const ncOver=(cur+1)%nP;setCur(ncOver);
+        if(isOnline){const gsOver={cur:ncOver,pos:[...nPos],punya:[...nPunya],papa:[...nPapa],shieldA:[...nShield],skipA:[...nSkip],win:null,dil:null,usedDharma};submitTurn(gsOver,{moveType:'roll',diceVal:r,grahaIdx:gi}).catch(console.error);lastAppliedSeqRef.current=(lastAppliedSeqRef.current??0)+1;}
+        return}
       if(newP<1)newP=1;
       let step=0;const steps=Math.abs(newP-oldP);const dir=newP>oldP?1:-1;
-      if(steps===0){setBusy(false);setCur(c=>(c+1)%nP);setMsg(extras.join(" · ")||"No movement.");setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);return}
+      if(steps===0){const ncZero=(cur+1)%nP;setBusy(false);setCur(ncZero);setMsg(extras.join(" · ")||"No movement.");setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);
+        if(isOnline){const gsZero={cur:ncZero,pos:[...nPos],punya:[...nPunya],papa:[...nPapa],shieldA:[...nShield],skipA:[...nSkip],win:null,dil:null,usedDharma};submitTurn(gsZero,{moveType:'roll',diceVal:r,grahaIdx:gi}).catch(console.error);lastAppliedSeqRef.current=(lastAppliedSeqRef.current??0)+1;}
+        return}
       // ═══ STEP 2: Animate movement ═══
       const iv=setInterval(()=>{
         step++;nPos[cur]=oldP+dir*step;setPos([...nPos]);play("move");
@@ -4661,31 +4686,30 @@ export default function MokshaPatam108(){
               addCGEntry('moksha',p,`30 पुण्य · कर्म विजय`);
               showEvent({icon:"ॐ",title:"KARMA VICTORY!",subtitle:`${pName} has accumulated 30 Punya! The board dissolves. Instant Moksha!`,color:"#f0d050"},()=>{speakCG('moksha',300);setTimeout(()=>setShowMoksha(true),1200);});
             }
-            // Balance warning — Chitragupta watches when it's knife-edge
+            // Balance warning
             const pu=nPunya[cur],pa=nPapa[cur];
-            if(pu>0&&pa>0&&Math.abs(pu-pa)<=2&&p<100&&!win){
-              addCGEntry('balance',p,`${pu}P·${pa}X तुला`);
-              speakCG('balance',5500);
-            }
-            const nextCur=(cur+1)%nP;
+            if(pu>0&&pa>0&&Math.abs(pu-pa)<=2&&p<100&&!win){addCGEntry('balance',p,`${pu}P·${pa}X तुला`);speakCG('balance',5500);}
+            const nextCur=(skipDharmaCheck||(!DLM_SQ.includes(p)&&!(p>100&&p<108)))?(cur+1)%nP:cur;
             if(skipDharmaCheck||(!DLM_SQ.includes(p)&&!(p>100&&p<108)))setCur(nextCur);
-            // Online: write state so opponents sync
+            // ── Online: write state to Supabase so opponents update ──────
             if(isOnline){
-              const gs={cur:skipDharmaCheck||(!DLM_SQ.includes(p)&&!(p>100&&p<108))?nextCur:cur,pos:[...nPos].map((v,i)=>i===cur?p:v),punya:[...nPunya],papa:[...nPapa],shieldA:[...nShield],skipA:[...nSkip],win:null,dil:null,usedDharma};
-              submitTurn(gs,{moveType:"roll",diceVal:r,grahaIdx:gi}).catch(console.error);
+              const newState={cur:nextCur,pos:[...nPos],punya:[...nPunya],papa:[...nPapa],
+                shieldA:[...nShield],skipA:[...nSkip],win:nPunya[cur]>=30?cur:null,dil:null,usedDharma};
+              submitTurn(newState,{moveType:'roll',diceVal:r,grahaIdx:gi}).catch(console.error);
+              lastAppliedSeqRef.current=(lastAppliedSeqRef.current??0)+1;
             }
             setBusy(false);
           };
 
           if(SNAKES[p]){const sn=SNAKES[p];if(nShield[cur]){nShield[cur]=false;eMsg=`𓆙 ${sn.skt} — Shield!`;play("ladder");
-            showEvent({icon:"🛡",title:`Shield Saved ${pName}!`,subtitle:`The serpent ${sn.skt} (${sn.en}) struck — but Shukra's shield absorbed the venom! Shield is now gone.`,color:"#d0a0c0",staticKey:"shield_save"},()=>{addCGEntry('punya',p,`${sn.skt} — shield`);speakCG('punya',500);finishTurn(true)});
-          }else{const o=p;p=sn.to;eMsg=`𓆙 ${o}→${p}`;nPapa[cur]+=2;gameStats.current.snakes++;play("snake");play("yamaLaugh");haptic(ImpactStyle.Heavy);
+            showEvent({icon:"🛡",title:`Shield Saved ${pName}!`,subtitle:`The serpent ${sn.skt} (${sn.en}) struck — but Shukra's shield absorbed the venom! Shield is now gone.`,color:"#d0a0c0",staticKey:"shield_save"},()=>{addCGEntry('punya',p,`${sn.skt} — shield`);speakCG('punya',500);setTimeout(()=>ambient.unduck(),2800);finishTurn(true)});
+          }else{const o=p;p=sn.to;eMsg=`𓆙 ${o}→${p}`;nPapa[cur]+=2;gameStats.current.snakes++;play("snake");setTimeout(()=>play("yamaLaugh"),320);
             // Yama taunts the player with voice
-            if(!muted){setTimeout(()=>VoiceEngine.playYamaTaunt("snake",chosenLang),800)}
-            showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} caught you! ${sn.tale} Dragged from ${o} to ${p}. +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`,staticKey:"snake_hit"},()=>{addCGEntry('snake',p,`${sn.skt} · ${o}→${p}`);speakCG('snake',4000);finishTurn(true)});
+            if(!muted){setTimeout(()=>{VoiceEngine.stop();VoiceEngine.playYamaTaunt("snake",chosenLang);},800)}
+            showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} caught you! ${sn.tale} Dragged from ${o} to ${p}. +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`,staticKey:"snake_hit"},()=>{addCGEntry('snake',p,`${sn.skt} · ${o}→${p}`);speakCG('snake',4000);setTimeout(()=>ambient.unduck(),6500);finishTurn(true)});
           }}
           else if(LADDERS[p]){const ld=LADDERS[p];const o=p;p=ld.to;eMsg=`🪔 ${o}→${p}`;nPunya[cur]+=1;gameStats.current.ladders++;play("ladder");
-            showEvent({icon:"🪔",title:`${ld.skt} — ${ld.en}`,subtitle:`${pName}, the virtue of ${ld.en} lifts you! ${ld.tale} Rise from ${o} to ${p}. +1 PUNYA.`,color:"#f0d050",extra:`${o} → ${p}`,staticKey:"ladder_rise"},()=>{addCGEntry('ladder',p,`${ld.skt} · ${o}→${p}`);speakCG('ladder',500);finishTurn(true)});
+            showEvent({icon:"🪔",title:`${ld.skt} — ${ld.en}`,subtitle:`${pName}, the virtue of ${ld.en} lifts you! ${ld.tale} Rise from ${o} to ${p}. +1 PUNYA.`,color:"#f0d050",extra:`${o} → ${p}`,staticKey:"ladder_rise"},()=>{addCGEntry('ladder',p,`${ld.skt} · ${o}→${p}`);speakCG('ladder',500);setTimeout(()=>ambient.unduck(),3200);finishTurn(true)});
           }
           else if(DLM_SQ.includes(p)){
             // No-repeat dharma: pick from unused pool, reset if all used
@@ -4734,10 +4758,10 @@ export default function MokshaPatam108(){
             });
           }
           else if(p===108){if(nPunya[cur]>=nPapa[cur]){setWin(cur);eMsg=`ॐ MOKSHA!`;play("victory");
-            showEvent({icon:"ॐ",title:"मोक्ष प्राप्त — MOKSHA!",subtitle:`${pName} reached Square 108 — Moksha! Punya (${nPunya[cur]}) ≥ Papa (${nPapa[cur]}). Liberation! The cycle of Samsara ends.`,color:"#f0d050",staticKey:"moksha_gate"},()=>{addCGEntry('moksha',108,`${nPunya[cur]} पुण्य · मुक्ति`);speakCG('moksha',600);setTimeout(()=>setShowMoksha(true),1200);finishTurn()});
-          }else{p=67;eMsg="Impure → 67";play("snake");play("yamaLaugh");
-            if(!muted)setTimeout(()=>VoiceEngine.playYamaTaunt("reject",chosenLang),800);
-            showEvent({icon:"⚠",title:"Gates of Moksha REJECT You!",subtitle:`${pName}, your soul is impure! Punya (${nPunya[cur]}) < Papa (${nPapa[cur]}). Cast back to 67.`,color:"#e06030"},()=>{addCGEntry('reject',67,`${nPunya[cur]}P < ${nPapa[cur]}X`);speakCG('reject',600);finishTurn()});
+            showEvent({icon:"ॐ",title:"मोक्ष प्राप्त — MOKSHA!",subtitle:`${pName} reached Square 108 — Moksha! Punya (${nPunya[cur]}) ≥ Papa (${nPapa[cur]}). Liberation! The cycle of Samsara ends.`,color:"#f0d050",staticKey:"moksha_gate"},()=>{addCGEntry('moksha',108,`${nPunya[cur]} पुण्य · मुक्ति`);speakCG('moksha',600);setTimeout(()=>ambient.unduck(),5000);setTimeout(()=>setShowMoksha(true),1200);finishTurn()});
+          }else{p=67;eMsg="Impure → 67";play("snake");setTimeout(()=>play("yamaLaugh"),320);
+            if(!muted)setTimeout(()=>{VoiceEngine.stop();VoiceEngine.playYamaTaunt("reject",chosenLang);},800);
+            showEvent({icon:"⚠",title:"Gates of Moksha REJECT You!",subtitle:`${pName}, your soul is impure! Punya (${nPunya[cur]}) < Papa (${nPapa[cur]}). Cast back to 67.`,color:"#e06030"},()=>{addCGEntry('reject',67,`${nPunya[cur]}P < ${nPapa[cur]}X`);speakCG('reject',600);setTimeout(()=>ambient.unduck(),3500);finishTurn()});
           }}
           else{finishTurn()}
         }
@@ -4746,14 +4770,8 @@ export default function MokshaPatam108(){
 
     // Show graha popup — user dismisses, then movement begins
     // On sacred path: skip graha popup entirely
-    const rollInfo={r,g,name:players[cur]?.name,icon:players[cur]?.char?.icon,color:players[cur]?.char?.color||"#f0d050"};
-    setDiceReveal(rollInfo);setLastRollBy(rollInfo);
-    if(isOnline)broadcastRolling(players[cur]?.name); // broadcast to opponents
-    setTimeout(()=>{
-      setDiceReveal(null);
-      if(onSacredPath){startMovement()}
-      else{showEvent({icon:g.icon,title:`${g.n} · ${g.en}`,subtitle:grahaStory,color:g.color,type:"graha",staticKey:GRAHA_STATIC_KEY[g.fx]},startMovement)}
-    },3000);
+    if(onSacredPath){startMovement()}
+    else{showEvent({icon:g.icon,title:`${g.n} · ${g.en}`,subtitle:grahaStory,color:g.color,type:"graha",staticKey:GRAHA_STATIC_KEY[g.fx]},startMovement)}
   },[cur,nP,dil,win,busy,punya,papa,pos,shieldA,skipA,play,players,showEvent,chosenLang,muted,isOnline,isMyTurn,usedDharma]);
   // Keep ref in sync so timer can call it without circular dependency
   doRollRef.current = doRoll;
@@ -5941,24 +5959,6 @@ export default function MokshaPatam108(){
           <div style={{fontSize:11,color:"#d0c090",lineHeight:1.9,fontStyle:"italic",opacity:.8,maxHeight:200,overflowY:"auto"}}>{eventPopup.subtitle}</div>
           <button onClick={dismissEvent} style={{marginTop:16,background:"transparent",border:`1px solid ${eventPopup.color}40`,color:eventPopup.color,padding:"12px 28px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2,minHeight:44,touchAction:"manipulation",WebkitTapHighlightColor:"transparent"}}>TAP TO CONTINUE ▸</button>
           {eventPopup.type==="graha"&&<div style={{marginTop:8,fontSize:9,opacity:.35,letterSpacing:2,fontFamily:"'Cinzel',serif"}}>auto-continues in 8s</div>}
-        </div>
-      </div>}
-      {diceReveal&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.88)",zIndex:185,display:"flex",alignItems:"center",justifyContent:"center",animation:"fadeIn .15s ease"}}>
-        <div style={{textAlign:"center",animation:"dharmaIn .3s ease forwards"}}>
-          <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginBottom:14}}>
-            <span style={{fontSize:22}}>{diceReveal.icon}</span>
-            <span style={{fontSize:14,color:diceReveal.color,fontWeight:700,letterSpacing:1}}>{diceReveal.name}</span>
-            <span style={{fontSize:11,color:"#c0b080",opacity:.5}}>rolled</span>
-          </div>
-          <div style={{width:110,height:110,background:"linear-gradient(135deg,#2a2015,#0c0a07)",border:"3px solid rgba(200,160,60,.7)",borderRadius:18,display:"flex",alignItems:"center",justifyContent:"center",fontSize:72,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,color:"#f0d050",boxShadow:"0 0 50px rgba(240,200,80,.3), inset 0 0 20px rgba(0,0,0,.5)",margin:"0 auto 18px"}}>{diceReveal.r}</div>
-          <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:10,background:`${diceReveal.g.color}18`,border:`1px solid ${diceReveal.g.color}50`,borderRadius:10,padding:"12px 20px"}}>
-            <span style={{fontSize:30}}>{diceReveal.g.icon}</span>
-            <div style={{textAlign:"left"}}>
-              <div style={{fontSize:14,color:diceReveal.g.color,fontWeight:700,letterSpacing:1}}>{diceReveal.g.n}</div>
-              <div style={{fontSize:11,color:"#c0b080",opacity:.7}}>{diceReveal.g.en}</div>
-            </div>
-          </div>
-          <div style={{fontSize:9,color:"#c0b080",opacity:.3,marginTop:14,letterSpacing:3}}>CALCULATING KARMA…</div>
         </div>
       </div>}
       {turnBanner&&!dil&&<div style={{position:"fixed",inset:0,zIndex:180,display:"flex",alignItems:"center",justifyContent:"center",pointerEvents:"none"}}>
