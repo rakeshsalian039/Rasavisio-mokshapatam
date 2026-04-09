@@ -6526,6 +6526,9 @@ export default function MokshaPatam108(){
             </div>
 
             {/* SVG snake and ladder overlays */}
+            {(()=>{
+              const sq2xy=n=>{const row=Math.floor((n-1)/10);const col=row%2===0?(n-1)%10:9-(n-1)%10;return{x:col*10+5,y:(9-row)*10+5};};
+              return(
             <svg style={{position:"absolute",inset:0,width:"100%",height:"100%",pointerEvents:"none",zIndex:4}} viewBox="0 0 100 100" preserveAspectRatio="none">
               {Object.entries(SNAKES).map(([from,sn])=>{
                 const f=sq2xy(parseInt(from));const t=sq2xy(sn.to);
@@ -6536,6 +6539,8 @@ export default function MokshaPatam108(){
                 return f&&t?<line key={`l${from}`} x1={f.x} y1={f.y} x2={t.x} y2={t.y} stroke="rgba(80,160,50,.35)" strokeWidth=".5"/>:null;
               })}
             </svg>
+              );
+            })()}
           </div>
 
           {/* Board legend */}
