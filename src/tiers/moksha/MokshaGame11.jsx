@@ -4414,11 +4414,11 @@ export default function MokshaPatam108(){
   },[ambient]);
 
   // Haptic feedback (Capacitor — graceful no-op on web)
-  const haptic=useCallback((style='Medium')=>{
+  const haptic=useCallback(()=>{
     try{
       // Dynamic import so it doesn't break web builds
       import('@capacitor/haptics').then(({Haptics,ImpactStyle})=>{
-        Haptics.impact({style:ImpactStyle[style]||ImpactStyle.Medium});
+        Haptics.impact({style:ImpactStyle.Medium});
       }).catch(()=>{});
     }catch(e){}
   },[]);
@@ -4680,7 +4680,7 @@ export default function MokshaPatam108(){
 
           if(SNAKES[p]){const sn=SNAKES[p];if(nShield[cur]){nShield[cur]=false;eMsg=`𓆙 ${sn.skt} — Shield!`;play("ladder");
             showEvent({icon:"🛡",title:`Shield Saved ${pName}!`,subtitle:`The serpent ${sn.skt} (${sn.en}) struck — but Shukra's shield absorbed the venom! Shield is now gone.`,color:"#d0a0c0",staticKey:"shield_save"},()=>{addCGEntry('punya',p,`${sn.skt} — shield`);speakCG('punya',500);finishTurn(true)});
-          }else{const o=p;p=sn.to;eMsg=`𓆙 ${o}→${p}`;nPapa[cur]+=2;gameStats.current.snakes++;play("snake");play("yamaLaugh");haptic('Heavy');
+          }else{const o=p;p=sn.to;eMsg=`𓆙 ${o}→${p}`;nPapa[cur]+=2;gameStats.current.snakes++;play("snake");play("yamaLaugh");haptic(ImpactStyle.Heavy);
             // Yama taunts the player with voice
             if(!muted){setTimeout(()=>VoiceEngine.playYamaTaunt("snake",chosenLang),800)}
             showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} caught you! ${sn.tale} Dragged from ${o} to ${p}. +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`,staticKey:"snake_hit"},()=>{addCGEntry('snake',p,`${sn.skt} · ${o}→${p}`);speakCG('snake',4000);finishTurn(true)});
