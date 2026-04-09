@@ -3844,15 +3844,9 @@ const CSS=`
 @keyframes cymaticRotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
 @keyframes diceRoll{0%{transform:rotate(0deg) scale(1)}25%{transform:rotate(90deg) scale(1.2)}50%{transform:rotate(180deg) scale(.9)}75%{transform:rotate(270deg) scale(1.1)}100%{transform:rotate(360deg) scale(1)}}
 @keyframes diceShake{0%{transform:rotate(-15deg) scale(1.1) translateY(-4px)}20%{transform:rotate(12deg) scale(1.15) translateY(-8px)}40%{transform:rotate(-18deg) scale(1.08) translateY(-5px)}60%{transform:rotate(14deg) scale(1.12) translateY(-7px)}80%{transform:rotate(-10deg) scale(1.1) translateY(-3px)}100%{transform:rotate(0deg) scale(1) translateY(0)}}
-@keyframes karmaTilt{0%{transform:rotateX(0deg) rotateY(0deg) rotateZ(0deg)}15%{transform:rotateX(22deg) rotateY(-18deg) rotateZ(8deg)}30%{transform:rotateX(-18deg) rotateY(25deg) rotateZ(-6deg)}45%{transform:rotateX(28deg) rotateY(-12deg) rotateZ(12deg)}60%{transform:rotateX(-12deg) rotateY(20deg) rotateZ(-8deg)}75%{transform:rotateX(18deg) rotateY(-22deg) rotateZ(4deg)}100%{transform:rotateX(0deg) rotateY(0deg) rotateZ(0deg)}}
-@keyframes karmaLand{0%{transform:rotateX(15deg) rotateY(-8deg) scale(1.15)}50%{transform:rotateX(-4deg) rotateY(3deg) scale(0.96)}75%{transform:rotateX(2deg) rotateY(-1deg) scale(1.03)}100%{transform:rotateX(0) rotateY(0) scale(1)}}
-@keyframes grahaSpin{0%{transform:rotateX(0deg) rotateY(0deg)}100%{transform:rotateX(3240deg) rotateY(2160deg)}}
-@keyframes grahaSettle{0%{transform:rotateX(340deg) rotateY(320deg)}30%{transform:rotateX(358deg) rotateY(352deg)}60%{transform:rotateX(362deg) rotateY(358deg)}80%{transform:rotateX(359deg) rotateY(361deg)}100%{transform:rotateX(360deg) rotateY(360deg)}}
 @keyframes diceLand{0%{transform:scale(1.3) rotate(-5deg)}40%{transform:scale(.95) rotate(2deg)}70%{transform:scale(1.05) rotate(-1deg)}100%{transform:scale(1) rotate(0deg)}}
 @keyframes diceGlow{0%,100%{box-shadow:0 0 20px rgba(240,200,80,.2)}50%{box-shadow:0 0 50px rgba(240,200,80,.7),0 0 100px rgba(240,200,80,.3)}}
-@keyframes diceOverlayIn{0%{opacity:0}100%{opacity:1}}
-@keyframes grahaZoomIn{0%{opacity:0;transform:scale(0.2) translateY(60px)}40%{opacity:1;transform:scale(1.08) translateY(-10px)}70%{transform:scale(0.97) translateY(5px)}100%{opacity:1;transform:scale(1) translateY(0)}}
-@keyframes grahaNameReveal{0%{opacity:0;transform:translateY(20px) scale(.9)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes diceOverlayIn{0%{opacity:0;backdrop-filter:blur(0)}100%{opacity:1;backdrop-filter:blur(12px)}}
 .d3{transform-style:preserve-3d;transition:transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94)}
 .d3-face{position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;border-radius:14px;backface-visibility:hidden;border:2px solid rgba(240,200,80,.25)}
 @keyframes d3spin{0%{transform:rotateX(0) rotateY(0)}100%{transform:rotateX(720deg) rotateY(1080deg)}}
@@ -4151,83 +4145,77 @@ function getZodiac(month,day){
 }
 
 // ── 3D Karma Die — real pip dots on a cube face ──────────────────────────
-// ── Karma die: real pip dots, 3D perspective tilt while rolling ──────────
-function KarmaDie({value, rolling, landing, size=110}){
-  const s=size;
-  const pip=(x,y,k)=>(
-    <div key={k} style={{position:'absolute',
-      width:s*.13,height:s*.13,borderRadius:'50%',
-      background:'radial-gradient(circle at 38% 32%,#fffde4,#e8b820)',
-      boxShadow:'0 2px 4px rgba(0,0,0,.6),0 0 8px rgba(240,200,80,.25)',
+function KarmaDieFace({value, size=110}){
+  const pip=(x,y,key)=>(
+    <div key={key} style={{position:'absolute',
+      width:size*.13,height:size*.13,borderRadius:'50%',
+      background:'radial-gradient(circle at 35% 35%,#fffde0,#f0c830)',
+      boxShadow:'0 1px 3px rgba(0,0,0,.5), 0 0 6px rgba(240,200,80,.3)',
       left:`${x}%`,top:`${y}%`,transform:'translate(-50%,-50%)',
-      animation:landing?`pipPop .28s ease ${k*0.045}s both`:'none',
     }}/>
   );
-  const layouts={1:[[50,50]],2:[[28,28],[72,72]],3:[[28,28],[50,50],[72,72]],
-    4:[[28,28],[72,28],[28,72],[72,72]],5:[[28,28],[72,28],[50,50],[28,72],[72,72]],
-    6:[[28,22],[72,22],[28,50],[72,50],[28,78],[72,78]]};
+  const layouts={
+    1:[[50,50]],
+    2:[[30,30],[70,70]],
+    3:[[30,30],[50,50],[70,70]],
+    4:[[30,30],[70,30],[30,70],[70,70]],
+    5:[[30,30],[70,30],[50,50],[30,70],[70,70]],
+    6:[[30,25],[70,25],[30,50],[70,50],[30,75],[70,75]],
+  };
   return(
-    <div style={{
-      perspective:500,
-      animation:rolling?`karmaTilt 0.6s ease-in-out infinite`:landing?`karmaLand 0.55s cubic-bezier(0.34,1.56,0.64,1) forwards`:'none',
+    <div style={{position:'relative',width:size,height:size,
+      background:'linear-gradient(145deg,#3a2e18,#1a1408)',
+      borderRadius:size*.14,
+      border:'2.5px solid rgba(240,200,80,.35)',
+      boxShadow:'inset 0 0 20px rgba(0,0,0,.6), 0 4px 20px rgba(0,0,0,.4)',
     }}>
-      <div style={{position:'relative',width:s,height:s,
-        background:'linear-gradient(145deg,#3d2f16,#1c1208)',
-        borderRadius:s*.14,
-        border:`2.5px solid ${landing&&!rolling?'rgba(240,200,80,.8)':'rgba(200,160,60,.3)'}`,
-        boxShadow:`inset 0 0 ${s*.18}px rgba(0,0,0,.7),inset 0 ${s*.06}px ${s*.1}px rgba(255,240,180,.06),0 ${s*.08}px ${s*.25}px rgba(0,0,0,.6)${landing&&!rolling?',0 0 30px rgba(240,200,80,.5)':''}`,
-        transition:'border-color .35s,box-shadow .35s',overflow:'hidden',
-      }}>
-        <div style={{position:'absolute',top:0,left:0,right:0,height:'45%',
-          background:'linear-gradient(180deg,rgba(255,245,200,.08),transparent)',
-          borderRadius:`${s*.14}px ${s*.14}px 0 0`,pointerEvents:'none'}}/>
-        {(layouts[value]||layouts[1]).map(([x,y],i)=>pip(x,y,i))}
-        <div style={{position:'absolute',inset:0,
-          background:'radial-gradient(ellipse at 25% 20%,rgba(255,255,255,.06),transparent 60%)',
-          borderRadius:s*.14,pointerEvents:'none'}}/>
-      </div>
+      <div style={{position:'absolute',top:4,left:4,right:4,bottom:4,
+        borderRadius:size*.10,
+        background:'linear-gradient(145deg,rgba(255,240,180,.06),transparent)',
+        pointerEvents:'none',
+      }}/>
+      {(layouts[value]||[]).map(([x,y],i)=>pip(x,y,i))}
     </div>
   );
 }
 
-// ── Graha die: real CSS 3D cube rotating in space ─────────────────────────
-function GrahaCube3D({grahaIcon, grahaColor, rolling, settling, size=110}){
-  const s=size, h=s/2;
-  const face=(transform,bg,icon,main)=>(
-    <div style={{position:'absolute',width:s,height:s,
-      display:'flex',alignItems:'center',justifyContent:'center',
-      fontSize:main?s*.38:s*.26,
-      background:bg,
-      border:`2px solid ${grahaColor}${main?'70':'22'}`,
-      borderRadius:s*.12,
-      backfaceVisibility:'hidden',WebkitBackfaceVisibility:'hidden',
-      transform,
-      boxShadow:`inset 0 0 ${s*.15}px rgba(0,0,0,.5)`,
-      transition:'border-color .4s',
-    }}>
-      <span style={{filter:main?`drop-shadow(0 0 ${s*.09}px ${grahaColor})`:'none',opacity:main?1:.4,color:grahaColor}}>{icon}</span>
-      {main&&<div style={{position:'absolute',inset:0,borderRadius:s*.12,
-        background:'radial-gradient(ellipse at 30% 20%,rgba(255,255,255,.09),transparent)',
-        pointerEvents:'none'}}/>}
-    </div>
-  );
-  const others=['☉','☽','♁','✦','⊕','◎'];
+// ── Graha Cosmic Die — glowing orb with planet symbol ─────────────────────
+function GrahaDie({graha, spinning, size=110}){
   return(
-    <div style={{width:s,height:s,perspective:s*3.5,perspectiveOrigin:'50% 50%'}}>
-      <div style={{width:s,height:s,position:'relative',transformStyle:'preserve-3d',
-        animation:rolling
-          ?`grahaSpin 2s cubic-bezier(0.4,0,0.6,1) infinite`
-          :settling
-          ?`grahaSettle 0.9s cubic-bezier(0.34,1.2,0.64,1) forwards`
-          :'none',
+    <div style={{position:'relative',width:size,height:size,
+      borderRadius:'50%',
+      background:`radial-gradient(circle at 35% 30%,${graha?.color||'#8080a0'}22,#0a0818 70%)`,
+      border:`2.5px solid ${graha?.color||'#8080a0'}55`,
+      boxShadow:`0 0 ${spinning?'12px':'30px'} ${graha?.color||'#8080a0'}${spinning?'40':'80'}, inset 0 0 20px rgba(0,0,0,.5)`,
+      display:'flex',alignItems:'center',justifyContent:'center',
+      transition:'box-shadow 0.4s ease',
+      overflow:'hidden',
+    }}>
+      {/* Orbital rings */}
+      <div style={{position:'absolute',inset:-4,borderRadius:'50%',
+        border:`1px solid ${graha?.color||'#8080a0'}20`,
+        animation:spinning?'grahaOrbit 1.2s linear infinite':'none',
+      }}/>
+      <div style={{position:'absolute',inset:8,borderRadius:'50%',
+        border:`1px solid ${graha?.color||'#8080a0'}15`,
+        animation:spinning?'grahaOrbit 0.8s linear infinite reverse':'none',
+      }}/>
+      {/* Planet symbol */}
+      <div style={{
+        fontSize:spinning?36:44,
+        animation:spinning?'none':'grahaLand 0.5s ease forwards',
+        filter:spinning?'none':`drop-shadow(0 0 12px ${graha?.color||'#8080a0'})`,
+        zIndex:1,
+        transition:'font-size 0.3s ease',
       }}>
-        {face(`translateZ(${h}px)`,`radial-gradient(circle at 35% 30%,${grahaColor}28,#06040e 75%)`,grahaIcon,true)}
-        {face(`rotateY(180deg) translateZ(${h}px)`,'radial-gradient(circle at 35% 30%,#1a1040,#060410)',others[0],false)}
-        {face(`rotateY(90deg) translateZ(${h}px)`,'radial-gradient(circle at 35% 30%,#0e1030,#060410)',others[1],false)}
-        {face(`rotateY(-90deg) translateZ(${h}px)`,'radial-gradient(circle at 35% 30%,#0e1030,#060410)',others[2],false)}
-        {face(`rotateX(90deg) translateZ(${h}px)`,'radial-gradient(circle at 35% 30%,#101040,#060410)',others[3],false)}
-        {face(`rotateX(-90deg) translateZ(${h}px)`,'radial-gradient(circle at 35% 30%,#101040,#060410)',others[4],false)}
+        {graha?.icon||'✦'}
       </div>
+      {/* Shimmer overlay */}
+      <div style={{position:'absolute',top:0,left:0,right:0,height:'40%',
+        background:'radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.08),transparent)',
+        borderRadius:'50% 50% 0 0',
+        pointerEvents:'none',
+      }}/>
     </div>
   );
 }
@@ -4374,9 +4362,9 @@ export default function MokshaPatam108(){
   const gameReadyRef=useRef(false); // prevents timer auto-roll on game init
   const[lastRollBy,setLastRollBy]=useState(null);
   const[diceReveal,setDiceReveal]=useState(null);        // {name,icon,color} for "ROLLED" display
-  const[rollingPhase,setRollingPhase]=useState(null);    // 'rolling'|'landing_karma'|'landing_graha'|'settled'|'graha_zoom'
-  const[displayKarma,setDisplayKarma]=useState(null);    // 1-6 during animation
-  const[displayGraha,setDisplayGraha]=useState(null);    // icon string during animation
+  const[rollingPhase,setRollingPhase]=useState(null);    // 'rolling'|'landing_karma'|'landing_graha'|'settled'
+  const[displayKarma,setDisplayKarma]=useState(null);    // shown face during animation
+  const[displayGraha,setDisplayGraha]=useState(null);    // shown graha during animation
   const[bgMuted,setBgMuted]=useState(false);             // background music/SFX mute
   const[showMobileMenu,setShowMobileMenu]=useState(false); // bottom sheet menu on mobile
   const[hist,setHist]=useState([]);
@@ -4891,8 +4879,9 @@ export default function MokshaPatam108(){
     const GRAHA_ICONS=GRAHA.map(x=>x.icon);
     let shuffleInterval=null;
     let shuffleCount=0;
-    const totalShuffles=28; // 28 × 70ms = ~2s of rolling
+    const totalShuffles=20;
 
+    // Phase 1: rapid tumble
     setRollingPhase('rolling');
     setDisplayKarma(Math.floor(Math.random()*6)+1);
     setDisplayGraha(GRAHA_ICONS[Math.floor(Math.random()*9)]);
@@ -4905,31 +4894,24 @@ export default function MokshaPatam108(){
       if(shuffleCount>=totalShuffles){
         clearInterval(shuffleInterval);
 
-        // Phase 2: karma die lands first
+        // Phase 2: karma lands
         setRollingPhase('landing_karma');
 
-        // Phase 3: graha cube settles 600ms later (staggered drama)
+        // Phase 3: graha lands 320ms later
         setTimeout(()=>{
           setRollingPhase('landing_graha');
 
-          // Phase 4: both settled — player absorbs the result for 1.8s
+          // Phase 4: settled — show for 1.2s then proceed
           setTimeout(()=>{
             setRollingPhase('settled');
-
-            // Phase 5: Navagraha zooms in cinematically after 1.8s
             setTimeout(()=>{
-              setRollingPhase('graha_zoom');
-
-              // Phase 6: zoom held 2.2s then proceed to graha popup
-              setTimeout(()=>{
-                setDiceReveal(null);
-                setRollingPhase(null);
-                if(onSacredPath){startMovement()}
-                else{showEvent({icon:g.icon,title:`${g.n} · ${g.en}`,subtitle:grahaStory,color:g.color,type:"graha",staticKey:GRAHA_STATIC_KEY[g.fx]},startMovement)}
-              },2200);
-            },1800);
-          },500);
-        },600);
+              setDiceReveal(null);
+              setRollingPhase(null);
+              if(onSacredPath){startMovement()}
+              else{showEvent({icon:g.icon,title:`${g.n} · ${g.en}`,subtitle:grahaStory,color:g.color,type:"graha",staticKey:GRAHA_STATIC_KEY[g.fx]},startMovement)}
+            },1200);
+          },320);
+        },320);
       }
     },70);
   },[cur,nP,dil,win,busy,punya,papa,pos,shieldA,skipA,play,players,showEvent,chosenLang,muted,isOnline,isMyTurn,usedDharma]);
@@ -6158,159 +6140,90 @@ export default function MokshaPatam108(){
       </div>
       </div>}
 
-      {/* ── Dice overlay: rolling + settled phases ── */}
-      {diceReveal&&rollingPhase!=='graha_zoom'&&(
+      {diceReveal&&(
         <div
-          onClick={()=>{
-            if(rollingPhase==='settled'){setRollingPhase('graha_zoom');}
-            else{setRollingPhase('settled');}
-          }}
+          onClick={()=>{setDiceReveal(null);setRollingPhase(null);}}
           style={{position:"fixed",inset:0,zIndex:185,
             display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
-            background:"rgba(4,3,2,.84)",backdropFilter:"blur(8px)",WebkitBackdropFilter:"blur(8px)",
-            animation:"diceOverlayIn .25s ease",cursor:"pointer",
+            background:"rgba(4,3,2,.75)",backdropFilter:"blur(6px)",WebkitBackdropFilter:"blur(6px)",
+            animation:"fadeIn .2s ease",cursor:"pointer",
           }}>
 
-          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:22,opacity:.85}}>
+          {/* Player name */}
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:24}}>
             <span style={{fontSize:20}}>{diceReveal.icon}</span>
-            <span style={{fontFamily:"'Cinzel',serif",fontSize:12,color:diceReveal.color,
-              letterSpacing:4,fontWeight:700}}>{diceReveal.name.split(" ")[0].toUpperCase()}</span>
+            <span style={{fontFamily:"'Cinzel',serif",fontSize:12,color:diceReveal.color,letterSpacing:3,fontWeight:700,opacity:.9}}>{diceReveal.name}</span>
           </div>
 
-          <div style={{display:"flex",gap:isMobile?22:36,alignItems:"center",marginBottom:22}}>
-            {/* KARMA */}
+          {/* The two dice */}
+          <div style={{display:"flex",gap:isMobile?20:32,alignItems:"flex-start",marginBottom:20}}>
+
+            {/* KARMA die */}
             <div style={{textAlign:"center"}}>
-              <div style={{fontSize:7,letterSpacing:5,color:"rgba(240,200,80,.35)",
-                marginBottom:10,fontFamily:"'Cinzel',serif",fontWeight:700}}>KARMA</div>
-              <KarmaDie
-                value={rollingPhase==='rolling'?(displayKarma||1):diceReveal.r}
-                rolling={rollingPhase==='rolling'}
-                landing={rollingPhase==='landing_karma'||rollingPhase==='settled'}
-                size={isMobile?88:116}
-              />
-              <div style={{marginTop:10,height:22,
-                opacity:rollingPhase==='settled'?1:0,transition:"opacity 0.6s 0.2s ease",
-                fontFamily:"'Cinzel Decorative',serif",
-                fontSize:isMobile?15:18,color:"#f0d050",fontWeight:900,letterSpacing:2,
-              }}>+{diceReveal.r} steps</div>
+              <div style={{fontSize:7,letterSpacing:5,color:"rgba(240,200,80,.4)",marginBottom:8,fontFamily:"'Cinzel',serif",fontWeight:700}}>KARMA DIE</div>
+              <div style={{
+                animation:rollingPhase==="rolling"?"diceShake 0.14s ease infinite":
+                          rollingPhase==="landing_karma"?"d3land 0.45s ease forwards":"none",
+              }}>
+                <KarmaDieFace value={rollingPhase==="settled"||rollingPhase==="landing_karma"?diceReveal.r:displayKarma} size={isMobile?88:110}/>
+              </div>
+              <div style={{
+                marginTop:10,height:20,
+                opacity:rollingPhase==="settled"?1:0,
+                transition:"opacity 0.4s ease",
+                fontFamily:"'Cinzel Decorative',serif",fontSize:14,color:"#f0d050",fontWeight:700,letterSpacing:1,
+              }}>+{diceReveal.r}</div>
             </div>
 
-            <div style={{opacity:.15,display:"flex",flexDirection:"column",alignItems:"center",gap:6,paddingTop:14}}>
-              <div style={{width:1,height:20,background:"linear-gradient(transparent,rgba(200,160,60,.8),transparent)"}}/>
-              <span style={{fontSize:11,color:"#c0b080",fontFamily:"serif"}}>✦</span>
-              <div style={{width:1,height:20,background:"linear-gradient(transparent,rgba(200,160,60,.8),transparent)"}}/>
+            {/* VS divider */}
+            <div style={{paddingTop:isMobile?44:54,opacity:.2,display:"flex",flexDirection:"column",alignItems:"center",gap:3}}>
+              <div style={{width:1,height:14,background:"rgba(200,160,60,.6)"}}/>
+              <span style={{fontSize:9,color:"#c0b080",letterSpacing:1}}>✦</span>
+              <div style={{width:1,height:14,background:"rgba(200,160,60,.6)"}}/>
             </div>
 
-            {/* GRAHA 3D CUBE */}
+            {/* GRAHA die */}
             <div style={{textAlign:"center"}}>
-              <div style={{fontSize:7,letterSpacing:5,color:"rgba(200,160,60,.35)",
-                marginBottom:10,fontFamily:"'Cinzel',serif",fontWeight:700}}>NAVAGRAHA</div>
-              <GrahaCube3D
-                grahaIcon={rollingPhase==='rolling'?(displayGraha||'✦'):diceReveal.g.icon}
-                grahaColor={diceReveal.g.color}
-                rolling={rollingPhase==='rolling'}
-                settling={rollingPhase==='landing_graha'}
-                size={isMobile?88:116}
-              />
-              <div style={{marginTop:10,height:22,
-                opacity:rollingPhase==='settled'?1:0,transition:"opacity 0.6s 0.5s ease",
-                fontFamily:"'Cinzel',serif",
-                fontSize:11,color:diceReveal.g.color,fontWeight:700,letterSpacing:2,
+              <div style={{fontSize:7,letterSpacing:5,color:"rgba(200,160,60,.4)",marginBottom:8,fontFamily:"'Cinzel',serif",fontWeight:700}}>GRAHA DIE</div>
+              <div style={{
+                animation:rollingPhase==="landing_graha"?"grahaLand 0.45s ease forwards":"none",
+              }}>
+                <GrahaDie
+                  graha={rollingPhase==="settled"||rollingPhase==="landing_graha"?diceReveal.g:{...diceReveal.g,icon:displayGraha||"✦"}}
+                  spinning={rollingPhase==="rolling"}
+                  size={isMobile?88:110}
+                />
+              </div>
+              <div style={{
+                marginTop:10,height:20,
+                opacity:rollingPhase==="settled"?1:0,
+                transition:"opacity 0.4s ease",
+                fontFamily:"'Cinzel',serif",fontSize:11,color:diceReveal.g.color,fontWeight:700,letterSpacing:1,
               }}>{diceReveal.g.n}</div>
             </div>
           </div>
 
-          <div style={{maxWidth:270,textAlign:"center",padding:"10px 18px",borderRadius:10,
-            background:`${diceReveal.g.color}12`,border:`1px solid ${diceReveal.g.color}30`,
-            opacity:rollingPhase==='settled'?1:0,
-            transform:rollingPhase==='settled'?"translateY(0)":"translateY(18px)",
-            transition:"opacity 0.5s 0.7s ease, transform 0.5s 0.7s ease",
+          {/* Effect card — only when settled */}
+          <div style={{
+            maxWidth:280,width:"100%",
+            padding:"10px 16px",borderRadius:10,
+            background:`${diceReveal.g.color}14`,
+            border:`1px solid ${diceReveal.g.color}35`,
+            textAlign:"center",
+            opacity:rollingPhase==="settled"?1:0,
+            transform:rollingPhase==="settled"?"translateY(0)":"translateY(12px)",
+            transition:"opacity 0.4s ease, transform 0.4s ease",
           }}>
-            <div style={{fontSize:10,color:diceReveal.g.color,fontWeight:700,
-              letterSpacing:2,fontFamily:"'Cinzel',serif",marginBottom:4}}>
-              {diceReveal.g.en.split("—")[0].trim()}
-            </div>
-            <div style={{fontSize:9,color:"rgba(200,180,140,.55)",lineHeight:1.75,fontStyle:"italic"}}>
-              {diceReveal.g.desc.slice(0,88)}…
-            </div>
+            <div style={{fontSize:11,color:diceReveal.g.color,fontWeight:700,letterSpacing:1,marginBottom:3}}>{diceReveal.g.en.split("—")[0].trim()}</div>
+            <div style={{fontSize:9,color:"#c0b080",opacity:.65,lineHeight:1.6}}>{diceReveal.g.desc.slice(0,72)}…</div>
           </div>
 
-          <div style={{position:"absolute",bottom:24,
-            fontSize:8,color:"rgba(200,160,60,.22)",letterSpacing:4,fontFamily:"'Cinzel',serif",
-            opacity:rollingPhase==='settled'?1:0,transition:"opacity 0.4s 1.2s ease",
-          }}>TAP TO SKIP ▸</div>
+          <div style={{marginTop:16,fontSize:8,color:"rgba(200,160,60,.2)",letterSpacing:4,fontFamily:"'Cinzel',serif"}}>
+            {rollingPhase==="settled"?"TAP TO SKIP ▸":""}
+          </div>
         </div>
       )}
 
-      {/* ── Navagraha Cinematic Zoom — Phase 5 ── */}
-      {diceReveal&&rollingPhase==='graha_zoom'&&(
-        <div
-          onClick={()=>{
-            setDiceReveal(null);setRollingPhase(null);
-            if(!onSacredPath){showEvent({icon:diceReveal.g.icon,title:`${diceReveal.g.n} · ${diceReveal.g.en}`,subtitle:grahaStory,color:diceReveal.g.color,type:"graha",staticKey:GRAHA_STATIC_KEY[diceReveal.g.fx]},startMovement)}
-            else startMovement();
-          }}
-          style={{position:"fixed",inset:0,zIndex:186,cursor:"pointer",
-            display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
-            background:`radial-gradient(ellipse at 50% 40%,${diceReveal.g.color}1e 0%,rgba(4,3,2,.97) 68%)`,
-            backdropFilter:"blur(14px)",WebkitBackdropFilter:"blur(14px)",
-          }}>
-
-          <div style={{position:"absolute",width:isMobile?260:360,height:isMobile?260:360,
-            borderRadius:"50%",border:`1px solid ${diceReveal.g.color}16`,
-            animation:"grahaOrbit 8s linear infinite",pointerEvents:"none"}}/>
-          <div style={{position:"absolute",width:isMobile?180:240,height:isMobile?180:240,
-            borderRadius:"50%",border:`1px solid ${diceReveal.g.color}10`,
-            animation:"grahaOrbit 5s linear infinite reverse",pointerEvents:"none"}}/>
-
-          <div style={{fontSize:isMobile?100:132,lineHeight:1,marginBottom:20,
-            animation:"grahaZoomIn 0.75s cubic-bezier(0.34,1.46,0.64,1) forwards",
-            filter:`drop-shadow(0 0 30px ${diceReveal.g.color}) drop-shadow(0 0 80px ${diceReveal.g.color}55)`,
-          }}>{diceReveal.g.icon}</div>
-
-          <div style={{fontFamily:"'Yatra One',serif",
-            fontSize:isMobile?"clamp(28px,7vw,36px)":"clamp(36px,4vw,56px)",
-            color:diceReveal.g.color,letterSpacing:4,textAlign:"center",marginBottom:6,
-            animation:"grahaNameReveal 0.6s ease 0.2s both",
-            textShadow:`0 0 40px ${diceReveal.g.color}80`,
-          }}>{diceReveal.g.n}</div>
-
-          <div style={{fontSize:isMobile?11:13,color:"rgba(255,255,255,.4)",
-            letterSpacing:4,fontFamily:"'Cinzel',serif",marginBottom:28,
-            animation:"grahaNameReveal 0.5s ease 0.35s both",
-          }}>{diceReveal.g.en.split("—")[0].trim()}</div>
-
-          <div style={{maxWidth:isMobile?290:420,padding:"14px 22px",
-            background:`${diceReveal.g.color}10`,border:`1px solid ${diceReveal.g.color}35`,
-            borderRadius:12,textAlign:"center",
-            animation:"grahaNameReveal 0.55s ease 0.5s both",
-          }}>
-            <div style={{fontSize:isMobile?11:13,color:"rgba(220,200,160,.8)",
-              lineHeight:1.85,fontStyle:"italic"}}>
-              {diceReveal.g.desc.slice(0,135)}…
-            </div>
-          </div>
-
-          <div style={{display:"flex",alignItems:"center",gap:16,marginTop:24,
-            animation:"grahaNameReveal 0.5s ease 0.65s both",
-          }}>
-            <span style={{fontFamily:"'Noto Serif Devanagari',serif",fontSize:42,
-              color:"#f0d050",fontWeight:900,
-              filter:"drop-shadow(0 0 16px rgba(240,200,80,.7))"}}>
-              {['','⚀','⚁','⚂','⚃','⚄','⚅'][diceReveal.r]}
-            </span>
-            <span style={{fontSize:11,color:"rgba(240,200,80,.45)",
-              fontFamily:"'Cinzel',serif",letterSpacing:3}}>
-              {diceReveal.r} step{diceReveal.r>1?'s':''}
-            </span>
-          </div>
-
-          <div style={{position:"absolute",bottom:28,
-            fontSize:8,color:"rgba(200,160,60,.25)",letterSpacing:5,fontFamily:"'Cinzel',serif",
-            animation:"grahaNameReveal 0.4s ease 1.5s both",
-          }}>TAP TO CONTINUE</div>
-        </div>
-      )}
             {turnBanner&&!dil&&!busy&&!diceReveal&&<div style={{position:"fixed",inset:0,zIndex:180,display:"flex",alignItems:"center",justifyContent:"center",pointerEvents:"none"}}>
         <div style={{animation:"turnFlash 2.2s ease forwards",
           background:"linear-gradient(180deg,rgba(20,16,10,.97),rgba(12,10,7,.97))",
@@ -6955,457 +6868,3 @@ export default function MokshaPatam108(){
     </div>
   );
 }
-
-      {turnBanner&&!dil&&!busy&&!diceReveal&&<div style={{position:"fixed",inset:0,zIndex:180,display:"flex",alignItems:"center",justifyContent:"center",pointerEvents:"none"}}>
-        <div style={{animation:"turnFlash 2.2s ease forwards",
-          background:"linear-gradient(180deg,rgba(20,16,10,.97),rgba(12,10,7,.97))",
-          border:`2px solid ${isOnline&&cur===myPlayerIndex?"rgba(240,200,80,.9)":turnBanner.color+"60"}`,
-          borderRadius:12,padding:"28px 52px",textAlign:"center",
-          boxShadow:isOnline&&cur===myPlayerIndex
-            ?`0 0 80px rgba(240,200,80,.4), 0 0 160px rgba(240,200,80,.1)`
-            :`0 0 60px ${turnBanner.color}30`}}>
-          <div style={{fontSize:48,marginBottom:4,filter:`drop-shadow(0 0 16px ${turnBanner.color})`}}>{turnBanner.icon}</div>
-          <div style={{fontSize:24,fontFamily:"'Yatra One',serif",color:turnBanner.color,letterSpacing:3}}>{turnBanner.name}</div>
-          <div style={{fontSize:isOnline&&cur===myPlayerIndex?14:11,
-            letterSpacing:4,marginTop:6,fontFamily:"'Cinzel',serif",fontWeight:700,
-            color:isOnline&&cur===myPlayerIndex?"#f0d050":turnBanner.cpu?"#7986cb":"rgba(240,200,80,.5)"}}>
-            {turnBanner.cpu?"🤖 SPIRIT GUIDE THINKING...":
-             isOnline&&cur!==myPlayerIndex?`⏳ ${turnBanner.name.split(" ")[0]}'s turn — wait...`:
-             isOnline&&cur===myPlayerIndex?"✦ YOUR TURN — ROLL NOW ✦":"YOUR TURN"}
-          </div>
-        </div>
-      </div>}
-
-      {/* ── Desktop header — single slim bar ── */}
-      {!isMobile&&<div style={{
-        display:"flex",alignItems:"center",justifyContent:"space-between",
-        width:"100%",maxWidth:1140,padding:"0 8px",marginBottom:6,gap:12,
-        borderBottom:"1px solid rgba(200,160,60,.1)",paddingBottom:6,
-      }}>
-        <div style={{display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
-          <div onClick={()=>setShowRiddles(true)}
-            style={{fontSize:"clamp(15px,2vw,20px)",fontFamily:"'Yatra One',serif",letterSpacing:2,color:"#f0d050",cursor:"pointer",lineHeight:1}}>
-            मोक्ष पटम् १०८
-          </div>
-          <div style={{fontSize:9,letterSpacing:3,opacity:.35,color:"#c0b080",fontFamily:"'Cinzel',serif",paddingTop:2}}>
-            {rlm(pos[cur]||1)==="bhuloka"?"भूलोक":rlm(pos[cur]||1)==="antarloka"?"अन्तर्लोक":rlm(pos[cur]||1)==="moksha_path"?"अष्टांग मार्ग":"स्वर्गलोक"}
-          </div>
-        </div>
-        <div style={{display:"flex",gap:8,alignItems:"center"}}>
-          <button onClick={()=>setShowGuide(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"rgba(200,160,60,.6)",padding:"3px 10px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1}}>📜 Rules</button>
-          <button onClick={()=>setShowInfo(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"rgba(200,160,60,.6)",padding:"3px 10px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:3,letterSpacing:1}}>📖 Lore</button>
-          <InstaBadge/>
-        </div>
-        <div style={{display:"flex",alignItems:"center",gap:8,flexShrink:0}}>
-          <button onClick={toggleMute} style={{background:"transparent",border:"1px solid rgba(200,160,60,.15)",color:"#c0b080",padding:"2px 8px",fontSize:12,cursor:"pointer",borderRadius:3}}>{muted?"🔇":"🔊"}</button>
-          <button onClick={toggleBG} style={{background:"transparent",border:"1px solid rgba(200,160,60,.15)",color:"#c0b080",padding:"2px 8px",fontSize:12,cursor:"pointer",borderRadius:3}}>{bgMuted?"🔕":"🎵"}</button>
-          {auth.user
-            ?<button onClick={()=>{setShowProfile(true);setProfileTab("overview")}} style={{display:"flex",alignItems:"center",gap:6,padding:"3px 10px 3px 4px",background:"rgba(240,200,80,.05)",border:"1px solid rgba(200,160,60,.15)",borderRadius:16,cursor:"pointer",color:"#e8c850",fontSize:10,fontFamily:"'Cinzel',serif"}}>
-              {auth.profile?.avatar_url?<img src={auth.profile.avatar_url} alt="" style={{width:22,height:22,borderRadius:"50%",border:"1px solid rgba(240,200,80,.3)"}} referrerPolicy="no-referrer"/>:<div style={{width:22,height:22,borderRadius:"50%",background:"rgba(240,200,80,.12)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12}}>🪷</div>}
-              <span>{(auth.profile?.display_name||auth.user?.user_metadata?.full_name||"").split(" ")[0]||"Profile"}</span>
-              {auth.profile?.total_games>0&&<span style={{fontSize:8,padding:"1px 5px",background:(auth.profile.total_punya_earned-auth.profile.total_papa_earned)>=0?"rgba(100,200,100,.12)":"rgba(200,80,60,.12)",borderRadius:6,color:(auth.profile.total_punya_earned-auth.profile.total_papa_earned)>=0?"#80c080":"#e08060"}}>{(auth.profile.total_punya_earned-auth.profile.total_papa_earned)>=0?"+":""}{(auth.profile.total_punya_earned||0)-(auth.profile.total_papa_earned||0)}</span>}
-            </button>
-            :<button onClick={()=>setShowProfile(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.15)",color:"#8a7a50",padding:"3px 10px",fontSize:10,cursor:"pointer",borderRadius:16,fontFamily:"'Cinzel',serif"}}>Sign In</button>
-          }
-        </div>
-      </div>}
-
-      {/* ── Mobile compact header ── */}
-      {isMobile&&(
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",width:"100%",padding:"4px 8px 6px",borderBottom:"1px solid rgba(200,160,60,.12)",marginBottom:4}}>
-          <button onClick={()=>setShowMobileMenu(true)} style={{background:"rgba(200,160,60,.1)",border:"1.5px solid rgba(200,160,60,.3)",color:"#e8c850",padding:"6px 12px",fontSize:10,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2,minHeight:36,touchAction:"manipulation",WebkitTapHighlightColor:"transparent"}}>
-            ☰ MENU
-          </button>
-          <div style={{textAlign:"center"}}>
-            <div style={{fontFamily:"'Yatra One',serif",fontSize:16,color:"#f0d050",letterSpacing:1}}>मोक्ष पटम्</div>
-            <div style={{fontSize:8,letterSpacing:3,opacity:.4,color:"#c0b080"}}>{rlm(pos[cur]||1)==="bhuloka"?"अन्तर्लोक":rlm(pos[cur]||1)==="antarloka"?"अन्तर्लोक":rlm(pos[cur]||1)==="moksha_path"?"अष्टांग मार्ग":"स्वर्गलोक"}</div>
-          </div>
-          <button onClick={()=>{setShowProfile(true);setProfileTab("overview")}} style={{background:"rgba(200,160,60,.08)",border:"1px solid rgba(200,160,60,.2)",borderRadius:20,padding:"3px 8px 3px 4px",display:"flex",alignItems:"center",gap:5,cursor:"pointer",minHeight:36,touchAction:"manipulation",WebkitTapHighlightColor:"transparent"}}>
-            {auth.profile?.avatar_url?<img src={auth.profile.avatar_url} alt="" style={{width:24,height:24,borderRadius:"50%",border:"1px solid rgba(240,200,80,.3)"}} referrerPolicy="no-referrer"/>:<div style={{width:24,height:24,borderRadius:"50%",background:"rgba(240,200,80,.12)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13}}>🪷</div>}
-            <span style={{fontSize:9,color:"#e8c850",fontFamily:"'Cinzel',serif",letterSpacing:1}}>{auth.profile?.display_name?.split(" ")[0]||"XZODIA"}</span>
-            {auth.profile?.total_games>0&&<span style={{fontSize:8,padding:"1px 5px",background:"rgba(240,200,80,.1)",borderRadius:6,color:"#f0d050"}}>+{(auth.profile.total_punya_earned||0)-(auth.profile.total_papa_earned||0)} KARMA</span>}
-          </button>
-        </div>
-      )}
-
-      {/* ── Color-coded message bar ── */}
-      {(()=>{
-        const isBad=msg&&(msg.includes("serpent")||msg.includes("Papa")||msg.includes("𓆙")||msg.includes("Impure")||msg.includes("WRONG")||msg.includes("skipped"));
-        const isGood=msg&&(msg.includes("Punya")||msg.includes("MOKSHA")||msg.includes("Victory")||msg.includes("ladder")||msg.includes("🪔")||msg.includes("Shield")||msg.includes("Correct"));
-        const msgColor=isBad?"#e08060":isGood?"#f0d050":"#c0b080";
-        const msgBorder=isBad?"rgba(200,80,40,.25)":isGood?"rgba(200,160,60,.3)":"rgba(200,160,60,.1)";
-        return <div style={{borderTop:`1px solid ${msgBorder}`,borderBottom:`1px solid rgba(200,160,60,.1)`,padding:"8px 14px",marginBottom:4,textAlign:"center",fontSize:"clamp(10px,1.4vw,13px)",maxWidth:780,width:"100%",lineHeight:1.7,color:msgColor,fontWeight:isBad||isGood?700:400,letterSpacing:isBad||isGood?1:0,transition:"color .5s"}}>{msg}</div>;
-      })()}
-
-      {/* ── Karma strip ── */}
-      {players.length>0&&!win&&(
-        <div style={{display:"flex",gap:6,justifyContent:"center",flexWrap:"wrap",width:"100%",maxWidth:780,marginBottom:8,padding:"0 8px"}}>
-          {players.map((pl,i)=>{
-            const pn=punya[i]||0,pp=papa[i]||0;
-            const isActive=cur===i;const pc=pl.char.color;
-            return(
-              <div key={i} style={{display:"flex",alignItems:"center",gap:6,
-                padding:isMobile?"3px 7px":"5px 10px",borderRadius:20,
-                background:isActive?`${pc}18`:"rgba(12,10,7,.7)",
-                border:`1.5px solid ${isActive?pc+"60":"rgba(200,160,60,.1)"}`,
-                transition:"all .3s",boxShadow:isActive?`0 0 12px ${pc}20`:"none"}}>
-                <span style={{fontSize:16}}>{pl.char.icon}</span>
-                <span style={{fontSize:11,color:pc,fontWeight:700,maxWidth:70,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{pl.name.split(" ")[0]}</span>
-                {shieldA[i]&&<span style={{fontSize:11}}>🛡</span>}
-                <span style={{width:1,height:14,background:"rgba(200,160,60,.2)",display:"inline-block"}}/>
-                <span style={{fontSize:isMobile?12:13,color:"#f0d050",fontWeight:900,minWidth:16,textAlign:"center"}}>{pn}</span>
-                <span style={{fontSize:9,color:"rgba(240,200,80,.5)",fontWeight:700}}>पु</span>
-                <span style={{fontSize:11,color:"rgba(200,160,60,.3)"}}>·</span>
-                <span style={{fontSize:isMobile?12:13,color:"#e06030",fontWeight:900,minWidth:16,textAlign:"center"}}>{pp}</span>
-                <span style={{fontSize:9,color:"rgba(224,96,48,.5)",fontWeight:700}}>पा</span>
-                {!isMobile&&<span style={{fontSize:9,opacity:.4}}>Sq {pos[i]||1}</span>}
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {/* ── Karma change toasts ── */}
-      {karmaToasts.length>0&&(
-        <div style={{position:"fixed",bottom:isMobile?100:120,right:16,zIndex:190,display:"flex",flexDirection:"column",gap:8,alignItems:"flex-end",pointerEvents:"none"}}>
-          {karmaToasts.map(t=>(
-            <div key={t.id} style={{
-              display:"flex",alignItems:"center",gap:8,
-              background:"rgba(12,10,7,.95)",
-              border:`2px solid ${t.color}60`,
-              borderRadius:24,padding:"8px 16px",
-              boxShadow:`0 0 20px ${t.color}30`,
-              animation:"karmaToast 2.8s ease forwards",
-            }}>
-              <span style={{fontSize:20}}>{t.icon}</span>
-              <div>
-                <div style={{fontSize:9,color:"rgba(200,160,60,.5)",letterSpacing:2,fontFamily:"'Cinzel',serif"}}>{t.playerName}</div>
-                <div style={{fontSize:18,fontWeight:900,color:t.color,fontFamily:"'Cinzel Decorative',serif",lineHeight:1}}>{t.label}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* ── Board + Panel ── */}
-      <div style={{display:"flex",gap:8,width:"100%",maxWidth:1140,flex:"1 1 0",minHeight:0,alignItems:"flex-start"}}>
-
-        {/* Board container */}
-        <div style={{flex:"1 1 340px",minWidth:0,position:"relative"}}>
-
-          {/* Sacred path row (101-108) */}
-          <div style={{display:"grid",gridTemplateColumns:"repeat(8,1fr)",gap:2,marginBottom:2,background:"rgba(240,200,80,.04)",border:"1px solid rgba(240,200,80,.15)",borderRadius:"4px 4px 0 0",padding:2}}>
-            <div style={{gridColumn:"1/-1",textAlign:"center",fontSize:7,letterSpacing:4,color:"rgba(240,200,80,.4)",padding:"2px 0",fontFamily:"'Cinzel',serif",fontWeight:700}}>
-              ✦ अष्टांग मार्ग · ASHTANGA MARGA · THE 8-FOLD SACRED PATH ✦
-            </div>
-            {SACRED_PATH.map((sq,si)=>{
-              const sqNum=101+si;
-              const isMoksha=sqNum===108;
-              const ph=[];for(let i=0;i<nP;i++){const rp=isOnline&&i!==myPlayerIndex&&displayPos.length>0?displayPos[i]:pos[i];if((rp||1)===sqNum)ph.push(i)}
-              const isActiveSquare=ph.includes(cur);
-              return(
-                <div key={sqNum} onMouseEnter={()=>!isMobile&&setHov(sqNum)} onMouseLeave={()=>!isMobile&&setHov(null)}
-                  style={{background:isMoksha?"rgba(240,200,80,.18)":isActiveSquare?"rgba(200,160,60,.12)":"transparent",
-                    border:`1px solid ${isMoksha?"rgba(240,200,80,.5)":isActiveSquare?"rgba(200,160,60,.3)":"rgba(200,160,60,.08)"}`,
-                    borderRadius:3,padding:"3px 1px",textAlign:"center",position:"relative",minHeight:isMobile?52:64,cursor:"pointer",
-                    transition:"all .2s"}}>
-                  <div style={{fontSize:7,opacity:.4,marginBottom:1}}>{sqNum}</div>
-                  <div style={{fontSize:isMobile?14:18,lineHeight:1}}>{sq.icon}</div>
-                  <div style={{fontSize:isMobile?6:7,fontFamily:"'Noto Serif Devanagari',serif",color:"#f0d050",opacity:.8,letterSpacing:.5,marginTop:1,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{sq.skt}</div>
-                  <div style={{fontSize:5,opacity:.4,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{sq.en}</div>
-                  {ph.map(pi=>{
-                    const isMoving=pi===cur&&busy;const isAct=pi===cur;
-                    return(<div key={pi} style={{position:"absolute",top:"50%",left:"50%",
-                      transform:`translate(-50%,-50%) ${isMoving?"scale(1.7) translateY(-8px)":isAct?"scale(1.4)":"scale(0.9)"}`,
-                      fontSize:isMobile?14:18,filter:isAct?`drop-shadow(0 0 6px ${players[pi]?.char?.color})`:"none",
-                      zIndex:5,transition:"transform .28s ease",pointerEvents:"none"}}>{players[pi]?.char?.icon}</div>)
-                  })}
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Main 10x10 board */}
-          <div style={{position:"relative"}}>
-            {/* Realm labels */}
-            {[{top:"1%",t:"स्वर्गलोक CELESTIAL"},{top:"34.5%",t:"अन्तर्लोक INNER"},{top:"67.5%",t:"भूलोक EARTHLY"}].map((r,i)=><div key={i} style={{position:"absolute",top:r.top,left:"50%",transform:"translateX(-50%)",fontSize:"clamp(6px,1vw,9px)",letterSpacing:4,opacity:.22,color:"#f0d050",zIndex:10,pointerEvents:"none",whiteSpace:"nowrap"}}>{r.t}</div>)}
-
-            <div style={{display:"grid",gridTemplateColumns:"repeat(10,1fr)",gap:2,background:"rgba(0,0,0,.3)",border:"1px solid rgba(200,160,60,.2)",borderRadius:"0 0 4px 4px",padding:2,position:"relative"}}>
-              {mainBoard.map((sq,idx)=>{
-                const num=sq.num;
-                const snake=SNAKES[num];const ladder=LADDERS[num];const isDharma=DLM_SQ.includes(num);
-                const ph=[];for(let i=0;i<nP;i++){const rp=isOnline&&i!==myPlayerIndex&&displayPos.length>0?displayPos[i]:pos[i];if((rp||1)===num)ph.push(i)}
-                const isActiveSquare=ph.includes(cur);
-                const bgColor=snake?"rgba(180,50,20,.18)":ladder?"rgba(100,180,60,.12)":isDharma?"rgba(200,160,60,.1)":"transparent";
-                const borderColor=snake?"rgba(180,80,40,.3)":ladder?"rgba(80,160,50,.25)":isDharma?"rgba(200,160,60,.2)":"rgba(200,160,60,.06)";
-                return(
-                  <div key={num} onMouseEnter={()=>!isMobile&&setHov(num)} onMouseLeave={()=>!isMobile&&setHov(null)}
-                    style={{background:isActiveSquare?`rgba(200,160,60,.18)`:bgColor,
-                      border:`1px solid ${isActiveSquare?"rgba(240,200,80,.4)":borderColor}`,
-                      borderRadius:2,padding:"2px 1px",textAlign:"center",position:"relative",
-                      minHeight:isMobile?"clamp(28px,8vw,44px)":"clamp(36px,6vw,54px)",
-                      cursor:"pointer",transition:"background .15s,border-color .15s"}}>
-                    <div style={{fontSize:"clamp(5px,.7vw,7px)",opacity:.35,lineHeight:1.2}}>{num}</div>
-                    {snake&&<div style={{fontSize:"clamp(8px,1.5vw,12px)",lineHeight:1}}><span title={snake.skt}>𓆙</span></div>}
-                    {ladder&&<div style={{fontSize:"clamp(8px,1.5vw,12px)",lineHeight:1}}>🪔</div>}
-                    {isDharma&&!snake&&!ladder&&<div style={{fontSize:"clamp(8px,1.5vw,11px)",lineHeight:1,color:"rgba(200,160,60,.7)"}}>⚖</div>}
-                    {snake&&<div style={{fontSize:"clamp(4px,.6vw,6px)",color:"#e06030",opacity:.7,lineHeight:1.2,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{snake.en.split(" ")[0]}</div>}
-                    {ladder&&<div style={{fontSize:"clamp(4px,.6vw,6px)",color:"#90c050",opacity:.7,lineHeight:1.2,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{ladder.en.split(" ")[0]}</div>}
-                    {isDharma&&!snake&&!ladder&&<div style={{fontSize:"clamp(4px,.6vw,6px)",color:"rgba(200,160,60,.5)",lineHeight:1.2,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{DLM_SQ.indexOf(num)>=0?"DHARMA":""}</div>}
-                    {ph.map(pi=>{
-                      const isMoving=pi===cur&&busy;const isAct=pi===cur;
-                      return(<div key={pi} style={{position:"absolute",top:"50%",left:"50%",
-                        transform:`translate(-50%,-50%) ${isMoving?"scale(1.7) translateY(-8px)":isAct?"scale(1.4)":"scale(0.9)"}`,
-                        fontSize:"clamp(10px,2vw,16px)",
-                        filter:isAct?`drop-shadow(0 0 5px ${players[pi]?.char?.color})`:"none",
-                        zIndex:5,transition:"transform .28s ease",pointerEvents:"none"}}>{players[pi]?.char?.icon}</div>)
-                    })}
-                    {isActiveSquare&&<div style={{position:"absolute",inset:0,borderRadius:2,background:"radial-gradient(circle,rgba(240,200,80,.12),transparent)",animation:"tokenPop .3s ease",pointerEvents:"none"}}/>}
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* SVG snake and ladder overlays */}
-            <svg style={{position:"absolute",inset:0,width:"100%",height:"100%",pointerEvents:"none",zIndex:4}} viewBox="0 0 100 100" preserveAspectRatio="none">
-              {Object.entries(SNAKES).map(([from,sn])=>{
-                const f=sq2xy(parseInt(from));const t=sq2xy(sn.to);
-                return f&&t?<line key={`s${from}`} x1={f.x} y1={f.y} x2={t.x} y2={t.y} stroke="rgba(180,60,30,.35)" strokeWidth=".5" strokeDasharray="1,1"/>:null;
-              })}
-              {Object.entries(LADDERS).map(([from,ld])=>{
-                const f=sq2xy(parseInt(from));const t=sq2xy(ld.to);
-                return f&&t?<line key={`l${from}`} x1={f.x} y1={f.y} x2={t.x} y2={t.y} stroke="rgba(80,160,50,.35)" strokeWidth=".5"/>:null;
-              })}
-            </svg>
-          </div>
-
-          {/* Board legend */}
-          <div style={{display:"flex",justifyContent:"center",gap:"clamp(6px,1.5vw,14px)",marginTop:4,fontSize:"clamp(7px,.9vw,9px)",opacity:.3,color:"#c0b080",flexWrap:"wrap"}}>
-            <span>𓆙 NĀGA</span><span>🪔 VIRTUE</span><span>⚖ DHARMA</span><span>✦ SACRED PATH</span><span>ॐ MOKSHA 108</span>
-          </div>
-
-          {/* Karma/Moksha legend (mobile) */}
-          {isMobile&&<div style={{display:"flex",justifyContent:"center",gap:10,marginTop:3,fontSize:8,opacity:.4,color:"#c0b080",flexWrap:"wrap"}}>
-            <span>⚡ KARMA VICTORY: 30 PUNYA</span><span>ॐ MOKSHA: PUNYA ≥ PAPA AT SQ 108</span>
-          </div>}
-
-          {/* Online overlays on board */}
-          {isOnline&&onlineBroadcast?.type==='rolling'&&onlineBroadcast.playerIndex!==myPlayerIndex&&(
-            <div style={{position:'fixed',top:'50%',left:'50%',transform:'translate(-50%,-50%)',zIndex:120,pointerEvents:'none',background:'rgba(12,10,7,.92)',border:'1px solid rgba(240,200,80,.3)',borderRadius:8,padding:'18px 32px',textAlign:'center'}}>
-              <div style={{fontSize:36,marginBottom:6}}>🎲</div>
-              <div style={{fontFamily:"'IM Fell English',serif",fontStyle:'italic',fontSize:14,color:'#d0b870'}}>{players[onlineBroadcast.playerIndex]?.name||'Opponent'} is rolling...</div>
-            </div>
-          )}
-          {isOnline&&onlineBroadcast?.type==='dilemma_pick'&&onlineBroadcast.playerIndex!==myPlayerIndex&&(
-            <div style={{position:'fixed',top:'50%',left:'50%',transform:'translate(-50%,-50%)',zIndex:120,pointerEvents:'none',background:'rgba(12,10,7,.92)',border:'1px solid rgba(200,160,60,.3)',borderRadius:8,padding:'18px 32px',textAlign:'center'}}>
-              <div style={{fontSize:32,marginBottom:6}}>⚖</div>
-              <div style={{fontFamily:"'IM Fell English',serif",fontStyle:'italic',fontSize:14,color:'#d0b870'}}>{players[onlineBroadcast.playerIndex]?.name||'Opponent'} is choosing their path...</div>
-            </div>
-          )}
-        </div>
-
-        {/* PANEL — desktop only */}
-        {!isMobile&&<div style={{flex:"0 1 310px",display:"flex",flexDirection:"column",gap:8,minWidth:"clamp(250px,40vw,310px)",maxWidth:360,overflowY:"auto",WebkitOverflowScrolling:"touch"}}>
-
-          {/* Online timer */}
-          {isOnline&&isMyTurn&&!busy&&!dil&&(
-            <div style={{background:"rgba(240,200,80,.06)",border:"1px solid rgba(240,200,80,.2)",borderRadius:4,padding:"8px 12px",textAlign:"center"}}>
-              <div style={{fontSize:9,letterSpacing:3,color:"rgba(240,200,80,.5)",marginBottom:4,fontFamily:"'Cinzel',serif"}}>YOUR TURN</div>
-              <svg viewBox="0 0 60 60" width="60" height="60" style={{transform:"rotate(-90deg)"}}>
-                <circle cx="30" cy="30" r="26" fill="none" stroke="rgba(240,200,80,.1)" strokeWidth="4"/>
-                <circle cx="30" cy="30" r="26" fill="none" stroke="#f0d050" strokeWidth="4" strokeLinecap="round"
-                  strokeDasharray={`${163.4*onlineTimerPct} 163.4`}/>
-              </svg>
-              <div style={{fontSize:20,fontFamily:"'Cinzel Decorative',serif",color:"#f0d050",fontWeight:900,marginTop:-44,marginBottom:36}}>{onlineTimerSec}</div>
-            </div>
-          )}
-
-          {/* Online: not my turn */}
-          {isOnline&&!isMyTurn&&!busy&&!dil&&(
-            <div style={{background:"rgba(0,0,0,.3)",border:"1px solid rgba(200,160,60,.1)",borderRadius:4,padding:"10px 12px",textAlign:"center"}}>
-              <div style={{fontSize:9,letterSpacing:3,color:"rgba(200,160,60,.3)",fontFamily:"'Cinzel',serif"}}>⏳ {players[cur]?.name?.split(" ")[0]||"OPPONENT"}'S TURN</div>
-            </div>
-          )}
-
-          {/* Not connected */}
-          {isOnline&&!onlineConnected&&(
-            <div style={{background:"rgba(200,60,40,.08)",border:"1px solid rgba(200,60,40,.2)",borderRadius:4,padding:"8px 12px",textAlign:"center",fontSize:10,color:"#e08060",fontFamily:"'Cinzel',serif",letterSpacing:2}}>
-              ⚠ RECONNECTING...
-            </div>
-          )}
-
-          {/* Player card + dice + roll button */}
-          {players[cur]&&<div style={{background:"linear-gradient(180deg,rgba(20,16,10,.8),rgba(12,10,7,.6))",border:"1px solid rgba(200,160,60,.2)",borderRadius:4,padding:"12px 14px"}}>
-            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
-              <div style={{fontSize:28,filter:`drop-shadow(0 0 8px ${players[cur].char.color})`}}>{players[cur].char.icon}</div>
-              <div>
-                <div style={{fontSize:14,color:players[cur].char.color,fontWeight:700,fontFamily:"'Cinzel',serif",letterSpacing:1}}>{players[cur].name}{players[cur].cpu?" ☠️":""}</div>
-                <div style={{fontSize:10,opacity:.5,letterSpacing:1}}>— {players[cur].char.skt}</div>
-              </div>
-            </div>
-            <div style={{display:"flex",gap:16,marginBottom:12}}>
-              <div style={{textAlign:"center",flex:1}}>
-                <div style={{fontSize:9,letterSpacing:3,opacity:.5,marginBottom:4,fontFamily:"'Cinzel',serif"}}>KARMA</div>
-                <div style={{width:64,height:64,margin:"0 auto",background:"linear-gradient(135deg,#2a2015,#0c0a07)",border:"2px solid rgba(200,160,60,.4)",borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,letterSpacing:3,color:"rgba(200,160,60,.5)",fontFamily:"'Cinzel',serif"}}>
-                  {rv?<span style={{fontSize:36,color:"#f0d050"}}>{['','⚀','⚁','⚂','⚃','⚄','⚅'][rv]}</span>:"MOVEMENT"}
-                </div>
-              </div>
-              <div style={{textAlign:"center",flex:1}}>
-                <div style={{fontSize:9,letterSpacing:3,opacity:.5,marginBottom:4,fontFamily:"'Cinzel',serif"}}>GRAHA</div>
-                <div style={{width:64,height:64,margin:"0 auto",background:`radial-gradient(circle at 40% 35%,${gv?.color||'#8080a0'}18,#0a0818 70%)`,border:`2px solid ${gv?.color||"rgba(200,160,60,.2)"}44`,borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",fontSize:gv?28:8,color:"rgba(200,160,60,.5)",fontFamily:"'Cinzel',serif",letterSpacing:3}}>
-                  {gv?<span style={{filter:`drop-shadow(0 0 8px ${gv.color})`}}>{gv.icon}</span>:"COSMIC"}
-                </div>
-              </div>
-            </div>
-            <button onClick={()=>doRoll(false)}
-              disabled={!!dil||busy||(isOnline&&!isMyTurn)}
-              className="gb gp"
-              style={{width:"100%",padding:"clamp(10px,1.5vw,14px)",fontSize:"clamp(14px,2vw,16px)",letterSpacing:4,
-                minHeight:48,touchAction:"manipulation",WebkitTapHighlightColor:"transparent",
-                opacity:(isOnline&&!isMyTurn)?0.3:1,transition:"opacity .3s",
-                animation:(!busy&&!dil&&!win&&isMyTurn)?"rollPulse 2s ease infinite":"none"}}>
-              {busy?"Rolling...":((isOnline&&!isMyTurn)?`${players[cur]?.name?.split(" ")[0]||"Opponent"}'s turn...`:"Roll Dice")}
-            </button>
-            <div style={{textAlign:"center",marginTop:8,display:"flex",gap:8,justifyContent:"center"}}>
-              <button onClick={()=>setShowPostGame(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.12)",color:"rgba(200,160,60,.4)",padding:"4px 10px",fontSize:9,cursor:"pointer",fontFamily:"'Cinzel',serif",letterSpacing:2}}>⟡ Support</button>
-              <button onClick={()=>setShowPostGame(true)} style={{background:"transparent",border:"1px solid rgba(200,160,60,.12)",color:"rgba(200,160,60,.4)",padding:"4px 10px",fontSize:9,cursor:"pointer",fontFamily:"'Cinzel',serif",letterSpacing:2}}>✉ Feedback</button>
-            </div>
-          </div>}
-
-          {/* Chitragupta panel */}
-          <ChitraguptaPanel entries={cgEntries} players={players} punya={punya} papa={papa} cur={cur} win={win}/>
-
-          {/* Dev panel */}
-          <div style={{fontSize:9,letterSpacing:4,opacity:.5,marginBottom:10,color:"#f0d050",fontWeight:700,textAlign:"center",cursor:"default"}} onDoubleClick={()=>onDoubleClick} onClick={()=>{clickCountRef.current=(clickCountRef.current||0)+1;if(clickCountRef.current>=3){setDevMode(d=>!d);clickCountRef.current=0;}}}>⚔ KARMA SCOREBOARD ⚔</div>
-          {devMode&&<div style={{marginTop:8,padding:6,background:"rgba(0,0,0,.2)",borderRadius:3,fontSize:9,color:"#8a7a50",fontFamily:"monospace",lineHeight:1.6}}>
-            P{cur}: Sq{pos[cur]} | Punya:{punya[cur]} Papa:{papa[cur]} | Shield:{shieldA[cur]?"Y":"N"} | Win:{win!==null?win:"—"}<br/>
-            Stats: 🐍{gameStats.current.snakes} 🪔{gameStats.current.ladders} ✓{gameStats.current.riddlesC} ✗{gameStats.current.riddlesW}<br/>
-            Auth: {auth.user?auth.profile?.display_name||auth.user.email:"Not signed in"}
-          </div>}
-          {players.map((pl,i)=>{const isActive=cur===i;const pn=punya[i]||0;const pp=papa[i]||0;const total=Math.max(pn+pp,1);const pc=pl.char.color;
-            return(<div key={i} style={{background:isActive?`${pc}12`:"transparent",borderLeft:`4px solid ${isActive?pc:"transparent"}`,border:`1px solid ${isActive?pc+"50":"rgba(200,160,60,.08)"}`,borderLeftWidth:4,borderLeftColor:isActive?pc:"rgba(200,160,60,.08)",borderRadius:4,padding:"10px 12px",marginBottom:i<nP-1?8:0,transition:"all .3s",boxShadow:isActive?`inset 0 0 20px ${pc}10, 0 0 12px ${pc}15`:"none"}}>
-              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
-                <div style={{fontSize:isActive?24:20,width:32,height:32,display:"flex",alignItems:"center",justifyContent:"center",borderRadius:"50%",background:isActive?`${pc}20`:"transparent",border:isActive?`2px solid ${pc}50`:"2px solid transparent",transition:"all .3s"}}>{pl.char.icon}</div>
-                <div style={{flex:1}}>
-                  <div style={{fontSize:isActive?14:12,color:pc,fontWeight:700,transition:"all .3s"}}>{pl.name}{pl.cpu?" ☠️":""}{isActive?" ◄":""}{shieldA[i]?" 🛡":""}{skipA[i]?" ⏭":""}</div>
-                  <div style={{fontSize:10,opacity:.5,letterSpacing:1}}>Square {pos[i]||1} · {rlm(pos[i]||1)==="bhuloka"?"भूलोक":rlm(pos[i]||1)==="antarloka"?"अन्तर्लोक":"स्वर्गलोक"}</div>
-                </div>
-              </div>
-              <div style={{display:"flex",gap:12}}>
-                <div style={{flex:1}}>
-                  <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}><span style={{fontSize:10,color:"#f0d050",fontWeight:700}}>पुण्य</span><span style={{fontSize:14,color:"#f0d050",fontWeight:900}}>{pn}</span></div>
-                  <div style={{height:6,background:"rgba(0,0,0,.3)",borderRadius:3,overflow:"hidden"}}><div style={{height:"100%",width:`${(pn/total)*100}%`,background:"linear-gradient(90deg,#f0d050,#c0a030)",borderRadius:3,transition:"width .6s"}}/></div>
-                </div>
-                <div style={{flex:1}}>
-                  <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}><span style={{fontSize:10,color:"#e06030",fontWeight:700}}>पाप</span><span style={{fontSize:14,color:"#e06030",fontWeight:900}}>{pp}</span></div>
-                  <div style={{height:6,background:"rgba(0,0,0,.3)",borderRadius:3,overflow:"hidden"}}><div style={{height:"100%",width:`${(pp/total)*100}%`,background:"linear-gradient(90deg,#e06030,#a03020)",borderRadius:3,transition:"width .6s"}}/></div>
-                </div>
-              </div>
-            </div>)
-          })}
-
-          {hd&&<div style={{background:"#1a1408",border:"1px solid rgba(200,160,60,.15)",padding:10}}>
-            <div style={{fontSize:8,opacity:.5,letterSpacing:3,color:hd.cl,fontWeight:700}}>{hd.type}</div>
-            <div style={{fontSize:14,fontWeight:700,margin:"4px 0",fontFamily:"'Noto Serif Devanagari',serif",color:"#f0d050"}}>{hd.label}</div>
-            <div style={{fontSize:11,fontStyle:"italic",opacity:.7,lineHeight:1.7,color:"#c0b080"}}>{hd.desc}</div>
-            {hd.to&&<div style={{fontSize:10,opacity:.5,marginTop:4,color:hd.cl,fontWeight:700}}>{hd.to}</div>}
-          </div>}
-
-          {hist.length>0&&<div style={{background:"rgba(0,0,0,.2)",border:"1px solid rgba(200,160,60,.06)",padding:7,fontSize:8,opacity:.35,maxHeight:90,overflowY:"auto"}}>
-            <div style={{letterSpacing:3,marginBottom:2,fontSize:7,color:"#f0d050",fontWeight:700}}>CHRONICLE</div>
-            {hist.map((h,i)=><div key={i} style={{padding:"1px 0"}}>{h}</div>)}
-          </div>}
-
-          <div style={{textAlign:"center",padding:"8px 0 4px"}}>
-            <InstaBadge/>
-            <div style={{fontSize:9,color:"#6a5a38",letterSpacing:1,marginTop:3}}>© {new Date().getFullYear()} RasaVisio · Moksha Patam 108 · All rights reserved</div>
-          </div>
-        </div>}{/* end !isMobile panel */}
-      </div>{/* end board+panel flex */}
-
-      {/* ── MOBILE: Horizontal player karma cards ── */}
-      {isMobile&&!win&&(
-        <div style={{width:"100%",padding:"8px 0 0"}}>
-          <div style={{overflowX:"auto",display:"flex",gap:8,padding:"0 8px 6px",scrollSnapType:"x mandatory",WebkitOverflowScrolling:"touch"}}>
-            {players.map((pl,i)=>{
-              const isActive=cur===i;const pn=punya[i]||0;const pp=papa[i]||0;
-              return(
-                <div key={i} style={{flexShrink:0,scrollSnapAlign:"start",minWidth:140,
-                  background:isActive?`${pl.char.color}12`:"rgba(12,10,7,.7)",
-                  border:`1.5px solid ${isActive?pl.char.color+"50":"rgba(200,160,60,.1)"}`,
-                  borderRadius:6,padding:"8px 10px",
-                  boxShadow:isActive?`0 0 16px ${pl.char.color}20`:"none",
-                  transition:"all .3s"}}>
-                  <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:6}}>
-                    <div style={{fontSize:18}}>{pl.char.icon}</div>
-                    <div>
-                      <div style={{fontSize:11,color:pl.char.color,fontWeight:700}}>{pl.name.split(" ")[0]}{pl.cpu?" ☠️":""}{shieldA[i]?" 🛡":""}</div>
-                      <div style={{fontSize:8,opacity:.4}}>Sq {pos[i]||1}</div>
-                    </div>
-                    {isActive&&<div style={{marginLeft:"auto",fontSize:8,color:"#f0d050",letterSpacing:1,fontFamily:"'Cinzel',serif"}}>◄</div>}
-                  </div>
-                  <div style={{display:"flex",gap:8}}>
-                    <div style={{flex:1,textAlign:"center"}}>
-                      <div style={{fontSize:16,color:"#f0d050",fontWeight:900}}>{pn}</div>
-                      <div style={{fontSize:7,opacity:.5,letterSpacing:2}}>पुण्य</div>
-                    </div>
-                    <div style={{width:1,background:"rgba(200,160,60,.15)"}}/>
-                    <div style={{flex:1,textAlign:"center"}}>
-                      <div style={{fontSize:16,color:"#e06030",fontWeight:900}}>{pp}</div>
-                      <div style={{fontSize:7,opacity:.5,letterSpacing:2}}>पाप</div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* ── MOBILE: Sticky roll bar ── */}
-      {isMobile&&!win&&<div className="mb-roll">
-        <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
-          <div style={{fontSize:22}}>{players[cur]?.char?.icon}</div>
-          <div style={{flex:1}}>
-            <div style={{fontSize:11,color:players[cur]?.char?.color||"#f0d050",fontWeight:700,fontFamily:"'Cinzel',serif"}}>{players[cur]?.name||"Seeker"}{players[cur]?.cpu?" ☠️":""}{shieldA[cur]?" 🛡":""}</div>
-            <div style={{fontSize:9,opacity:.45}}><span style={{color:"#f0d050",fontWeight:700}}>{punya[cur]||0}पु</span> · <span style={{color:"#e06030",fontWeight:700}}>{papa[cur]||0}पा</span> · Sq{pos[cur]||1}{busy?" · Rolling…":""}</div>
-          </div>
-          {lastRollBy&&<div style={{textAlign:"right"}}>
-            <div style={{fontSize:10,color:"rgba(200,160,60,.5)",letterSpacing:2,fontFamily:"'Cinzel',serif"}}>{lastRollBy.icon} {lastRollBy.name?.split(" ")[0]}</div>
-          </div>}
-        </div>
-        {isOnline&&isMyTurn&&!busy&&!dil&&!win&&(
-          <div style={{marginBottom:6,height:3,background:"rgba(240,200,80,.08)",borderRadius:2,overflow:"hidden"}}>
-            <div style={{height:"100%",width:`${(onlineTimerPct||1)*100}%`,background:"linear-gradient(90deg,#f0d050,#e07820)",borderRadius:2,transition:"width .9s linear"}}/>
-          </div>
-        )}
-        <button onClick={()=>{haptic();doRoll(false);}}
-          disabled={!!dil||busy||(isOnline&&!isMyTurn)}
-          className="gb gp"
-          style={{width:"100%",padding:"14px",fontSize:15,letterSpacing:4,
-            minHeight:52,touchAction:"manipulation",WebkitTapHighlightColor:"transparent",
-            opacity:(isOnline&&!isMyTurn)?0.3:1,transition:"opacity .3s",
-            animation:(!busy&&!dil&&!win&&isMyTurn)?"rollPulse 2s ease infinite":"none"}}>
-          {busy?"Rolling…":(isOnline&&!isMyTurn)?`${players[cur]?.name?.split(" ")[0]||"Opponent"}'s turn…`:"Roll Dice"}
-        </button>
-      </div>}
-
-      {/* ── MOBILE: Slide-up menu ── */}
-      {isMobile&&showMobileMenu&&<div style={{position:"fixed",inset:0,zIndex:99,background:"rgba(0,0,0,.7)"}} onClick={()=>setShowMobileMenu(false)}>
-        <div className="mb-sheet" onClick={e=>e.stopPropagation()}>
-          <div style={{textAlign:"center",marginBottom:16}}>
-            <div style={{fontFamily:"'Yatra One',serif",fontSize:18,color:"#f0d050",letterSpacing:2}}>मोक्ष पटम् १०८</div>
-            <div style={{fontSize:8,letterSpacing:4,opacity:.4,color:"#c0b080",marginTop:2}}>MENU</div>
-          </div>
-          <div style={{display:"flex",flexDirection:"column",gap:10}}>
-            <button onClick={()=>{setShowGuide(true);setShowMobileMenu(false)}} style={{background:"rgba(200,160,60,.08)",border:"1px solid rgba(200,160,60,.2)",color:"#e8c850",padding:"12px",fontSize:12,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2,minHeight:48,touchAction:"manipulation"}}>📜 How to Play</button>
-            <button onClick={()=>{setShowInfo(true);setShowMobileMenu(false)}} style={{background:"rgba(200,160,60,.08)",border:"1px solid rgba(200,160,60,.2)",color:"#e8c850",padding:"12px",fontSize:12,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2,minHeight:48,touchAction:"manipulation"}}>📖 Encyclopaedia</button>
-            <button onClick={()=>{toggleMute();}} style={{background:"rgba(200,160,60,.06)",border:"1px solid rgba(200,160,60,.15)",color:"#c0b080",padding:"12px",fontSize:12,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2,minHeight:48,touchAction:"manipulation"}}>{muted?"🔇 Voice: Off":"🔊 Voice: On"}</button>
-            <button onClick={()=>{toggleBG();}} style={{background:"rgba(200,160,60,.06)",border:"1px solid rgba(200,160,60,.15)",color:"#c0b080",padding:"12px",fontSize:12,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2,minHeight:48,touchAction:"manipulation"}}>{bgMuted?"🔕 Music: Off":"🎵 Music: On"}</button>
-            <button onClick={()=>{setShowPostGame(true);setShowMobileMenu(false)}} style={{background:"rgba(200,160,60,.06)",border:"1px solid rgba(200,160,60,.15)",color:"#c0b080",padding:"12px",fontSize:12,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2,minHeight:48,touchAction:"manipulation"}}>🙏 Support / Feedback</button>
-            <button onClick={()=>{VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){}ambient.stop();if(isOnline)setOnlineRoomId(null);navigateTo("title")}} style={{background:"rgba(200,60,40,.08)",border:"1px solid rgba(200,60,40,.2)",color:"#e08060",padding:"12px",fontSize:12,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2,minHeight:48,touchAction:"manipulation"}}>← New Journey</button>
-          </div>
-        </div>
-      </div>}
-    </div>
-  );
