@@ -4395,7 +4395,7 @@ export default function MokshaPatam108(){
     if(remoteGameState.win!==null&&remoteGameState.win!==undefined)setWin(remoteGameState.win);
     if(remoteGameState.dil)setDil(remoteGameState.dil); else setDil(null);
     setBusy(false);
-  },[isOnline,remoteGameState?.turnSeq,myPlayerIndex]); // eslint-disable-line
+  },[isOnline,remoteGameState?.turnSeq]); // eslint-disable-line
 
   // Toggle voice mute
   const toggleMute=useCallback(()=>{
@@ -4673,7 +4673,6 @@ export default function MokshaPatam108(){
             if(isOnline){
               const gs={cur:skipDharmaCheck||(!DLM_SQ.includes(p)&&!(p>100&&p<108))?nextCur:cur,pos:[...nPos].map((v,i)=>i===cur?p:v),punya:[...nPunya],papa:[...nPapa],shieldA:[...nShield],skipA:[...nSkip],win:null,dil:null,usedDharma};
               submitTurn(gs,{moveType:"roll",diceVal:r,grahaIdx:gi}).catch(console.error);
-              lastAppliedSeqRef.current=(lastAppliedSeqRef.current??0)+1;
             }
             setBusy(false);
           };
