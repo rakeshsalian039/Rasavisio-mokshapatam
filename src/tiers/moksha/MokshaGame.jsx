@@ -4755,12 +4755,28 @@ export default function MokshaPatam108(){
             // P5: Navagraha cinematic zoom after 1.2s
             setTimeout(()=>{
               setRollingPhase('graha_zoom');
-              // P6: zoom shown 1.5s then proceed
+              // P6: zoom shown — user taps to proceed (auto-advance after 5s)
+              // Voice narration starts on zoom page
+              if(!muted&&grahaStory){
+                const lang=chosenLang==='hi'?'hi':'en';
+                const sk=GRAHA_STATIC_KEY[g.fx];
+                const sv=sk&&STATIC_VOICES[sk]&&STATIC_VOICES[sk][lang];
+                if(sv)VoiceEngine.speakNarrator(grahaStory,chosenLang,sv);
+                else VoiceEngine.speakNarrator(grahaStory,chosenLang,null);
+              }
+              // Auto-advance after 5s if user doesn't tap
               setTimeout(()=>{
-                setDiceReveal(null);setRollingPhase(null);
-                if(onSacredPath){if(!bgMuted)ambient.unduck();startMovement()}
-                else{showEvent({icon:g.icon,title:`${g.n} · ${g.en}`,subtitle:grahaStory,color:g.color,type:"graha",staticKey:GRAHA_STATIC_KEY[g.fx]},startMovement)}
-              },1500);
+                // Only auto-advance if still on graha_zoom (user might have tapped already)
+                setRollingPhase(prev=>{
+                  if(prev==='graha_zoom'){
+                    setDiceReveal(null);
+                    if(!bgMuted)ambient.unduck();
+                    startMovement();
+                    return null;
+                  }
+                  return prev;
+                });
+              },5000);
             },1200);
           },550);
         },650);
@@ -6103,11 +6119,11 @@ export default function MokshaPatam108(){
       {diceReveal&&rollingPhase==='graha_zoom'&&(
         <div
           onClick={()=>{
-            VoiceEngine.unlockAudio(); // iOS: must unlock before any async audio
+            VoiceEngine.stop();
             const sm=startMovementRef.current;
             setDiceReveal(null);setRollingPhase(null);
-            if(!diceReveal.sacredPath){showEvent({icon:diceReveal.g.icon,title:`${diceReveal.g.n} · ${diceReveal.g.en}`,subtitle:diceReveal.grahaStory||"",color:diceReveal.g.color,type:"graha",staticKey:GRAHA_STATIC_KEY[diceReveal.g.fx]},sm)}
-            else{if(!bgMuted)ambient.unduck();if(sm)sm();}
+            if(!bgMuted)ambient.unduck();
+            if(sm)sm();
           }}
           style={{position:"fixed",inset:0,zIndex:186,cursor:"pointer",
             display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
@@ -6159,7 +6175,7 @@ export default function MokshaPatam108(){
             animation:"grahaNameIn .55s ease .38s both",
           }}>{diceReveal.g.en}</div>
 
-          {/* Effect description */}
+          {/* Graha story — personalized effect description */}
           <div style={{
             maxWidth:isMobile?320:480,padding:isMobile?"16px 20px":"20px 28px",
             background:`${diceReveal.g.color}0e`,
@@ -6169,7 +6185,7 @@ export default function MokshaPatam108(){
           }}>
             <div style={{fontSize:isMobile?14:16,color:"rgba(225,205,165,.88)",
               lineHeight:1.9,fontFamily:"'Noto Serif Devanagari',serif"}}>
-              {diceReveal.g.desc}
+              {diceReveal.grahaStory||diceReveal.g.desc}
             </div>
           </div>
 
