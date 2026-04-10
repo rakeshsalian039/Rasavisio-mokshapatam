@@ -861,18 +861,15 @@ const VoiceEngine = {
   unlockAudio() {
     if (this._audioCtxUnlocked) return;
     try {
-      // Create ONE shared AudioContext — keep it alive (don't close)
-      // All subsequent speakNarrator/speakChitragupta calls will reuse this
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
       if (ctx.state === 'suspended') ctx.resume();
-      // Play 1ms of silence — unlocks iOS audio policy for this context
+      // Play 1ms of silence — unlocks iOS audio policy
       const buf = ctx.createBuffer(1, 1, 22050);
       const src = ctx.createBufferSource();
       src.buffer = buf;
       src.connect(ctx.destination);
       src.start(0);
-      // Store the unlocked context for reuse — do NOT close it
-      this._sharedCtx = ctx;
+      ctx.close();
       // Also unlock Web Speech API
       if (window.speechSynthesis) {
         const u = new SpeechSynthesisUtterance('');
@@ -988,14 +985,9 @@ const VoiceEngine = {
     const staticUrl = staticBase ? `${staticBase}-${l}.mp3` : null;
     const myToken = this._stopToken;
 
-    // iOS: reuse shared unlocked AudioContext from unlockAudio() if available
-    let ctx = this._sharedCtx || null;
-    if (!ctx) {
-      try { ctx = new (window.AudioContext||window.webkitAudioContext)(); if(ctx.state==='suspended') await ctx.resume(); } catch(e){}
-      this._sharedCtx = ctx;
-    } else if (ctx.state === 'suspended') {
-      try { await ctx.resume(); } catch(e) {}
-    }
+    // iOS: create AudioContext immediately before any await
+    let ctx = null;
+    try { ctx = new (window.AudioContext||window.webkitAudioContext)(); if(ctx.state==='suspended') await ctx.resume(); } catch(e){}
     this._cgCtx = ctx;
 
     let audioUrl = null;
@@ -1011,9 +1003,10 @@ const VoiceEngine = {
       const resp = await fetch(audioUrl);
       const arrayBuf = await resp.arrayBuffer();
       if (this._stopToken !== myToken || this.speaking) return;
-      // Use shared AudioContext (unlocked on first user tap)
+      // Reuse AudioContext created at function start (iOS gesture preserved)
+      if (!ctx) { try { ctx = new (window.AudioContext||window.webkitAudioContext)(); } catch(e){} }
       if (!ctx) return;
-      if (ctx.state==='suspended') { try { await ctx.resume(); } catch(e) {} }
+      if (ctx.state==='suspended') await ctx.resume();
       this._cgCtx = ctx;
       const buf = await ctx.decodeAudioData(arrayBuf);
       if (this._stopToken !== myToken) { try{ctx.close()}catch(e){}; return; }
@@ -1252,19 +1245,13 @@ const VoiceEngine = {
     if (!text) return;
     const myToken = this._stopToken;
 
-    // iOS CRITICAL: reuse the shared AudioContext from unlockAudio() if available.
-    // Creating a new AudioContext after any await loses the iOS gesture context.
-    // _sharedCtx was created+unlocked synchronously on the first user tap.
-    let ctx = this._sharedCtx || null;
-    if (!ctx) {
-      try {
-        ctx = new (window.AudioContext || window.webkitAudioContext)();
-        if (ctx.state === 'suspended') await ctx.resume();
-      } catch(e) { ctx = null; }
-      this._sharedCtx = ctx;
-    } else if (ctx.state === 'suspended') {
-      try { await ctx.resume(); } catch(e) {}
-    }
+    // iOS CRITICAL: create + resume AudioContext IMMEDIATELY before any await
+    // iOS kills the user gesture context after the first async operation
+    let ctx = null;
+    try {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if (ctx.state === 'suspended') await ctx.resume();
+    } catch(e) { ctx = null; }
     this._yamaCtx = ctx;
 
     let audioUrl = null;
@@ -1298,9 +1285,12 @@ const VoiceEngine = {
       const blob = await resp.blob();
       const arrayBuf = await blob.arrayBuffer();
 
-      // Use shared AudioContext (unlocked on first user tap)
-      if (!ctx) { this._browserSpeak(text, lang); onAudioStart && onAudioStart(); return; }
-      if (ctx.state === 'suspended') { try { await ctx.resume(); } catch(e) {} }
+      // Reuse the AudioContext created at function start (iOS gesture preserved)
+      if (!ctx) {
+        try { ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+      }
+      if (!ctx) { this._browserSpeak(text, lang); return; }
+      if (ctx.state === 'suspended') await ctx.resume();
       this._yamaCtx = ctx;
 
       const buffer = await ctx.decodeAudioData(arrayBuf);
@@ -6778,7 +6768,7 @@ export default function MokshaPatam108(){
                 ⚡ Reconnecting{reconnectAttempts>0?` (${reconnectAttempts}/5)`:''}...
               </div>
             )}
-            <button onClick={()=>{VoiceEngine.unlockAudio();doRoll(false);}}
+            <button onClick={()=>doRoll(false)}
               disabled={!!dil||busy||(isOnline&&!isMyTurn)}
               className="gb gp"
               style={{width:"100%",padding:"clamp(10px,1.5vw,14px)",fontSize:"clamp(14px,2vw,16px)",letterSpacing:4,
