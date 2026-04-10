@@ -9,14 +9,11 @@ import MultiplayerLobby from "../../components/MultiplayerLobby";
 import { useMultiplayer } from "../../hooks/useMultiplayer";
 import { useTurnTimer }   from "../../hooks/useTurnTimer";
 // ═══ AUTH + DATABASE (Supabase) ═══
-// npm install @supabase/supabase-js
-// Set REACT_APP_SUPABASE_URL and REACT_APP_SUPABASE_ANON_KEY in Vercel env vars
-import { createClient } from '@supabase/supabase-js';
-const sbUrl = process.env.REACT_APP_SUPABASE_URL || '';
-const sbKey = process.env.REACT_APP_SUPABASE_ANON_KEY || '';
-const supabase = (sbUrl && sbKey) ? createClient(sbUrl, sbKey) : null;
-// Debug: log supabase status on load
-console.log("Supabase init:",supabase?"✓ Connected to "+sbUrl:"✗ NOT configured (missing env vars)");
+import { supabase } from '../../auth/supabaseClient';
+import { useAuth, GoogleIcon, AppleIcon, RASHI, getZodiac } from '../../shared/useAuth';
+import GameDB from '../../shared/useAuth';
+import { log, warn, error as logError } from '../../utils/logger';
+log("Supabase init:", supabase ? "connected" : "not configured");
 
 const SNAKES={16:{to:4,skt:"क्रोध",en:"WRATH",tale:"As Duryodhana's rage consumed the Kuru dynasty..."},23:{to:7,skt:"लोभ",en:"GREED",tale:"Like Shakuni who gambled away an empire..."},33:{to:12,skt:"मोह",en:"DELUSION",tale:"Dhritarashtra's blind love veiled all judgment..."},38:{to:21,skt:"मात्सर्य",en:"ENVY",tale:"Duryodhana burned with jealousy at Indraprastha..."},47:{to:29,skt:"काम",en:"DESIRE",tale:"Keechaka's lust brought his annihilation..."},56:{to:41,skt:"मद",en:"PRIDE",tale:"Ravana's arrogance toppled golden Lanka..."},62:{to:44,skt:"भय",en:"TERROR",tale:"Arjuna paralysed before the great war..."},74:{to:51,skt:"द्वेष",en:"HATRED",tale:"Drona and Drupada's hatred echoed ages..."},85:{to:59,skt:"आलस्य",en:"SLOTH",tale:"Kumbhakarna slept while dharma crumbled..."},95:{to:68,skt:"अहंकार",en:"EGO",tale:"Parashurama's ego challenged even Rama..."}};
 const LADDERS={3:{to:18,skt:"दया",en:"COMPASSION",tale:"Yudhishthira who wept for his enemies..."},9:{to:31,skt:"दान",en:"GENEROSITY",tale:"Karna gave his armour without hesitation..."},22:{to:42,skt:"सत्य",en:"TRUTH",tale:"Harishchandra sacrificed all for truth..."},28:{to:52,skt:"सेवा",en:"SERVICE",tale:"Hanuman whose devotion moved mountains..."},37:{to:58,skt:"तपस्",en:"AUSTERITY",tale:"Vishwamitra whose tapas shook Indra..."},44:{to:65,skt:"श्रद्धा",en:"FAITH",tale:"Shabari waited a lifetime for Rama..."},53:{to:72,skt:"विद्या",en:"WISDOM",tale:"Vidura whose counsel was dharma itself..."},61:{to:80,skt:"विवेक",en:"DISCERNMENT",tale:"Bhishma on his bed of arrows..."},71:{to:89,skt:"भक्ति",en:"DEVOTION",tale:"Prahlada whose devotion survived fire..."},82:{to:97,skt:"वैराग्य",en:"DETACHMENT",tale:"Siddhartha leaving the palace..."}};
@@ -649,29 +646,33 @@ const AudioCache = {
         const blob = new Blob([stored], { type: 'audio/mpeg' });
         const url  = URL.createObjectURL(blob);
         this.cache[key] = url;
-        console.log('[AudioCache] IndexedDB hit:', key.slice(0,40));
+        log('[AudioCache] IndexedDB hit:', key.slice(0,40));
         return url;
       }
 
       // 3. Fetch from OpenAI TTS (only on first use, then cached forever)
-      const isHi = lang === 'hi';
+      const hdrs = { 'Content-Type': 'application/json' };
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        console.log('[TTS-DEBUG] session:', !!session, 'token:', session?.access_token ? 'YES ('+session.access_token.slice(0,20)+'...)' : 'NO');
+        if (session?.access_token) hdrs['Authorization'] = `Bearer ${session.access_token}`;
+      } catch(e) { console.log('[TTS-DEBUG] getSession error:', e.message); }
+      console.log('[TTS-DEBUG] Calling /api/tts. textLen:', text.length, 'hasAuth:', !!hdrs['Authorization']);
       const resp = await fetch('/api/tts', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: hdrs,
         body: JSON.stringify({
-          text,
+          text: text.slice(0, 1000),
           voice: voiceOverride || 'ash',
-          instructions: instructionOverride || (isHi
-            ? 'You are an ancient Indian storyteller narrating in Hindi. Speak slowly, mysteriously, with deep emotion. Pause dramatically between sentences.'
-            : 'You are an ancient Indian sage narrating a sacred epic in English. Speak slowly, with deep gravitas and reverence. Pause dramatically between sentences.')
         }),
       });
+      console.log('[TTS-DEBUG] Response:', resp.status, resp.statusText);
       if (!resp.ok) throw new Error('TTS API failed: ' + resp.status);
 
       const arrayBuffer = await resp.arrayBuffer();
       // Store in IndexedDB — all future loads are free
       await this._dbSet(dbKey, arrayBuffer);
-      console.log('[AudioCache] Fetched & cached:', key.slice(0,40));
+      log('[AudioCache] Fetched & cached:', key.slice(0,40));
 
       const blob = new Blob([arrayBuffer], { type: 'audio/mpeg' });
       const url  = URL.createObjectURL(blob);
@@ -680,7 +681,7 @@ const AudioCache = {
       return url;
     })().catch(e => {
       delete this.loading[key];
-      console.warn('[AudioCache] fetchTTS failed:', e.message);
+      warn('[AudioCache] fetchTTS failed:', e.message);
       return null;
     });
 
@@ -1180,7 +1181,7 @@ const VoiceEngine = {
       source2.start(0);
       return; // Success!
     } catch(e) {
-      console.warn('Yama Web Audio failed:', e.message);
+      warn('Yama Web Audio failed:', e.message);
     }
 
     // Fallback: play static file without processing
@@ -1203,7 +1204,7 @@ const VoiceEngine = {
 
     const idx = type === 'reject' ? '' : '-' + (Math.floor(Math.random() * count) + 1);
     const file = `/yama-taunts/${prefix}-${isHi ? 'hi' : 'en'}${idx}.mp3`;
-    console.log('Yama taunt:', file);
+    log('Yama taunt:', file);
 
     try {
       const resp = await fetch(file);
@@ -1236,7 +1237,7 @@ const VoiceEngine = {
       source.onended = () => { this.speaking = false; if(ctx !== this._sharedCtx){try{ctx.close()}catch(e){}} this._yamaCtx=null; };
       source.start(0);
     } catch(e) {
-      console.warn('Yama taunt MP3 not found, falling back to TTS API:', e.message);
+      warn('Yama taunt MP3 not found, falling back to TTS API:', e.message);
       // Fallback: use TTS API if static files don't exist yet
       const taunts = type === 'snake' ? YAMA_TAUNTS_SNAKE : type === 'wrong' ? YAMA_TAUNTS_WRONG : ["Ha ha ha ha ha! Rejected! The gates of Moksha slam shut in your face!"];
       const text = taunts[Math.floor(Math.random() * taunts.length)];
@@ -1248,19 +1249,19 @@ const VoiceEngine = {
   // staticUrl: pre-generated /onboarding/story-N-lang.mp3 (zero API cost)
   // onAudioStart: fires the MOMENT audio begins playing (used for UI sync)
   async speakNarrator(text, lang, staticUrl, onAudioStart) {
+    console.log('[NARRATOR-DEBUG] speakNarrator called. textLen:', text?.length, 'lang:', lang, 'staticUrl:', staticUrl);
     this.stop();
-    if (!text) return;
+    if (!text) { console.log('[NARRATOR-DEBUG] ABORT: no text'); return; }
     const myToken = this._stopToken;
 
     // iOS CRITICAL: reuse the shared AudioContext from unlockAudio() if available.
-    // Creating a new AudioContext after any await loses the iOS gesture context.
-    // _sharedCtx was created+unlocked synchronously on the first user tap.
     let ctx = this._sharedCtx || null;
+    console.log('[NARRATOR-DEBUG] sharedCtx:', !!ctx, 'state:', ctx?.state);
     if (!ctx) {
       try {
         ctx = new (window.AudioContext || window.webkitAudioContext)();
         if (ctx.state === 'suspended') await ctx.resume();
-      } catch(e) { ctx = null; }
+      } catch(e) { ctx = null; console.log('[NARRATOR-DEBUG] AudioContext create failed:', e.message); }
       this._sharedCtx = ctx;
     } else if (ctx.state === 'suspended') {
       try { await ctx.resume(); } catch(e) {}
@@ -1273,25 +1274,28 @@ const VoiceEngine = {
     if (staticUrl) {
       try {
         const r = await fetch(staticUrl, { method: 'HEAD' });
-        if (r.ok) { audioUrl = staticUrl; console.log('[Voice] Static:', staticUrl); }
-      } catch(e) {}
+        if (r.ok) { audioUrl = staticUrl; console.log('[NARRATOR-DEBUG] Static file found:', staticUrl); }
+        else console.log('[NARRATOR-DEBUG] Static file 404:', staticUrl);
+      } catch(e) { console.log('[NARRATOR-DEBUG] Static fetch error:', e.message); }
     }
 
-    if (this._stopToken !== myToken) return;
+    if (this._stopToken !== myToken) { console.log('[NARRATOR-DEBUG] ABORT: stopToken changed after static check'); return; }
 
     // 2. IndexedDB / OpenAI API (fallback if static not deployed yet)
     if (!audioUrl) {
       const isLocal = ['localhost','127.0.0.1',''].includes(window.location.hostname);
+      console.log('[NARRATOR-DEBUG] No static. isLocal:', isLocal, 'hostname:', window.location.hostname);
       if (!isLocal) {
         audioUrl = AudioCache.get(text);
+        console.log('[NARRATOR-DEBUG] AudioCache.get:', !!audioUrl);
         if (!audioUrl) {
-          try { audioUrl = await AudioCache.fetchTTS(text, lang); } catch(e){}
+          try { audioUrl = await AudioCache.fetchTTS(text, lang); console.log('[NARRATOR-DEBUG] fetchTTS result:', !!audioUrl); } catch(e){ console.log('[NARRATOR-DEBUG] fetchTTS error:', e.message); }
         }
       }
     }
 
-    if (this._stopToken !== myToken) return;
-    if (!audioUrl) { this._browserSpeak(text, lang); onAudioStart && onAudioStart(); return; }
+    if (this._stopToken !== myToken) { console.log('[NARRATOR-DEBUG] ABORT: stopToken changed after TTS'); return; }
+    if (!audioUrl) { console.log('[NARRATOR-DEBUG] No audioUrl — falling back to browserSpeak'); this._browserSpeak(text, lang); onAudioStart && onAudioStart(); return; }
 
     try {
       const resp = await fetch(audioUrl);
@@ -1420,7 +1424,7 @@ const VoiceEngine = {
       osc3.start(0);
       return;
     } catch(e) {
-      console.warn('Narrator processing failed:', e.message);
+      warn('Narrator processing failed:', e.message);
     }
 
     // Fallback: play without effects
@@ -3903,7 +3907,7 @@ const CSS=`
 @keyframes grahaSettle3D{0%{transform:rotateX(338deg) rotateY(318deg)}25%{transform:rotateX(355deg) rotateY(348deg)}55%{transform:rotateX(363deg) rotateY(356deg)}78%{transform:rotateX(358deg) rotateY(362deg)}100%{transform:rotateX(360deg) rotateY(360deg)}}
 @keyframes grahaZoomIn{0%{opacity:0;transform:scale(0.15) translateY(80px)}35%{opacity:1;transform:scale(1.1) translateY(-12px)}65%{transform:scale(0.96) translateY(6px)}82%{transform:scale(1.03) translateY(-3px)}100%{opacity:1;transform:scale(1) translateY(0)}}
 @keyframes grahaNameIn{0%{opacity:0;transform:translateY(24px) scale(.88)}100%{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes pipAppear{0%{transform:scale(0) rotate(-45deg);opacity:0}55%{transform:scale(1.35) rotate(5deg)}100%{transform:scale(1) rotate(0deg);opacity:1}}
+@keyframes pipAppear{0%{transform:translate(-50%,-50%) scale(0) rotate(-45deg);opacity:0}55%{transform:translate(-50%,-50%) scale(1.35) rotate(5deg)}100%{transform:translate(-50%,-50%) scale(1) rotate(0deg);opacity:1}}
 @keyframes diceShake{0%{transform:rotate(-15deg) scale(1.1) translateY(-4px)}20%{transform:rotate(12deg) scale(1.15) translateY(-8px)}40%{transform:rotate(-18deg) scale(1.08) translateY(-5px)}60%{transform:rotate(14deg) scale(1.12) translateY(-7px)}80%{transform:rotate(-10deg) scale(1.1) translateY(-3px)}100%{transform:rotate(0deg) scale(1) translateY(0)}}
 @keyframes diceLand{0%{transform:scale(1.3) rotate(-5deg)}40%{transform:scale(.95) rotate(2deg)}70%{transform:scale(1.05) rotate(-1deg)}100%{transform:scale(1) rotate(0deg)}}
 @keyframes diceGlow{0%,100%{box-shadow:0 0 20px rgba(240,200,80,.2)}50%{box-shadow:0 0 50px rgba(240,200,80,.7),0 0 100px rgba(240,200,80,.3)}}
@@ -3948,262 +3952,13 @@ function useIsMobile(){
   return m;
 }
 
-// ═══ AUTH HOOK ═══
-function useAuth(){
-  const[user,setUser]=useState(null);
-  const[profile,setProfile]=useState(null);
-  const[loading,setLoading]=useState(true);
-  const loadProfile=async(uid)=>{
-    if(!sbUrl||!sbKey||!uid)return;
-    try{
-      console.log("Auth: Loading profile via REST for",uid);
-      const res=await fetch(`${sbUrl}/rest/v1/profiles?id=eq.${uid}&select=*`,{headers:{"apikey":sbKey,"Authorization":`Bearer ${sbKey}`}});
-      if(res.ok){
-        const data=await res.json();
-        if(data&&data.length>0){
-          setProfile(data[0]);
-          console.log("Auth: Profile loaded ✓",data[0].display_name);
-          // Sync birth_date from DB
-          if(data[0].birth_date){
-            localStorage.setItem("mp108_birth",data[0].birth_date);
-          }
-        }else{console.log("Auth: No profile found for",uid)}
-      }else{console.error("Auth: Profile load failed:",res.status)}
-    }catch(e){console.error("Auth: Profile load error:",e)}
-  };
-  useEffect(()=>{
-    if(!supabase){setLoading(false);return}
+// ═══ AUTH HOOK — imported from shared module ═══
+// useAuth is imported at top of file from shared/useAuth.js
 
-    let resolved=false;
-    const done=(u)=>{if(resolved)return;resolved=true;setLoading(false);if(u){setUser(u);loadProfile(u.id)}};
+// ═══ GAME DATABASE SERVICE — imported from shared module ═══
+// GameDB is imported at top of file from shared/useAuth.js
 
-    // Timeout: if nothing works in 3s, proceed without auth
-    const timeout=setTimeout(()=>{
-      if(!resolved){
-        console.warn("Auth: Timeout — trying to recover session from storage...");
-        // Try to recover user from supabase's localStorage
-        try{
-          const storageKey=Object.keys(localStorage).find(k=>k.includes("supabase")&&k.includes("auth"));
-          if(storageKey){
-            const stored=JSON.parse(localStorage.getItem(storageKey));
-            const u=stored?.user||stored?.currentSession?.user;
-            if(u&&u.id){
-              console.log("Auth: Recovered user from localStorage:",u.email);
-              done(u);
-              return;
-            }
-          }
-        }catch(e){}
-        console.warn("Auth: No session found, proceeding as guest");
-        done(null);
-      }
-    },3000);
-
-    // Primary: try getSession
-    supabase.auth.getSession()
-      .then(({data:{session}})=>{
-        clearTimeout(timeout);
-        console.log("Auth: getSession",session?"✓ found user":"— no session");
-        done(session?.user||null);
-      })
-      .catch(e=>{
-        clearTimeout(timeout);
-        console.error("Auth: getSession error:",e);
-        done(null);
-      });
-
-    // Also listen for auth changes (fires on OAuth redirect)
-    const{data:{subscription}}=supabase.auth.onAuthStateChange(async(event,session)=>{
-      console.log("Auth: onAuthStateChange",event,session?.user?.email||"no user");
-      clearTimeout(timeout);
-      if(session?.user){
-        setUser(session.user);
-        setLoading(false);
-        await loadProfile(session.user.id);
-      }else if(event==="SIGNED_OUT"){
-        setUser(null);setProfile(null);setLoading(false);
-      }
-    });
-
-    return()=>{clearTimeout(timeout);subscription.unsubscribe()};
-  },[]);
-  const signInGoogle=useCallback(async()=>{
-    if(!supabase){alert("Supabase not configured. Set REACT_APP_SUPABASE_URL and REACT_APP_SUPABASE_ANON_KEY in Vercel env vars.");return}
-    try{const{error}=await supabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.origin}});if(error){console.error("Google sign-in error:",error);alert("Google sign-in failed: "+error.message)}}catch(e){console.error("Sign-in error:",e);alert("Sign-in error: "+e.message)}
-  },[]);
-  const signOut=useCallback(async()=>{if(!supabase)return;await supabase.auth.signOut();setUser(null);setProfile(null)},[]);
-  const refresh=useCallback(async()=>{
-    if(!user)return;
-    console.log("Auth: Refreshing profile via REST...");
-    await loadProfile(user.id);
-  },[user]);
-  return{user,profile,signInGoogle,signOut,loading,refresh};
-}
-
-// ═══ GAME DATABASE SERVICE — Direct REST API (bypasses supabase-js client issues) ═══
-const GameDB={
-  // Direct fetch to Supabase REST API
-  async _fetch(path,method,body){
-    if(!sbUrl||!sbKey)return{data:null,error:{message:"No supabase config"}};
-    const url=`${sbUrl}/rest/v1/${path}`;
-    const headers={"Content-Type":"application/json","apikey":sbKey,"Authorization":`Bearer ${sbKey}`,"Prefer":method==="POST"?"return=minimal":"",};
-    try{
-      const res=await fetch(url,{method,headers,body:body?JSON.stringify(body):undefined});
-      if(!res.ok){const txt=await res.text();return{data:null,error:{message:`${res.status}: ${txt}`}}}
-      if(method==="GET"){const data=await res.json();return{data,error:null}}
-      return{data:true,error:null};
-    }catch(e){return{data:null,error:{message:e.message}}}
-  },
-  async _get(path){return this._fetch(path,"GET")},
-  async _post(path,body){return this._fetch(path,"POST",body)},
-  async _patch(path,body){
-    if(!sbUrl||!sbKey)return{data:null,error:{message:"No config"}};
-    const url=`${sbUrl}/rest/v1/${path}`;
-    try{
-      const res=await fetch(url,{method:"PATCH",headers:{"Content-Type":"application/json","apikey":sbKey,"Authorization":`Bearer ${sbKey}`,"Prefer":"return=minimal"},body:JSON.stringify(body)});
-      if(!res.ok){const txt=await res.text();return{data:null,error:{message:`${res.status}: ${txt}`}}}
-      return{data:true,error:null};
-    }catch(e){return{data:null,error:{message:e.message}}}
-  },
-
-  async saveGame(userId,d){
-    if(!sbUrl||!sbKey||!userId){console.log("GameDB: SKIP - no config or userId");return null}
-    console.log("GameDB: === SAVING via REST ===");
-
-    // Step 1: Insert game_history
-    try{
-      console.log("GameDB: Step 1 - Inserting game_history...");
-      const res=await this._post("game_history",{
-        user_id:userId,duration_seconds:d.duration||0,total_turns:d.turns||0,
-        character_name:d.charName||"Seeker",character_icon:d.charIcon||"🔱",
-        opponent_type:d.opponent||"yama",result:d.result||"quit",
-        final_square:d.square||1,final_punya:d.punya||0,final_papa:d.papa||0,
-        snakes_hit:d.snakes||0,ladders_climbed:d.ladders||0,dharma_cards_faced:0,
-        riddles_correct:d.riddlesC||0,riddles_wrong:d.riddlesW||0,
-        highest_square:d.highest||1,graha_effects:JSON.stringify({players:d.allPlayers||[],grahaHits:d.grahaHits||{}}),
-        ashtanga_reached:d.ashtanga||false,moksha_rejected:d.rejected||0
-      });
-      console.log("GameDB: Step 1",res.error?"ERROR: "+res.error.message:"✓ INSERTED");
-    }catch(e){console.error("GameDB: Step 1 FAILED:",e.message)}
-
-    // Step 2: Read current profile
-    let cur=null;
-    try{
-      console.log("GameDB: Step 2 - Reading profile...");
-      const res=await this._get(`profiles?id=eq.${userId}&select=*`);
-      if(res.data&&res.data.length>0){cur=res.data[0];console.log("GameDB: Step 2 ✓ Profile found")}
-      else{
-        console.log("GameDB: Step 2b - No profile, creating...");
-        await this._post("profiles",{id:userId,display_name:d.charName||"Seeker",email:"",provider:"google"});
-        const r2=await this._get(`profiles?id=eq.${userId}&select=*`);
-        cur=r2.data?.[0]||null;
-        console.log("GameDB: Step 2b",cur?"✓ Created":"FAILED");
-      }
-    }catch(e){console.error("GameDB: Step 2 FAILED:",e.message)}
-
-    // Step 3: Update profile
-    if(cur){
-      try{
-        console.log("GameDB: Step 3 - Updating profile...");
-        const isWin=d.result==="moksha_win"||d.result==="karma_win";
-        const res=await this._patch(`profiles?id=eq.${userId}`,{
-          total_games:(cur.total_games||0)+1,
-          total_wins:(cur.total_wins||0)+(isWin?1:0),
-          total_moksha_wins:(cur.total_moksha_wins||0)+(d.result==="moksha_win"?1:0),
-          total_karma_wins:(cur.total_karma_wins||0)+(d.result==="karma_win"?1:0),
-          total_punya_earned:(cur.total_punya_earned||0)+(d.punya||0),
-          total_papa_earned:(cur.total_papa_earned||0)+(d.papa||0),
-          highest_square_reached:Math.max(cur.highest_square_reached||1,d.highest||1),
-          total_snakes_hit:(cur.total_snakes_hit||0)+(d.snakes||0),
-          total_ladders_climbed:(cur.total_ladders_climbed||0)+(d.ladders||0),
-          total_riddles_correct:(cur.total_riddles_correct||0)+(d.riddlesC||0),
-          total_riddles_wrong:(cur.total_riddles_wrong||0)+(d.riddlesW||0),
-          favorite_character:d.charName||cur.favorite_character,
-          last_played_at:new Date().toISOString()
-        });
-        console.log("GameDB: Step 3",res.error?"ERROR: "+res.error.message:"✓ PROFILE UPDATED");
-      }catch(e){console.error("GameDB: Step 3 FAILED:",e.message)}
-    }else{console.error("GameDB: Step 3 SKIPPED - no profile")}
-
-    console.log("GameDB: === DONE ===");
-    return true;
-  },
-  async getHistory(userId,limit=20){
-    if(!sbUrl||!sbKey||!userId)return[];
-    try{
-      console.log("GameDB: Loading history for",userId);
-      const res=await this._get(`game_history?user_id=eq.${userId}&select=*&order=played_at.desc&limit=${limit}`);
-      console.log("GameDB: History loaded:",res.data?.length||0,"games",res.error?.message||"");
-      return res.data||[];
-    }catch(e){console.error("GameDB: History error:",e);return[]}
-  },
-  async getLeaderboard(limit=50){
-    if(!sbUrl||!sbKey)return[];
-    try{
-      console.log("GameDB: Loading leaderboard...");
-      const res=await this._get(`profiles?total_games=gt.0&select=id,display_name,avatar_url,total_games,total_wins,total_punya_earned,total_papa_earned,total_moksha_wins,total_karma_wins,total_riddles_correct,longest_streak,last_played_at&order=total_punya_earned.desc&limit=${limit}`);
-      console.log("GameDB: Leaderboard loaded:",res.data?.length||0,"players",res.error?.message||"");
-      return(res.data||[]).map(p=>({...p,karma_score:(p.total_punya_earned||0)-(p.total_papa_earned||0)}));
-    }catch(e){console.error("GameDB: Leaderboard error:",e);return[]}
-  },
-  // Read profile directly via REST (for refresh)
-  async getProfile(userId){
-    if(!sbUrl||!sbKey||!userId)return null;
-    try{
-      const res=await this._get(`profiles?id=eq.${userId}&select=*`);
-      return res.data?.[0]||null;
-    }catch(e){return null}
-  },
-};
-
-// ═══ GOOGLE SVG ICON ═══
-function GoogleIcon(){return <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>}
-function AppleIcon(){return <svg width="18" height="18" viewBox="0 0 24 24" fill="#e8c850"><path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>}
-
-// ═══ VEDIC ASTROLOGY — Rashi (Sun Sign) + Nakshatra data ═══
-const RASHI=[
-  {name:"Mesha",en:"Aries",skt:"मेष",icon:"♈",element:"Fire",planet:"Mars",dates:"Mar 21 – Apr 19",
-    meaning:"The ram who leaps fearlessly. In Vedic science, Mesha represents the spark of creation — pure kinetic energy. Like the first cell dividing, Aries energy is about initiation. Mars governs adrenal response and iron in blood.",
-    advice:"Channel your fire into dharmic action. Practice patience through Pranayama. Your Mars energy heals when directed at service, burns when directed at ego."},
-  {name:"Vrishabha",en:"Taurus",skt:"वृषभ",icon:"♉",element:"Earth",planet:"Venus",dates:"Apr 20 – May 20",
-    meaning:"The sacred bull — Nandi, Shiva's mount. Vrishabha represents material stability and sensory experience. Venus governs the throat chakra, taste, and aesthetic appreciation. Earth signs ground cosmic energy into form.",
-    advice:"Build lasting foundations but avoid attachment. Practice Aparigraha (non-possessiveness). Your Venus gifts shine in art, music, and creating beauty that serves others."},
-  {name:"Mithuna",en:"Gemini",skt:"मिथुन",icon:"♊",element:"Air",planet:"Mercury",dates:"May 21 – Jun 20",
-    meaning:"The divine twins — duality in unity. Mercury governs the neural pathways, the speed of thought, and the bridge between logic and intuition. Air carries prana — the breath of intelligence.",
-    advice:"Use your dual nature to see both sides of every dharma dilemma. Practice Dharana (concentration) to focus your scattered brilliance into a single flame."},
-  {name:"Karka",en:"Cancer",skt:"कर्क",icon:"♋",element:"Water",planet:"Moon",dates:"Jun 21 – Jul 22",
-    meaning:"The crab carries its home — the shell of emotional memory. The Moon governs tides, menstrual cycles, and the unconscious mind. Water signs process karma through feeling.",
-    advice:"Your emotional depth is a superpower, not a weakness. Practice Pratyahara (withdrawal of senses) during full moons. Nurture without drowning in attachment."},
-  {name:"Simha",en:"Leo",skt:"सिंह",icon:"♌",element:"Fire",planet:"Sun",dates:"Jul 23 – Aug 22",
-    meaning:"The lion — Narasimha, Vishnu's fierce avatar. The Sun is the Atman, the true self. Leo energy is the soul recognizing its own divinity. Solar plexus governs willpower and digestion.",
-    advice:"Lead with generosity, not pride. The Sun shines on all equally. Practice Seva (selfless service) — true kings serve their people."},
-  {name:"Kanya",en:"Virgo",skt:"कन्या",icon:"♍",element:"Earth",planet:"Mercury",dates:"Aug 23 – Sep 22",
-    meaning:"The maiden — Shakti in her analytical form. Mercury here governs discrimination (Viveka), the ability to separate truth from illusion. The digestive fire of the mind.",
-    advice:"Your precision is sacred but perfectionism is Maya. Practice Santosha (contentment). Serve through healing, teaching, and bringing order to chaos."},
-  {name:"Tula",en:"Libra",skt:"तुला",icon:"♎",element:"Air",planet:"Venus",dates:"Sep 23 – Oct 22",
-    meaning:"The scales of Ma'at — cosmic balance. Venus here governs justice, partnership, and the harmony of opposites. The heart chakra seeks equilibrium between giving and receiving.",
-    advice:"Your quest for balance IS your dharma. Practice Ahimsa in relationships. Make decisions from wisdom, not people-pleasing."},
-  {name:"Vrishchika",en:"Scorpio",skt:"वृश्चिक",icon:"♏",element:"Water",planet:"Mars",dates:"Oct 23 – Nov 21",
-    meaning:"The scorpion transforms into the eagle — death and rebirth. Mars here drives transformation at the cellular level. Kundalini energy coils at the base, waiting to rise.",
-    advice:"Embrace transformation — you are built for it. Practice Tapas (austerity) to transmute intensity into spiritual power. Your depth sees through all illusion."},
-  {name:"Dhanu",en:"Sagittarius",skt:"धनु",icon:"♐",element:"Fire",planet:"Jupiter",dates:"Nov 22 – Dec 21",
-    meaning:"The archer — Arjuna's focus on the fish's eye. Jupiter expands consciousness, governs the liver (seat of righteous anger in Ayurveda), and the quest for truth.",
-    advice:"Aim your arrow at Moksha, not just knowledge. Practice Svadhyaya (self-study). Travel expands you, but the ultimate journey is inward."},
-  {name:"Makara",en:"Capricorn",skt:"मकर",icon:"♑",element:"Earth",planet:"Saturn",dates:"Dec 22 – Jan 19",
-    meaning:"The sea-monster — ancient, patient, climbing from ocean depths to mountain peaks. Saturn teaches through time, discipline, and karma. Bones and teeth — the structures that endure.",
-    advice:"Your patience is your greatest asset. Shani rewards those who persist through darkness. Practice Niyama (discipline) — slow, steady karma yields the deepest liberation."},
-  {name:"Kumbha",en:"Aquarius",skt:"कुम्भ",icon:"♒",element:"Air",planet:"Saturn",dates:"Jan 20 – Feb 18",
-    meaning:"The water-bearer — pouring knowledge for humanity. Saturn here governs collective karma, the nervous system, and circulation. The Kumbh Mela is named for this sign.",
-    advice:"Your vision sees what others cannot. Practice community dharma. Your detachment is not coldness — it is the ability to love without chains."},
-  {name:"Meena",en:"Pisces",skt:"मीन",icon:"♓",element:"Water",planet:"Jupiter",dates:"Feb 19 – Mar 20",
-    meaning:"Two fish swimming in opposite directions — the soul between worlds. Jupiter here dissolves boundaries between self and cosmos. The final sign — closest to Moksha.",
-    advice:"You feel everything because you ARE everything. Practice Dhyana (meditation) — you are naturally close to the divine. Set boundaries to protect your gift of empathy."}
-];
-function getZodiac(month,day){
-  const dates=[[1,20,"♑"],[2,19,"♒"],[3,20,"♓"],[4,20,"♈"],[5,21,"♉"],[6,21,"♊"],[7,22,"♋"],[8,23,"♌"],[9,23,"♍"],[10,23,"♎"],[11,22,"♏"],[12,22,"♐"],[12,31,"♑"]];
-  for(let i=0;i<dates.length;i++){if(month<dates[i][0]||(month===dates[i][0]&&day<=dates[i][1]))return RASHI.find(r=>r.icon===dates[i][2])}
-  return RASHI[9]; // Capricorn default
-}
+// GoogleIcon, AppleIcon, RASHI, getZodiac imported from shared/useAuth.js
 
 // ── 3D Karma Die — real pip dots on a cube face ──────────────────────────
 // ── Karma die: real pip dots, 3D perspective tilt ──────────────────────────
@@ -4238,7 +3993,7 @@ function KarmaDie({value, rolling, landing, size=110}){
         borderRadius:s*.15,
         border:`${s*.025}px solid ${landing&&!rolling?'rgba(255,220,60,.85)':'rgba(200,160,50,.28)'}`,
         boxSizing:'border-box',
-        padding:s*.05,
+        padding:0,
         boxShadow:[
           `inset 0 0 ${s*.22}px rgba(0,0,0,.8)`,
           `inset 0 ${s*.08}px ${s*.12}px rgba(255,240,160,.07)`,
@@ -4256,8 +4011,10 @@ function KarmaDie({value, rolling, landing, size=110}){
         <div style={{position:'absolute',inset:0,
           background:'radial-gradient(ellipse at 22% 18%,rgba(255,255,255,.08),transparent 55%)',
           borderRadius:s*.15,pointerEvents:'none'}}/>
-        {/* Pips */}
-        {(layouts[value]||layouts[1]).map(([x,y],i)=>pip(x,y,i))}
+        {/* Pip container — fills content area inside border */}
+        <div style={{position:'absolute',inset:0,margin:s*.025}}>
+          {(layouts[value]||layouts[1]).map(([x,y],i)=>pip(x,y,i))}
+        </div>
       </div>
     </div>
   );
@@ -4339,11 +4096,11 @@ export default function MokshaPatam108(){
     setBirthDate(dateStr);
     setEditingBirth(false);
     localStorage.setItem("mp108_birth",dateStr);
-    // Save to Supabase via REST
-    if(auth.user&&sbUrl&&sbKey){
-      GameDB._patch(`profiles?id=eq.${auth.user.id}`,{birth_date:dateStr})
-        .then(r=>console.log("Birth date saved to DB:",r.error?"ERROR "+r.error.message:"✓"))
-        .catch(e=>console.error("Birth date save failed:",e));
+    // Save to Supabase
+    if(auth.user&&supabase){
+      supabase.from('profiles').update({birth_date:dateStr}).eq('id',auth.user.id)
+        .then(({error:err})=>log("Birth date saved to DB:",err?"ERROR "+err.message:"✓"))
+        .catch(e=>logError("Birth date save failed:",e));
     }
   };
   // Game tracking stats (reset each game)
@@ -4352,7 +4109,7 @@ export default function MokshaPatam108(){
   // Auto-load profile data when profile panel opens
   useEffect(()=>{
     if(!showProfile||!auth.user)return;
-    console.log("Profile: Auto-loading data...");
+    log("Profile: Auto-loading data...");
     // Refresh profile stats from DB
     auth.refresh();
     // Load history
@@ -4874,7 +4631,7 @@ export default function MokshaPatam108(){
             // Online: write state so opponents sync
             if(isOnline){
               const gs={cur:skipDharmaCheck||(!DLM_SQ.includes(p)&&!(p>100&&p<108))?nextCur:cur,pos:[...nPos].map((v,i)=>i===cur?p:v),punya:[...nPunya],papa:[...nPapa],shieldA:[...nShield],skipA:[...nSkip],win:null,dil:null,usedDharma};
-              submitTurn(gs,{moveType:"roll",diceVal:r,grahaIdx:gi}).catch(console.error);
+              submitTurn(gs,{moveType:"roll",diceVal:r,grahaIdx:gi}).catch(logError);
               lastAppliedSeqRef.current=(lastAppliedSeqRef.current??0)+1;
             }
             setBusy(false);
@@ -4894,7 +4651,7 @@ export default function MokshaPatam108(){
             showKarmaToast(pName,2,'papa','𓆙');play("snake");setTimeout(()=>play("yamaLaugh"),320);haptic('Heavy');
             showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} caught you! ${sn.tale} Dragged from ${o} to ${p}. +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`,staticKey:"snake_hit"},()=>{
               addCGEntry('snake',p,`${sn.skt} · ${o}→${p}`);
-              if(!muted){if(yamaTimerRef.current)clearTimeout(yamaTimerRef.current);yamaTimerRef.current=setTimeout(()=>{yamaTimerRef.current=null;VoiceEngine.playYamaTaunt("snake",chosenLang);},3500);}
+              if(!muted){if(yamaTimerRef.current)clearTimeout(yamaTimerRef.current);yamaTimerRef.current=setTimeout(()=>{yamaTimerRef.current=null;VoiceEngine.playYamaTaunt("snake",chosenLang);},1000);}
               setTimeout(()=>{if(!bgMuted)ambient.unduck();},7000);
               finishTurn(true);
             });
@@ -4995,16 +4752,32 @@ export default function MokshaPatam108(){
           // P4: both visible 550ms, then 'settled'
           setTimeout(()=>{
             setRollingPhase('settled');
-            // P5: Navagraha cinematic zoom after 1.9s
+            // P5: Navagraha cinematic zoom after 1.2s
             setTimeout(()=>{
               setRollingPhase('graha_zoom');
-              // P6: zoom shown 2.4s then proceed
+              // P6: zoom shown — user taps to proceed (auto-advance after 5s)
+              // Voice narration starts on zoom page
+              if(!muted&&grahaStory){
+                const lang=chosenLang==='hi'?'hi':'en';
+                const sk=GRAHA_STATIC_KEY[g.fx];
+                const sv=sk&&STATIC_VOICES[sk]&&STATIC_VOICES[sk][lang];
+                if(sv)VoiceEngine.speakNarrator(grahaStory,chosenLang,sv);
+                else VoiceEngine.speakNarrator(grahaStory,chosenLang,null);
+              }
+              // Auto-advance after 8s if user doesn't tap
               setTimeout(()=>{
-                setDiceReveal(null);setRollingPhase(null);
-                if(onSacredPath){if(!bgMuted)ambient.unduck();startMovement()}
-                else{showEvent({icon:g.icon,title:`${g.n} · ${g.en}`,subtitle:grahaStory,color:g.color,type:"graha",staticKey:GRAHA_STATIC_KEY[g.fx]},startMovement)}
-              },2400);
-            },1900);
+                // Only auto-advance if still on graha_zoom (user might have tapped already)
+                setRollingPhase(prev=>{
+                  if(prev==='graha_zoom'){
+                    setDiceReveal(null);
+                    if(!bgMuted)ambient.unduck();
+                    startMovement();
+                    return null;
+                  }
+                  return prev;
+                });
+              },8000);
+            },1200);
           },550);
         },650);
       }
@@ -5061,7 +4834,7 @@ export default function MokshaPatam108(){
       if(isOnline){
         const newStateA={cur:nextCurA,pos:[...npos],punya:[...np],papa:[...npa],
           shieldA:[...nsh],skipA:[...nsk],win:np[dil.pi]>=30?dil.pi:null,dil:null,usedDharma};
-        submitTurn(newStateA,{moveType:'dilemma_pick',dilemmaPick:ci}).catch(console.error);
+        submitTurn(newStateA,{moveType:'dilemma_pick',dilemmaPick:ci}).catch(logError);
         lastAppliedSeqRef.current=(lastAppliedSeqRef.current??0)+1;
       }
       return;
@@ -5088,7 +4861,7 @@ export default function MokshaPatam108(){
     if(isOnline){
       const newState={cur:nextCurD,pos:[...npos],punya:[...np],papa:[...npa],
         shieldA:[...nsh],skipA:[...nsk],win:np[dil.pi]>=30?dil.pi:null,dil:null,usedDharma};
-      submitTurn(newState,{moveType:'dilemma_pick',dilemmaPick:ci}).catch(console.error);
+      submitTurn(newState,{moveType:'dilemma_pick',dilemmaPick:ci}).catch(logError);
       lastAppliedSeqRef.current=(lastAppliedSeqRef.current??0)+1;
     }
   };
@@ -5096,10 +4869,10 @@ export default function MokshaPatam108(){
   // ═══ AUTO-SAVE GAME ON WIN ═══
   useEffect(()=>{
     if(win===null)return;
-    if(!auth.user){console.log("Auto-save: No auth user, skipping");return}
-    if(!players[win]){console.log("Auto-save: No player at win index",win);return}
+    if(!auth.user){log("Auto-save: No auth user, skipping");return}
+    if(!players[win]){log("Auto-save: No player at win index",win);return}
     const timer=setTimeout(()=>{
-      console.log("Auto-save: TRIGGERED for player",win,"punya:",punya[win],"papa:",papa[win],"pos:",pos[win]);
+      log("Auto-save: TRIGGERED for player",win,"punya:",punya[win],"papa:",papa[win],"pos:",pos[win]);
       const gs=gameStats.current;
       const p=punya[win]||0;
       const pa=papa[win]||0;
@@ -5134,9 +4907,9 @@ export default function MokshaPatam108(){
         allPlayers:allPlayers,
         grahaHits:gs.grahaHits||{}
       }).then(()=>{
-        console.log("Auto-save: ✓ Complete! Refreshing profile...");
+        log("Auto-save: ✓ Complete! Refreshing profile...");
         auth.refresh();
-      }).catch(e=>console.error("Auto-save: FAILED",e));
+      }).catch(e=>logError("Auto-save: FAILED",e));
     },500);
     return()=>clearTimeout(timer);
   },[win]);
@@ -5190,7 +4963,8 @@ export default function MokshaPatam108(){
 
   // ═══ DHARMA VOICE — read aloud when card appears (skip CPU) ═══
   useEffect(()=>{
-    if(!dil||muted||players[dil.pi]?.cpu)return;
+    console.log('[DHARMA-DEBUG] useEffect fired. dil:', !!dil, 'muted:', muted, 'cpu:', dil?players[dil.pi]?.cpu:'n/a');
+    if(!dil||muted||players[dil.pi]?.cpu){console.log('[DHARMA-DEBUG] SKIPPED — dil:',!!dil,'muted:',muted);return}
     // Stop any lingering audio first, then duck ambient, then speak with delay
     VoiceEngine.stop();
     try{window.speechSynthesis.cancel()}catch(e){}
@@ -5199,10 +4973,11 @@ export default function MokshaPatam108(){
       const voiceText=dil.ashtanga
         ?`Riddle of ${dil.en}. ${dil.txt}. Option one: ${dil.c[0].l}. Option two: ${dil.c[1].l}.`
         :`Dharma Dilemma. ${dil.en}. ${dil.txt}. Your choices are: ${dil.c.map((c,i)=>c.l).join('. Or. ')}`;
+      console.log('[DHARMA-DEBUG] Calling speakNarrator. textLen:', voiceText.length, 'lang:', chosenLang);
       VoiceEngine.speakNarrator(voiceText,chosenLang,null);
     },500);
     // Only clear timer on cleanup, DON'T stop voice - let it finish naturally after card closes
-    return()=>{clearTimeout(timer)};
+    return()=>{console.log('[DHARMA-DEBUG] cleanup — clearing timer');clearTimeout(timer)};
   },[dil,muted]);
 
   const board=useMemo(()=>{const s=[];for(let r=0;r<10;r++)for(let c=0;c<10;c++){const a=9-r;s.push({num:a*10+(a%2===0?c:9-c)+1})}return s},[]);
@@ -6244,88 +6019,99 @@ export default function MokshaPatam108(){
           }}
           style={{position:"fixed",inset:0,zIndex:185,cursor:"pointer",
             display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
-            background:"rgba(3,2,1,.86)",backdropFilter:"blur(9px)",WebkitBackdropFilter:"blur(9px)",
+            background:"radial-gradient(ellipse at 50% 38%,rgba(30,25,15,.92),rgba(3,2,1,.96))",
+            backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",
             animation:"fadeIn .22s ease",
           }}>
 
-          {/* Player name */}
-          <div style={{display:"flex",alignItems:"center",gap:9,marginBottom:20,opacity:.88}}>
-            <span style={{fontSize:21}}>{diceReveal.icon}</span>
-            <span style={{fontFamily:"'Cinzel',serif",fontSize:11,color:diceReveal.color,
-              letterSpacing:5,fontWeight:700}}>{diceReveal.name.split(" ")[0].toUpperCase()}</span>
+          {/* Ambient glow behind dice */}
+          <div style={{position:"absolute",width:isMobile?260:340,height:isMobile?260:340,
+            borderRadius:"50%",pointerEvents:"none",
+            background:`radial-gradient(circle,${diceReveal.g.color}08 0%,transparent 70%)`,
+            opacity:rollingPhase==='settled'?1:0,transition:"opacity 1s ease",
+          }}/>
+
+          {/* Player name + character */}
+          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:isMobile?28:36,
+            animation:"grahaNameIn .4s ease both",
+          }}>
+            <span style={{fontSize:isMobile?26:32}}>{diceReveal.icon}</span>
+            <span style={{fontFamily:"'Cinzel',serif",fontSize:isMobile?14:16,color:diceReveal.color,
+              letterSpacing:isMobile?4:6,fontWeight:700}}>{diceReveal.name.split(" ")[0].toUpperCase()}</span>
           </div>
 
           {/* Two dice row */}
-          <div style={{display:"flex",gap:isMobile?20:36,alignItems:"center",marginBottom:20}}>
+          <div style={{display:"flex",gap:isMobile?24:44,alignItems:"center",marginBottom:isMobile?24:32}}>
 
             {/* KARMA DIE */}
             <div style={{textAlign:"center"}}>
-              <div style={{fontSize:7,letterSpacing:6,color:"rgba(240,200,80,.32)",
-                marginBottom:9,fontFamily:"'Cinzel',serif",fontWeight:700,textTransform:"uppercase"}}>Karma</div>
+              <div style={{fontSize:isMobile?9:11,letterSpacing:isMobile?4:6,color:"rgba(240,200,80,.35)",
+                marginBottom:isMobile?10:12,fontFamily:"'Cinzel',serif",fontWeight:700,textTransform:"uppercase"}}>Karma</div>
               <KarmaDie
                 value={rollingPhase==='rolling'?(displayKarma||1):diceReveal.r}
                 rolling={rollingPhase==='rolling'}
                 landing={rollingPhase==='landing_karma'||rollingPhase==='settled'}
-                size={isMobile?86:114}
+                size={isMobile?96:124}
               />
-              <div style={{marginTop:10,height:22,
+              <div style={{marginTop:isMobile?12:14,height:28,
                 opacity:rollingPhase==='settled'?1:0,
                 transition:"opacity .7s .25s ease",
-                fontFamily:"'Cinzel Decorative',serif",
-                fontSize:isMobile?16:19,color:"#f0d050",fontWeight:900,letterSpacing:2,
+                fontFamily:"'Cinzel',serif",
+                fontSize:isMobile?20:24,color:"#f0d050",fontWeight:900,letterSpacing:2,
               }}>+{diceReveal.r}</div>
             </div>
 
             {/* Divider */}
-            <div style={{opacity:.13,display:"flex",flexDirection:"column",alignItems:"center",
-              gap:5,paddingTop:12}}>
-              <div style={{width:1,height:22,background:"linear-gradient(transparent,rgba(240,200,80,.8),transparent)"}}/>
-              <span style={{fontSize:11,color:"#c0b080",fontFamily:"serif",opacity:.7}}>✦</span>
-              <div style={{width:1,height:22,background:"linear-gradient(transparent,rgba(240,200,80,.8),transparent)"}}/>
+            <div style={{opacity:.15,display:"flex",flexDirection:"column",alignItems:"center",
+              gap:6,paddingTop:14}}>
+              <div style={{width:1,height:isMobile?26:34,background:"linear-gradient(transparent,rgba(240,200,80,.8),transparent)"}}/>
+              <span style={{fontSize:13,color:"#c0b080",fontFamily:"serif",opacity:.7}}>✦</span>
+              <div style={{width:1,height:isMobile?26:34,background:"linear-gradient(transparent,rgba(240,200,80,.8),transparent)"}}/>
             </div>
 
             {/* GRAHA 3D CUBE */}
             <div style={{textAlign:"center"}}>
-              <div style={{fontSize:7,letterSpacing:6,color:"rgba(200,160,60,.32)",
-                marginBottom:9,fontFamily:"'Cinzel',serif",fontWeight:700,textTransform:"uppercase"}}>Navagraha</div>
+              <div style={{fontSize:isMobile?9:11,letterSpacing:isMobile?4:6,color:"rgba(200,160,60,.35)",
+                marginBottom:isMobile?10:12,fontFamily:"'Cinzel',serif",fontWeight:700,textTransform:"uppercase"}}>Navagraha</div>
               <GrahaCube3D
                 grahaIcon={rollingPhase==='rolling'?(displayGraha||'✦'):diceReveal.g.icon}
                 grahaColor={diceReveal.g.color}
                 rolling={rollingPhase==='rolling'}
                 settling={rollingPhase==='landing_graha'}
-                size={isMobile?86:114}
+                size={isMobile?96:124}
               />
-              <div style={{marginTop:10,height:22,
+              <div style={{marginTop:isMobile?12:14,height:28,
                 opacity:rollingPhase==='settled'?1:0,
                 transition:"opacity .7s .5s ease",
-                fontFamily:"'Cinzel',serif",
-                fontSize:11,color:diceReveal.g.color,fontWeight:700,letterSpacing:2,
+                fontFamily:"'Yatra One',serif",
+                fontSize:isMobile?16:20,color:diceReveal.g.color,fontWeight:700,letterSpacing:3,
               }}>{diceReveal.g.n}</div>
             </div>
           </div>
 
           {/* Effect card — fades in when settled */}
           <div style={{
-            maxWidth:268,textAlign:"center",padding:"11px 18px",borderRadius:11,
-            background:`${diceReveal.g.color}10`,border:`1px solid ${diceReveal.g.color}28`,
+            maxWidth:isMobile?310:400,textAlign:"center",padding:isMobile?"14px 20px":"18px 26px",borderRadius:13,
+            background:`${diceReveal.g.color}0c`,border:`1px solid ${diceReveal.g.color}25`,
             opacity:rollingPhase==='settled'?1:0,
             transform:rollingPhase==='settled'?"translateY(0)":"translateY(20px)",
             transition:"opacity .55s .75s ease, transform .55s .75s ease",
           }}>
-            <div style={{fontSize:10,color:diceReveal.g.color,fontWeight:700,
-              letterSpacing:2,fontFamily:"'Cinzel',serif",marginBottom:4}}>
+            <div style={{fontSize:isMobile?13:15,color:diceReveal.g.color,fontWeight:700,
+              letterSpacing:3,fontFamily:"'Cinzel',serif",marginBottom:6}}>
               {diceReveal.g.en.split("—")[0].trim()}
             </div>
-            <div style={{fontSize:9,color:"rgba(200,175,140,.5)",lineHeight:1.8,fontStyle:"italic"}}>
-              {diceReveal.g.desc.slice(0,90)}…
+            <div style={{fontSize:isMobile?12:14,color:"rgba(225,205,165,.58)",lineHeight:1.85,
+              fontFamily:"'Noto Serif Devanagari',serif"}}>
+              {diceReveal.g.desc.slice(0,120)}…
             </div>
           </div>
 
           {/* Skip hint */}
-          <div style={{position:"absolute",bottom:22,
-            fontSize:8,color:"rgba(200,160,60,.2)",letterSpacing:5,fontFamily:"'Cinzel',serif",
-            opacity:rollingPhase==='settled'?1:0,transition:"opacity .4s 1.4s ease",
-          }}>TAP TO SKIP ▸</div>
+          <div style={{position:"absolute",bottom:isMobile?22:30,
+            fontSize:isMobile?9:10,color:"rgba(200,160,60,.25)",letterSpacing:6,fontFamily:"'Cinzel',serif",
+            opacity:rollingPhase==='settled'?1:0,transition:"opacity .4s 1.2s ease",
+          }}>TAP TO CONTINUE</div>
         </div>
       )}
 
@@ -6333,11 +6119,11 @@ export default function MokshaPatam108(){
       {diceReveal&&rollingPhase==='graha_zoom'&&(
         <div
           onClick={()=>{
-            VoiceEngine.unlockAudio(); // iOS: must unlock before any async audio
+            VoiceEngine.stop();
             const sm=startMovementRef.current;
             setDiceReveal(null);setRollingPhase(null);
-            if(!diceReveal.sacredPath){showEvent({icon:diceReveal.g.icon,title:`${diceReveal.g.n} · ${diceReveal.g.en}`,subtitle:diceReveal.grahaStory||"",color:diceReveal.g.color,type:"graha",staticKey:GRAHA_STATIC_KEY[diceReveal.g.fx]},sm)}
-            else{if(!bgMuted)ambient.unduck();if(sm)sm();}
+            if(!bgMuted)ambient.unduck();
+            if(sm)sm();
           }}
           style={{position:"fixed",inset:0,zIndex:186,cursor:"pointer",
             display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
@@ -6359,60 +6145,74 @@ export default function MokshaPatam108(){
             border:`1px solid ${diceReveal.g.color}06`,
             animation:"grahaOrbit 3.5s linear infinite",pointerEvents:"none"}}/>
 
+          {/* Navagraha label */}
+          <div style={{
+            fontSize:isMobile?10:12,color:`${diceReveal.g.color}55`,
+            letterSpacing:isMobile?6:10,fontFamily:"'Cinzel',serif",
+            textTransform:"uppercase",marginBottom:isMobile?10:16,
+            animation:"grahaNameIn .5s ease .1s both",
+          }}>Navagraha</div>
+
           {/* Giant planet */}
           <div style={{
-            fontSize:isMobile?108:140,lineHeight:1,marginBottom:18,
+            fontSize:isMobile?120:160,lineHeight:1,marginBottom:isMobile?12:20,
             animation:"grahaZoomIn 0.8s cubic-bezier(0.34,1.52,0.64,1) forwards",
-            filter:`drop-shadow(0 0 32px ${diceReveal.g.color}) drop-shadow(0 0 90px ${diceReveal.g.color}50)`,
+            filter:`drop-shadow(0 0 40px ${diceReveal.g.color}) drop-shadow(0 0 100px ${diceReveal.g.color}50)`,
           }}>{diceReveal.g.icon}</div>
 
           {/* Sanskrit name */}
           <div style={{
             fontFamily:"'Yatra One',serif",
-            fontSize:isMobile?"clamp(30px,7.5vw,38px)":"clamp(38px,4.5vw,58px)",
-            color:diceReveal.g.color,letterSpacing:5,textAlign:"center",marginBottom:5,
+            fontSize:isMobile?"clamp(36px,9vw,48px)":"clamp(44px,5vw,66px)",
+            color:diceReveal.g.color,letterSpacing:6,textAlign:"center",marginBottom:6,
             animation:"grahaNameIn .65s ease .22s both",
-            textShadow:`0 0 50px ${diceReveal.g.color}90`,
+            textShadow:`0 0 60px ${diceReveal.g.color}90`,
           }}>{diceReveal.g.n}</div>
 
           {/* English name */}
-          <div style={{fontSize:isMobile?12:14,color:"rgba(255,255,255,.38)",
-            letterSpacing:4,fontFamily:"'Cinzel',serif",marginBottom:26,
+          <div style={{fontSize:isMobile?14:17,color:"rgba(255,255,255,.45)",
+            letterSpacing:isMobile?4:6,fontFamily:"'Cinzel',serif",marginBottom:isMobile?20:30,
             animation:"grahaNameIn .55s ease .38s both",
-          }}>{diceReveal.g.en.split("—")[0].trim()}</div>
+          }}>{diceReveal.g.en}</div>
 
-          {/* Effect description */}
+          {/* Graha story — personalized effect description */}
           <div style={{
-            maxWidth:isMobile?300:430,padding:"15px 22px",
+            maxWidth:isMobile?320:480,padding:isMobile?"16px 20px":"20px 28px",
             background:`${diceReveal.g.color}0e`,
             border:`1px solid ${diceReveal.g.color}32`,
-            borderRadius:13,textAlign:"center",
+            borderRadius:14,textAlign:"center",
             animation:"grahaNameIn .6s ease .52s both",
           }}>
-            <div style={{fontSize:isMobile?12:14,color:"rgba(225,205,165,.82)",
-              lineHeight:1.88,fontStyle:"italic"}}>
-              {diceReveal.g.desc.slice(0,140)}…
+            <div style={{fontSize:isMobile?14:16,color:"rgba(225,205,165,.88)",
+              lineHeight:1.9,fontFamily:"'Noto Serif Devanagari',serif"}}>
+              {diceReveal.grahaStory||diceReveal.g.desc}
             </div>
           </div>
 
           {/* Karma roll result */}
-          <div style={{display:"flex",alignItems:"center",gap:16,marginTop:22,
+          <div style={{display:"flex",alignItems:"center",gap:18,marginTop:isMobile?20:28,
             animation:"grahaNameIn .5s ease .68s both",
           }}>
-            <span style={{fontFamily:"'Noto Serif Devanagari',serif",fontSize:44,
+            <span style={{fontFamily:"'Noto Serif Devanagari',serif",fontSize:isMobile?48:56,
               color:"#f0d050",fontWeight:900,lineHeight:1,
-              filter:"drop-shadow(0 0 18px rgba(240,200,80,.75))"}}>
+              filter:"drop-shadow(0 0 22px rgba(240,200,80,.75))"}}>
               {['','⚀','⚁','⚂','⚃','⚄','⚅'][diceReveal.r]}
             </span>
-            <span style={{fontSize:12,color:"rgba(240,200,80,.42)",
-              fontFamily:"'Cinzel',serif",letterSpacing:3}}>
-              {diceReveal.r} step{diceReveal.r!==1?'s':''}
-            </span>
+            <div style={{display:"flex",flexDirection:"column",gap:2}}>
+              <span style={{fontSize:isMobile?20:24,color:"#f0d050",
+                fontFamily:"'Cinzel',serif",fontWeight:700}}>
+                +{diceReveal.r}
+              </span>
+              <span style={{fontSize:isMobile?10:12,color:"rgba(240,200,80,.40)",
+                fontFamily:"'Cinzel',serif",letterSpacing:3}}>
+                STEP{diceReveal.r!==1?'S':''}
+              </span>
+            </div>
           </div>
 
-          <div style={{position:"absolute",bottom:28,
-            fontSize:8,color:"rgba(200,160,60,.22)",letterSpacing:6,fontFamily:"'Cinzel',serif",
-            animation:"grahaNameIn .4s ease 1.6s both",
+          <div style={{position:"absolute",bottom:isMobile?24:32,
+            fontSize:isMobile?9:10,color:"rgba(200,160,60,.28)",letterSpacing:6,fontFamily:"'Cinzel',serif",
+            animation:"grahaNameIn .4s ease 1.2s both",
           }}>TAP TO CONTINUE</div>
         </div>
       )}

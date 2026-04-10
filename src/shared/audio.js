@@ -3,6 +3,8 @@
 // AudioCache (IndexedDB TTS cache), VoiceEngine (Chitragupta, Yama, Narrator),
 // STATIC_VOICES, GRAHA_STATIC_KEY, CG_LINES, CG_STATIC, CG_ENTRY_TYPES
 // ─────────────────────────────────────────────────────────────────────────────
+import { supabase } from '../auth/supabaseClient';
+import { log, warn } from '../utils/logger';
 
 export const AudioCache = {
   cache: {},    // in-memory session cache: key → blob URL
@@ -63,21 +65,22 @@ export const AudioCache = {
         const blob = new Blob([stored], { type: 'audio/mpeg' });
         const url  = URL.createObjectURL(blob);
         this.cache[key] = url;
-        console.log('[AudioCache] IndexedDB hit:', key.slice(0,40));
+        log('[AudioCache] IndexedDB hit:', key.slice(0,40));
         return url;
       }
 
       // 3. Fetch from OpenAI TTS (only on first use, then cached forever)
-      const isHi = lang === 'hi';
+      const hdrs = { 'Content-Type': 'application/json' };
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.access_token) hdrs['Authorization'] = `Bearer ${session.access_token}`;
+      } catch(e) {}
       const resp = await fetch('/api/tts', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: hdrs,
         body: JSON.stringify({
-          text,
+          text: text.slice(0, 1000),
           voice: voiceOverride || 'ash',
-          instructions: instructionOverride || (isHi
-            ? 'You are an ancient Indian storyteller narrating in Hindi. Speak slowly, mysteriously, with deep emotion. Pause dramatically between sentences.'
-            : 'You are an ancient Indian sage narrating a sacred epic in English. Speak slowly, with deep gravitas and reverence. Pause dramatically between sentences.')
         }),
       });
       if (!resp.ok) throw new Error('TTS API failed: ' + resp.status);
@@ -85,7 +88,7 @@ export const AudioCache = {
       const arrayBuffer = await resp.arrayBuffer();
       // Store in IndexedDB — all future loads are free
       await this._dbSet(dbKey, arrayBuffer);
-      console.log('[AudioCache] Fetched & cached:', key.slice(0,40));
+      log('[AudioCache] Fetched & cached:', key.slice(0,40));
 
       const blob = new Blob([arrayBuffer], { type: 'audio/mpeg' });
       const url  = URL.createObjectURL(blob);
@@ -94,7 +97,7 @@ export const AudioCache = {
       return url;
     })().catch(e => {
       delete this.loading[key];
-      console.warn('[AudioCache] fetchTTS failed:', e.message);
+      warn('[AudioCache] fetchTTS failed:', e.message);
       return null;
     });
 
@@ -554,7 +557,7 @@ export const VoiceEngine = {
       source2.start(0);
       return; // Success!
     } catch(e) {
-      console.warn('Yama Web Audio failed:', e.message);
+      warn('Yama Web Audio failed:', e.message);
     }
 
     // Fallback: play static file without processing
@@ -577,7 +580,7 @@ export const VoiceEngine = {
 
     const idx = type === 'reject' ? '' : '-' + (Math.floor(Math.random() * count) + 1);
     const file = `/yama-taunts/${prefix}-${isHi ? 'hi' : 'en'}${idx}.mp3`;
-    console.log('Yama taunt:', file);
+    log('Yama taunt:', file);
 
     try {
       const resp = await fetch(file);
@@ -610,7 +613,7 @@ export const VoiceEngine = {
       source.onended = () => { this.speaking = false; try{ctx.close()}catch(e){} this._yamaCtx=null; };
       source.start(0);
     } catch(e) {
-      console.warn('Yama taunt MP3 not found, falling back to TTS API:', e.message);
+      warn('Yama taunt MP3 not found, falling back to TTS API:', e.message);
       // Fallback: use TTS API if static files don't exist yet
       const taunts = type === 'snake' ? YAMA_TAUNTS_SNAKE : type === 'wrong' ? YAMA_TAUNTS_WRONG : ["Ha ha ha ha ha! Rejected! The gates of Moksha slam shut in your face!"];
       const text = taunts[Math.floor(Math.random() * taunts.length)];
@@ -778,7 +781,7 @@ export const VoiceEngine = {
       osc3.start(0);
       return;
     } catch(e) {
-      console.warn('Narrator processing failed:', e.message);
+      warn('Narrator processing failed:', e.message);
     }
 
     // Fallback: play without effects

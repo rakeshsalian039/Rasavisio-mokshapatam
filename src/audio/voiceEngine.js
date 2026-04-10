@@ -15,6 +15,20 @@
 
 /* ═══ VOICEOVER — Puter.js Neural AI → Browser Fallback ═══ */
 /* ═══ AUDIO CACHE — Preloads all narration, plays instantly ═══ */
+import { supabase } from '../auth/supabaseClient';
+
+async function getAuthHeaders() {
+  const headers = { 'Content-Type': 'application/json' };
+  if (!supabase) return headers;
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.access_token) {
+      headers['Authorization'] = `Bearer ${session.access_token}`;
+    }
+  } catch (e) { /* guest user — TTS will fall back to browser speech */ }
+  return headers;
+}
+
 export const AudioCache = {
   cache: {},
   loading: {},
@@ -26,26 +40,23 @@ export const AudioCache = {
     if (this.cache[key]) return this.cache[key];
     if (this.loading[key]) return this.loading[key];
 
-    const isHi = lang === 'hi';
-    const promise = fetch('/api/tts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        text,
-        voice: voiceOverride || 'ash',
-        instructions: instructionOverride || (isHi
-          ? 'You are an ancient Indian storyteller narrating in Hindi. Speak slowly, mysteriously, with deep emotion. Pause dramatically between sentences.'
-          : 'You are an ancient Indian sage narrating a sacred epic in English. Speak slowly, with deep gravitas and reverence. Pause dramatically between sentences.')
-      }),
-    }).then(r => {
+    const promise = (async () => {
+      const headers = await getAuthHeaders();
+      const r = await fetch('/api/tts', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          text: text.slice(0, 1000),
+          voice: voiceOverride || 'ash',
+        }),
+      });
       if (!r.ok) throw new Error('TTS failed');
-      return r.blob();
-    }).then(blob => {
+      const blob = await r.blob();
       const url = URL.createObjectURL(blob);
       this.cache[key] = url;
       delete this.loading[key];
       return url;
-    }).catch(e => {
+    })().catch(e => {
       delete this.loading[key];
       return null;
     });

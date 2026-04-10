@@ -3,78 +3,59 @@
 // Supabase authentication hook + Google/Apple icons + Zodiac/Rashi helpers
 // ─────────────────────────────────────────────────────────────────────────────
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '../auth/supabaseClient';
+import { log, warn, error as logError } from '../utils/logger';
 
-const sbUrl = process.env.REACT_APP_SUPABASE_URL || '';
-const sbKey = process.env.REACT_APP_SUPABASE_ANON_KEY || '';
-export const supabase = (sbUrl && sbKey) ? createClient(sbUrl, sbKey) : null;
+export { supabase };
 
 export function useAuth(){
   const[user,setUser]=useState(null);
   const[profile,setProfile]=useState(null);
   const[loading,setLoading]=useState(true);
+
   const loadProfile=async(uid)=>{
-    if(!sbUrl||!sbKey||!uid)return;
+    if(!supabase||!uid)return;
     try{
-      console.log("Auth: Loading profile via REST for",uid);
-      const res=await fetch(`${sbUrl}/rest/v1/profiles?id=eq.${uid}&select=*`,{headers:{"apikey":sbKey,"Authorization":`Bearer ${sbKey}`}});
-      if(res.ok){
-        const data=await res.json();
-        if(data&&data.length>0){
-          setProfile(data[0]);
-          console.log("Auth: Profile loaded ✓",data[0].display_name);
-          // Sync birth_date from DB
-          if(data[0].birth_date){
-            localStorage.setItem("mp108_birth",data[0].birth_date);
-          }
-        }else{console.log("Auth: No profile found for",uid)}
-      }else{console.error("Auth: Profile load failed:",res.status)}
-    }catch(e){console.error("Auth: Profile load error:",e)}
+      log("Auth: Loading profile for",uid);
+      const{data,error:err}=await supabase.from('profiles').select('*').eq('id',uid);
+      if(err){logError("Auth: Profile load failed:",err.message);return}
+      if(data&&data.length>0){
+        setProfile(data[0]);
+        log("Auth: Profile loaded",data[0].display_name);
+        if(data[0].birth_date){
+          localStorage.setItem("mp108_birth",data[0].birth_date);
+        }
+      }else{log("Auth: No profile found for",uid)}
+    }catch(e){logError("Auth: Profile load error:",e)}
   };
+
   useEffect(()=>{
     if(!supabase){setLoading(false);return}
 
     let resolved=false;
     const done=(u)=>{if(resolved)return;resolved=true;setLoading(false);if(u){setUser(u);loadProfile(u.id)}};
 
-    // Timeout: if nothing works in 3s, proceed without auth
     const timeout=setTimeout(()=>{
       if(!resolved){
-        console.warn("Auth: Timeout — trying to recover session from storage...");
-        // Try to recover user from supabase's localStorage
-        try{
-          const storageKey=Object.keys(localStorage).find(k=>k.includes("supabase")&&k.includes("auth"));
-          if(storageKey){
-            const stored=JSON.parse(localStorage.getItem(storageKey));
-            const u=stored?.user||stored?.currentSession?.user;
-            if(u&&u.id){
-              console.log("Auth: Recovered user from localStorage:",u.email);
-              done(u);
-              return;
-            }
-          }
-        }catch(e){}
-        console.warn("Auth: No session found, proceeding as guest");
+        warn("Auth: Timeout — proceeding as guest");
         done(null);
       }
     },3000);
 
-    // Primary: try getSession
     supabase.auth.getSession()
       .then(({data:{session}})=>{
         clearTimeout(timeout);
-        console.log("Auth: getSession",session?"✓ found user":"— no session");
+        log("Auth: getSession",session?"found user":"no session");
         done(session?.user||null);
       })
       .catch(e=>{
         clearTimeout(timeout);
-        console.error("Auth: getSession error:",e);
+        logError("Auth: getSession error:",e);
         done(null);
       });
 
-    // Also listen for auth changes (fires on OAuth redirect)
     const{data:{subscription}}=supabase.auth.onAuthStateChange(async(event,session)=>{
-      console.log("Auth: onAuthStateChange",event,session?.user?.email||"no user");
+      log("Auth: onAuthStateChange",event);
       clearTimeout(timeout);
       if(session?.user){
         setUser(session.user);
@@ -87,53 +68,32 @@ export function useAuth(){
 
     return()=>{clearTimeout(timeout);subscription.unsubscribe()};
   },[]);
+
   const signInGoogle=useCallback(async()=>{
     if(!supabase){alert("Supabase not configured. Set REACT_APP_SUPABASE_URL and REACT_APP_SUPABASE_ANON_KEY in Vercel env vars.");return}
-    try{const{error}=await supabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.origin}});if(error){console.error("Google sign-in error:",error);alert("Google sign-in failed: "+error.message)}}catch(e){console.error("Sign-in error:",e);alert("Sign-in error: "+e.message)}
+    try{const{error}=await supabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.origin}});if(error){logError("Google sign-in error:",error);alert("Google sign-in failed: "+error.message)}}catch(e){logError("Sign-in error:",e);alert("Sign-in error: "+e.message)}
   },[]);
+
   const signOut=useCallback(async()=>{if(!supabase)return;await supabase.auth.signOut();setUser(null);setProfile(null)},[]);
+
   const refresh=useCallback(async()=>{
     if(!user)return;
-    console.log("Auth: Refreshing profile via REST...");
+    log("Auth: Refreshing profile...");
     await loadProfile(user.id);
   },[user]);
+
   return{user,profile,signInGoogle,signOut,loading,refresh};
 }
 
-// ═══ GAME DATABASE SERVICE — Direct REST API (bypasses supabase-js client issues) ═══
+// ═══ GAME DATABASE SERVICE — Uses Supabase client with user's auth token ═══
 const GameDB={
-  // Direct fetch to Supabase REST API
-  async _fetch(path,method,body){
-    if(!sbUrl||!sbKey)return{data:null,error:{message:"No supabase config"}};
-    const url=`${sbUrl}/rest/v1/${path}`;
-    const headers={"Content-Type":"application/json","apikey":sbKey,"Authorization":`Bearer ${sbKey}`,"Prefer":method==="POST"?"return=minimal":"",};
-    try{
-      const res=await fetch(url,{method,headers,body:body?JSON.stringify(body):undefined});
-      if(!res.ok){const txt=await res.text();return{data:null,error:{message:`${res.status}: ${txt}`}}}
-      if(method==="GET"){const data=await res.json();return{data,error:null}}
-      return{data:true,error:null};
-    }catch(e){return{data:null,error:{message:e.message}}}
-  },
-  async _get(path){return this._fetch(path,"GET")},
-  async _post(path,body){return this._fetch(path,"POST",body)},
-  async _patch(path,body){
-    if(!sbUrl||!sbKey)return{data:null,error:{message:"No config"}};
-    const url=`${sbUrl}/rest/v1/${path}`;
-    try{
-      const res=await fetch(url,{method:"PATCH",headers:{"Content-Type":"application/json","apikey":sbKey,"Authorization":`Bearer ${sbKey}`,"Prefer":"return=minimal"},body:JSON.stringify(body)});
-      if(!res.ok){const txt=await res.text();return{data:null,error:{message:`${res.status}: ${txt}`}}}
-      return{data:true,error:null};
-    }catch(e){return{data:null,error:{message:e.message}}}
-  },
-
   async saveGame(userId,d){
-    if(!sbUrl||!sbKey||!userId){console.log("GameDB: SKIP - no config or userId");return null}
-    console.log("GameDB: === SAVING via REST ===");
+    if(!supabase||!userId){log("GameDB: SKIP - no config or userId");return null}
+    log("GameDB: Saving...");
 
     // Step 1: Insert game_history
     try{
-      console.log("GameDB: Step 1 - Inserting game_history...");
-      const res=await this._post("game_history",{
+      const{error:err}=await supabase.from('game_history').insert({
         user_id:userId,duration_seconds:d.duration||0,total_turns:d.turns||0,
         character_name:d.charName||"Seeker",character_icon:d.charIcon||"🔱",
         opponent_type:d.opponent||"yama",result:d.result||"quit",
@@ -143,30 +103,29 @@ const GameDB={
         highest_square:d.highest||1,graha_effects:JSON.stringify({players:d.allPlayers||[],grahaHits:d.grahaHits||{}}),
         ashtanga_reached:d.ashtanga||false,moksha_rejected:d.rejected||0
       });
-      console.log("GameDB: Step 1",res.error?"ERROR: "+res.error.message:"✓ INSERTED");
-    }catch(e){console.error("GameDB: Step 1 FAILED:",e.message)}
+      if(err)logError("GameDB: game_history insert error:",err.message);
+      else log("GameDB: game_history inserted");
+    }catch(e){logError("GameDB: game_history FAILED:",e.message)}
 
     // Step 2: Read current profile
     let cur=null;
     try{
-      console.log("GameDB: Step 2 - Reading profile...");
-      const res=await this._get(`profiles?id=eq.${userId}&select=*`);
-      if(res.data&&res.data.length>0){cur=res.data[0];console.log("GameDB: Step 2 ✓ Profile found")}
+      const{data,error:err}=await supabase.from('profiles').select('*').eq('id',userId);
+      if(err){logError("GameDB: profile read error:",err.message)}
+      else if(data&&data.length>0){cur=data[0]}
       else{
-        console.log("GameDB: Step 2b - No profile, creating...");
-        await this._post("profiles",{id:userId,display_name:d.charName||"Seeker",email:"",provider:"google"});
-        const r2=await this._get(`profiles?id=eq.${userId}&select=*`);
-        cur=r2.data?.[0]||null;
-        console.log("GameDB: Step 2b",cur?"✓ Created":"FAILED");
+        log("GameDB: No profile, creating...");
+        await supabase.from('profiles').insert({id:userId,display_name:d.charName||"Seeker",email:"",provider:"google"});
+        const{data:d2}=await supabase.from('profiles').select('*').eq('id',userId);
+        cur=d2?.[0]||null;
       }
-    }catch(e){console.error("GameDB: Step 2 FAILED:",e.message)}
+    }catch(e){logError("GameDB: profile read FAILED:",e.message)}
 
     // Step 3: Update profile
     if(cur){
       try{
-        console.log("GameDB: Step 3 - Updating profile...");
         const isWin=d.result==="moksha_win"||d.result==="karma_win";
-        const res=await this._patch(`profiles?id=eq.${userId}`,{
+        const{error:err}=await supabase.from('profiles').update({
           total_games:(cur.total_games||0)+1,
           total_wins:(cur.total_wins||0)+(isWin?1:0),
           total_moksha_wins:(cur.total_moksha_wins||0)+(d.result==="moksha_win"?1:0),
@@ -180,38 +139,36 @@ const GameDB={
           total_riddles_wrong:(cur.total_riddles_wrong||0)+(d.riddlesW||0),
           favorite_character:d.charName||cur.favorite_character,
           last_played_at:new Date().toISOString()
-        });
-        console.log("GameDB: Step 3",res.error?"ERROR: "+res.error.message:"✓ PROFILE UPDATED");
-      }catch(e){console.error("GameDB: Step 3 FAILED:",e.message)}
-    }else{console.error("GameDB: Step 3 SKIPPED - no profile")}
+        }).eq('id',userId);
+        if(err)logError("GameDB: profile update error:",err.message);
+        else log("GameDB: profile updated");
+      }catch(e){logError("GameDB: profile update FAILED:",e.message)}
+    }
 
-    console.log("GameDB: === DONE ===");
+    log("GameDB: Done");
     return true;
   },
   async getHistory(userId,limit=20){
-    if(!sbUrl||!sbKey||!userId)return[];
+    if(!supabase||!userId)return[];
     try{
-      console.log("GameDB: Loading history for",userId);
-      const res=await this._get(`game_history?user_id=eq.${userId}&select=*&order=played_at.desc&limit=${limit}`);
-      console.log("GameDB: History loaded:",res.data?.length||0,"games",res.error?.message||"");
-      return res.data||[];
-    }catch(e){console.error("GameDB: History error:",e);return[]}
+      const{data,error:err}=await supabase.from('game_history').select('*').eq('user_id',userId).order('played_at',{ascending:false}).limit(limit);
+      if(err){logError("GameDB: History error:",err.message);return[]}
+      return data||[];
+    }catch(e){logError("GameDB: History error:",e);return[]}
   },
   async getLeaderboard(limit=50){
-    if(!sbUrl||!sbKey)return[];
+    if(!supabase)return[];
     try{
-      console.log("GameDB: Loading leaderboard...");
-      const res=await this._get(`profiles?total_games=gt.0&select=id,display_name,avatar_url,total_games,total_wins,total_punya_earned,total_papa_earned,total_moksha_wins,total_karma_wins,total_riddles_correct,longest_streak,last_played_at&order=total_punya_earned.desc&limit=${limit}`);
-      console.log("GameDB: Leaderboard loaded:",res.data?.length||0,"players",res.error?.message||"");
-      return(res.data||[]).map(p=>({...p,karma_score:(p.total_punya_earned||0)-(p.total_papa_earned||0)}));
-    }catch(e){console.error("GameDB: Leaderboard error:",e);return[]}
+      const{data,error:err}=await supabase.from('profiles').select('id,display_name,avatar_url,total_games,total_wins,total_punya_earned,total_papa_earned,total_moksha_wins,total_karma_wins,total_riddles_correct,longest_streak,last_played_at').gt('total_games',0).order('total_punya_earned',{ascending:false}).limit(limit);
+      if(err){logError("GameDB: Leaderboard error:",err.message);return[]}
+      return(data||[]).map(p=>({...p,karma_score:(p.total_punya_earned||0)-(p.total_papa_earned||0)}));
+    }catch(e){logError("GameDB: Leaderboard error:",e);return[]}
   },
-  // Read profile directly via REST (for refresh)
   async getProfile(userId){
-    if(!sbUrl||!sbKey||!userId)return null;
+    if(!supabase||!userId)return null;
     try{
-      const res=await this._get(`profiles?id=eq.${userId}&select=*`);
-      return res.data?.[0]||null;
+      const{data}=await supabase.from('profiles').select('*').eq('id',userId);
+      return data?.[0]||null;
     }catch(e){return null}
   },
 };
@@ -265,3 +222,4 @@ export function getZodiac(month,day){
   return RASHI[9]; // Capricorn default
 }
 
+export default GameDB;
