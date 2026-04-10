@@ -651,16 +651,17 @@ const AudioCache = {
       }
 
       // 3. Fetch from OpenAI TTS (only on first use, then cached forever)
-      const isHi = lang === 'hi';
+      const hdrs = { 'Content-Type': 'application/json' };
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.access_token) hdrs['Authorization'] = `Bearer ${session.access_token}`;
+      } catch(e) {}
       const resp = await fetch('/api/tts', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: hdrs,
         body: JSON.stringify({
-          text,
+          text: text.slice(0, 500),
           voice: voiceOverride || 'ash',
-          instructions: instructionOverride || (isHi
-            ? 'You are an ancient Indian storyteller narrating in Hindi. Speak slowly, mysteriously, with deep emotion. Pause dramatically between sentences.'
-            : 'You are an ancient Indian sage narrating a sacred epic in English. Speak slowly, with deep gravitas and reverence. Pause dramatically between sentences.')
         }),
       });
       if (!resp.ok) throw new Error('TTS API failed: ' + resp.status);
