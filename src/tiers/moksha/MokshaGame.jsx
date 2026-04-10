@@ -4424,7 +4424,7 @@ export default function MokshaPatam108(){
         VoiceEngine.speakNarrator(popup.subtitle,chosenLang,null);
       }
     }
-    // Graha popups auto-advance after 4s so busy never gets stuck
+    // Graha popups auto-advance after 8s so busy never gets stuck
     if(popup.type==="graha"&&onDismiss){
       autoAdvanceTimerRef.current=setTimeout(()=>{
         autoAdvanceTimerRef.current=null;
@@ -4433,7 +4433,7 @@ export default function MokshaPatam108(){
           setEventPopup(null);
           setTimeout(()=>cb(),150);
         }
-      },4000);
+      },8000);
     }
   }, [muted,chosenLang,ambient]);
   const dismissEvent = useCallback(() => {
@@ -4750,16 +4750,16 @@ export default function MokshaPatam108(){
           // P4: both visible 550ms, then 'settled'
           setTimeout(()=>{
             setRollingPhase('settled');
-            // P5: Navagraha cinematic zoom after 1.9s
+            // P5: Navagraha cinematic zoom after 1.2s
             setTimeout(()=>{
               setRollingPhase('graha_zoom');
-              // P6: zoom shown 2.4s then proceed
+              // P6: zoom shown 1.5s then proceed
               setTimeout(()=>{
                 setDiceReveal(null);setRollingPhase(null);
                 if(onSacredPath){if(!bgMuted)ambient.unduck();startMovement()}
                 else{showEvent({icon:g.icon,title:`${g.n} · ${g.en}`,subtitle:grahaStory,color:g.color,type:"graha",staticKey:GRAHA_STATIC_KEY[g.fx]},startMovement)}
-              },2400);
-            },1900);
+              },1500);
+            },1200);
           },550);
         },650);
       }
