@@ -654,8 +654,10 @@ const AudioCache = {
       const hdrs = { 'Content-Type': 'application/json' };
       try {
         const { data: { session } } = await supabase.auth.getSession();
+        console.log('[TTS-DEBUG] session:', !!session, 'token:', session?.access_token ? 'YES ('+session.access_token.slice(0,20)+'...)' : 'NO');
         if (session?.access_token) hdrs['Authorization'] = `Bearer ${session.access_token}`;
-      } catch(e) {}
+      } catch(e) { console.log('[TTS-DEBUG] getSession error:', e.message); }
+      console.log('[TTS-DEBUG] Calling /api/tts. textLen:', text.length, 'hasAuth:', !!hdrs['Authorization']);
       const resp = await fetch('/api/tts', {
         method: 'POST',
         headers: hdrs,
@@ -664,6 +666,7 @@ const AudioCache = {
           voice: voiceOverride || 'ash',
         }),
       });
+      console.log('[TTS-DEBUG] Response:', resp.status, resp.statusText);
       if (!resp.ok) throw new Error('TTS API failed: ' + resp.status);
 
       const arrayBuffer = await resp.arrayBuffer();
@@ -1246,19 +1249,19 @@ const VoiceEngine = {
   // staticUrl: pre-generated /onboarding/story-N-lang.mp3 (zero API cost)
   // onAudioStart: fires the MOMENT audio begins playing (used for UI sync)
   async speakNarrator(text, lang, staticUrl, onAudioStart) {
+    console.log('[NARRATOR-DEBUG] speakNarrator called. textLen:', text?.length, 'lang:', lang, 'staticUrl:', staticUrl);
     this.stop();
-    if (!text) return;
+    if (!text) { console.log('[NARRATOR-DEBUG] ABORT: no text'); return; }
     const myToken = this._stopToken;
 
     // iOS CRITICAL: reuse the shared AudioContext from unlockAudio() if available.
-    // Creating a new AudioContext after any await loses the iOS gesture context.
-    // _sharedCtx was created+unlocked synchronously on the first user tap.
     let ctx = this._sharedCtx || null;
+    console.log('[NARRATOR-DEBUG] sharedCtx:', !!ctx, 'state:', ctx?.state);
     if (!ctx) {
       try {
         ctx = new (window.AudioContext || window.webkitAudioContext)();
         if (ctx.state === 'suspended') await ctx.resume();
-      } catch(e) { ctx = null; }
+      } catch(e) { ctx = null; console.log('[NARRATOR-DEBUG] AudioContext create failed:', e.message); }
       this._sharedCtx = ctx;
     } else if (ctx.state === 'suspended') {
       try { await ctx.resume(); } catch(e) {}
@@ -1271,25 +1274,28 @@ const VoiceEngine = {
     if (staticUrl) {
       try {
         const r = await fetch(staticUrl, { method: 'HEAD' });
-        if (r.ok) { audioUrl = staticUrl; log('[Voice] Static:', staticUrl); }
-      } catch(e) {}
+        if (r.ok) { audioUrl = staticUrl; console.log('[NARRATOR-DEBUG] Static file found:', staticUrl); }
+        else console.log('[NARRATOR-DEBUG] Static file 404:', staticUrl);
+      } catch(e) { console.log('[NARRATOR-DEBUG] Static fetch error:', e.message); }
     }
 
-    if (this._stopToken !== myToken) return;
+    if (this._stopToken !== myToken) { console.log('[NARRATOR-DEBUG] ABORT: stopToken changed after static check'); return; }
 
     // 2. IndexedDB / OpenAI API (fallback if static not deployed yet)
     if (!audioUrl) {
       const isLocal = ['localhost','127.0.0.1',''].includes(window.location.hostname);
+      console.log('[NARRATOR-DEBUG] No static. isLocal:', isLocal, 'hostname:', window.location.hostname);
       if (!isLocal) {
         audioUrl = AudioCache.get(text);
+        console.log('[NARRATOR-DEBUG] AudioCache.get:', !!audioUrl);
         if (!audioUrl) {
-          try { audioUrl = await AudioCache.fetchTTS(text, lang); } catch(e){}
+          try { audioUrl = await AudioCache.fetchTTS(text, lang); console.log('[NARRATOR-DEBUG] fetchTTS result:', !!audioUrl); } catch(e){ console.log('[NARRATOR-DEBUG] fetchTTS error:', e.message); }
         }
       }
     }
 
-    if (this._stopToken !== myToken) return;
-    if (!audioUrl) { this._browserSpeak(text, lang); onAudioStart && onAudioStart(); return; }
+    if (this._stopToken !== myToken) { console.log('[NARRATOR-DEBUG] ABORT: stopToken changed after TTS'); return; }
+    if (!audioUrl) { console.log('[NARRATOR-DEBUG] No audioUrl — falling back to browserSpeak'); this._browserSpeak(text, lang); onAudioStart && onAudioStart(); return; }
 
     try {
       const resp = await fetch(audioUrl);
@@ -4939,7 +4945,8 @@ export default function MokshaPatam108(){
 
   // ═══ DHARMA VOICE — read aloud when card appears (skip CPU) ═══
   useEffect(()=>{
-    if(!dil||muted||players[dil.pi]?.cpu)return;
+    console.log('[DHARMA-DEBUG] useEffect fired. dil:', !!dil, 'muted:', muted, 'cpu:', dil?players[dil.pi]?.cpu:'n/a');
+    if(!dil||muted||players[dil.pi]?.cpu){console.log('[DHARMA-DEBUG] SKIPPED — dil:',!!dil,'muted:',muted);return}
     // Stop any lingering audio first, then duck ambient, then speak with delay
     VoiceEngine.stop();
     try{window.speechSynthesis.cancel()}catch(e){}
@@ -4948,10 +4955,11 @@ export default function MokshaPatam108(){
       const voiceText=dil.ashtanga
         ?`Riddle of ${dil.en}. ${dil.txt}. Option one: ${dil.c[0].l}. Option two: ${dil.c[1].l}.`
         :`Dharma Dilemma. ${dil.en}. ${dil.txt}. Your choices are: ${dil.c.map((c,i)=>c.l).join('. Or. ')}`;
+      console.log('[DHARMA-DEBUG] Calling speakNarrator. textLen:', voiceText.length, 'lang:', chosenLang);
       VoiceEngine.speakNarrator(voiceText,chosenLang,null);
     },500);
     // Only clear timer on cleanup, DON'T stop voice - let it finish naturally after card closes
-    return()=>{clearTimeout(timer)};
+    return()=>{console.log('[DHARMA-DEBUG] cleanup — clearing timer');clearTimeout(timer)};
   },[dil,muted]);
 
   const board=useMemo(()=>{const s=[];for(let r=0;r<10;r++)for(let c=0;c<10;c++){const a=9-r;s.push({num:a*10+(a%2===0?c:9-c)+1})}return s},[]);
