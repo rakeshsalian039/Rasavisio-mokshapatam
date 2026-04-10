@@ -6118,60 +6118,74 @@ export default function MokshaPatam108(){
             border:`1px solid ${diceReveal.g.color}06`,
             animation:"grahaOrbit 3.5s linear infinite",pointerEvents:"none"}}/>
 
+          {/* Navagraha label */}
+          <div style={{
+            fontSize:isMobile?10:12,color:`${diceReveal.g.color}55`,
+            letterSpacing:isMobile?6:10,fontFamily:"'Cinzel',serif",
+            textTransform:"uppercase",marginBottom:isMobile?10:16,
+            animation:"grahaNameIn .5s ease .1s both",
+          }}>Navagraha</div>
+
           {/* Giant planet */}
           <div style={{
-            fontSize:isMobile?108:140,lineHeight:1,marginBottom:18,
+            fontSize:isMobile?120:160,lineHeight:1,marginBottom:isMobile?12:20,
             animation:"grahaZoomIn 0.8s cubic-bezier(0.34,1.52,0.64,1) forwards",
-            filter:`drop-shadow(0 0 32px ${diceReveal.g.color}) drop-shadow(0 0 90px ${diceReveal.g.color}50)`,
+            filter:`drop-shadow(0 0 40px ${diceReveal.g.color}) drop-shadow(0 0 100px ${diceReveal.g.color}50)`,
           }}>{diceReveal.g.icon}</div>
 
           {/* Sanskrit name */}
           <div style={{
             fontFamily:"'Yatra One',serif",
-            fontSize:isMobile?"clamp(30px,7.5vw,38px)":"clamp(38px,4.5vw,58px)",
-            color:diceReveal.g.color,letterSpacing:5,textAlign:"center",marginBottom:5,
+            fontSize:isMobile?"clamp(36px,9vw,48px)":"clamp(44px,5vw,66px)",
+            color:diceReveal.g.color,letterSpacing:6,textAlign:"center",marginBottom:6,
             animation:"grahaNameIn .65s ease .22s both",
-            textShadow:`0 0 50px ${diceReveal.g.color}90`,
+            textShadow:`0 0 60px ${diceReveal.g.color}90`,
           }}>{diceReveal.g.n}</div>
 
           {/* English name */}
-          <div style={{fontSize:isMobile?12:14,color:"rgba(255,255,255,.38)",
-            letterSpacing:4,fontFamily:"'Cinzel',serif",marginBottom:26,
+          <div style={{fontSize:isMobile?14:17,color:"rgba(255,255,255,.45)",
+            letterSpacing:isMobile?4:6,fontFamily:"'Cinzel',serif",marginBottom:isMobile?20:30,
             animation:"grahaNameIn .55s ease .38s both",
-          }}>{diceReveal.g.en.split("—")[0].trim()}</div>
+          }}>{diceReveal.g.en}</div>
 
           {/* Effect description */}
           <div style={{
-            maxWidth:isMobile?300:430,padding:"15px 22px",
+            maxWidth:isMobile?320:480,padding:isMobile?"16px 20px":"20px 28px",
             background:`${diceReveal.g.color}0e`,
             border:`1px solid ${diceReveal.g.color}32`,
-            borderRadius:13,textAlign:"center",
+            borderRadius:14,textAlign:"center",
             animation:"grahaNameIn .6s ease .52s both",
           }}>
-            <div style={{fontSize:isMobile?12:14,color:"rgba(225,205,165,.82)",
-              lineHeight:1.88,fontStyle:"italic"}}>
-              {diceReveal.g.desc.slice(0,140)}…
+            <div style={{fontSize:isMobile?14:16,color:"rgba(225,205,165,.88)",
+              lineHeight:1.9,fontFamily:"'Noto Serif Devanagari',serif"}}>
+              {diceReveal.g.desc}
             </div>
           </div>
 
           {/* Karma roll result */}
-          <div style={{display:"flex",alignItems:"center",gap:16,marginTop:22,
+          <div style={{display:"flex",alignItems:"center",gap:18,marginTop:isMobile?20:28,
             animation:"grahaNameIn .5s ease .68s both",
           }}>
-            <span style={{fontFamily:"'Noto Serif Devanagari',serif",fontSize:44,
+            <span style={{fontFamily:"'Noto Serif Devanagari',serif",fontSize:isMobile?48:56,
               color:"#f0d050",fontWeight:900,lineHeight:1,
-              filter:"drop-shadow(0 0 18px rgba(240,200,80,.75))"}}>
+              filter:"drop-shadow(0 0 22px rgba(240,200,80,.75))"}}>
               {['','⚀','⚁','⚂','⚃','⚄','⚅'][diceReveal.r]}
             </span>
-            <span style={{fontSize:12,color:"rgba(240,200,80,.42)",
-              fontFamily:"'Cinzel',serif",letterSpacing:3}}>
-              {diceReveal.r} step{diceReveal.r!==1?'s':''}
-            </span>
+            <div style={{display:"flex",flexDirection:"column",gap:2}}>
+              <span style={{fontSize:isMobile?20:24,color:"#f0d050",
+                fontFamily:"'Cinzel',serif",fontWeight:700}}>
+                +{diceReveal.r}
+              </span>
+              <span style={{fontSize:isMobile?10:12,color:"rgba(240,200,80,.40)",
+                fontFamily:"'Cinzel',serif",letterSpacing:3}}>
+                STEP{diceReveal.r!==1?'S':''}
+              </span>
+            </div>
           </div>
 
-          <div style={{position:"absolute",bottom:28,
-            fontSize:8,color:"rgba(200,160,60,.22)",letterSpacing:6,fontFamily:"'Cinzel',serif",
-            animation:"grahaNameIn .4s ease 1.6s both",
+          <div style={{position:"absolute",bottom:isMobile?24:32,
+            fontSize:isMobile?9:10,color:"rgba(200,160,60,.28)",letterSpacing:6,fontFamily:"'Cinzel',serif",
+            animation:"grahaNameIn .4s ease 1.2s both",
           }}>TAP TO CONTINUE</div>
         </div>
       )}
