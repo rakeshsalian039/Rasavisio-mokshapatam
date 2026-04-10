@@ -3,6 +3,7 @@ import LandingPage from './LandingPage.jsx';
 import MokshaGame  from './tiers/moksha/MokshaGame.jsx';
 import BalaGame    from './tiers/bala/BalaGame.jsx';
 import AppSplash   from './components/AppSplash.jsx';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
 // import KishoreGame from './tiers/kishore/KishoreGame.jsx'; // coming soon
 
 export default function App() {
@@ -11,8 +12,16 @@ export default function App() {
 
   if (!splashDone) return <AppSplash onDone={() => setSplashDone(true)} />;
 
-  if (tier === 'moksha') return <MokshaGame />;
-  if (tier === 'bala')   return <BalaGame onExit={() => setTier(null)} />;
+  if (tier === 'moksha') return (
+    <ErrorBoundary onReset={() => setTier(null)}>
+      <MokshaGame />
+    </ErrorBoundary>
+  );
+  if (tier === 'bala') return (
+    <ErrorBoundary onReset={() => setTier(null)}>
+      <BalaGame onExit={() => setTier(null)} />
+    </ErrorBoundary>
+  );
 
   return <LandingPage onSelectTier={setTier} />;
 }

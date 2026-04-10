@@ -7,20 +7,26 @@
  * 🔴 writeTurnState + startGame: added onConflict:'room_id' to upsert
  * 🟡 joinRoom: switched .single() → .maybeSingle() with clearer error messages
  * 🟡 joinRoom: added duplicate-entry guard (already in room check)
+ * 🟢 Consolidated to shared Supabase client
+ * 🟢 Crypto-secure room code generation
+ * 🟢 Player name sanitization
  */
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '../auth/supabaseClient';
+import { warn } from '../utils/logger';
 
-const sbUrl = process.env.REACT_APP_SUPABASE_URL || '';
-const sbKey = process.env.REACT_APP_SUPABASE_ANON_KEY || '';
-export const supabase = (sbUrl && sbKey) ? createClient(sbUrl, sbKey) : null;
+export { supabase };
 
 const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
+function sanitizeName(name) {
+  if (!name || typeof name !== 'string') return 'Seeker';
+  return name.replace(/<[^>]*>/g, '').replace(/[^\p{L}\p{N}\s_\-'.]/gu, '').trim().slice(0, 30) || 'Seeker';
+}
+
 async function generateRoomCode() {
   for (let attempt = 0; attempt < 10; attempt++) {
-    const code = Array.from({ length: 6 }, () =>
-      CHARS[Math.floor(Math.random() * CHARS.length)]
-    ).join('');
+    const randomBytes = crypto.getRandomValues(new Uint32Array(6));
+    const code = Array.from(randomBytes, v => CHARS[v % CHARS.length]).join('');
     const { data } = await supabase.from('game_rooms').select('id').eq('code', code).maybeSingle();
     if (!data) return code;
   }
@@ -102,7 +108,7 @@ async function getSeats(roomId) {
 async function addPlayerToRoom({ roomId, userId, seatIndex, playerName, charIdx, char }) {
   const { error } = await supabase.from('room_players').insert({
     room_id: roomId, user_id: userId, seat_index: seatIndex,
-    player_name: playerName, char_idx: charIdx,
+    player_name: sanitizeName(playerName), char_idx: charIdx,
     char_name: char.name, char_icon: char.icon, char_color: char.color,
     is_ready: false, is_connected: true,
   });
@@ -130,7 +136,7 @@ export async function startGame({ roomId, playerCount }) {
     room_id: roomId, cur: 0, pos, punya: zeros, papa: zeros,
     shield_a: falses, skip_a: falses, win: null, dil: null,
     used_dharma: [], turn_seq: 0, updated_at: new Date().toISOString(),
-  }, { onConflict: 'room_id' });                     // ← FIXED
+  }, { onConflict: 'room_id' });
   if (stateErr) throw stateErr;
 
   const { error: roomErr } = await supabase.from('game_rooms')
@@ -156,7 +162,7 @@ export async function writeTurnState({ roomId, turnSeq, gameState }) {
     win: gameState.win??null, dil: gameState.dil??null,
     used_dharma: gameState.usedDharma??[], turn_seq: turnSeq,
     updated_at: new Date().toISOString(),
-  }, { onConflict: 'room_id' });                     // ← FIXED
+  }, { onConflict: 'room_id' });
   if (error) throw error;
 }
 
@@ -166,7 +172,7 @@ export async function writeMoveLog({ roomId, turnSeq, playerIndex, moveType, dic
     move_type: moveType, dice_val: diceVal, graha_idx: grahaIdx,
     dilemma_pick: dilemmaPick??null, snapshot: snapshot??null,
   });
-  if (error) console.warn('Move log write failed (non-critical):', error);
+  if (error) warn('Move log write failed (non-critical):', error);
 }
 
 export async function loadLatestSnapshot(roomId) {

@@ -10,6 +10,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "./supabaseClient";
+import { error as logError } from "../utils/logger";
 
 // ═══ AUTH HOOK ═══
 export function useAuth() {
@@ -52,7 +53,7 @@ export function useAuth() {
       provider: "google",
       options: { redirectTo: window.location.origin }
     });
-    if (error) console.error("Google sign-in error:", error);
+    if (error) logError("Google sign-in error:", error);
   }, []);
 
   const signInApple = useCallback(async () => {
@@ -60,7 +61,7 @@ export function useAuth() {
       provider: "apple",
       options: { redirectTo: window.location.origin }
     });
-    if (error) console.error("Apple sign-in error:", error);
+    if (error) logError("Apple sign-in error:", error);
   }, []);
 
   const signOut = useCallback(async () => {
@@ -143,7 +144,7 @@ export const GameDB = {
 
       return game;
     } catch (err) {
-      console.error("Save game error:", err);
+      logError("Save game error:", err);
       return null;
     }
   },
