@@ -4885,7 +4885,7 @@ export default function MokshaPatam108(){
             nShield[cur]=false;eMsg=`𓆙 ${sn.skt} — Shield!`;play("ladder");showKarmaToast(pName,0,'shield','🛡');
             showEvent({icon:"🛡",title:`Shield Saved ${pName}!`,subtitle:`The serpent ${sn.skt} (${sn.en}) struck — but Shukra's shield absorbed the venom! Shield is now gone.`,color:"#d0a0c0",staticKey:"shield_save"},()=>{
               addCGEntry('punya',p,`${sn.skt} — shield`);speakCG('punya',500);
-              setTimeout(()=>{if(!bgMuted)ambient.unduck();},2800);
+              setTimeout(()=>ambient.unduck(),2800);
               finishTurn(true);
             });
           }else{
@@ -4895,7 +4895,7 @@ export default function MokshaPatam108(){
             showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} caught you! ${sn.tale} Dragged from ${o} to ${p}. +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`,staticKey:"snake_hit"},()=>{
               addCGEntry('snake',p,`${sn.skt} · ${o}→${p}`);
               if(!muted){if(yamaTimerRef.current)clearTimeout(yamaTimerRef.current);yamaTimerRef.current=setTimeout(()=>{yamaTimerRef.current=null;VoiceEngine.playYamaTaunt("snake",chosenLang);},3500);}
-              setTimeout(()=>{if(!bgMuted)ambient.unduck();},7000);
+              setTimeout(()=>ambient.unduck(),7000);
               finishTurn(true);
             });
           }}
@@ -4955,7 +4955,7 @@ export default function MokshaPatam108(){
               addCGEntry('reject',67,`${nPunya[cur]}P < ${nPapa[cur]}X`);
               // Popup narrator plays ~3s. Yama fires right after.
               if(!muted){if(yamaTimerRef.current)clearTimeout(yamaTimerRef.current);yamaTimerRef.current=setTimeout(()=>{yamaTimerRef.current=null;VoiceEngine.playYamaTaunt("reject",chosenLang);},3500);}
-              setTimeout(()=>{if(!bgMuted)ambient.unduck();},7000);
+              setTimeout(()=>ambient.unduck(),7000);
               finishTurn();
             });
           }}
@@ -5032,7 +5032,7 @@ export default function MokshaPatam108(){
         if(!muted){
           ambient.duck();
           VoiceEngine.unlockAudio();VoiceEngine.speakNarrator(`Well done ${pName}! You answered correctly. Your soul grows purer.`,chosenLang,null);
-          setTimeout(()=>{if(!bgMuted)ambient.unduck();},4000);
+          setTimeout(()=>ambient.unduck(),4000);
         }
       }else{
         npa[dil.pi]+=(fx.papa||1);showKarmaToast(pName,fx.papa||1,'papa','✗');
@@ -5049,7 +5049,7 @@ export default function MokshaPatam108(){
           // Yama fires just after yamaLaugh SFX (~1.2s)
           if(yamaTimerRef.current)clearTimeout(yamaTimerRef.current);
           yamaTimerRef.current=setTimeout(()=>{yamaTimerRef.current=null;if(!VoiceEngine.speaking)VoiceEngine.playYamaTaunt("wrong",chosenLang);},1200);
-          setTimeout(()=>{if(!bgMuted)ambient.unduck();},5000);
+          setTimeout(()=>ambient.unduck(),5000);
         }
       }
       if(np[dil.pi]>=30&&!win){setWin(dil.pi);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory")}
@@ -5079,8 +5079,8 @@ export default function MokshaPatam108(){
     setPunya(np);setPapa(npa);setSkipA(nsk);setPos(npos);setShieldA(nsh);
     const parts=[];if(fx.punya)parts.push(`+${fx.punya} Punya`);if(fx.papa)parts.push(`+${fx.papa} Papa`);if(fx.move)parts.push(fx.move>0?`advance ${fx.move}`:`back ${Math.abs(fx.move)}`);if(fx.skip)parts.push("skip next");if(fx.loseShield)parts.push("lost Shield");if(fx.giveShield)parts.push("gained Shield");
     setMsg(parts.join(", ")||"Balanced.");
-    if(ch.k==="punya"){play("chime");showKarmaToast(pName,fx.punya||1,'punya','⚖');gameStats.current.riddlesC++;addCGEntry('dharma_p',npos[dil.pi]||1,dil.en||'');speakCG('dharma_p',600);setTimeout(()=>{if(!bgMuted)ambient.unduck();},3200);}
-    else if(ch.k==="papa"){play("yamaLaugh");showKarmaToast(pName,fx.papa||1,'papa','⚖');gameStats.current.riddlesW++;addCGEntry('dharma_x',npos[dil.pi]||1,dil.en||'');speakCG('dharma_x',4000);setTimeout(()=>{if(!bgMuted)ambient.unduck();},6500);}
+    if(ch.k==="punya"){play("chime");showKarmaToast(pName,fx.punya||1,'punya','⚖');gameStats.current.riddlesC++;addCGEntry('dharma_p',npos[dil.pi]||1,dil.en||'');speakCG('dharma_p',600);setTimeout(()=>ambient.unduck(),3200);}
+    else if(ch.k==="papa"){play("yamaLaugh");showKarmaToast(pName,fx.papa||1,'papa','⚖');gameStats.current.riddlesW++;addCGEntry('dharma_x',npos[dil.pi]||1,dil.en||'');speakCG('dharma_x',4000);setTimeout(()=>ambient.unduck(),6500);}
     if(np[dil.pi]>=30&&!win){setWin(dil.pi);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory")}
     const nextCurD=(cur+1)%nP;
     setDil(null);setCur(nextCurD);
