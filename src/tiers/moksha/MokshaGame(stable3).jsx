@@ -4157,7 +4157,7 @@ function KarmaDie({value, rolling, landing, size=110}){
   const s=size;
   const pip=(x,y,k)=>(
     <div key={k} style={{
-      position:'absolute',width:s*.125,height:s*.125,borderRadius:'50%',
+      position:'absolute',width:s*.135,height:s*.135,borderRadius:'50%',
       background:'radial-gradient(circle at 35% 30%,#fffef0,#f0c020)',
       boxShadow:`0 ${s*.02}px ${s*.04}px rgba(0,0,0,.65), 0 0 ${s*.07}px rgba(255,220,40,.3), inset 0 1px 2px rgba(255,255,200,.5)`,
       left:`${x}%`,top:`${y}%`,transform:'translate(-50%,-50%)',
@@ -4166,11 +4166,11 @@ function KarmaDie({value, rolling, landing, size=110}){
   );
   const layouts={
     1:[[50,50]],
-    2:[[30,30],[70,70]],
-    3:[[30,30],[50,50],[70,70]],
-    4:[[30,30],[70,30],[30,70],[70,70]],
-    5:[[30,30],[70,30],[50,50],[30,70],[70,70]],
-    6:[[30,23],[70,23],[30,50],[70,50],[30,77],[70,77]],
+    2:[[28,28],[72,72]],
+    3:[[28,28],[50,50],[72,72]],
+    4:[[28,28],[72,28],[28,72],[72,72]],
+    5:[[28,28],[72,28],[50,50],[28,72],[72,72]],
+    6:[[28,20],[72,20],[28,50],[72,50],[28,80],[72,80]],
   };
   return(
     <div style={{
@@ -4183,8 +4183,6 @@ function KarmaDie({value, rolling, landing, size=110}){
         background:'linear-gradient(148deg,#3e3018,#1e1508,#0e0a04)',
         borderRadius:s*.15,
         border:`${s*.025}px solid ${landing&&!rolling?'rgba(255,220,60,.85)':'rgba(200,160,50,.28)'}`,
-        boxSizing:'border-box',
-        padding:s*.05,
         boxShadow:[
           `inset 0 0 ${s*.22}px rgba(0,0,0,.8)`,
           `inset 0 ${s*.08}px ${s*.12}px rgba(255,240,160,.07)`,
@@ -4543,7 +4541,7 @@ export default function MokshaPatam108(){
   // Toggle background music/SFX mute
   const toggleBG=useCallback(()=>{
     setBgMuted(m=>{
-      if(!m){ambient.stop();}else{ambient.start();}
+      if(!m)ambient.duck(); else ambient.unduck();
       return !m;
     });
   },[ambient]);
@@ -4609,11 +4607,12 @@ export default function MokshaPatam108(){
         }
         return false;
       };
-      // Play immediately (no setTimeout — iOS requires direct user gesture chain)
-      voiceTimerRef.current=null;
-      if(!tryStatic()){
-        VoiceEngine.speakNarrator(popup.subtitle,chosenLang,null);
-      }
+      voiceTimerRef.current=setTimeout(()=>{
+        voiceTimerRef.current=null;
+        if(!tryStatic()){
+          VoiceEngine.speakNarrator(popup.subtitle,chosenLang,null);
+        }
+      },200);
     }
     // Graha popups auto-advance after 8s so busy never gets stuck
     if(popup.type==="graha"&&onDismiss){
@@ -4637,11 +4636,11 @@ export default function MokshaPatam108(){
     setEventPopup(null);
     if(eventCallback.current){
       const cb=eventCallback.current;eventCallback.current=null;
-      setTimeout(()=>{if(!bgMuted)ambient.unduck();cb()},300);
+      setTimeout(()=>{cb()},300);
     }else{
-      if(!bgMuted)ambient.unduck();
+      ambient.unduck();
     }
-  }, [ambient,bgMuted]);
+  }, [ambient]);
 
   useEffect(()=>{try{window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices()}catch(e){}},[]);
   useEffect(()=>{const iv=setInterval(()=>{setShF(false);setTimeout(()=>{setShI(i=>(i+1)%SHLOKAS.length);setShF(true)},700)},6e3);return()=>clearInterval(iv)},[]);
@@ -4947,7 +4946,7 @@ export default function MokshaPatam108(){
               // P6: zoom shown 2.4s then proceed
               setTimeout(()=>{
                 setDiceReveal(null);setRollingPhase(null);
-                if(onSacredPath){if(!bgMuted)ambient.unduck();startMovement()}
+                if(onSacredPath){startMovement()}
                 else{showEvent({icon:g.icon,title:`${g.n} · ${g.en}`,subtitle:grahaStory,color:g.color,type:"graha",staticKey:GRAHA_STATIC_KEY[g.fx]},startMovement)}
               },2400);
             },1900);
@@ -6282,7 +6281,7 @@ export default function MokshaPatam108(){
             const sm=startMovementRef.current;
             setDiceReveal(null);setRollingPhase(null);
             if(!diceReveal.sacredPath){showEvent({icon:diceReveal.g.icon,title:`${diceReveal.g.n} · ${diceReveal.g.en}`,subtitle:diceReveal.grahaStory||"",color:diceReveal.g.color,type:"graha",staticKey:GRAHA_STATIC_KEY[diceReveal.g.fx]},sm)}
-            else{if(!bgMuted)ambient.unduck();if(sm)sm();}
+            else if(sm)sm();
           }}
           style={{position:"fixed",inset:0,zIndex:186,cursor:"pointer",
             display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
