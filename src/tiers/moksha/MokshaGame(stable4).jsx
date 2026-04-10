@@ -855,30 +855,6 @@ const VoiceEngine = {
   audio: null,
   speaking: false,
   _stopToken: 0, // incremented on every stop() — lets async fetches detect they've been cancelled
-  _audioCtxUnlocked: false,
-
-  // MUST be called synchronously from a user tap before any async audio
-  unlockAudio() {
-    if (this._audioCtxUnlocked) return;
-    try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      if (ctx.state === 'suspended') ctx.resume();
-      // Play 1ms of silence — unlocks iOS audio policy
-      const buf = ctx.createBuffer(1, 1, 22050);
-      const src = ctx.createBufferSource();
-      src.buffer = buf;
-      src.connect(ctx.destination);
-      src.start(0);
-      ctx.close();
-      // Also unlock Web Speech API
-      if (window.speechSynthesis) {
-        const u = new SpeechSynthesisUtterance('');
-        u.volume = 0;
-        window.speechSynthesis.speak(u);
-      }
-      this._audioCtxUnlocked = true;
-    } catch(e) {}
-  },
 
   // Play a static MP3 file — instant, zero API cost
   playStatic(url) {
@@ -985,11 +961,6 @@ const VoiceEngine = {
     const staticUrl = staticBase ? `${staticBase}-${l}.mp3` : null;
     const myToken = this._stopToken;
 
-    // iOS: create AudioContext immediately before any await
-    let ctx = null;
-    try { ctx = new (window.AudioContext||window.webkitAudioContext)(); if(ctx.state==='suspended') await ctx.resume(); } catch(e){}
-    this._cgCtx = ctx;
-
     let audioUrl = null;
     // 1. Try static file (instant, zero cost)
     if (staticUrl) {
@@ -1003,9 +974,7 @@ const VoiceEngine = {
       const resp = await fetch(audioUrl);
       const arrayBuf = await resp.arrayBuffer();
       if (this._stopToken !== myToken || this.speaking) return;
-      // Reuse AudioContext created at function start (iOS gesture preserved)
-      if (!ctx) { try { ctx = new (window.AudioContext||window.webkitAudioContext)(); } catch(e){} }
-      if (!ctx) return;
+      const ctx = new (window.AudioContext||window.webkitAudioContext)();
       if (ctx.state==='suspended') await ctx.resume();
       this._cgCtx = ctx;
       const buf = await ctx.decodeAudioData(arrayBuf);
@@ -1245,15 +1214,6 @@ const VoiceEngine = {
     if (!text) return;
     const myToken = this._stopToken;
 
-    // iOS CRITICAL: create + resume AudioContext IMMEDIATELY before any await
-    // iOS kills the user gesture context after the first async operation
-    let ctx = null;
-    try {
-      ctx = new (window.AudioContext || window.webkitAudioContext)();
-      if (ctx.state === 'suspended') await ctx.resume();
-    } catch(e) { ctx = null; }
-    this._yamaCtx = ctx;
-
     let audioUrl = null;
 
     // 1. Static pre-generated file (highest priority — always free)
@@ -1285,13 +1245,9 @@ const VoiceEngine = {
       const blob = await resp.blob();
       const arrayBuf = await blob.arrayBuffer();
 
-      // Reuse the AudioContext created at function start (iOS gesture preserved)
-      if (!ctx) {
-        try { ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
-      }
-      if (!ctx) { this._browserSpeak(text, lang); return; }
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
       if (ctx.state === 'suspended') await ctx.resume();
-      this._yamaCtx = ctx;
+      this._yamaCtx = ctx; // reuse cleanup ref
 
       const buffer = await ctx.decodeAudioData(arrayBuf);
 
@@ -4730,7 +4686,7 @@ export default function MokshaPatam108(){
     gameReadyRef.current=false; // block timer until game is settled
     setPos(Array(n).fill(1));setDisplayPos(Array(n).fill(1));setPunya(Array(n).fill(0));setPapa(Array(n).fill(0));
     setShieldA(Array(n).fill(false));setSkipA(Array(n).fill(false));
-    setCur(0);setWin(null);setHist([]);setRv(null);setGv(null);setLastRollBy(null);setDiceReveal(null);setBusy(false);setDil(null);setUsedDharma([]);VoiceEngine._audioCtxUnlocked=false;
+    setCur(0);setWin(null);setHist([]);setRv(null);setGv(null);setLastRollBy(null);setDiceReveal(null);setBusy(false);setDil(null);setUsedDharma([]);
     setCgEntries([]);setShowMoksha(false);setShowPostGame(false);
     setMsg(`${pList[0].name} the ${pList[0].char.name} — your journey begins.`);
     gameStats.current={startTime:Date.now(),turns:0,snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0,grahaHits:{sun:0,moon:0,mars:0,mercury:0,jupiter:0,venus:0,saturn:0,rahu:0,ketu:0}};
@@ -5021,7 +4977,7 @@ export default function MokshaPatam108(){
         play("chime");
         if(!muted){
           ambient.duck();
-          VoiceEngine.unlockAudio();VoiceEngine.speakNarrator(`Well done ${pName}! You answered correctly. Your soul grows purer.`,chosenLang,null);
+          setTimeout(()=>VoiceEngine.speakNarrator(`Well done ${pName}! You answered correctly. Your soul grows purer.`,chosenLang,null),300);
           setTimeout(()=>ambient.unduck(),4000);
         }
       }else{
@@ -6186,7 +6142,7 @@ export default function MokshaPatam108(){
           <div style={{fontSize:18,fontFamily:"'Yatra One',serif",color:eventPopup.color,marginBottom:4,letterSpacing:2}}>{eventPopup.title}</div>
           {eventPopup.extra&&<div style={{fontSize:16,fontWeight:900,color:eventPopup.color,marginBottom:6,letterSpacing:4}}>{eventPopup.extra}</div>}
           <div style={{fontSize:11,color:"#d0c090",lineHeight:1.9,fontStyle:"italic",opacity:.8,maxHeight:200,overflowY:"auto"}}>{eventPopup.subtitle}</div>
-          <button onClick={()=>{VoiceEngine.unlockAudio();dismissEvent();}} style={{marginTop:16,background:"transparent",border:`1px solid ${eventPopup.color}40`,color:eventPopup.color,padding:"12px 28px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2,minHeight:44,touchAction:"manipulation",WebkitTapHighlightColor:"transparent"}}>TAP TO CONTINUE ▸</button>
+          <button onClick={dismissEvent} style={{marginTop:16,background:"transparent",border:`1px solid ${eventPopup.color}40`,color:eventPopup.color,padding:"12px 28px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2,minHeight:44,touchAction:"manipulation",WebkitTapHighlightColor:"transparent"}}>TAP TO CONTINUE ▸</button>
           {eventPopup.type==="graha"&&<div style={{marginTop:8,fontSize:9,opacity:.35,letterSpacing:2,fontFamily:"'Cinzel',serif"}}>auto-continues in 8s</div>}
         </div>
       </div>}
@@ -6214,7 +6170,7 @@ export default function MokshaPatam108(){
       const btnBorder=isAshtanga?"rgba(200,160,60,.3)":ch.k==="punya"?"rgba(220,180,80,.4)":"rgba(200,60,30,.4)";
       const btnColor=isAshtanga?"#e0c860":ch.k==="punya"?"#f0d050":"#e08040";
       const isMyDilemma = !isOnline || dil.pi === myPlayerIndex;
-      return <button key={ci} onClick={()=>{VoiceEngine.unlockAudio();isMyDilemma&&solvD(ci);}}
+      return <button key={ci} onClick={()=>isMyDilemma&&solvD(ci)}
       disabled={!isMyDilemma}
       style={{display:"block",width:"100%",background:btnBg,border:`2px solid ${btnBorder}`,color:btnColor,padding:"14px 16px",fontSize:"clamp(12px,1.4vw,14px)",fontFamily:"'Cinzel',serif",cursor:isMyDilemma?"pointer":"not-allowed",textAlign:"left",lineHeight:1.7,borderRadius:6,transition:"all .2s",letterSpacing:1,opacity:isMyDilemma?1:0.45,minHeight:52,touchAction:"manipulation",WebkitTapHighlightColor:"transparent"}}>
       {ch.l}
@@ -6323,7 +6279,6 @@ export default function MokshaPatam108(){
       {diceReveal&&rollingPhase==='graha_zoom'&&(
         <div
           onClick={()=>{
-            VoiceEngine.unlockAudio(); // iOS: must unlock before any async audio
             const sm=startMovementRef.current;
             setDiceReveal(null);setRollingPhase(null);
             if(!diceReveal.sacredPath){showEvent({icon:diceReveal.g.icon,title:`${diceReveal.g.n} · ${diceReveal.g.en}`,subtitle:diceReveal.grahaStory||"",color:diceReveal.g.color,type:"graha",staticKey:GRAHA_STATIC_KEY[diceReveal.g.fx]},sm)}
@@ -6996,7 +6951,7 @@ export default function MokshaPatam108(){
             </div>
           )}
           <button
-            onClick={()=>{VoiceEngine.unlockAudio();haptic();doRoll(false);}}
+            onClick={()=>{haptic();doRoll(false);}}
             disabled={!!dil||busy||(isOnline&&!isMyTurn)}
             className="gb gp"
             style={{width:"100%",padding:"13px",fontSize:15,letterSpacing:4,
