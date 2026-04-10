@@ -79,7 +79,7 @@ export const AudioCache = {
         method: 'POST',
         headers: hdrs,
         body: JSON.stringify({
-          text: text.slice(0, 500),
+          text: text.slice(0, 1000),
           voice: voiceOverride || 'ash',
         }),
       });

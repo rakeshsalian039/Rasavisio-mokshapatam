@@ -4,7 +4,7 @@
 import { createClient } from '@supabase/supabase-js';
 
 const ALLOWED_VOICES = ['alloy', 'echo', 'fable', 'onyx', 'nova', 'shimmer', 'ash', 'coral', 'sage'];
-const MAX_TEXT_LENGTH = 500;
+const MAX_TEXT_LENGTH = 1000;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX = 10;
 
@@ -61,7 +61,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'text required' });
   }
   if (typeof text !== 'string' || text.length > MAX_TEXT_LENGTH) {
-    return res.status(400).json({ error: `text must be a string under ${MAX_TEXT_LENGTH} characters` });
+    return res.status(400).json({ error: `text must be a string under ${MAX_TEXT_LENGTH} chars` });
   }
 
   const safeVoice = ALLOWED_VOICES.includes(voice) ? voice : 'onyx';
