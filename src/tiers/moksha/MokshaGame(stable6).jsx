@@ -966,10 +966,10 @@ const VoiceEngine = {
   stop() {
     this._stopToken++;
     if (this.audio) { try { this.audio.pause(); this.audio.currentTime = 0; } catch (e) {} this.audio = null; }
-    if (this._yamaCtx && this._yamaCtx !== this._sharedCtx) { try { this._yamaCtx.close(); } catch(e){} } this._yamaCtx = null;
+    if (this._yamaCtx) { try { this._yamaCtx.close(); } catch(e){} this._yamaCtx = null; }
     if (this._yamaSource) { try { this._yamaSource.stop(); } catch(e){} this._yamaSource = null; }
     if (this._yamaSource2) { try { this._yamaSource2.stop(); } catch(e){} this._yamaSource2 = null; }
-    if (this._cgCtx && this._cgCtx !== this._sharedCtx) { try { this._cgCtx.close(); } catch(e){} } this._cgCtx = null;
+    if (this._cgCtx) { try { this._cgCtx.close(); } catch(e){} this._cgCtx = null; }
     try { window.speechSynthesis.cancel(); } catch (e) {}
     this.speaking = false;
   },
@@ -1016,7 +1016,7 @@ const VoiceEngine = {
       if (ctx.state==='suspended') { try { await ctx.resume(); } catch(e) {} }
       this._cgCtx = ctx;
       const buf = await ctx.decodeAudioData(arrayBuf);
-      if (this._stopToken !== myToken) { if(ctx!==this._sharedCtx){try{ctx.close()}catch(e){}}; return; }
+      if (this._stopToken !== myToken) { try{ctx.close()}catch(e){}; return; }
 
       const src = ctx.createBufferSource();
       src.buffer = buf;
@@ -1054,7 +1054,7 @@ const VoiceEngine = {
       src.onended = () => {
         this.speaking = false;
         bowlG.gain.linearRampToValueAtTime(0, ctx.currentTime+2.5);
-        setTimeout(()=>{try{bowl.stop();if(ctx!==this._sharedCtx)ctx.close();}catch(e){}this._cgCtx=null;},3000);
+        setTimeout(()=>{try{bowl.stop();ctx.close()}catch(e){}this._cgCtx=null;},3000);
       };
       src.start(0); bowl.start(0);
     } catch(e) {
@@ -1175,7 +1175,7 @@ const VoiceEngine = {
       master.connect(ctx.destination);
 
       this.speaking = true;
-      source1.onended = () => { this.speaking = false; if(ctx !== this._sharedCtx){try{ctx.close()}catch(e){}} this._yamaCtx=null; };
+      source1.onended = () => { this.speaking = false; try{ctx.close()}catch(e){} this._yamaCtx=null; };
       source1.start(0);
       source2.start(0);
       return; // Success!
@@ -1233,7 +1233,7 @@ const VoiceEngine = {
       master.connect(ctx.destination);
 
       this.speaking = true;
-      source.onended = () => { this.speaking = false; if(ctx !== this._sharedCtx){try{ctx.close()}catch(e){}} this._yamaCtx=null; };
+      source.onended = () => { this.speaking = false; try{ctx.close()}catch(e){} this._yamaCtx=null; };
       source.start(0);
     } catch(e) {
       console.warn('Yama taunt MP3 not found, falling back to TTS API:', e.message);
@@ -1411,7 +1411,7 @@ const VoiceEngine = {
         this.speaking = false;
         // Fade out drone gracefully
         droneGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.5);
-        setTimeout(()=>{try{osc1.stop();osc2.stop();osc3.stop();if(ctx!==this._sharedCtx)ctx.close()}catch(e){}this._yamaCtx=null},2000);
+        setTimeout(()=>{try{osc1.stop();osc2.stop();osc3.stop();ctx.close()}catch(e){}this._yamaCtx=null},2000);
       };
       source.start(0);
       onAudioStart && onAudioStart(); // ← fires exactly when audio begins
