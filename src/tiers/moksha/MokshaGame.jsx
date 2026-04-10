@@ -4764,7 +4764,7 @@ export default function MokshaPatam108(){
                 if(sv)VoiceEngine.speakNarrator(grahaStory,chosenLang,sv);
                 else VoiceEngine.speakNarrator(grahaStory,chosenLang,null);
               }
-              // Auto-advance after 5s if user doesn't tap
+              // Auto-advance after 8s if user doesn't tap
               setTimeout(()=>{
                 // Only auto-advance if still on graha_zoom (user might have tapped already)
                 setRollingPhase(prev=>{
@@ -4776,7 +4776,7 @@ export default function MokshaPatam108(){
                   }
                   return prev;
                 });
-              },5000);
+              },8000);
             },1200);
           },550);
         },650);
