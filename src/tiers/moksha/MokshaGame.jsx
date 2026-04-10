@@ -6003,88 +6003,99 @@ export default function MokshaPatam108(){
           }}
           style={{position:"fixed",inset:0,zIndex:185,cursor:"pointer",
             display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
-            background:"rgba(3,2,1,.86)",backdropFilter:"blur(9px)",WebkitBackdropFilter:"blur(9px)",
+            background:"radial-gradient(ellipse at 50% 38%,rgba(30,25,15,.92),rgba(3,2,1,.96))",
+            backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",
             animation:"fadeIn .22s ease",
           }}>
 
-          {/* Player name */}
-          <div style={{display:"flex",alignItems:"center",gap:9,marginBottom:20,opacity:.88}}>
-            <span style={{fontSize:21}}>{diceReveal.icon}</span>
-            <span style={{fontFamily:"'Cinzel',serif",fontSize:11,color:diceReveal.color,
-              letterSpacing:5,fontWeight:700}}>{diceReveal.name.split(" ")[0].toUpperCase()}</span>
+          {/* Ambient glow behind dice */}
+          <div style={{position:"absolute",width:isMobile?260:340,height:isMobile?260:340,
+            borderRadius:"50%",pointerEvents:"none",
+            background:`radial-gradient(circle,${diceReveal.g.color}08 0%,transparent 70%)`,
+            opacity:rollingPhase==='settled'?1:0,transition:"opacity 1s ease",
+          }}/>
+
+          {/* Player name + character */}
+          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:isMobile?28:36,
+            animation:"grahaNameIn .4s ease both",
+          }}>
+            <span style={{fontSize:isMobile?26:32}}>{diceReveal.icon}</span>
+            <span style={{fontFamily:"'Cinzel',serif",fontSize:isMobile?14:16,color:diceReveal.color,
+              letterSpacing:isMobile?4:6,fontWeight:700}}>{diceReveal.name.split(" ")[0].toUpperCase()}</span>
           </div>
 
           {/* Two dice row */}
-          <div style={{display:"flex",gap:isMobile?20:36,alignItems:"center",marginBottom:20}}>
+          <div style={{display:"flex",gap:isMobile?24:44,alignItems:"center",marginBottom:isMobile?24:32}}>
 
             {/* KARMA DIE */}
             <div style={{textAlign:"center"}}>
-              <div style={{fontSize:7,letterSpacing:6,color:"rgba(240,200,80,.32)",
-                marginBottom:9,fontFamily:"'Cinzel',serif",fontWeight:700,textTransform:"uppercase"}}>Karma</div>
+              <div style={{fontSize:isMobile?9:11,letterSpacing:isMobile?4:6,color:"rgba(240,200,80,.35)",
+                marginBottom:isMobile?10:12,fontFamily:"'Cinzel',serif",fontWeight:700,textTransform:"uppercase"}}>Karma</div>
               <KarmaDie
                 value={rollingPhase==='rolling'?(displayKarma||1):diceReveal.r}
                 rolling={rollingPhase==='rolling'}
                 landing={rollingPhase==='landing_karma'||rollingPhase==='settled'}
-                size={isMobile?86:114}
+                size={isMobile?96:124}
               />
-              <div style={{marginTop:10,height:22,
+              <div style={{marginTop:isMobile?12:14,height:28,
                 opacity:rollingPhase==='settled'?1:0,
                 transition:"opacity .7s .25s ease",
-                fontFamily:"'Cinzel Decorative',serif",
-                fontSize:isMobile?16:19,color:"#f0d050",fontWeight:900,letterSpacing:2,
+                fontFamily:"'Cinzel',serif",
+                fontSize:isMobile?20:24,color:"#f0d050",fontWeight:900,letterSpacing:2,
               }}>+{diceReveal.r}</div>
             </div>
 
             {/* Divider */}
-            <div style={{opacity:.13,display:"flex",flexDirection:"column",alignItems:"center",
-              gap:5,paddingTop:12}}>
-              <div style={{width:1,height:22,background:"linear-gradient(transparent,rgba(240,200,80,.8),transparent)"}}/>
-              <span style={{fontSize:11,color:"#c0b080",fontFamily:"serif",opacity:.7}}>✦</span>
-              <div style={{width:1,height:22,background:"linear-gradient(transparent,rgba(240,200,80,.8),transparent)"}}/>
+            <div style={{opacity:.15,display:"flex",flexDirection:"column",alignItems:"center",
+              gap:6,paddingTop:14}}>
+              <div style={{width:1,height:isMobile?26:34,background:"linear-gradient(transparent,rgba(240,200,80,.8),transparent)"}}/>
+              <span style={{fontSize:13,color:"#c0b080",fontFamily:"serif",opacity:.7}}>✦</span>
+              <div style={{width:1,height:isMobile?26:34,background:"linear-gradient(transparent,rgba(240,200,80,.8),transparent)"}}/>
             </div>
 
             {/* GRAHA 3D CUBE */}
             <div style={{textAlign:"center"}}>
-              <div style={{fontSize:7,letterSpacing:6,color:"rgba(200,160,60,.32)",
-                marginBottom:9,fontFamily:"'Cinzel',serif",fontWeight:700,textTransform:"uppercase"}}>Navagraha</div>
+              <div style={{fontSize:isMobile?9:11,letterSpacing:isMobile?4:6,color:"rgba(200,160,60,.35)",
+                marginBottom:isMobile?10:12,fontFamily:"'Cinzel',serif",fontWeight:700,textTransform:"uppercase"}}>Navagraha</div>
               <GrahaCube3D
                 grahaIcon={rollingPhase==='rolling'?(displayGraha||'✦'):diceReveal.g.icon}
                 grahaColor={diceReveal.g.color}
                 rolling={rollingPhase==='rolling'}
                 settling={rollingPhase==='landing_graha'}
-                size={isMobile?86:114}
+                size={isMobile?96:124}
               />
-              <div style={{marginTop:10,height:22,
+              <div style={{marginTop:isMobile?12:14,height:28,
                 opacity:rollingPhase==='settled'?1:0,
                 transition:"opacity .7s .5s ease",
-                fontFamily:"'Cinzel',serif",
-                fontSize:11,color:diceReveal.g.color,fontWeight:700,letterSpacing:2,
+                fontFamily:"'Yatra One',serif",
+                fontSize:isMobile?16:20,color:diceReveal.g.color,fontWeight:700,letterSpacing:3,
               }}>{diceReveal.g.n}</div>
             </div>
           </div>
 
           {/* Effect card — fades in when settled */}
           <div style={{
-            maxWidth:268,textAlign:"center",padding:"11px 18px",borderRadius:11,
-            background:`${diceReveal.g.color}10`,border:`1px solid ${diceReveal.g.color}28`,
+            maxWidth:isMobile?310:400,textAlign:"center",padding:isMobile?"14px 20px":"18px 26px",borderRadius:13,
+            background:`${diceReveal.g.color}0c`,border:`1px solid ${diceReveal.g.color}25`,
             opacity:rollingPhase==='settled'?1:0,
             transform:rollingPhase==='settled'?"translateY(0)":"translateY(20px)",
             transition:"opacity .55s .75s ease, transform .55s .75s ease",
           }}>
-            <div style={{fontSize:10,color:diceReveal.g.color,fontWeight:700,
-              letterSpacing:2,fontFamily:"'Cinzel',serif",marginBottom:4}}>
+            <div style={{fontSize:isMobile?13:15,color:diceReveal.g.color,fontWeight:700,
+              letterSpacing:3,fontFamily:"'Cinzel',serif",marginBottom:6}}>
               {diceReveal.g.en.split("—")[0].trim()}
             </div>
-            <div style={{fontSize:9,color:"rgba(200,175,140,.5)",lineHeight:1.8,fontStyle:"italic"}}>
-              {diceReveal.g.desc.slice(0,90)}…
+            <div style={{fontSize:isMobile?12:14,color:"rgba(225,205,165,.58)",lineHeight:1.85,
+              fontFamily:"'Noto Serif Devanagari',serif"}}>
+              {diceReveal.g.desc.slice(0,120)}…
             </div>
           </div>
 
           {/* Skip hint */}
-          <div style={{position:"absolute",bottom:22,
-            fontSize:8,color:"rgba(200,160,60,.2)",letterSpacing:5,fontFamily:"'Cinzel',serif",
-            opacity:rollingPhase==='settled'?1:0,transition:"opacity .4s 1.4s ease",
-          }}>TAP TO SKIP ▸</div>
+          <div style={{position:"absolute",bottom:isMobile?22:30,
+            fontSize:isMobile?9:10,color:"rgba(200,160,60,.25)",letterSpacing:6,fontFamily:"'Cinzel',serif",
+            opacity:rollingPhase==='settled'?1:0,transition:"opacity .4s 1.2s ease",
+          }}>TAP TO CONTINUE</div>
         </div>
       )}
 
