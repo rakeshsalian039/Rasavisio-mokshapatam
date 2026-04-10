@@ -3907,7 +3907,7 @@ const CSS=`
 @keyframes grahaSettle3D{0%{transform:rotateX(338deg) rotateY(318deg)}25%{transform:rotateX(355deg) rotateY(348deg)}55%{transform:rotateX(363deg) rotateY(356deg)}78%{transform:rotateX(358deg) rotateY(362deg)}100%{transform:rotateX(360deg) rotateY(360deg)}}
 @keyframes grahaZoomIn{0%{opacity:0;transform:scale(0.15) translateY(80px)}35%{opacity:1;transform:scale(1.1) translateY(-12px)}65%{transform:scale(0.96) translateY(6px)}82%{transform:scale(1.03) translateY(-3px)}100%{opacity:1;transform:scale(1) translateY(0)}}
 @keyframes grahaNameIn{0%{opacity:0;transform:translateY(24px) scale(.88)}100%{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes pipAppear{0%{transform:scale(0) rotate(-45deg);opacity:0}55%{transform:scale(1.35) rotate(5deg)}100%{transform:scale(1) rotate(0deg);opacity:1}}
+@keyframes pipAppear{0%{transform:translate(-50%,-50%) scale(0) rotate(-45deg);opacity:0}55%{transform:translate(-50%,-50%) scale(1.35) rotate(5deg)}100%{transform:translate(-50%,-50%) scale(1) rotate(0deg);opacity:1}}
 @keyframes diceShake{0%{transform:rotate(-15deg) scale(1.1) translateY(-4px)}20%{transform:rotate(12deg) scale(1.15) translateY(-8px)}40%{transform:rotate(-18deg) scale(1.08) translateY(-5px)}60%{transform:rotate(14deg) scale(1.12) translateY(-7px)}80%{transform:rotate(-10deg) scale(1.1) translateY(-3px)}100%{transform:rotate(0deg) scale(1) translateY(0)}}
 @keyframes diceLand{0%{transform:scale(1.3) rotate(-5deg)}40%{transform:scale(.95) rotate(2deg)}70%{transform:scale(1.05) rotate(-1deg)}100%{transform:scale(1) rotate(0deg)}}
 @keyframes diceGlow{0%,100%{box-shadow:0 0 20px rgba(240,200,80,.2)}50%{box-shadow:0 0 50px rgba(240,200,80,.7),0 0 100px rgba(240,200,80,.3)}}
