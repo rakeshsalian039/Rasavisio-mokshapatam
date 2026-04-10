@@ -13,6 +13,9 @@ import { supabase } from '../../auth/supabaseClient';
 import { useAuth, GoogleIcon, AppleIcon, RASHI, getZodiac } from '../../shared/useAuth';
 import GameDB from '../../shared/useAuth';
 import { log, warn, error as logError } from '../../utils/logger';
+import { TEMPLE_SQUARES, TEMPLES } from '../../data/knowledgeTemples';
+import { GURUS } from '../../data/guruEncounters';
+import { COSMIC_CARDS } from '../../data/cosmicKnowledge';
 log("Supabase init:", supabase ? "connected" : "not configured");
 
 const SNAKES={16:{to:4,skt:"क्रोध",en:"WRATH",tale:"As Duryodhana's rage consumed the Kuru dynasty..."},23:{to:7,skt:"लोभ",en:"GREED",tale:"Like Shakuni who gambled away an empire..."},33:{to:12,skt:"मोह",en:"DELUSION",tale:"Dhritarashtra's blind love veiled all judgment..."},38:{to:21,skt:"मात्सर्य",en:"ENVY",tale:"Duryodhana burned with jealousy at Indraprastha..."},47:{to:29,skt:"काम",en:"DESIRE",tale:"Keechaka's lust brought his annihilation..."},56:{to:41,skt:"मद",en:"PRIDE",tale:"Ravana's arrogance toppled golden Lanka..."},62:{to:44,skt:"भय",en:"TERROR",tale:"Arjuna paralysed before the great war..."},74:{to:51,skt:"द्वेष",en:"HATRED",tale:"Drona and Drupada's hatred echoed ages..."},85:{to:59,skt:"आलस्य",en:"SLOTH",tale:"Kumbhakarna slept while dharma crumbled..."},95:{to:68,skt:"अहंकार",en:"EGO",tale:"Parashurama's ego challenged even Rama..."}};
@@ -130,15 +133,24 @@ const DILEMMAS=[
     c:[{l:"🙏 Speak the truth publicly — BACK 4, +4 Punya",k:"punya",fx:{punya:4,move:-4}},{l:"💀 Stay silent and benefit — ADVANCE 6, +3 Papa",k:"papa",fx:{papa:3,move:6}}]},
 ];
 const GRAHA=[
-  {n:"सूर्य",en:"Surya — The Sun",icon:"☀",desc:"The king of planets blazes your path forward. As Surya illuminated Karna with divine armour, his radiance grants you +2 extra steps. The Sun sees all — nothing hides from his gaze.",color:"#f0b840",fx:"sun"},
-  {n:"चन्द्र",en:"Chandra — The Moon",icon:"☾",desc:"Chandra, who waxes and wanes like karma itself, bathes you in lunar grace. The Moon purifies — you receive +1 Punya. As Chandra calmed Shiva's burning third eye, his light soothes your soul.",color:"#a0c8e0",fx:"moon"},
-  {n:"मंगल",en:"Mangal — Mars",icon:"♂",desc:"Mars, the warrior planet born from Shiva's sweat, fills you with battle fury. The nearest seeker retreats 3 squares. But violence has a price — you gain +1 Papa. Even righteous war leaves karmic scars.",color:"#e07050",fx:"mars"},
-  {n:"बुध",en:"Budh — Mercury",icon:"☿",desc:"Mercury, son of Chandra and Tara (born from a cosmic scandal), governs fate's reversals. Your position swaps with the nearest seeker — you take their place, they take yours. Then you move forward. Budh reminds us: fortune is never permanent.",color:"#80c080",fx:"mercury"},
-  {n:"बृहस्पति",en:"Brihaspati — Jupiter",icon:"♃",desc:"Brihaspati, guru of the Devas and wisest of all planets, showers divine blessings upon the entire board. ALL seekers gain +1 Punya. Jupiter's grace is universal — even enemies benefit from a truly great teacher's wisdom.",color:"#f0d060",fx:"jupiter"},
-  {n:"शुक्र",en:"Shukra — Venus",icon:"♀",desc:"Shukra, guru of the Asuras, possessed the secret of Sanjeevani — the power to resurrect the dead. He grants you a celestial Shield. The next serpent that strikes you will find its venom neutralized. This Shield works once — use it wisely.",color:"#d0a0c0",fx:"venus"},
-  {n:"शनि",en:"Shani — Saturn",icon:"♄",desc:"Shani Dev, the fearsome lord of karma and justice, turns his gaze upon you. His stare alone toppled kingdoms. You are pushed BACK 3 squares and gain +1 Papa. Even the gods feared Shani's slow, grinding justice. No one escapes Saturn's lessons.",color:"#8080a0",fx:"saturn"},
-  {n:"राहु",en:"Rahu — The Shadow",icon:"☊",desc:"Rahu, the shadow planet, is the severed head of the demon Svarbhanu who drank the nectar of immortality. He creates eclipses by swallowing the Sun. Rahu steals +1 Punya from the leading seeker and gives it to the trailing seeker. Chaos. Inversion. The first shall be last.",color:"#6050a0",fx:"rahu"},
-  {n:"केतु",en:"Ketu — The Tail",icon:"☋",desc:"Ketu is Rahu's headless body — the planet of detachment and moksha. All seekers lose their Shield (if any). Ketu strips away all protection, all attachments. But in loss, there is liberation. The seeker closest to Square 108 gains +1 Punya — for Ketu rewards those who are ready to let go.",color:"#a06060",fx:"ketu"},
+  {n:"सूर्य",en:"Surya — The Sun",icon:"☀",desc:"The king of planets blazes your path forward. As Surya illuminated Karna with divine armour, his radiance grants you +2 extra steps. The Sun sees all — nothing hides from his gaze.",color:"#f0b840",fx:"sun",
+    science:"Aryabhata (499 CE) calculated Earth's rotation as 23h 56m 4.1s — only 3.3 seconds off the modern value. He knew Earth rotates on its axis 1,000 years before Copernicus."},
+  {n:"चन्द्र",en:"Chandra — The Moon",icon:"☾",desc:"Chandra, who waxes and wanes like karma itself, bathes you in lunar grace. The Moon purifies — you receive +1 Punya. As Chandra calmed Shiva's burning third eye, his light soothes your soul.",color:"#a0c8e0",fx:"moon",
+    science:"The Moon's 27.3-day orbital period matches the 27 Nakshatras of Vedic astronomy — a stellar coordinate system that tracked the Moon's nightly position and predicted eclipses centuries before the West."},
+  {n:"मंगल",en:"Mangal — Mars",icon:"♂",desc:"Mars, the warrior planet born from Shiva's sweat, fills you with battle fury. The nearest seeker retreats 3 squares. But violence has a price — you gain +1 Papa. Even righteous war leaves karmic scars.",color:"#e07050",fx:"mars",
+    science:"Mars appears red due to iron oxide — Vedic texts linked Mangal to blood and iron (Rakta Dhatu). Indian astronomers calculated Mars's 687-day orbit in the Surya Siddhanta with remarkable accuracy."},
+  {n:"बुध",en:"Budh — Mercury",icon:"☿",desc:"Mercury, son of Chandra and Tara (born from a cosmic scandal), governs fate's reversals. Your position swaps with the nearest seeker — you take their place, they take yours. Then you move forward. Budh reminds us: fortune is never permanent.",color:"#80c080",fx:"mercury",
+    science:"Mercury completes its orbit in just 88 days — the fastest planet. Its erratic retrograde motion was precisely described in the Surya Siddhanta as 'vakra' (crooked path)."},
+  {n:"बृहस्पति",en:"Brihaspati — Jupiter",icon:"♃",desc:"Brihaspati, guru of the Devas and wisest of all planets, showers divine blessings upon the entire board. ALL seekers gain +1 Punya. Jupiter's grace is universal — even enemies benefit from a truly great teacher's wisdom.",color:"#f0d060",fx:"jupiter",
+    science:"Jupiter's 11.86-year orbit is the basis of the Vedic Guru cycle (Guru Peyarchi). Modern science confirms Jupiter's gravity acts as a cosmic shield, deflecting asteroids that would otherwise hit Earth."},
+  {n:"शुक्र",en:"Shukra — Venus",icon:"♀",desc:"Shukra, guru of the Asuras, possessed the secret of Sanjeevani — the power to resurrect the dead. He grants you a celestial Shield. The next serpent that strikes you will find its venom neutralized. This Shield works once — use it wisely.",color:"#d0a0c0",fx:"venus",
+    science:"Venus appears as both the morning and evening star. Vedic astronomers knew it was one object. The Surya Siddhanta's Venus orbital calculation has less than 2 minutes of error."},
+  {n:"शनि",en:"Shani — Saturn",icon:"♄",desc:"Shani Dev, the fearsome lord of karma and justice, turns his gaze upon you. His stare alone toppled kingdoms. You are pushed BACK 3 squares and gain +1 Papa. Even the gods feared Shani's slow, grinding justice. No one escapes Saturn's lessons.",color:"#8080a0",fx:"saturn",
+    science:"Saturn's 29.5-year orbit defines the Sade Sati cycle. Vedic texts describe Shani's 'valayas' (rings of light) — a feature the West didn't discover until Galileo's telescope in 1610."},
+  {n:"राहु",en:"Rahu — The Shadow",icon:"☊",desc:"Rahu, the shadow planet, is the severed head of the demon Svarbhanu who drank the nectar of immortality. He creates eclipses by swallowing the Sun. Rahu steals +1 Punya from the leading seeker and gives it to the trailing seeker. Chaos. Inversion. The first shall be last.",color:"#6050a0",fx:"rahu",
+    science:"Rahu IS the ascending lunar node — the mathematical point where the Moon's orbit crosses Earth's orbital plane. Vedic astronomers predicted eclipses using these 'shadow planets' with tables (panchanga) that remain accurate today."},
+  {n:"केतु",en:"Ketu — The Tail",icon:"☋",desc:"Ketu is Rahu's headless body — the planet of detachment and moksha. All seekers lose their Shield (if any). Ketu strips away all protection, all attachments. But in loss, there is liberation. The seeker closest to Square 108 gains +1 Punya — for Ketu rewards those who are ready to let go.",color:"#a06060",fx:"ketu",
+    science:"Ketu IS the descending lunar node. The Rahu-Ketu axis completes a cycle every 18.6 years — known to Indian astronomers as the eclipse cycle, rediscovered by the West as the Saros cycle."},
 ];
 const CHARS=[
   {id:"warrior",name:"Kshatriya Warrior",skt:"क्षत्रिय",icon:"⚔",color:"#e04830",lore:"Once a commander at Kurukshetra alongside Bhishma. Haunted by bloodshed, you seek Moksha to cleanse the karma of a thousand battles.",trait:"Courage",
@@ -4204,6 +4216,14 @@ export default function MokshaPatam108(){
   const[win,setWin]=useState(null);
   const[showPostGame,setShowPostGame]=useState(false);
   const[pendingPlayers,setPendingPlayers]=useState(null); // held during CG intro
+  // ── Knowledge Board state ──
+  const[templeQuiz,setTempleQuiz]=useState(null);        // {temple, question, onAnswer}
+  const[guruEncounter,setGuruEncounter]=useState(null);   // {guru, question, phase:'intro'|'question'|'result'}
+  const[cosmicCard,setCosmicCard]=useState(null);         // {title, icon, fact, source}
+  const usedTempleQRef=useRef({});    // {vaidya:[0,3,7], shilpa:[1,5], ...} — used question indices per temple
+  const usedGuruQRef=useRef({});      // {aryabhata:[0,2], sushruta:[1], ...}
+  const usedCosmicRef=useRef([]);     // indices of used cosmic cards
+  const guruBlessingRef=useRef(null); // active guru blessing: {type:'shield'|'double_roll'|'skip_papa'|...}
   // ── Chitragupta state ──
   const[cgEntries,setCgEntries]=useState([]);
   const[showMoksha,setShowMoksha]=useState(false);
@@ -4498,6 +4518,7 @@ export default function MokshaPatam108(){
     setPos(Array(n).fill(1));setDisplayPos(Array(n).fill(1));setPunya(Array(n).fill(0));setPapa(Array(n).fill(0));
     setShieldA(Array(n).fill(false));setSkipA(Array(n).fill(false));
     setCur(0);setWin(null);setHist([]);setRv(null);setGv(null);setLastRollBy(null);setDiceReveal(null);setBusy(false);setDil(null);setUsedDharma([]);VoiceEngine._audioCtxUnlocked=false;
+    setTempleQuiz(null);setGuruEncounter(null);setCosmicCard(null);usedTempleQRef.current={};usedGuruQRef.current={};usedCosmicRef.current=[];guruBlessingRef.current=null;
     setCgEntries([]);setShowMoksha(false);setShowPostGame(false);
     setMsg(`${pList[0].name} the ${pList[0].char.name} — your journey begins.`);
     gameStats.current={startTime:Date.now(),turns:0,snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0,grahaHits:{sun:0,moon:0,mars:0,mercury:0,jupiter:0,venus:0,saturn:0,rahu:0,ketu:0}};
@@ -4531,6 +4552,37 @@ export default function MokshaPatam108(){
     if(dil||win||busy||players.length===0)return;
     if(isOnline&&!isMyTurn)return; // online: only active player rolls
     if(autoRoll&&!gameReadyRef.current)return; // block timer auto-roll during init
+    // ═══ GURU ENCOUNTER / COSMIC CARD — every 5th turn ═══
+    const totalTurns=gameStats.current.turns||0;
+    if(totalTurns>0&&totalTurns%5===0&&!guruEncounter&&!cosmicCard&&!templeQuiz&&!autoRoll){
+      if(Math.random()<0.5){
+        // Guru encounter
+        const available=GURUS.filter(g=>{const used=usedGuruQRef.current[g.id]||[];return g.questions.length>used.length;});
+        if(available.length>0){
+          const guru=available[Math.floor(Math.random()*available.length)];
+          const used=usedGuruQRef.current[guru.id]||[];
+          let pool=guru.questions.map((_,i)=>i).filter(i=>!used.includes(i));
+          const qIdx=pool[Math.floor(Math.random()*pool.length)];
+          usedGuruQRef.current[guru.id]=[...used,qIdx];
+          setGuruEncounter({guru,question:guru.questions[qIdx],phase:'intro'});
+          return; // block dice roll until guru is dismissed
+        }
+      }else{
+        // Cosmic knowledge card (realm-based)
+        const p=pos[cur]||1;
+        const realm=p<=33?'bhuloka':p<=66?'antarloka':'svargaloka';
+        const cards=COSMIC_CARDS[realm]||[];
+        const usedIds=usedCosmicRef.current;
+        const available=cards.filter((_,i)=>!usedIds.includes(`${realm}_${i}`));
+        if(available.length>0){
+          const idx=Math.floor(Math.random()*available.length);
+          const origIdx=cards.indexOf(available[idx]);
+          usedCosmicRef.current=[...usedIds,`${realm}_${origIdx}`];
+          setCosmicCard(available[idx]);
+          return; // block dice roll until card is dismissed
+        }
+      }
+    }
     if(skipA[cur]){const ns=[...skipA];ns[cur]=false;setSkipA(ns);setMsg(`${players[cur].name}'s turn is skipped.`);setCur(c=>(c+1)%nP);return}
     // Kill ALL audio before rolling
     if(voiceTimerRef.current){clearTimeout(voiceTimerRef.current);voiceTimerRef.current=null}
@@ -4658,6 +4710,36 @@ export default function MokshaPatam108(){
           }}
           else if(LADDERS[p]){const ld=LADDERS[p];const o=p;p=ld.to;eMsg=`🪔 ${o}→${p}`;nPunya[cur]+=1;gameStats.current.ladders++;play("ladder");showKarmaToast(pName,1,'punya','🪔');
             showEvent({icon:"🪔",title:`${ld.skt} — ${ld.en}`,subtitle:`${pName}, the virtue of ${ld.en} lifts you! ${ld.tale} Rise from ${o} to ${p}. +1 PUNYA.`,color:"#f0d050",extra:`${o} → ${p}`,staticKey:"ladder_rise"},()=>{addCGEntry('ladder',p,`${ld.skt} · ${o}→${p}`);speakCG('ladder',500);finishTurn(true)});
+          }
+          // ═══ KNOWLEDGE TEMPLE CHECK ═══
+          else if(TEMPLE_SQUARES[p]){
+            const templeKey=TEMPLE_SQUARES[p];
+            const temple=TEMPLES[templeKey];
+            if(temple){
+              // Pick unused question
+              const used=usedTempleQRef.current[templeKey]||[];
+              let pool=temple.questions.map((_,i)=>i).filter(i=>!used.includes(i));
+              if(pool.length===0){pool=temple.questions.map((_,i)=>i);usedTempleQRef.current[templeKey]=[];}
+              const qIdx=pool[Math.floor(Math.random()*pool.length)];
+              usedTempleQRef.current[templeKey]=[...(usedTempleQRef.current[templeKey]||[]),qIdx];
+              const question=temple.questions[qIdx];
+              play("chime");
+              showEvent({icon:temple.icon,title:`${temple.name} — ${temple.en}`,subtitle:temple.intro,color:temple.color},()=>{
+                setTempleQuiz({temple,question,square:p,onAnswer:(correct)=>{
+                  setTempleQuiz(null);
+                  if(correct){
+                    nPunya[cur]+=2;showKarmaToast(pName,2,'punya',temple.icon);play("ladder");
+                    addCGEntry('dharma_p',p,`${temple.en} ✓`);
+                    // Advance 3 extra squares (check for snakes/ladders at new position skipped for simplicity)
+                    p=Math.min(p+3,100);nPos[cur]=p;
+                  }else{
+                    nPapa[cur]+=1;showKarmaToast(pName,1,'papa',temple.icon);play("snake");
+                    addCGEntry('dharma_x',p,`${temple.en} ✗`);
+                  }
+                  finishTurn(true);
+                }});
+              });
+            }else{finishTurn();}
           }
           else if(DLM_SQ.includes(p)){
             // No-repeat dharma: pick from unused pool, reset if all used
@@ -5965,6 +6047,194 @@ export default function MokshaPatam108(){
       WebkitOverflowScrolling:"touch",
     }}>
       {globalOverlays}
+      {/* ═══ KNOWLEDGE TEMPLE QUIZ ═══ */}
+      {templeQuiz&&(
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.88)",zIndex:260,
+          display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
+          <div style={{
+            background:`linear-gradient(180deg,${templeQuiz.temple.color}12,#0e0c08)`,
+            border:`2px solid ${templeQuiz.temple.color}40`,borderRadius:14,
+            padding:"clamp(20px,4vw,32px)",maxWidth:420,width:"min(92vw,calc(100vw-32px))",
+            textAlign:"center",animation:"popIn .4s ease forwards",
+            boxShadow:`0 0 80px ${templeQuiz.temple.color}15`,
+          }}>
+            <div style={{fontSize:9,letterSpacing:6,color:`${templeQuiz.temple.color}60`,
+              fontFamily:"'Cinzel',serif",marginBottom:8}}>KNOWLEDGE TEMPLE</div>
+            <div style={{fontSize:36,marginBottom:6}}>{templeQuiz.temple.icon}</div>
+            <div style={{fontFamily:"'Yatra One',serif",fontSize:isMobile?18:22,
+              color:templeQuiz.temple.color,marginBottom:6,letterSpacing:2}}>{templeQuiz.temple.name}</div>
+            <div style={{fontSize:isMobile?11:13,color:"rgba(200,180,140,.5)",
+              fontFamily:"'Cinzel',serif",letterSpacing:3,marginBottom:16}}>{templeQuiz.temple.en}</div>
+            <div style={{fontSize:isMobile?13:15,color:"#e0d0a0",lineHeight:1.9,
+              marginBottom:22,fontFamily:"'Noto Serif Devanagari',serif"}}>
+              {templeQuiz.question.q}
+            </div>
+            <div style={{display:"flex",flexDirection:"column",gap:10}}>
+              <button onClick={()=>templeQuiz.onAnswer(true)} style={{
+                background:`${templeQuiz.temple.color}15`,border:`1px solid ${templeQuiz.temple.color}40`,
+                color:"#e8d8a0",padding:"12px 16px",fontSize:isMobile?12:13,
+                fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:8,
+                lineHeight:1.6,textAlign:"left",
+              }}>{templeQuiz.question.a}</button>
+              <button onClick={()=>templeQuiz.onAnswer(false)} style={{
+                background:"rgba(200,100,60,.08)",border:"1px solid rgba(200,100,60,.25)",
+                color:"#e0c8a0",padding:"12px 16px",fontSize:isMobile?12:13,
+                fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:8,
+                lineHeight:1.6,textAlign:"left",
+              }}>{templeQuiz.question.b}</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══ GURU ENCOUNTER ═══ */}
+      {guruEncounter&&(
+        <div style={{position:"fixed",inset:0,zIndex:265,
+          background:`radial-gradient(ellipse at 50% 30%,${guruEncounter.guru.color}18,rgba(3,2,1,.96) 70%)`,
+          backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",
+          display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
+          padding:16,overflowY:"auto",
+        }}>
+          {/* Ambient rings */}
+          <div style={{position:"absolute",width:isMobile?240:320,height:isMobile?240:320,borderRadius:"50%",
+            border:`1px solid ${guruEncounter.guru.color}12`,animation:"grahaOrbit 8s linear infinite",pointerEvents:"none"}}/>
+
+          {guruEncounter.phase==='intro'&&(
+            <div style={{maxWidth:isMobile?340:480,textAlign:"center",animation:"fadeIn .5s ease"}}>
+              <div style={{fontSize:9,letterSpacing:6,color:`${guruEncounter.guru.color}50`,
+                fontFamily:"'Cinzel',serif",marginBottom:12}}>GURU ENCOUNTER</div>
+              <div style={{fontSize:isMobile?64:80,marginBottom:12,
+                filter:`drop-shadow(0 0 30px ${guruEncounter.guru.color})`,
+              }}>{guruEncounter.guru.icon}</div>
+              <div style={{fontFamily:"'Yatra One',serif",fontSize:isMobile?24:32,
+                color:guruEncounter.guru.color,marginBottom:4,letterSpacing:3,
+                textShadow:`0 0 40px ${guruEncounter.guru.color}80`,
+              }}>{guruEncounter.guru.name}</div>
+              <div style={{fontSize:isMobile?12:14,color:"rgba(255,255,255,.4)",
+                fontFamily:"'Cinzel',serif",letterSpacing:3,marginBottom:6}}>{guruEncounter.guru.en}</div>
+              <div style={{fontSize:isMobile?10:11,color:`${guruEncounter.guru.color}60`,
+                fontFamily:"'Cinzel',serif",letterSpacing:2,marginBottom:20}}>{guruEncounter.guru.era} &middot; {guruEncounter.guru.title}</div>
+              <div style={{fontSize:isMobile?12:13,color:"rgba(200,180,140,.55)",lineHeight:1.9,
+                fontStyle:"italic",marginBottom:16}}>{guruEncounter.guru.intro}</div>
+              <div style={{fontSize:isMobile?13:15,color:"#e0d0a0",lineHeight:2,
+                fontFamily:"'Noto Serif Devanagari',serif",marginBottom:24,
+                padding:"16px 20px",background:`${guruEncounter.guru.color}08`,
+                border:`1px solid ${guruEncounter.guru.color}20`,borderRadius:12,
+              }}>"{guruEncounter.guru.introLine}"</div>
+              <button onClick={()=>setGuruEncounter(e=>({...e,phase:'question'}))} style={{
+                background:"transparent",border:`1px solid ${guruEncounter.guru.color}40`,
+                color:guruEncounter.guru.color,padding:"12px 28px",fontSize:12,
+                fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:6,letterSpacing:3,
+              }}>ACCEPT THE CHALLENGE</button>
+            </div>
+          )}
+
+          {guruEncounter.phase==='question'&&(
+            <div style={{maxWidth:isMobile?340:460,textAlign:"center",animation:"fadeIn .4s ease"}}>
+              <div style={{fontSize:isMobile?48:60,marginBottom:12,
+                filter:`drop-shadow(0 0 20px ${guruEncounter.guru.color})`,
+              }}>{guruEncounter.guru.icon}</div>
+              <div style={{fontFamily:"'Yatra One',serif",fontSize:isMobile?18:22,
+                color:guruEncounter.guru.color,marginBottom:16,letterSpacing:2}}>{guruEncounter.guru.name}</div>
+              <div style={{fontSize:isMobile?13:15,color:"#e0d0a0",lineHeight:1.9,
+                marginBottom:22,fontFamily:"'Noto Serif Devanagari',serif"}}>
+                {guruEncounter.question.q}
+              </div>
+              <div style={{display:"flex",flexDirection:"column",gap:10}}>
+                <button onClick={()=>{
+                  const g=guruEncounter.guru;
+                  const nPun=[...punya];nPun[cur]+=2;setPunya(nPun);
+                  showKarmaToast(players[cur]?.name||'Seeker',2,'punya',g.icon);play("chime");
+                  guruBlessingRef.current={type:g.blessing,name:g.blessingName};
+                  setGuruEncounter(e=>({...e,phase:'result',correct:true}));
+                  setTimeout(()=>setGuruEncounter(null),3500);
+                }} style={{
+                  background:`${guruEncounter.guru.color}12`,border:`1px solid ${guruEncounter.guru.color}35`,
+                  color:"#e8d8a0",padding:"12px 16px",fontSize:isMobile?12:13,
+                  fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:8,lineHeight:1.6,textAlign:"left",
+                }}>{guruEncounter.question.a}</button>
+                <button onClick={()=>{
+                  play("snake");
+                  setGuruEncounter(e=>({...e,phase:'result',correct:false}));
+                  setTimeout(()=>setGuruEncounter(null),3000);
+                }} style={{
+                  background:"rgba(200,100,60,.08)",border:"1px solid rgba(200,100,60,.20)",
+                  color:"#e0c8a0",padding:"12px 16px",fontSize:isMobile?12:13,
+                  fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:8,lineHeight:1.6,textAlign:"left",
+                }}>{guruEncounter.question.b}</button>
+              </div>
+            </div>
+          )}
+
+          {guruEncounter.phase==='result'&&(
+            <div style={{maxWidth:isMobile?340:460,textAlign:"center",animation:"fadeIn .4s ease"}}>
+              <div style={{fontSize:isMobile?48:60,marginBottom:16}}>{guruEncounter.guru.icon}</div>
+              {guruEncounter.correct?(
+                <>
+                  <div style={{fontFamily:"'Cinzel',serif",fontSize:isMobile?16:20,
+                    color:"#f0d050",letterSpacing:3,marginBottom:12}}>BLESSED BY {guruEncounter.guru.en.toUpperCase()}</div>
+                  <div style={{fontSize:isMobile?12:14,color:"rgba(200,180,140,.7)",lineHeight:1.8,marginBottom:12}}>
+                    +2 Punya &middot; {guruEncounter.guru.blessingName}: {guruEncounter.guru.blessingDesc}
+                  </div>
+                  <div style={{fontSize:isMobile?11:13,color:"rgba(200,180,140,.45)",lineHeight:1.8,
+                    fontStyle:"italic",padding:"10px 16px",background:`${guruEncounter.guru.color}08`,
+                    borderRadius:8,border:`1px solid ${guruEncounter.guru.color}15`}}>
+                    {guruEncounter.question.explain}
+                  </div>
+                </>
+              ):(
+                <>
+                  <div style={{fontFamily:"'Cinzel',serif",fontSize:isMobile?14:16,
+                    color:"rgba(200,160,100,.6)",letterSpacing:3,marginBottom:12}}>THE GURU DEPARTS</div>
+                  <div style={{fontSize:isMobile?12:13,color:"rgba(200,180,140,.5)",lineHeight:1.8,
+                    fontStyle:"italic",marginBottom:12}}>"{guruEncounter.guru.departLine}"</div>
+                  <div style={{fontSize:isMobile?11:13,color:"rgba(200,180,140,.4)",lineHeight:1.8,
+                    padding:"10px 16px",background:"rgba(200,100,60,.05)",borderRadius:8,
+                    border:"1px solid rgba(200,100,60,.12)"}}>
+                    The correct answer: {guruEncounter.question.a}<br/><br/>{guruEncounter.question.explain}
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ═══ COSMIC KNOWLEDGE CARD ═══ */}
+      {cosmicCard&&(
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.75)",zIndex:255,
+          display:"flex",alignItems:"center",justifyContent:"center",padding:16}}
+          onClick={()=>setCosmicCard(null)}>
+          <div style={{
+            background:"linear-gradient(180deg,#1a1810,#0e0c08)",
+            border:"2px solid rgba(240,200,80,.2)",borderRadius:13,
+            padding:"clamp(20px,4vw,30px)",maxWidth:400,width:"min(92vw,calc(100vw-32px))",
+            textAlign:"center",animation:"popIn .4s ease forwards",
+            boxShadow:"0 0 80px rgba(240,200,80,.08)",
+          }} onClick={e=>e.stopPropagation()}>
+            <div style={{fontSize:9,letterSpacing:6,color:"rgba(240,200,80,.4)",
+              fontFamily:"'Cinzel',serif",marginBottom:10}}>DID YOU KNOW?</div>
+            <div style={{fontSize:38,marginBottom:10,
+              filter:"drop-shadow(0 0 15px rgba(240,200,80,.25))"}}>{cosmicCard.icon}</div>
+            <div style={{fontSize:isMobile?15:17,fontFamily:"'Yatra One',serif",
+              color:"#f0d050",marginBottom:10,letterSpacing:2}}>{cosmicCard.title}</div>
+            <div style={{fontSize:isMobile?12:14,color:"#d0c090",lineHeight:1.9,
+              fontStyle:"italic",fontFamily:"'Noto Serif Devanagari',serif",marginBottom:10}}>
+              {cosmicCard.fact}
+            </div>
+            <div style={{fontSize:9,color:"rgba(200,160,60,.3)",
+              fontFamily:"'Cinzel',serif",letterSpacing:2,marginBottom:14}}>
+              {cosmicCard.source}
+            </div>
+            <button onClick={()=>setCosmicCard(null)} style={{
+              background:"transparent",border:"1px solid rgba(240,200,80,.25)",
+              color:"#f0d050",padding:"10px 24px",fontSize:11,
+              fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:5,letterSpacing:2,
+            }}>CONTINUE</button>
+          </div>
+        </div>
+      )}
+
       {eventPopup&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.6)",zIndex:200,pointerEvents:"auto"}} onClick={dismissEvent}>
         <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",animation:"popIn .4s ease forwards",background:"linear-gradient(180deg,#2a2015,#12100a)",border:`2px solid ${eventPopup.color}50`,borderRadius:8,padding:"clamp(16px,4vw,28px) clamp(16px,4vw,36px)",textAlign:"center",maxWidth:380,width:"min(90vw,calc(100vw - 32px))",maxHeight:"85vh",overflowY:"auto",WebkitOverflowScrolling:"touch",boxShadow:`0 0 60px ${eventPopup.color}30, 0 0 120px rgba(0,0,0,.8)`}} onClick={e=>e.stopPropagation()}>
           <div style={{fontSize:52,marginBottom:8,filter:`drop-shadow(0 0 20px ${eventPopup.color})`}}>{eventPopup.icon}</div>
@@ -6189,9 +6459,25 @@ export default function MokshaPatam108(){
             </div>
           </div>
 
+          {/* Vedic Astronomy fact */}
+          {diceReveal.g.science&&(
+            <div style={{
+              maxWidth:isMobile?320:480,padding:isMobile?"10px 16px":"12px 20px",
+              marginTop:isMobile?10:14,
+              background:"rgba(240,200,80,.04)",border:"1px solid rgba(240,200,80,.15)",
+              borderRadius:10,textAlign:"center",
+              animation:"grahaNameIn .5s ease .72s both",
+            }}>
+              <div style={{fontSize:isMobile?8:9,letterSpacing:isMobile?3:5,
+                color:"rgba(240,200,80,.45)",fontFamily:"'Cinzel',serif",marginBottom:5}}>VEDIC ASTRONOMY</div>
+              <div style={{fontSize:isMobile?11:13,color:"rgba(200,180,140,.7)",
+                lineHeight:1.8,fontStyle:"italic"}}>{diceReveal.g.science}</div>
+            </div>
+          )}
+
           {/* Karma roll result */}
-          <div style={{display:"flex",alignItems:"center",gap:18,marginTop:isMobile?20:28,
-            animation:"grahaNameIn .5s ease .68s both",
+          <div style={{display:"flex",alignItems:"center",gap:18,marginTop:isMobile?16:22,
+            animation:"grahaNameIn .5s ease .85s both",
           }}>
             <span style={{fontFamily:"'Noto Serif Devanagari',serif",fontSize:isMobile?48:56,
               color:"#f0d050",fontWeight:900,lineHeight:1,
