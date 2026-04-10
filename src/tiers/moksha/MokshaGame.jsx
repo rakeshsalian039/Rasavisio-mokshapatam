@@ -3993,7 +3993,7 @@ function KarmaDie({value, rolling, landing, size=110}){
         borderRadius:s*.15,
         border:`${s*.025}px solid ${landing&&!rolling?'rgba(255,220,60,.85)':'rgba(200,160,50,.28)'}`,
         boxSizing:'border-box',
-        padding:s*.05,
+        padding:0,
         boxShadow:[
           `inset 0 0 ${s*.22}px rgba(0,0,0,.8)`,
           `inset 0 ${s*.08}px ${s*.12}px rgba(255,240,160,.07)`,
@@ -4424,7 +4424,7 @@ export default function MokshaPatam108(){
         VoiceEngine.speakNarrator(popup.subtitle,chosenLang,null);
       }
     }
-    // Graha popups auto-advance after 8s so busy never gets stuck
+    // Graha popups auto-advance after 4s so busy never gets stuck
     if(popup.type==="graha"&&onDismiss){
       autoAdvanceTimerRef.current=setTimeout(()=>{
         autoAdvanceTimerRef.current=null;
@@ -4433,7 +4433,7 @@ export default function MokshaPatam108(){
           setEventPopup(null);
           setTimeout(()=>cb(),150);
         }
-      },8000);
+      },4000);
     }
   }, [muted,chosenLang,ambient]);
   const dismissEvent = useCallback(() => {
@@ -4649,7 +4649,7 @@ export default function MokshaPatam108(){
             showKarmaToast(pName,2,'papa','𓆙');play("snake");setTimeout(()=>play("yamaLaugh"),320);haptic('Heavy');
             showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} caught you! ${sn.tale} Dragged from ${o} to ${p}. +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`,staticKey:"snake_hit"},()=>{
               addCGEntry('snake',p,`${sn.skt} · ${o}→${p}`);
-              if(!muted){if(yamaTimerRef.current)clearTimeout(yamaTimerRef.current);yamaTimerRef.current=setTimeout(()=>{yamaTimerRef.current=null;VoiceEngine.playYamaTaunt("snake",chosenLang);},3500);}
+              if(!muted){if(yamaTimerRef.current)clearTimeout(yamaTimerRef.current);yamaTimerRef.current=setTimeout(()=>{yamaTimerRef.current=null;VoiceEngine.playYamaTaunt("snake",chosenLang);},1000);}
               setTimeout(()=>{if(!bgMuted)ambient.unduck();},7000);
               finishTurn(true);
             });
