@@ -4011,8 +4011,10 @@ function KarmaDie({value, rolling, landing, size=110}){
         <div style={{position:'absolute',inset:0,
           background:'radial-gradient(ellipse at 22% 18%,rgba(255,255,255,.08),transparent 55%)',
           borderRadius:s*.15,pointerEvents:'none'}}/>
-        {/* Pips */}
-        {(layouts[value]||layouts[1]).map(([x,y],i)=>pip(x,y,i))}
+        {/* Pip container — fills content area inside border */}
+        <div style={{position:'absolute',inset:0,margin:s*.025}}>
+          {(layouts[value]||layouts[1]).map(([x,y],i)=>pip(x,y,i))}
+        </div>
       </div>
     </div>
   );
