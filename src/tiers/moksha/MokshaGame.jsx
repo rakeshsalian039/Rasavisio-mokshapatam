@@ -6110,7 +6110,7 @@ export default function MokshaPatam108(){
           background:"rgba(0,0,0,.85)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",
           display:"flex",alignItems:"center",justifyContent:"center",padding:16,
           animation:"fadeIn .4s ease",
-        }} onClick={()=>setTempleInfo(null)}>
+        }} onClick={()=>{VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){};setTempleInfo(null)}}>
           <div style={{
             maxWidth:isMobile?360:500,width:"min(92vw,calc(100vw-32px))",
             background:`linear-gradient(180deg,${templeInfo.temple.color}0a,#0c0a07)`,
@@ -6168,7 +6168,7 @@ export default function MokshaPatam108(){
             </div>
 
             {/* Dismiss */}
-            <button onClick={()=>setTempleInfo(null)} style={{
+            <button onClick={()=>{VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){};setTempleInfo(null)}} style={{
               background:"transparent",border:`1px solid ${templeInfo.temple.color}30`,
               color:templeInfo.temple.color,padding:"8px 20px",fontSize:11,
               fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:6,letterSpacing:2,
