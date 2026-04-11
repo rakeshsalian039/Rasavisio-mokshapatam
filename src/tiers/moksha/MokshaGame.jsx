@@ -6812,7 +6812,8 @@ export default function MokshaPatam108(){
                           const voiceFile=`/guru-voices/${g.id}-blessing-en.mp3`;
                           setTimeout(()=>VoiceEngine.speakNarrator(blessingText,chosenLang,voiceFile),1500);
                         }
-                        setTimeout(()=>{VoiceEngine.stop();setGuruEncounter(null)},6000);
+                        // Let blessing voice finish naturally — don't stop it
+                        setTimeout(()=>setGuruEncounter(null),10000);
                       }else{
                         play("yamaLaugh");haptic('Heavy');
                         // Wrong guru answer: +1 Papa
