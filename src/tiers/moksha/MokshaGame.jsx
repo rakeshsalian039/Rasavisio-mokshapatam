@@ -5050,16 +5050,22 @@ export default function MokshaPatam108(){
     if(dil.ashtanga){
       // ═══ ASHTANGA RIDDLE RESULT ═══
       if(ch.k==="punya"){
-        np[dil.pi]+=(fx.punya||2);showKarmaToast(pName,fx.punya||2,'punya','✓');
+        np[dil.pi]+=(fx.punya||2);showKarmaToast(pName,fx.punya||2,'punya','🪷');haptic('Success');
         setPunya(np);setPapa(npa);setSkipA(nsk);setPos(npos);setShieldA(nsh);
-        setMsg(`✓ Correct! ${pName} gains +${fx.punya||2} Punya`);
+        const stepNum=npos[dil.pi]-100;
+        const stepName=SACRED_PATH[stepNum-1]?.skt||'';
+        const stepEn=SACRED_PATH[stepNum-1]?.en||'';
+        setMsg(`🪷 ${stepName} — ${stepEn} complete! +${fx.punya||2} Punya`);
         gameStats.current.riddlesC++;
-        // Play chime + speak appreciation with delay so voice isn't killed
-        play("chime");
+        play("ladder");playTempleBell();
         if(!muted){
           ambient.duck();
-          VoiceEngine.unlockAudio();VoiceEngine.speakNarrator(`Well done ${pName}! You answered correctly. Your soul grows purer.`,chosenLang,null);
-          setTimeout(()=>{if(!bgMuted)ambient.unduck();},4000);
+          const voiceText=stepNum>=7
+            ?`${pName}, you have mastered ${stepEn}. Only Moksha remains. Your soul stands at the threshold of liberation.`
+            :`${pName}, your soul ascends. ${stepEn} complete. Step ${stepNum} of 7 on the Sacred Path. Your wisdom deepens.`;
+          const voiceFile=`/sacred-voices/step${stepNum-1}-en.mp3`;
+          setTimeout(()=>VoiceEngine.speakNarrator(voiceText,chosenLang,null),1500);
+          setTimeout(()=>{if(!bgMuted)ambient.unduck();},6000);
         }
       }else{
         npa[dil.pi]+=(fx.papa||1);showKarmaToast(pName,fx.papa||1,'papa','✗');
