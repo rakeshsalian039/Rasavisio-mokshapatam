@@ -692,10 +692,8 @@ const AudioCache = {
       const hdrs = { 'Content-Type': 'application/json' };
       try {
         const { data: { session } } = await supabase.auth.getSession();
-        console.log('[TTS-DEBUG] session:', !!session, 'token:', session?.access_token ? 'YES ('+session.access_token.slice(0,20)+'...)' : 'NO');
         if (session?.access_token) hdrs['Authorization'] = `Bearer ${session.access_token}`;
-      } catch(e) { console.log('[TTS-DEBUG] getSession error:', e.message); }
-      console.log('[TTS-DEBUG] Calling /api/tts. textLen:', text.length, 'hasAuth:', !!hdrs['Authorization']);
+      } catch(e) {}
       const resp = await fetch('/api/tts', {
         method: 'POST',
         headers: hdrs,
@@ -704,7 +702,6 @@ const AudioCache = {
           voice: voiceOverride || 'ash',
         }),
       });
-      console.log('[TTS-DEBUG] Response:', resp.status, resp.statusText);
       if (!resp.ok) throw new Error('TTS API failed: ' + resp.status);
 
       const arrayBuffer = await resp.arrayBuffer();
@@ -1018,8 +1015,8 @@ const VoiceEngine = {
   //   + 5s heavenly reverb + 528Hz singing bowl — never interrupts other voices
   _cgCtx: null,
   async speakChitragupta(key, lang) {
-    // Chitragupta waits — he never interrupts
-    if (this.speaking) return;
+    // Chitragupta stops any existing voice first
+    this.stop();
     const l = (lang==='hi') ? 'hi' : 'en';
     const text = CG_LINES[l]?.[key];
     if (!text) return;
@@ -1287,19 +1284,16 @@ const VoiceEngine = {
   // staticUrl: pre-generated /onboarding/story-N-lang.mp3 (zero API cost)
   // onAudioStart: fires the MOMENT audio begins playing (used for UI sync)
   async speakNarrator(text, lang, staticUrl, onAudioStart) {
-    console.log('[NARRATOR-DEBUG] speakNarrator called. textLen:', text?.length, 'lang:', lang, 'staticUrl:', staticUrl);
     this.stop();
-    if (!text) { console.log('[NARRATOR-DEBUG] ABORT: no text'); return; }
     const myToken = this._stopToken;
 
     // iOS CRITICAL: reuse the shared AudioContext from unlockAudio() if available.
     let ctx = this._sharedCtx || null;
-    console.log('[NARRATOR-DEBUG] sharedCtx:', !!ctx, 'state:', ctx?.state);
     if (!ctx) {
       try {
         ctx = new (window.AudioContext || window.webkitAudioContext)();
         if (ctx.state === 'suspended') await ctx.resume();
-      } catch(e) { ctx = null; console.log('[NARRATOR-DEBUG] AudioContext create failed:', e.message); }
+      } catch(e) { ctx = null; }
       this._sharedCtx = ctx;
     } else if (ctx.state === 'suspended') {
       try { await ctx.resume(); } catch(e) {}
@@ -1312,28 +1306,22 @@ const VoiceEngine = {
     if (staticUrl) {
       try {
         const r = await fetch(staticUrl, { method: 'HEAD' });
-        if (r.ok) { audioUrl = staticUrl; console.log('[NARRATOR-DEBUG] Static file found:', staticUrl); }
-        else console.log('[NARRATOR-DEBUG] Static file 404:', staticUrl);
-      } catch(e) { console.log('[NARRATOR-DEBUG] Static fetch error:', e.message); }
+        if (r.ok) { audioUrl = staticUrl; }
+      } catch(e) {}
     }
 
-    if (this._stopToken !== myToken) { console.log('[NARRATOR-DEBUG] ABORT: stopToken changed after static check'); return; }
+    if (this._stopToken !== myToken) return;
 
     // 2. IndexedDB / OpenAI API (fallback if static not deployed yet)
     if (!audioUrl) {
       const isLocal = ['localhost','127.0.0.1',''].includes(window.location.hostname);
-      console.log('[NARRATOR-DEBUG] No static. isLocal:', isLocal, 'hostname:', window.location.hostname);
       if (!isLocal) {
         audioUrl = AudioCache.get(text);
-        console.log('[NARRATOR-DEBUG] AudioCache.get:', !!audioUrl);
         if (!audioUrl) {
-          try { audioUrl = await AudioCache.fetchTTS(text, lang); console.log('[NARRATOR-DEBUG] fetchTTS result:', !!audioUrl); } catch(e){ console.log('[NARRATOR-DEBUG] fetchTTS error:', e.message); }
         }
       }
     }
 
-    if (this._stopToken !== myToken) { console.log('[NARRATOR-DEBUG] ABORT: stopToken changed after TTS'); return; }
-    if (!audioUrl) { console.log('[NARRATOR-DEBUG] No audioUrl — falling back to browserSpeak'); this._browserSpeak(text, lang); onAudioStart && onAudioStart(); return; }
 
     try {
       const resp = await fetch(audioUrl);
@@ -4584,6 +4572,13 @@ export default function MokshaPatam108(){
     gameStats.current={startTime:Date.now(),turns:0,snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0,grahaHits:{sun:0,moon:0,mars:0,mercury:0,jupiter:0,venus:0,saturn:0,rahu:0,ketu:0}};
     navigateTo("game");
     setTimeout(()=>{ gameReadyRef.current=true; },3000); // allow timer after 3s
+    // Preload critical audio files in background
+    try{
+      ['/temple-bell.mp3',
+       ...GURUS.map(g=>`/guru-voices/${g.id}-en.mp3`),
+       ...GURUS.map(g=>`/guru-voices/${g.id}-blessing-en.mp3`),
+      ].forEach(url=>{const a=new Audio(url);a.preload='auto';a.load()});
+    }catch(e){}
   };
 
   const addPlayer=()=>{
@@ -4794,11 +4789,10 @@ export default function MokshaPatam108(){
       if(newP<1)newP=1;
       let step=0;const steps=Math.abs(newP-oldP);const dir=newP>oldP?1:-1;
       if(steps===0){setBusy(false);setCur(c=>(c+1)%nP);setMsg(extras.join(" · ")||"No movement.");setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);return}
-      // ═══ STEP 2: Animate movement ═══
-      const iv=setInterval(()=>{
+      // ═══ STEP 2: Animate movement (accelerates after 3 steps) ═══
+      const animateStep=()=>{
         step++;nPos[cur]=oldP+dir*step;setPos([...nPos]);play("move");
         if(step>=steps){
-          clearInterval(iv);
           let p=newP,eMsg="";
           // ═══ STEP 3: Check landing — show popup, wait for dismiss ═══
           const finishTurn=(skipDharmaCheck)=>{
@@ -4958,8 +4952,12 @@ export default function MokshaPatam108(){
             });
           }}
           else{finishTurn()}
+        }else{
+          // Accelerate: 250ms for first 3 steps, then 120ms
+          setTimeout(animateStep,step<3?250:120);
         }
-      },280);
+      };
+      setTimeout(animateStep,250);
     };
 
     // Show graha popup — user dismisses, then movement begins
@@ -5204,8 +5202,6 @@ export default function MokshaPatam108(){
 
   // ═══ DHARMA VOICE — read aloud when card appears (skip CPU) ═══
   useEffect(()=>{
-    console.log('[DHARMA-DEBUG] useEffect fired. dil:', !!dil, 'muted:', muted, 'cpu:', dil?players[dil.pi]?.cpu:'n/a');
-    if(!dil||muted||players[dil.pi]?.cpu){console.log('[DHARMA-DEBUG] SKIPPED — dil:',!!dil,'muted:',muted);return}
     // Stop any lingering audio first, then duck ambient, then speak with delay
     VoiceEngine.stop();
     try{window.speechSynthesis.cancel()}catch(e){}
@@ -5214,11 +5210,9 @@ export default function MokshaPatam108(){
       const voiceText=dil.ashtanga
         ?`Riddle of ${dil.en}. ${dil.txt}. Option one: ${dil.c[0].l}. Option two: ${dil.c[1].l}.`
         :`Dharma Dilemma. ${dil.en}. ${dil.txt}. Your choices are: ${dil.c.map((c,i)=>c.l).join('. Or. ')}`;
-      console.log('[DHARMA-DEBUG] Calling speakNarrator. textLen:', voiceText.length, 'lang:', chosenLang);
       VoiceEngine.speakNarrator(voiceText,chosenLang,null);
     },500);
     // Only clear timer on cleanup, DON'T stop voice - let it finish naturally after card closes
-    return()=>{console.log('[DHARMA-DEBUG] cleanup — clearing timer');clearTimeout(timer)};
   },[dil,muted]);
 
   // ═══ GURU VOICE — auto-play intro speech when guru appears ═══
@@ -6818,14 +6812,14 @@ export default function MokshaPatam108(){
                           const voiceFile=`/guru-voices/${g.id}-blessing-en.mp3`;
                           setTimeout(()=>VoiceEngine.speakNarrator(blessingText,chosenLang,voiceFile),1500);
                         }
-                        setTimeout(()=>setGuruEncounter(null),6000);
+                        setTimeout(()=>{VoiceEngine.stop();setGuruEncounter(null)},6000);
                       }else{
                         play("yamaLaugh");haptic('Heavy');
                         // Wrong guru answer: +1 Papa
                         const nPap=[...papa];nPap[cur]+=1;setPapa(nPap);
                         showKarmaToast(players[cur]?.name||'Seeker',1,'papa','💀');
                         setGuruEncounter(e=>({...e,phase:'result',correct:false}));
-                        setTimeout(()=>setGuruEncounter(null),5000);
+                        setTimeout(()=>{VoiceEngine.stop();setGuruEncounter(null)},5000);
                       }
                     }} style={{
                       background:"rgba(200,180,140,.04)",border:"1px solid rgba(200,180,140,.18)",

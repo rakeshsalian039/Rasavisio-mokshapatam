@@ -33,24 +33,20 @@ export function useAuth(){
     if(!supabase){setLoading(false);return}
 
     const isOAuthReturn=window.location.hash.includes('access_token');
-    console.log('[AUTH-DEBUG] Init. isOAuthReturn:', isOAuthReturn, 'hash:', window.location.hash.slice(0,50));
     let resolved=false;
     const done=(u)=>{
       if(resolved)return;resolved=true;setLoading(false);
-      console.log('[AUTH-DEBUG] done() called. user:', u?.email||'null');
       if(u){setUser(u);loadProfile(u.id)}
     };
 
     const timeout=setTimeout(()=>{
       if(!resolved){
-        console.log('[AUTH-DEBUG] TIMEOUT after 5s — no session found');
         done(null);
       }
     },5000);
 
     // Listen for auth state changes
     const{data:{subscription}}=supabase.auth.onAuthStateChange(async(event,session)=>{
-      console.log('[AUTH-DEBUG] onAuthStateChange:', event, 'user:', session?.user?.email||'null');
       clearTimeout(timeout);
       if(session?.user){
         resolved=true;
@@ -67,15 +63,12 @@ export function useAuth(){
 
     // If OAuth return — manually extract and set the session from hash
     if(isOAuthReturn){
-      console.log('[AUTH-DEBUG] OAuth return detected — extracting tokens from hash...');
       const hashParams=new URLSearchParams(window.location.hash.substring(1));
       const accessToken=hashParams.get('access_token');
       const refreshToken=hashParams.get('refresh_token');
       if(accessToken&&refreshToken){
-        console.log('[AUTH-DEBUG] Found tokens, calling setSession...');
         supabase.auth.setSession({access_token:accessToken,refresh_token:refreshToken})
           .then(({data:{session},error:err})=>{
-            console.log('[AUTH-DEBUG] setSession result:', err?'ERROR '+err.message:session?'SUCCESS '+session.user?.email:'NO SESSION');
             if(!resolved&&session?.user){
               clearTimeout(timeout);
               done(session.user);
@@ -86,25 +79,20 @@ export function useAuth(){
             }
           })
           .catch(e=>{
-            console.log('[AUTH-DEBUG] setSession ERROR:', e.message);
             if(!resolved){clearTimeout(timeout);done(null);}
           });
       }else{
-        console.log('[AUTH-DEBUG] Hash missing tokens, falling back to getSession');
         supabase.auth.getSession().then(({data:{session}})=>{
           if(!resolved){clearTimeout(timeout);done(session?.user||null);}
         }).catch(()=>{if(!resolved){clearTimeout(timeout);done(null);}});
       }
     }else{
       // Normal page load — use getSession
-      console.log('[AUTH-DEBUG] Normal load — calling getSession...');
       supabase.auth.getSession()
         .then(({data:{session}})=>{
-          console.log('[AUTH-DEBUG] getSession result:', session?'HAS SESSION '+session.user?.email:'NO SESSION');
           if(!resolved){clearTimeout(timeout);done(session?.user||null);}
         })
         .catch(e=>{
-          console.log('[AUTH-DEBUG] getSession ERROR:', e.message);
           if(!resolved){clearTimeout(timeout);done(null);}
         });
     }
