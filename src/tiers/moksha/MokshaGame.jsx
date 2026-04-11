@@ -4569,7 +4569,7 @@ export default function MokshaPatam108(){
     setTempleInfo(null);setSacredInfo(null);setTempleLore(null);setTempleQuiz(null);setGuruEncounter(null);setCosmicCard(null);usedTempleQRef.current={};usedGuruQRef.current={};usedCosmicRef.current=[];guruBlessingRef.current=null;lastKnowledgeTurnRef.current=0;
     setCgEntries([]);setShowMoksha(false);setShowPostGame(false);
     setMsg(`${pList[0].name} the ${pList[0].char.name} — your journey begins.`);
-    gameStats.current={startTime:Date.now(),turns:0,snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0,grahaHits:{sun:0,moon:0,mars:0,mercury:0,jupiter:0,venus:0,saturn:0,rahu:0,ketu:0}};
+    gameStats.current={startTime:Date.now(),turns:0,humanTurns:0,snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0,grahaHits:{sun:0,moon:0,mars:0,mercury:0,jupiter:0,venus:0,saturn:0,rahu:0,ketu:0}};
     navigateTo("game");
     setTimeout(()=>{ gameReadyRef.current=true; },3000); // allow timer after 3s
     // Preload critical audio files in background
@@ -4626,14 +4626,16 @@ export default function MokshaPatam108(){
     if(dil||win||busy||players.length===0||templeLore||templeQuiz||guruEncounter)return;
     if(isOnline&&!isMyTurn)return; // online: only active player rolls
     if(autoRoll&&!gameReadyRef.current)return; // block timer auto-roll during init
-    // ═══ GURU ENCOUNTER (every 5th) / COSMIC CARD (every 7th) ═══
-    // Skip for CPU/Yama — only human players get knowledge events
+    // ═══ GURU ENCOUNTER (every 8th HUMAN turn) / COSMIC CARD (every 12th) ═══
     const isHumanTurn=!players[cur]?.cpu;
+    // Count only HUMAN turns — so 2-player and 4-player games trigger guru at same rate for the human
+    if(isHumanTurn){gameStats.current.humanTurns=(gameStats.current.humanTurns||0)+1}
+    const humanTurns=gameStats.current.humanTurns||0;
     const totalTurns=(gameStats.current.turns||0)+1;
     if(isHumanTurn&&!autoRoll){
-      // GURU — every 8th turn (8,16,24,32...)
-      if(totalTurns>1&&totalTurns%8===0&&lastKnowledgeTurnRef.current!==totalTurns){
-        lastKnowledgeTurnRef.current=totalTurns;
+      // GURU — every 8th HUMAN turn
+      if(humanTurns>1&&humanTurns%8===0&&lastKnowledgeTurnRef.current!==humanTurns){
+        lastKnowledgeTurnRef.current=humanTurns;
         const available=GURUS.filter(g=>{const used=usedGuruQRef.current[g.id]||[];return g.questions.length>used.length;});
         if(available.length>0){
           const guru=available[Math.floor(Math.random()*available.length)];
@@ -4646,9 +4648,9 @@ export default function MokshaPatam108(){
           return;
         }
       }
-      // COSMIC CARD — every 12th turn (12,24,36...) but NOT if guru already fired this turn
-      if(totalTurns>1&&totalTurns%12===0&&lastKnowledgeTurnRef.current!==totalTurns){
-        lastKnowledgeTurnRef.current=totalTurns;
+      // COSMIC CARD — every 12th HUMAN turn but NOT if guru already fired this turn
+      if(humanTurns>1&&humanTurns%12===0&&lastKnowledgeTurnRef.current!==humanTurns){
+        lastKnowledgeTurnRef.current=humanTurns;
         const p=pos[cur]||1;
         const realm=p<=33?'bhuloka':p<=66?'antarloka':'svargaloka';
         const cards=COSMIC_CARDS[realm]||[];
@@ -7393,9 +7395,9 @@ export default function MokshaPatam108(){
         {/* BOARD */}
         <div style={{flex:"1 1 340px",maxWidth:isMobile?"calc(100vw - 8px)":720,minWidth:0,width:isMobile?"calc(100vw - 8px)":undefined,overflow:"hidden",boxSizing:"border-box"}}>
           <div style={(()=>{
-            const turns=gameStats.current.turns||0;
-            const nextGuru=Math.ceil((turns+1)/8)*8;
-            const turnsLeft=nextGuru-(turns+1);
+            const hTurns=gameStats.current.humanTurns||0;
+            const nextGuru=Math.ceil((hTurns+1)/8)*8;
+            const turnsLeft=nextGuru-(hTurns+1);
             const guruGlow=turnsLeft<=3&&turnsLeft>0&&!busy&&!win;
             const intensity=guruGlow?1-turnsLeft/3:0;
             return{border:`2px solid rgba(200,160,60,${guruGlow?.3+intensity*.4:.3})`,
@@ -7651,9 +7653,9 @@ export default function MokshaPatam108(){
             </button>
             {/* Guru arrival countdown */}
             {(()=>{
-              const turns=gameStats.current.turns||0;
-              const nextGuru=Math.ceil((turns+1)/8)*8;
-              const turnsLeft=nextGuru-(turns+1);
+              const hTurns=gameStats.current.humanTurns||0;
+              const nextGuru=Math.ceil((hTurns+1)/8)*8;
+              const turnsLeft=nextGuru-(hTurns+1);
               if(turnsLeft<=0||turnsLeft>5||busy||win)return null;
               const intensity=1-turnsLeft/5; // 0 to 1 as guru approaches
               return(
