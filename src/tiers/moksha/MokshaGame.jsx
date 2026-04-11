@@ -5150,9 +5150,11 @@ export default function MokshaPatam108(){
       const nextCurA=(dil.pi+1)%nP;
       const isCorrectSacred=ch.k==="punya"&&dil.ashtanga;
       setDil(null);
-      // If correct sacred answer with voice, wait 5s before advancing to next player
-      if(isCorrectSacred&&!muted){
-        setTimeout(()=>setCur(nextCurA),5000);
+      // Delay turn advance so voices can play fully before Yama auto-rolls
+      if(dil.ashtanga&&!muted){
+        // Correct: 5s for blessing voice, Wrong: 6s for Yama taunt voice
+        const delay=isCorrectSacred?5000:6000;
+        setTimeout(()=>setCur(nextCurA),delay);
       }else{
         setCur(nextCurA);
       }
