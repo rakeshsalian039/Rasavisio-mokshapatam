@@ -4574,7 +4574,7 @@ export default function MokshaPatam108(){
     if(autoRoll&&!gameReadyRef.current)return; // block timer auto-roll during init
     // ═══ GURU ENCOUNTER / COSMIC CARD — every 5th turn ═══
     const totalTurns=(gameStats.current.turns||0)+1;
-    if(totalTurns>1&&totalTurns%5===0&&!lastKnowledgeTurnRef.current!==totalTurns&&!autoRoll){
+    if(totalTurns>1&&totalTurns%5===0&&lastKnowledgeTurnRef.current!==totalTurns&&!autoRoll){
       lastKnowledgeTurnRef.current=totalTurns; // mark this turn as handled
       if(Math.random()<0.5){
         // Guru encounter
