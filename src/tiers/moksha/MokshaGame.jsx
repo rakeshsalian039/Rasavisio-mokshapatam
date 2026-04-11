@@ -3923,7 +3923,7 @@ function Ldr({x1,y1,x2,y2}){
 
 const CSS=`
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;700;900&family=Yatra+One&family=Cinzel:wght@400;700;900&family=Cinzel+Decorative:wght@700;900&display=swap');
-*{box-sizing:border-box;margin:0}body{margin:0;background:#0c0a07}
+*{box-sizing:border-box;margin:0}html,body{margin:0;background:#0c0a07;overflow-x:hidden;max-width:100vw}
 @keyframes dt{0%{transform:rotate(0) scale(1)}50%{transform:rotate(180deg) scale(1.1)}100%{transform:rotate(360deg) scale(1)}}
 @keyframes mp{0%,100%{text-shadow:0 0 15px rgba(240,200,80,.3)}50%{text-shadow:0 0 40px rgba(240,200,80,.7)}}
 @keyframes templeFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
@@ -7364,10 +7364,10 @@ export default function MokshaPatam108(){
           ))}
         </div>
       )}
-      <div style={{display:"flex",gap:isMobile?6:14,flexWrap:"wrap",justifyContent:"center",width:"100%",maxWidth:1140}}>
+      <div style={{display:"flex",gap:isMobile?4:14,flexWrap:"wrap",justifyContent:"center",width:"100%",maxWidth:1140,boxSizing:"border-box"}}>
         {/* BOARD */}
-        <div style={{flex:"1 1 340px",maxWidth:isMobile?"100%":720,minWidth:0,width:isMobile?"100%":undefined,overflow:"hidden"}}>
-          <div style={{border:"2px solid rgba(200,160,60,.3)",background:"radial-gradient(ellipse at 30% 30%,rgba(60,45,20,.2),transparent 50%),radial-gradient(ellipse at 70% 70%,rgba(60,45,20,.15),transparent 50%),#1e1810",boxShadow:"0 0 60px rgba(0,0,0,.5),inset 0 0 40px rgba(0,0,0,.3)",borderRadius:2,overflow:"hidden"}}>
+        <div style={{flex:"1 1 340px",maxWidth:isMobile?"calc(100vw - 8px)":720,minWidth:0,width:isMobile?"calc(100vw - 8px)":undefined,overflow:"hidden",boxSizing:"border-box"}}>
+          <div style={{border:"2px solid rgba(200,160,60,.3)",background:"radial-gradient(ellipse at 30% 30%,rgba(60,45,20,.2),transparent 50%),radial-gradient(ellipse at 70% 70%,rgba(60,45,20,.15),transparent 50%),#1e1810",boxShadow:"0 0 60px rgba(0,0,0,.5),inset 0 0 40px rgba(0,0,0,.3)",borderRadius:2,overflow:"hidden",boxSizing:"border-box",width:"100%"}}>
             {/* ═══ SACRED CROWN — Ashtanga Marga (101-108) ═══ */}
             <div style={{position:"relative",background:"linear-gradient(180deg,rgba(240,200,80,.08),rgba(20,16,10,.3))",borderBottom:"2px solid rgba(240,200,80,.25)",padding:"6px 4px 4px",overflow:"hidden"}}>
               {/* Geometric Hindu pattern overlay */}
