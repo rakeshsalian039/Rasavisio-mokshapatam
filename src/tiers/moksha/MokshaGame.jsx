@@ -5635,10 +5635,15 @@ export default function MokshaPatam108(){
             </div>
           </div>
         ) : auth.loading ? (
-          <div style={{fontSize:12,color:"#8a7a50",opacity:.5,animation:"pulse 1.5s ease infinite"}}>Connecting to the cosmos...</div>
+          <div style={{fontSize:12,color:"#8a7a50",opacity:.5,animation:"pulse 1.5s ease infinite"}}>
+            🙏 Connecting to the cosmos...
+          </div>
         ) : (
           /* ═══ SIGNED IN — Show game options ═══ */
-          <div style={{width:"100%",animation:"reveal 1s ease"}}>
+          <div style={{width:"100%",animation:"reveal 1s ease"}} ref={(el)=>{
+            // Play temple bell on first sign-in detection
+            if(el&&!el.dataset.bellPlayed){el.dataset.bellPlayed='1';playTempleBell();}
+          }}>
             {/* Signed in badge */}
             <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginBottom:16}}>
               {auth.profile?.avatar_url?<img src={auth.profile.avatar_url} alt="" style={{width:28,height:28,borderRadius:"50%",border:"1.5px solid rgba(240,200,80,.3)"}} referrerPolicy="no-referrer"/>:<div style={{width:28,height:28,borderRadius:"50%",background:"rgba(240,200,80,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,color:"#f0d050"}}>🪷</div>}
