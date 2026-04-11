@@ -4572,11 +4572,14 @@ export default function MokshaPatam108(){
     if(dil||win||busy||players.length===0||templeQuiz||guruEncounter)return;
     if(isOnline&&!isMyTurn)return; // online: only active player rolls
     if(autoRoll&&!gameReadyRef.current)return; // block timer auto-roll during init
-    // ═══ GURU ENCOUNTER / COSMIC CARD — every 5th turn ═══
+    // ═══ GURU ENCOUNTER / COSMIC CARD — every 5th HUMAN turn ═══
+    // Skip for CPU/Yama players — only human players face gurus
+    const isHumanTurn=!players[cur]?.cpu;
     const totalTurns=(gameStats.current.turns||0)+1;
-    if(totalTurns>1&&totalTurns%5===0&&lastKnowledgeTurnRef.current!==totalTurns&&!autoRoll){
-      lastKnowledgeTurnRef.current=totalTurns; // mark this turn as handled
-      if(Math.random()<0.5){
+    if(isHumanTurn&&totalTurns>1&&totalTurns%5===0&&lastKnowledgeTurnRef.current!==totalTurns&&!autoRoll){
+      lastKnowledgeTurnRef.current=totalTurns;
+      // 60% guru encounter, 40% cosmic card
+      if(Math.random()<0.6){
         // Guru encounter
         const available=GURUS.filter(g=>{const used=usedGuruQRef.current[g.id]||[];return g.questions.length>used.length;});
         if(available.length>0){
@@ -4585,23 +4588,23 @@ export default function MokshaPatam108(){
           let pool=guru.questions.map((_,i)=>i).filter(i=>!used.includes(i));
           const qIdx=pool[Math.floor(Math.random()*pool.length)];
           usedGuruQRef.current[guru.id]=[...used,qIdx];
-          setGuruEncounter({guru,question:guru.questions[qIdx],phase:'intro'});
+          play("chime"); // temple bell when guru appears
+          setGuruEncounter({guru,question:guru.questions[qIdx],phase:'intro',forPlayer:cur});
           return;
         }
-      }else{
-        // Cosmic knowledge card (realm-based)
-        const p=pos[cur]||1;
-        const realm=p<=33?'bhuloka':p<=66?'antarloka':'svargaloka';
-        const cards=COSMIC_CARDS[realm]||[];
-        const usedIds=usedCosmicRef.current;
-        const available=cards.filter((_,i)=>!usedIds.includes(`${realm}_${i}`));
-        if(available.length>0){
-          const idx=Math.floor(Math.random()*available.length);
-          const origIdx=cards.indexOf(available[idx]);
-          usedCosmicRef.current=[...usedIds,`${realm}_${origIdx}`];
-          setCosmicCard(available[idx]);
-          return;
-        }
+      }
+      // Cosmic knowledge card (realm-based)
+      const p=pos[cur]||1;
+      const realm=p<=33?'bhuloka':p<=66?'antarloka':'svargaloka';
+      const cards=COSMIC_CARDS[realm]||[];
+      const usedIds=usedCosmicRef.current;
+      const available=cards.filter((_,i)=>!usedIds.includes(`${realm}_${i}`));
+      if(available.length>0){
+        const idx=Math.floor(Math.random()*available.length);
+        const origIdx=cards.indexOf(available[idx]);
+        usedCosmicRef.current=[...usedIds,`${realm}_${origIdx}`];
+        setCosmicCard(available[idx]);
+        return;
       }
     }
     if(skipA[cur]){const ns=[...skipA];ns[cur]=false;setSkipA(ns);setMsg(`${players[cur].name}'s turn is skipped.`);setCur(c=>(c+1)%nP);return}
@@ -6161,6 +6164,7 @@ export default function MokshaPatam108(){
         <div style={{position:"fixed",inset:0,zIndex:265,overflow:"hidden",
           background:`linear-gradient(135deg,rgba(3,2,1,.98) 40%,${guruEncounter.guru.color}12 100%)`,
           backdropFilter:"blur(15px)",WebkitBackdropFilter:"blur(15px)",
+          animation:"fadeIn .6s ease",
         }}>
           {/* Ambient light behind guru image */}
           <div style={{position:"absolute",right:isMobile?"-20%":"-5%",top:"5%",
@@ -6330,10 +6334,11 @@ export default function MokshaPatam108(){
                   <button onClick={()=>{
                     const g=guruEncounter.guru;
                     const nPun=[...punya];nPun[cur]+=2;setPunya(nPun);
-                    showKarmaToast(players[cur]?.name||'Seeker',2,'punya',g.icon);play("chime");
+                    showKarmaToast(players[cur]?.name||'Seeker',2,'punya',g.icon);
+                    play("ladder");setTimeout(()=>play("chime"),300);haptic('Success');
                     guruBlessingRef.current={type:g.blessing,name:g.blessingName};
                     setGuruEncounter(e=>({...e,phase:'result',correct:true}));
-                    setTimeout(()=>setGuruEncounter(null),4000);
+                    setTimeout(()=>setGuruEncounter(null),5000);
                   }} style={{
                     background:`${guruEncounter.guru.color}10`,border:`1px solid ${guruEncounter.guru.color}35`,
                     color:"#e8d8a0",padding:isMobile?"12px 14px":"14px 18px",fontSize:isMobile?13:14,
@@ -6341,9 +6346,9 @@ export default function MokshaPatam108(){
                     textAlign:"left",
                   }}>{guruEncounter.question.a}</button>
                   <button onClick={()=>{
-                    play("snake");
+                    play("yamaLaugh");haptic('Heavy');
                     setGuruEncounter(e=>({...e,phase:'result',correct:false}));
-                    setTimeout(()=>setGuruEncounter(null),4000);
+                    setTimeout(()=>setGuruEncounter(null),5000);
                   }} style={{
                     background:"rgba(200,100,60,.06)",border:"1px solid rgba(200,100,60,.20)",
                     color:"#e0c8a0",padding:isMobile?"12px 14px":"14px 18px",fontSize:isMobile?13:14,
@@ -6402,9 +6407,13 @@ export default function MokshaPatam108(){
 
                 {guruEncounter.correct?(
                   <>
-                    <div style={{fontFamily:"'Cinzel',serif",fontSize:isMobile?18:24,
-                      color:"#f0d050",letterSpacing:3,marginBottom:8,
-                      textShadow:"0 0 30px rgba(240,200,80,.4)",
+                    <div style={{fontSize:isMobile?40:56,marginBottom:8,
+                      animation:"grahaZoomIn .6s cubic-bezier(0.34,1.52,0.64,1) forwards",
+                      filter:"drop-shadow(0 0 20px rgba(240,200,80,.5))"}}>🙏</div>
+                    <div style={{fontFamily:"'Cinzel',serif",fontSize:isMobile?20:28,
+                      color:"#f0d050",letterSpacing:isMobile?3:5,marginBottom:8,
+                      textShadow:"0 0 40px rgba(240,200,80,.5), 0 0 80px rgba(240,200,80,.2)",
+                      animation:"grahaNameIn .5s ease .2s both",
                     }}>BLESSED</div>
                     <div style={{fontFamily:"'Yatra One',serif",fontSize:isMobile?16:20,
                       color:guruEncounter.guru.color,marginBottom:12,letterSpacing:2}}>
@@ -6457,15 +6466,16 @@ export default function MokshaPatam108(){
 
       {/* ═══ COSMIC KNOWLEDGE CARD ═══ */}
       {cosmicCard&&(
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.75)",zIndex:255,
-          display:"flex",alignItems:"center",justifyContent:"center",padding:16}}
+        <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,
+          background:"rgba(0,0,0,.8)",backdropFilter:"blur(8px)",WebkitBackdropFilter:"blur(8px)",
+          zIndex:255,display:"flex",alignItems:"center",justifyContent:"center",padding:16}}
           onClick={()=>setCosmicCard(null)}>
           <div style={{
             background:"linear-gradient(180deg,#1a1810,#0e0c08)",
-            border:"2px solid rgba(240,200,80,.2)",borderRadius:13,
-            padding:"clamp(20px,4vw,30px)",maxWidth:400,width:"min(92vw,calc(100vw-32px))",
-            textAlign:"center",animation:"popIn .4s ease forwards",
-            boxShadow:"0 0 80px rgba(240,200,80,.08)",
+            border:"2px solid rgba(240,200,80,.25)",borderRadius:14,
+            padding:"clamp(24px,5vw,36px)",maxWidth:440,width:"min(92vw,calc(100vw-32px))",
+            textAlign:"center",animation:"grahaZoomIn .5s cubic-bezier(0.34,1.52,0.64,1) forwards",
+            boxShadow:"0 0 100px rgba(240,200,80,.1), 0 20px 60px rgba(0,0,0,.5)",
           }} onClick={e=>e.stopPropagation()}>
             <div style={{fontSize:9,letterSpacing:6,color:"rgba(240,200,80,.4)",
               fontFamily:"'Cinzel',serif",marginBottom:10}}>DID YOU KNOW?</div>
