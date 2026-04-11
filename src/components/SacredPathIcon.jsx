@@ -1,237 +1,250 @@
 // ═══════════════════════════════════════════════════════════════════════
-// SACRED PATH ICONS — 3D animated SVG for the 8-fold Ashtanga Marga
-// Each step has unique symbolism from Patanjali's Yoga Sutras
-// They glow, float, and pulse on the sacred crown of the board
+// SACRED PATH ICONS — Bold 3D animated SVG for the 8-fold Ashtanga Marga
+// Maximum visibility, strong glow, unmissable animations
 // ═══════════════════════════════════════════════════════════════════════
 
-const c = '#f0d050'; // sacred gold
-const c2 = '#ffa040'; // warm accent
+const G = '#f0d050'; // gold
+const W = '#fff';    // white core
+const O = '#ffa030'; // warm orange
 
 const SACRED_ICONS = {
-  // ── 101: यम (Yama) — Self-restraint: Closed lotus with inner light ──
+  // ── 101: यम (Yama) — Closed lotus bud glowing from within ──
   0: ({ size }) => (
-    <svg viewBox="0 0 40 40" width={size} height={size}>
+    <svg viewBox="0 0 48 48" width={size} height={size}>
       <defs>
-        <linearGradient id="sy0" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={c} stopOpacity="0.9"/>
-          <stop offset="100%" stopColor={c} stopOpacity="0.3"/>
-        </linearGradient>
-        <filter id="gy0"><feGaussianBlur stdDeviation="1.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <radialGradient id="yg0" cx="50%" cy="40%"><stop offset="0%" stopColor={W} stopOpacity="0.8"/><stop offset="100%" stopColor={G} stopOpacity="0.2"/></radialGradient>
+        <filter id="yf0"><feGaussianBlur stdDeviation="2.5"/></filter>
       </defs>
+      {/* Big glow behind */}
+      <circle cx="24" cy="22" r="14" fill={G} opacity="0.12" filter="url(#yf0)">
+        <animate attributeName="r" values="12;16;12" dur="2.5s" repeatCount="indefinite"/>
+      </circle>
       {/* Stem */}
-      <line x1="20" y1="36" x2="20" y2="22" stroke={c} strokeWidth="1.5" opacity="0.5"/>
-      {/* Closed petals — restraint */}
-      <path d="M20 22 Q14 14 12 18 Q14 20 20 22Z" fill="url(#sy0)" filter="url(#gy0)" opacity="0.7"/>
-      <path d="M20 22 Q26 14 28 18 Q26 20 20 22Z" fill="url(#sy0)" filter="url(#gy0)" opacity="0.7"/>
-      <path d="M20 22 Q17 10 15 15 Q17 18 20 22Z" fill="url(#sy0)" filter="url(#gy0)" opacity="0.6"/>
-      <path d="M20 22 Q23 10 25 15 Q23 18 20 22Z" fill="url(#sy0)" filter="url(#gy0)" opacity="0.6"/>
-      <path d="M20 22 Q20 8 20 12 Q20 16 20 22Z" fill={c} opacity="0.5"/>
-      {/* Inner glow — restraint holds light within */}
-      <circle cx="20" cy="18" r="3" fill={c} opacity="0.15">
-        <animate attributeName="opacity" values="0.1;0.3;0.1" dur="3s" repeatCount="indefinite"/>
+      <line x1="24" y1="42" x2="24" y2="26" stroke={G} strokeWidth="2.5" opacity="0.6" strokeLinecap="round"/>
+      {/* Petals — thick, layered, 3D */}
+      <path d="M24 26 Q16 16 13 20 Q16 24 24 26Z" fill={G} opacity="0.8" stroke={G} strokeWidth="0.5"/>
+      <path d="M24 26 Q32 16 35 20 Q32 24 24 26Z" fill={G} opacity="0.8" stroke={G} strokeWidth="0.5"/>
+      <path d="M24 26 Q18 10 16 16 Q18 22 24 26Z" fill={G} opacity="0.6" stroke={G} strokeWidth="0.3"/>
+      <path d="M24 26 Q30 10 32 16 Q30 22 24 26Z" fill={G} opacity="0.6" stroke={G} strokeWidth="0.3"/>
+      <path d="M24 26 Q24 6 24 14 Q24 20 24 26Z" fill={O} opacity="0.7"/>
+      {/* Inner glow — BRIGHT pulse */}
+      <circle cx="24" cy="20" r="5" fill="url(#yg0)">
+        <animate attributeName="r" values="4;7;4" dur="2s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
       </circle>
     </svg>
   ),
 
-  // ── 102: नियम (Niyama) — Discipline: Sacred flame in a lamp ──
+  // ── 102: नियम (Niyama) — Blazing oil lamp ──
   1: ({ size }) => (
-    <svg viewBox="0 0 40 40" width={size} height={size}>
+    <svg viewBox="0 0 48 48" width={size} height={size}>
       <defs>
-        <linearGradient id="sy1" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={c2} stopOpacity="0.9"/>
-          <stop offset="100%" stopColor={c} stopOpacity="0.4"/>
-        </linearGradient>
-        <filter id="gy1"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <linearGradient id="yg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={W}/><stop offset="50%" stopColor={O}/><stop offset="100%" stopColor={G} stopOpacity="0.3"/></linearGradient>
+        <filter id="yf1"><feGaussianBlur stdDeviation="3"/></filter>
       </defs>
-      {/* Oil lamp base */}
-      <ellipse cx="20" cy="32" rx="10" ry="3" fill={c} opacity="0.3"/>
-      <path d="M12 30 Q12 26 14 24 L26 24 Q28 26 28 30Z" fill={c} opacity="0.25"/>
-      {/* Lamp body */}
-      <ellipse cx="20" cy="24" rx="7" ry="2.5" fill={c} opacity="0.4"/>
-      {/* Flame — discipline burns steady */}
-      <path d="M20 23 Q16 16 18 10 Q19 6 20 4 Q21 6 22 10 Q24 16 20 23Z" fill="url(#sy1)" filter="url(#gy1)">
-        <animate attributeName="d" values="M20 23 Q16 16 18 10 Q19 6 20 4 Q21 6 22 10 Q24 16 20 23Z;M20 23 Q15 15 17 9 Q19 5 20 3 Q21 5 23 9 Q25 15 20 23Z;M20 23 Q16 16 18 10 Q19 6 20 4 Q21 6 22 10 Q24 16 20 23Z" dur="2s" repeatCount="indefinite"/>
+      {/* Flame glow */}
+      <ellipse cx="24" cy="14" rx="10" ry="14" fill={O} opacity="0.15" filter="url(#yf1)">
+        <animate attributeName="ry" values="12;16;12" dur="1.5s" repeatCount="indefinite"/>
+      </ellipse>
+      {/* Lamp base */}
+      <ellipse cx="24" cy="38" rx="12" ry="4" fill={G} opacity="0.4"/>
+      <path d="M14 36 Q14 32 16 30 L32 30 Q34 32 34 36Z" fill={G} opacity="0.3"/>
+      <ellipse cx="24" cy="30" rx="9" ry="3" fill={G} opacity="0.5"/>
+      {/* Outer flame */}
+      <path d="M24 28 Q17 18 19 10 Q21 4 24 2 Q27 4 29 10 Q31 18 24 28Z" fill="url(#yg1)" opacity="0.9">
+        <animate attributeName="d" values="M24 28 Q17 18 19 10 Q21 4 24 2 Q27 4 29 10 Q31 18 24 28Z;M24 28 Q15 16 18 8 Q21 2 24 0 Q27 2 30 8 Q33 16 24 28Z;M24 28 Q17 18 19 10 Q21 4 24 2 Q27 4 29 10 Q31 18 24 28Z" dur="1.2s" repeatCount="indefinite"/>
       </path>
       {/* Inner white flame */}
-      <path d="M20 23 Q18 18 19 13 Q20 9 20 8 Q20 9 21 13 Q22 18 20 23Z" fill="#fff" opacity="0.5">
-        <animate attributeName="opacity" values="0.3;0.6;0.3" dur="1.5s" repeatCount="indefinite"/>
+      <path d="M24 28 Q20 20 22 14 Q23 8 24 6 Q25 8 26 14 Q28 20 24 28Z" fill={W} opacity="0.7">
+        <animate attributeName="opacity" values="0.5;0.9;0.5" dur="0.8s" repeatCount="indefinite"/>
       </path>
     </svg>
   ),
 
-  // ── 103: आसन (Asana) — Steadiness: Meditating figure on mountain ──
+  // ── 103: आसन (Asana) — Bold meditating figure with aura rings ──
   2: ({ size }) => (
-    <svg viewBox="0 0 40 40" width={size} height={size}>
+    <svg viewBox="0 0 48 48" width={size} height={size}>
       <defs>
-        <linearGradient id="sy2" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={c} stopOpacity="0.8"/>
-          <stop offset="100%" stopColor={c} stopOpacity="0.2"/>
-        </linearGradient>
-        <filter id="gy2"><feGaussianBlur stdDeviation="1" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="yf2"><feGaussianBlur stdDeviation="2"/></filter>
       </defs>
-      {/* Mountain */}
-      <polygon points="20,14 34,36 6,36" fill={c} opacity="0.12"/>
-      <polygon points="20,14 28,36 12,36" fill={c} opacity="0.08"/>
-      {/* Figure in padmasana */}
-      <circle cx="20" cy="18" r="3" stroke={c} strokeWidth="1.2" fill="none" filter="url(#gy2)"/>
-      {/* Body */}
-      <path d="M20 21 L20 28" stroke={c} strokeWidth="1.2" strokeLinecap="round"/>
-      {/* Crossed legs */}
-      <path d="M14 30 Q17 27 20 28 Q23 27 26 30" stroke={c} strokeWidth="1" fill="none" strokeLinecap="round"/>
-      {/* Arms in mudra */}
-      <path d="M15 25 Q17 23 20 24 Q23 23 25 25" stroke={c} strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.7"/>
-      {/* Aura */}
-      <circle cx="20" cy="22" r="10" stroke={c} strokeWidth="0.5" fill="none" opacity="0.15">
-        <animate attributeName="r" values="10;12;10" dur="4s" repeatCount="indefinite"/>
-        <animate attributeName="opacity" values="0.15;0.05;0.15" dur="4s" repeatCount="indefinite"/>
+      {/* Aura rings — BIG and visible */}
+      <circle cx="24" cy="24" r="20" stroke={G} strokeWidth="1" fill="none" opacity="0.15">
+        <animate attributeName="r" values="18;22;18" dur="3s" repeatCount="indefinite"/>
       </circle>
+      <circle cx="24" cy="24" r="14" stroke={G} strokeWidth="0.8" fill="none" opacity="0.2">
+        <animate attributeName="r" values="14;17;14" dur="3s" repeatCount="indefinite" begin="0.5s"/>
+      </circle>
+      {/* Glow behind figure */}
+      <circle cx="24" cy="22" r="10" fill={G} opacity="0.1" filter="url(#yf2)"/>
+      {/* Head */}
+      <circle cx="24" cy="14" r="5" fill={G} opacity="0.7"/>
+      <circle cx="24" cy="14" r="3.5" fill={O} opacity="0.5"/>
+      {/* Body */}
+      <line x1="24" y1="19" x2="24" y2="30" stroke={G} strokeWidth="2.5" strokeLinecap="round"/>
+      {/* Legs crossed */}
+      <path d="M14 36 Q18 30 24 32 Q30 30 34 36" stroke={G} strokeWidth="2" fill="none" strokeLinecap="round"/>
+      {/* Arms in gyan mudra */}
+      <path d="M14 28 Q18 24 24 26 Q30 24 34 28" stroke={G} strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.7"/>
+      {/* Mudra dots */}
+      <circle cx="14" cy="28" r="1.5" fill={G} opacity="0.6"/>
+      <circle cx="34" cy="28" r="1.5" fill={G} opacity="0.6"/>
     </svg>
   ),
 
-  // ── 104: प्राणायाम (Pranayama) — Life-force: Breath spirals ──
+  // ── 104: प्राणायाम (Pranayama) — Dramatic breath waves ──
   3: ({ size }) => (
-    <svg viewBox="0 0 40 40" width={size} height={size}>
+    <svg viewBox="0 0 48 48" width={size} height={size}>
       <defs>
-        <filter id="gy3"><feGaussianBlur stdDeviation="1" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="yf3"><feGaussianBlur stdDeviation="2"/></filter>
       </defs>
-      {/* Nose/face silhouette */}
-      <path d="M18 22 Q18 18 20 16 Q22 18 22 22" stroke={c} strokeWidth="1" fill="none" opacity="0.4"/>
-      {/* Left breath spiral — inhale */}
-      <path d="M16 22 Q10 20 8 16 Q6 12 10 10 Q14 8 16 12" fill="none" stroke={c} strokeWidth="1.2" strokeLinecap="round" filter="url(#gy3)" opacity="0.7">
-        <animate attributeName="stroke-dasharray" values="0 60;60 0" dur="3s" repeatCount="indefinite"/>
+      {/* Center face hint */}
+      <circle cx="24" cy="24" r="4" fill={G} opacity="0.2"/>
+      {/* LEFT spiral — inhale — blue-gold */}
+      <path d="M20 24 Q12 22 8 16 Q4 8 10 4 Q16 2 20 8 Q22 14 20 24" fill="none" stroke={G} strokeWidth="2.5" strokeLinecap="round" opacity="0.8">
+        <animate attributeName="stroke-dasharray" values="0 80;80 0" dur="2.5s" repeatCount="indefinite"/>
       </path>
-      {/* Right breath spiral — exhale */}
-      <path d="M24 22 Q30 20 32 16 Q34 12 30 10 Q26 8 24 12" fill="none" stroke={c2} strokeWidth="1.2" strokeLinecap="round" filter="url(#gy3)" opacity="0.7">
-        <animate attributeName="stroke-dasharray" values="60 0;0 60" dur="3s" repeatCount="indefinite"/>
+      {/* RIGHT spiral — exhale — warm */}
+      <path d="M28 24 Q36 22 40 16 Q44 8 38 4 Q32 2 28 8 Q26 14 28 24" fill="none" stroke={O} strokeWidth="2.5" strokeLinecap="round" opacity="0.8">
+        <animate attributeName="stroke-dasharray" values="80 0;0 80" dur="2.5s" repeatCount="indefinite"/>
       </path>
-      {/* Prana dots flowing */}
-      <circle cx="12" cy="14" r="1" fill={c} opacity="0.5">
-        <animate attributeName="cy" values="22;10;22" dur="3s" repeatCount="indefinite"/>
-        <animate attributeName="opacity" values="0;0.8;0" dur="3s" repeatCount="indefinite"/>
+      {/* Prana particles — BIG and visible */}
+      <circle r="2.5" fill={G} opacity="0.8">
+        <animate attributeName="cx" values="20;8;14;20" dur="2.5s" repeatCount="indefinite"/>
+        <animate attributeName="cy" values="24;10;4;24" dur="2.5s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0;1;0.5;0" dur="2.5s" repeatCount="indefinite"/>
       </circle>
-      <circle cx="28" cy="14" r="1" fill={c2} opacity="0.5">
-        <animate attributeName="cy" values="10;22;10" dur="3s" repeatCount="indefinite"/>
-        <animate attributeName="opacity" values="0.8;0;0.8" dur="3s" repeatCount="indefinite"/>
+      <circle r="2.5" fill={O} opacity="0.8">
+        <animate attributeName="cx" values="28;40;34;28" dur="2.5s" repeatCount="indefinite"/>
+        <animate attributeName="cy" values="24;10;4;24" dur="2.5s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="1;0;0.5;1" dur="2.5s" repeatCount="indefinite"/>
       </circle>
       {/* Center bindu */}
-      <circle cx="20" cy="28" r="2" fill={c} opacity="0.3">
-        <animate attributeName="r" values="1.5;2.5;1.5" dur="3s" repeatCount="indefinite"/>
+      <circle cx="24" cy="36" r="3" fill={G} opacity="0.5" filter="url(#yf3)">
+        <animate attributeName="r" values="2;4;2" dur="2.5s" repeatCount="indefinite"/>
       </circle>
     </svg>
   ),
 
-  // ── 105: प्रत्याहार (Pratyahara) — Withdrawal: Eye closing with veil ──
+  // ── 105: प्रत्याहार (Pratyahara) — Eye dramatically closing ──
   4: ({ size }) => (
-    <svg viewBox="0 0 40 40" width={size} height={size}>
+    <svg viewBox="0 0 48 48" width={size} height={size}>
       <defs>
-        <filter id="gy4"><feGaussianBlur stdDeviation="1" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="yf4"><feGaussianBlur stdDeviation="2"/></filter>
       </defs>
-      {/* Eye shape */}
-      <ellipse cx="20" cy="20" rx="12" ry="6" stroke={c} strokeWidth="1" fill="none" filter="url(#gy4)" opacity="0.6"/>
+      {/* Eye glow */}
+      <ellipse cx="24" cy="24" rx="18" ry="8" fill={G} opacity="0.08" filter="url(#yf4)"/>
+      {/* Eye outline — THICK */}
+      <ellipse cx="24" cy="24" rx="18" ry="9" stroke={G} strokeWidth="2" fill="none" opacity="0.7"/>
       {/* Iris */}
-      <circle cx="20" cy="20" r="4" stroke={c} strokeWidth="0.8" fill="none" opacity="0.5"/>
-      {/* Pupil — shrinking (withdrawing) */}
-      <circle cx="20" cy="20" r="2" fill={c} opacity="0.6">
-        <animate attributeName="r" values="2;0.5;2" dur="4s" repeatCount="indefinite"/>
-        <animate attributeName="opacity" values="0.6;0.1;0.6" dur="4s" repeatCount="indefinite"/>
+      <circle cx="24" cy="24" r="6" stroke={G} strokeWidth="1.5" fill="none" opacity="0.6"/>
+      {/* Pupil — SHRINKS dramatically */}
+      <circle cx="24" cy="24" fill={G} opacity="0.8">
+        <animate attributeName="r" values="4;1;4" dur="3s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.9;0.2;0.9" dur="3s" repeatCount="indefinite"/>
       </circle>
-      {/* Closing eyelid — veil descending */}
-      <path d="M8 20 Q14 14 20 14 Q26 14 32 20" fill="rgba(12,10,7,.7)" stroke={c} strokeWidth="0.5" opacity="0.4">
-        <animate attributeName="d" values="M8 20 Q14 14 20 14 Q26 14 32 20;M8 20 Q14 20 20 20 Q26 20 32 20;M8 20 Q14 14 20 14 Q26 14 32 20" dur="4s" repeatCount="indefinite"/>
+      {/* Closing eyelid — sweeps down dramatically */}
+      <path fill="rgba(12,10,7,.85)" stroke={G} strokeWidth="1" opacity="0.6">
+        <animate attributeName="d" values="M6 24 Q15 15 24 15 Q33 15 42 24 L42 24 Q33 15 24 15 Q15 15 6 24Z;M6 24 Q15 23 24 24 Q33 23 42 24 L42 24 Q33 23 24 24 Q15 23 6 24Z;M6 24 Q15 15 24 15 Q33 15 42 24 L42 24 Q33 15 24 15 Q15 15 6 24Z" dur="3s" repeatCount="indefinite"/>
       </path>
     </svg>
   ),
 
-  // ── 106: धारणा (Dharana) — Concentration: Sri Yantra focused ──
+  // ── 106: धारणा (Dharana) — Pulsing Sri Yantra with laser focus ──
   5: ({ size }) => (
-    <svg viewBox="0 0 40 40" width={size} height={size}>
+    <svg viewBox="0 0 48 48" width={size} height={size}>
       <defs>
-        <filter id="gy5"><feGaussianBlur stdDeviation="1" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="yf5"><feGaussianBlur stdDeviation="2.5"/></filter>
       </defs>
-      {/* Outer triangle up */}
-      <polygon points="20,4 34,32 6,32" fill="none" stroke={c} strokeWidth="0.8" opacity="0.35" filter="url(#gy5)"/>
-      {/* Inner triangle down */}
-      <polygon points="20,32 6,10 34,10" fill="none" stroke={c} strokeWidth="0.8" opacity="0.35"/>
-      {/* Middle triangle up */}
-      <polygon points="20,10 28,26 12,26" fill="none" stroke={c} strokeWidth="0.6" opacity="0.4"/>
-      {/* Middle triangle down */}
-      <polygon points="20,26 12,14 28,14" fill="none" stroke={c} strokeWidth="0.6" opacity="0.4"/>
-      {/* Center — bindu of concentration */}
-      <circle cx="20" cy="19" r="2.5" fill={c} opacity="0.5" filter="url(#gy5)">
-        <animate attributeName="r" values="2;3;2" dur="2s" repeatCount="indefinite"/>
-        <animate attributeName="opacity" values="0.3;0.8;0.3" dur="2s" repeatCount="indefinite"/>
+      {/* Background glow */}
+      <circle cx="24" cy="24" r="16" fill={G} opacity="0.06" filter="url(#yf5)">
+        <animate attributeName="r" values="14;18;14" dur="2s" repeatCount="indefinite"/>
       </circle>
-      {/* Focus rays */}
-      {[0,45,90,135,180,225,270,315].map(angle=>(
-        <line key={angle} x1="20" y1="19" x2={20+Math.cos(angle*Math.PI/180)*14} y2={19+Math.sin(angle*Math.PI/180)*14}
-          stroke={c} strokeWidth="0.3" opacity="0.15"/>
-      ))}
+      {/* Outer upward triangle */}
+      <polygon points="24,2 44,38 4,38" fill="none" stroke={G} strokeWidth="1.5" opacity="0.5"/>
+      {/* Outer downward triangle */}
+      <polygon points="24,44 4,10 44,10" fill="none" stroke={G} strokeWidth="1.5" opacity="0.5"/>
+      {/* Inner upward */}
+      <polygon points="24,10 36,32 12,32" fill="none" stroke={G} strokeWidth="1" opacity="0.4"/>
+      {/* Inner downward */}
+      <polygon points="24,36 12,16 36,16" fill="none" stroke={G} strokeWidth="1" opacity="0.4"/>
+      {/* CENTER BINDU — massive pulse */}
+      <circle cx="24" cy="24" r="3" fill={G} filter="url(#yf5)">
+        <animate attributeName="r" values="2;5;2" dur="1.5s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.4;1;0.4" dur="1.5s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="24" cy="24" r="1.5" fill={W} opacity="0.9"/>
     </svg>
   ),
 
-  // ── 107: ध्यान (Dhyana) — Meditation: Rippling consciousness ──
+  // ── 107: ध्यान (Dhyana) — Massive rippling consciousness waves ──
   6: ({ size }) => (
-    <svg viewBox="0 0 40 40" width={size} height={size}>
+    <svg viewBox="0 0 48 48" width={size} height={size}>
       <defs>
-        <filter id="gy6"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="yf6"><feGaussianBlur stdDeviation="2"/></filter>
       </defs>
-      {/* Expanding consciousness rings */}
-      <circle cx="20" cy="20" r="4" stroke={c} strokeWidth="0.8" fill="none" opacity="0.6">
-        <animate attributeName="r" values="4;14;4" dur="4s" repeatCount="indefinite"/>
-        <animate attributeName="opacity" values="0.6;0;0.6" dur="4s" repeatCount="indefinite"/>
+      {/* Ring 1 — biggest */}
+      <circle cx="24" cy="24" r="6" stroke={G} strokeWidth="2" fill="none">
+        <animate attributeName="r" values="6;20;6" dur="3s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.8;0;0.8" dur="3s" repeatCount="indefinite"/>
+        <animate attributeName="stroke-width" values="2;0.5;2" dur="3s" repeatCount="indefinite"/>
       </circle>
-      <circle cx="20" cy="20" r="4" stroke={c} strokeWidth="0.6" fill="none" opacity="0.4">
-        <animate attributeName="r" values="4;14;4" dur="4s" repeatCount="indefinite" begin="1.3s"/>
-        <animate attributeName="opacity" values="0.4;0;0.4" dur="4s" repeatCount="indefinite" begin="1.3s"/>
+      {/* Ring 2 — staggered */}
+      <circle cx="24" cy="24" r="6" stroke={O} strokeWidth="1.5" fill="none">
+        <animate attributeName="r" values="6;20;6" dur="3s" repeatCount="indefinite" begin="1s"/>
+        <animate attributeName="opacity" values="0.6;0;0.6" dur="3s" repeatCount="indefinite" begin="1s"/>
       </circle>
-      <circle cx="20" cy="20" r="4" stroke={c} strokeWidth="0.4" fill="none" opacity="0.3">
-        <animate attributeName="r" values="4;14;4" dur="4s" repeatCount="indefinite" begin="2.6s"/>
-        <animate attributeName="opacity" values="0.3;0;0.3" dur="4s" repeatCount="indefinite" begin="2.6s"/>
+      {/* Ring 3 */}
+      <circle cx="24" cy="24" r="6" stroke={G} strokeWidth="1" fill="none">
+        <animate attributeName="r" values="6;20;6" dur="3s" repeatCount="indefinite" begin="2s"/>
+        <animate attributeName="opacity" values="0.4;0;0.4" dur="3s" repeatCount="indefinite" begin="2s"/>
       </circle>
-      {/* Core — still point */}
-      <circle cx="20" cy="20" r="3" fill={c} opacity="0.4" filter="url(#gy6)"/>
-      <circle cx="20" cy="20" r="1.5" fill="#fff" opacity="0.6">
-        <animate attributeName="opacity" values="0.4;0.9;0.4" dur="3s" repeatCount="indefinite"/>
+      {/* Glowing core */}
+      <circle cx="24" cy="24" r="5" fill={G} opacity="0.4" filter="url(#yf6)"/>
+      <circle cx="24" cy="24" r="3" fill={W} opacity="0.8">
+        <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
       </circle>
     </svg>
   ),
 
-  // ── 108: मोक्ष (MOKSHA) — Liberation: Blazing Om with cosmic burst ──
+  // ── 108: मोक्ष (MOKSHA) — BLAZING Om with cosmic explosion ──
   7: ({ size }) => (
-    <svg viewBox="0 0 40 40" width={size} height={size}>
+    <svg viewBox="0 0 48 48" width={size} height={size}>
       <defs>
-        <linearGradient id="sy7" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#fff" stopOpacity="0.9"/>
-          <stop offset="100%" stopColor={c} stopOpacity="0.6"/>
-        </linearGradient>
-        <filter id="gy7"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <radialGradient id="yg7" cx="50%" cy="50%"><stop offset="0%" stopColor={W}/><stop offset="60%" stopColor={G}/><stop offset="100%" stopColor={G} stopOpacity="0"/></radialGradient>
+        <filter id="yf7"><feGaussianBlur stdDeviation="3"/></filter>
       </defs>
-      {/* Cosmic burst rays */}
-      {[0,30,60,90,120,150,180,210,240,270,300,330].map(angle=>(
-        <line key={angle} x1="20" y1="20"
-          x2={20+Math.cos(angle*Math.PI/180)*18} y2={20+Math.sin(angle*Math.PI/180)*18}
-          stroke={c} strokeWidth="0.6" opacity="0.2">
-          <animate attributeName="opacity" values="0.1;0.35;0.1" dur="3s" repeatCount="indefinite"
-            begin={`${angle/360*3}s`}/>
+      {/* Massive glow */}
+      <circle cx="24" cy="24" r="20" fill={G} opacity="0.15" filter="url(#yf7)">
+        <animate attributeName="r" values="16;22;16" dur="2s" repeatCount="indefinite"/>
+      </circle>
+      {/* Cosmic rays — 12 beams */}
+      {[0,30,60,90,120,150,180,210,240,270,300,330].map(a=>(
+        <line key={a} x1={24+Math.cos(a*Math.PI/180)*6} y1={24+Math.sin(a*Math.PI/180)*6}
+          x2={24+Math.cos(a*Math.PI/180)*22} y2={24+Math.sin(a*Math.PI/180)*22}
+          stroke={G} strokeWidth="1.5" strokeLinecap="round" opacity="0.3">
+          <animate attributeName="opacity" values="0.15;0.5;0.15" dur="2s" repeatCount="indefinite" begin={`${a/360*2}s`}/>
+          <animate attributeName="x2" values={`${24+Math.cos(a*Math.PI/180)*20}`} dur="0s"/>
+          <animate attributeName="y2" values={`${24+Math.sin(a*Math.PI/180)*20}`} dur="0s"/>
         </line>
       ))}
-      {/* Outer glow */}
-      <circle cx="20" cy="20" r="12" fill={c} opacity="0.06" filter="url(#gy7)">
-        <animate attributeName="r" values="10;14;10" dur="3s" repeatCount="indefinite"/>
+      {/* Core glow */}
+      <circle cx="24" cy="24" r="10" fill="url(#yg7)" opacity="0.6">
+        <animate attributeName="r" values="8;12;8" dur="2s" repeatCount="indefinite"/>
       </circle>
-      {/* Om symbol */}
-      <text x="20" y="25" textAnchor="middle" fill="url(#sy7)" fontSize="20" fontFamily="serif" fontWeight="bold" filter="url(#gy7)">ॐ</text>
+      {/* Om symbol — BIG and bright */}
+      <text x="24" y="30" textAnchor="middle" fill={W} fontSize="24" fontFamily="serif" fontWeight="bold"
+        style={{filter:'drop-shadow(0 0 4px rgba(240,200,80,0.8))'}}>ॐ</text>
     </svg>
   ),
 };
 
-export default function SacredPathIcon({ stepIndex, size = 28 }) {
+export default function SacredPathIcon({ stepIndex, size = 36 }) {
   const Renderer = SACRED_ICONS[stepIndex];
-  if (!Renderer) return <span style={{ fontSize: size * 0.6 }}>🪷</span>;
+  if (!Renderer) return <span style={{ fontSize: size * 0.7, color: G }}>🪷</span>;
   return (
     <div style={{
       width: size, height: size,
-      filter: `drop-shadow(0 0 ${size * 0.25}px rgba(240,200,80,.4))`,
+      filter: `drop-shadow(0 0 ${size*0.3}px rgba(240,200,80,.5)) drop-shadow(0 2px 4px rgba(0,0,0,.6))`,
     }}>
       <Renderer size={size} />
     </div>
