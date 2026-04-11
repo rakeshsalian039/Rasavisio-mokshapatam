@@ -6274,67 +6274,83 @@ export default function MokshaPatam108(){
           display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
           padding:isMobile?16:32}}>
 
-          {/* Player context */}
-          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:isMobile?14:20,
+          {/* Temple header — compact */}
+          <div style={{display:"flex",alignItems:"center",gap:isMobile?10:14,marginBottom:isMobile?16:24,
             animation:"grahaNameIn .4s ease both"}}>
-            <span style={{fontSize:isMobile?18:22}}>{players[cur]?.char?.icon}</span>
-            <span style={{fontSize:isMobile?10:12,color:"rgba(240,200,80,.5)",
-              fontFamily:"'Cinzel',serif",letterSpacing:2}}>
-              {(players[cur]?.name||'SEEKER').toUpperCase()} ENTERS THE TEMPLE
-            </span>
+            <TempleIcon templeKey={TEMPLE_SQUARES[templeQuiz.square]} size={isMobile?36:48} color={templeQuiz.temple.color}/>
+            <div>
+              <div style={{fontFamily:"'Yatra One',serif",fontSize:isMobile?18:24,
+                color:templeQuiz.temple.color,letterSpacing:2,lineHeight:1.2,
+                textShadow:`0 0 20px ${templeQuiz.temple.color}40`,
+              }}>{templeQuiz.temple.name}</div>
+              <div style={{fontSize:isMobile?9:11,color:"rgba(255,255,255,.35)",
+                fontFamily:"'Cinzel',serif",letterSpacing:2}}>{templeQuiz.temple.en}</div>
+            </div>
           </div>
 
-          {/* Temple icon + name */}
-          <div style={{fontSize:isMobile?48:64,marginBottom:isMobile?8:12,
-            animation:"grahaZoomIn .6s cubic-bezier(0.34,1.52,0.64,1) forwards",
-            filter:`drop-shadow(0 0 25px ${templeQuiz.temple.color}60)`,
-          }}>{templeQuiz.temple.icon}</div>
-          <div style={{fontFamily:"'Yatra One',serif",fontSize:isMobile?"clamp(22px,6vw,30px)":"clamp(28px,3.5vw,40px)",
-            color:templeQuiz.temple.color,marginBottom:4,letterSpacing:3,
-            textShadow:`0 0 40px ${templeQuiz.temple.color}60`,
-            animation:"grahaNameIn .5s ease .15s both",
-          }}>{templeQuiz.temple.name}</div>
-          <div style={{fontSize:isMobile?12:15,color:"rgba(255,255,255,.4)",
-            fontFamily:"'Cinzel',serif",letterSpacing:isMobile?3:5,marginBottom:isMobile?4:8,
-            animation:"grahaNameIn .5s ease .25s both",
-          }}>{templeQuiz.temple.en}</div>
+          {/* Question card */}
+          <div style={{maxWidth:isMobile?360:540,width:"100%",
+            animation:"grahaNameIn .5s ease .2s both"}}>
 
-          {/* Divider */}
-          <div style={{width:isMobile?50:80,height:2,
-            background:`linear-gradient(90deg,transparent,${templeQuiz.temple.color},transparent)`,
-            marginBottom:isMobile?16:24,animation:"grahaNameIn .4s ease .3s both"}}/>
-
-          {/* Question */}
-          <div style={{maxWidth:isMobile?340:500,textAlign:"center",
-            animation:"grahaNameIn .5s ease .4s both"}}>
-            <div style={{fontSize:isMobile?14:17,color:"#e0d0a0",lineHeight:2,
-              marginBottom:isMobile?18:26,fontFamily:"'Noto Serif Devanagari',serif",
-              padding:isMobile?"12px 14px":"16px 24px",
-              background:`${templeQuiz.temple.color}06`,
-              border:`1px solid ${templeQuiz.temple.color}20`,borderRadius:12,
-            }}>
-              {templeQuiz.question.q}
+            {/* Question label */}
+            <div style={{fontSize:isMobile?8:10,letterSpacing:isMobile?3:5,
+              color:`${templeQuiz.temple.color}50`,fontFamily:"'Cinzel',serif",
+              marginBottom:isMobile?8:12,textAlign:"center"}}>
+              {players[cur]?.char?.icon} {(players[cur]?.name||'SEEKER').toUpperCase()} &middot; PROVE YOUR KNOWLEDGE
             </div>
 
-            {/* Answer buttons — both identical styling so player must READ */}
-            <div style={{display:"flex",flexDirection:"column",gap:12}}>
+            {/* Question text — distinct card */}
+            <div style={{
+              padding:isMobile?"18px 16px":"24px 28px",marginBottom:isMobile?20:28,
+              background:`linear-gradient(180deg,${templeQuiz.temple.color}0a,${templeQuiz.temple.color}04)`,
+              border:`1px solid ${templeQuiz.temple.color}25`,
+              borderLeft:`4px solid ${templeQuiz.temple.color}60`,
+              borderRadius:"0 12px 12px 0",
+            }}>
+              <div style={{fontSize:isMobile?9:10,letterSpacing:3,
+                color:`${templeQuiz.temple.color}55`,fontFamily:"'Cinzel',serif",
+                marginBottom:isMobile?8:10}}>QUESTION</div>
+              <div style={{fontSize:isMobile?15:18,color:"#f0e8c8",lineHeight:2,
+                fontFamily:"'Noto Serif Devanagari',serif"}}>
+                {templeQuiz.question.q}
+              </div>
+            </div>
+
+            {/* Answers label */}
+            <div style={{fontSize:isMobile?9:10,letterSpacing:3,
+              color:"rgba(200,180,140,.35)",fontFamily:"'Cinzel',serif",
+              marginBottom:isMobile?10:12,textAlign:"center"}}>CHOOSE YOUR ANSWER</div>
+
+            {/* Answer buttons — identical styling, randomized */}
+            <div style={{display:"flex",flexDirection:"column",gap:isMobile?10:14}}>
               {[
                 {text:templeQuiz.question.a,correct:true},
                 {text:templeQuiz.question.b,correct:false}
               ].sort(()=>Math.random()-0.5).map((opt,i)=>(
                 <button key={i} onClick={()=>handleTempleAnswer(opt.correct)} style={{
-                  background:`${templeQuiz.temple.color}08`,border:`1px solid ${templeQuiz.temple.color}28`,
-                  color:"#e0d0a0",padding:isMobile?"13px 16px":"15px 20px",fontSize:isMobile?13:15,
-                  fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:10,
-                  lineHeight:1.7,textAlign:"left",transition:"all .2s",
-                }}>{opt.text}</button>
+                  background:"rgba(200,180,140,.04)",
+                  border:"1px solid rgba(200,180,140,.18)",
+                  color:"#e0d0a0",padding:isMobile?"14px 16px":"16px 22px",
+                  fontSize:isMobile?13:15,fontFamily:"'Noto Serif Devanagari',serif",
+                  cursor:"pointer",borderRadius:10,lineHeight:1.8,textAlign:"left",
+                  transition:"all .2s",
+                  display:"flex",alignItems:"flex-start",gap:isMobile?10:14,
+                }}>
+                  <span style={{flexShrink:0,width:isMobile?22:26,height:isMobile?22:26,
+                    borderRadius:"50%",border:"1.5px solid rgba(200,180,140,.3)",
+                    display:"flex",alignItems:"center",justifyContent:"center",
+                    fontSize:isMobile?11:13,color:"rgba(200,180,140,.5)",fontFamily:"'Cinzel',serif",
+                    marginTop:2,
+                  }}>{i===0?'A':'B'}</span>
+                  <span>{opt.text}</span>
+                </button>
               ))}
             </div>
           </div>
 
           {/* UX context */}
           <div style={{fontSize:isMobile?8:10,color:"rgba(200,160,60,.2)",
-            fontFamily:"'Cinzel',serif",letterSpacing:4,marginTop:isMobile?16:24,
+            fontFamily:"'Cinzel',serif",letterSpacing:4,marginTop:isMobile?20:28,
             animation:"grahaNameIn .4s ease 1s both",
           }}>SQUARE {templeQuiz.square} &middot; KNOWLEDGE TEMPLE</div>
         </div>
