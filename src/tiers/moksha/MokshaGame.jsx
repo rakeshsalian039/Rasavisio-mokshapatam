@@ -3840,6 +3840,8 @@ function playTempleBell(){
     a.volume=0.6;
     templeBellAudioRef.current=a;
     a.play().catch(()=>{});
+    // Stop after 3s — only need one bell ring, not the full 30s file
+    setTimeout(()=>{try{a.pause()}catch(e){}},3000);
   }catch(e){}
 }
 
@@ -6572,7 +6574,7 @@ export default function MokshaPatam108(){
                         setGuruEncounter(e=>({...e,phase:'result',correct:true}));
                         if(!muted){
                           const blessingText=`${g.en} blesses you. ${g.blessingDesc}`;
-                          setTimeout(()=>VoiceEngine.speakNarrator(blessingText,chosenLang,null),800);
+                          VoiceEngine.speakNarrator(blessingText,chosenLang,null);
                         }
                       }else{
                         play("yamaLaugh");haptic('Heavy');
