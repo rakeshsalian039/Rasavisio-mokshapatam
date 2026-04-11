@@ -4651,16 +4651,74 @@ export default function MokshaPatam108(){
     ambient.duck();
     setBusy(true);play("dice");
     gameStats.current.turns=(gameStats.current.turns||0)+1;
-    const r=Math.floor(Math.random()*6)+1,gi=Math.floor(Math.random()*9),g=GRAHA[gi];
+    let r=Math.floor(Math.random()*6)+1;
+    const gi=Math.floor(Math.random()*9),g=GRAHA[gi];
+
+    // ═══ GURU BLESSING ACTIVATION ═══
+    const blessing=guruBlessingRef.current;
+    let blessingMsg=null;
+    if(blessing&&!players[cur]?.cpu){
+      if(blessing.type==='double_roll'){
+        // Bhaskara: double dice value
+        r=Math.min(r*2,12);
+        blessingMsg=`🔢 ${blessing.name}: Bhaskara doubled your roll to ${r}!`;
+        guruBlessingRef.current=null;
+      }else if(blessing.type==='advance_2'){
+        blessingMsg=`🌍 ${blessing.name}: Aryabhata propels you 2 extra squares!`;
+        // Don't nullify yet — applied below after tot is calculated
+      }else if(blessing.type==='heal_papa'){
+        // Sushruta: remove 1 Papa immediately
+        if(papa[cur]>0){
+          const np=[...papa];np[cur]=Math.max(0,np[cur]-1);setPapa(np);
+          blessingMsg=`🔪 ${blessing.name}: Sushruta heals 1 Papa from your karma!`;
+        }else{
+          blessingMsg=`🔪 ${blessing.name}: Sushruta finds no Papa to heal. Your karma is clean!`;
+        }
+        guruBlessingRef.current=null;
+      }else if(blessing.type==='shield'){
+        // Charaka: grant shield (same as Venus)
+        const ns=[...shieldA];ns[cur]=true;setShieldA(ns);
+        blessingMsg=`🌿 ${blessing.name}: Charaka grants you an Ayurvedic Shield! Next snake is neutralized.`;
+        guruBlessingRef.current=null;
+      }else if(blessing.type==='skip_papa'){
+        // Patanjali: skip next Papa — stays active until consumed at snake/Papa event
+        blessingMsg=`🧘 ${blessing.name}: Patanjali's discipline shields your karma. Next Papa penalty nullified.`;
+        // Don't nullify — consumed when Papa would be added
+      }else if(blessing.type==='auto_dilemma'){
+        // Panini: auto-correct next dilemma — stays active until consumed
+        blessingMsg=`📜 ${blessing.name}: Panini's precision guides your next Dharma Dilemma to the Punya path.`;
+        // Don't nullify — consumed when dilemma appears
+      }else if(blessing.type==='see_roll'||blessing.type==='choose_graha'){
+        // Chanakya/Varahamihira: simplified — grant +3 Punya
+        const np=[...punya];np[cur]+=3;setPunya(np);
+        showKarmaToast(pName,3,'punya','🏛');
+        blessingMsg=blessing.type==='see_roll'
+          ?`🏛 ${blessing.name}: Chanakya's strategic vision grants you +3 Punya!`
+          :`🌊 ${blessing.name}: Varahamihira's cosmic foresight grants you +3 Punya!`;
+        guruBlessingRef.current=null;
+      }
+    }
+
     setRv(r);setGv(g);
     const pName=players[cur]?.name||"Seeker";
 
     // Compute graha effects first
     let tot=r;
+    // Aryabhata blessing: +2 extra
+    if(blessing&&blessing.type==='advance_2'&&!players[cur]?.cpu){
+      tot+=2;
+      guruBlessingRef.current=null;
+    }
     const oldP=pos[cur];let newP=oldP+tot;
     const extras=[];const nPunya=[...punya];const nPapa=[...papa];const nShield=[...shieldA];const nPos=[...pos];const nSkip=[...skipA];
     let grahaStory="";
     const onSacredPath=oldP>=101;
+    // Show guru blessing activation message
+    if(blessingMsg){
+      setMsg(blessingMsg);
+      // Clear message after 4s
+      setTimeout(()=>setMsg(''),4000);
+    }
     // Track graha hit
     if(g.fx&&gameStats.current.grahaHits){gameStats.current.grahaHits[g.fx]=(gameStats.current.grahaHits[g.fx]||0)+1}
     if(onSacredPath){
@@ -4756,6 +4814,15 @@ export default function MokshaPatam108(){
               setTimeout(()=>{if(!bgMuted)ambient.unduck();},2800);
               finishTurn(true);
             });
+          }else if(guruBlessingRef.current?.type==='skip_papa'){
+            // Patanjali's blessing — snake bites but no Papa
+            guruBlessingRef.current=null;
+            const o=p;p=sn.to;eMsg=`🧘 ${o}→${p} (Papa nullified!)`;gameStats.current.snakes++;
+            showKarmaToast(pName,0,'shield','🧘');play("chime");
+            showEvent({icon:"🧘",title:`Patanjali's Discipline!`,subtitle:`The serpent ${sn.skt} (${sn.en}) struck — you fall to ${p}, but Patanjali's yogic discipline nullifies the Papa penalty! 0 Papa gained.`,color:"#c08060"},()=>{
+              addCGEntry('punya',p,`${sn.skt} — Patanjali shield`);
+              finishTurn(true);
+            });
           }else{
             // Snake bites — drag player down
             const o=p;p=sn.to;eMsg=`𓆙 ${o}→${p}`;nPapa[cur]+=2;gameStats.current.snakes++;
@@ -4799,10 +4866,24 @@ export default function MokshaPatam108(){
             const dIdx=pool[Math.floor(Math.random()*pool.length)];
             const d=DILEMMAS[dIdx];
             setUsedDharma(u=>[...u,dIdx]);
-            eMsg=`⚖ ${d.en}`;play("dilemma");
-            showEvent({icon:"⚖",title:`${d.t} — ${d.en}`,subtitle:`${pName} faces a Dharma Dilemma! Dismiss to read the story and choose your path.`,color:"#d0b870"},()=>{
-              setDil({...d,pi:cur});finishTurn();
-            });
+            // Panini's auto_dilemma blessing — auto-pick punya path
+            if(guruBlessingRef.current?.type==='auto_dilemma'){
+              guruBlessingRef.current=null;
+              const punyaChoice=d.c[0]; // c[0] is always the punya choice
+              const fx=punyaChoice.fx||{};
+              if(fx.punya)nPunya[cur]+=(fx.punya||0);
+              if(fx.move)p=Math.max(1,Math.min(100,p+(fx.move||0)));
+              nPos[cur]=p;
+              eMsg=`📜 Panini auto-corrects: ${d.en}`;play("chime");showKarmaToast(pName,fx.punya||1,'punya','📜');
+              showEvent({icon:"📜",title:`Panini's Perfect Speech!`,subtitle:`${pName}, Panini's grammatical precision guides you to the righteous path in "${d.en}". +${fx.punya||1} Punya automatically!`,color:"#a080c0"},()=>{
+                addCGEntry('dharma_p',p,`${d.en} — Panini`);speakCG('dharma_p',600);finishTurn(true);
+              });
+            }else{
+              eMsg=`⚖ ${d.en}`;play("dilemma");
+              showEvent({icon:"⚖",title:`${d.t} — ${d.en}`,subtitle:`${pName} faces a Dharma Dilemma! Dismiss to read the story and choose your path.`,color:"#d0b870"},()=>{
+                setDil({...d,pi:cur});finishTurn();
+              });
+            }
           }
           else if(p>100&&p<108){
             const sq=SACRED_PATH[p-101];
