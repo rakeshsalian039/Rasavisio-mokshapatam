@@ -4548,13 +4548,32 @@ export default function MokshaPatam108(){
 
   const nearest=(positions,ci,count)=>{let m=Infinity,idx=-1;for(let i=0;i<count;i++){if(i!==ci&&positions[i]<101){const d=Math.abs(positions[i]-positions[ci]);if(d>0&&d<m){m=d;idx=i}}}return idx};
 
+  // ═══ TEMPLE QUIZ ANSWER HANDLER (uses state setters, no closures) ═══
+  const handleTempleAnswer=useCallback((correct)=>{
+    if(!templeQuiz)return;
+    const{temple,playerIdx,playerName,square}=templeQuiz;
+    setTempleQuiz(null);
+    if(correct){
+      setPunya(prev=>{const n=[...prev];n[playerIdx]+=2;return n});
+      setPos(prev=>{const n=[...prev];n[playerIdx]=Math.min(square+3,100);return n});
+      showKarmaToast(playerName,2,'punya',temple.icon);play("ladder");
+      addCGEntry('dharma_p',square,`${temple.en} ✓`);
+    }else{
+      setPapa(prev=>{const n=[...prev];n[playerIdx]+=1;return n});
+      showKarmaToast(playerName,1,'papa',temple.icon);play("snake");
+      addCGEntry('dharma_x',square,`${temple.en} ✗`);
+    }
+    setBusy(false);
+    setCur(c=>(c+1)%nP);
+  },[templeQuiz,nP]);
+
   const doRoll=useCallback((autoRoll=false)=>{
-    if(dil||win||busy||players.length===0)return;
+    if(dil||win||busy||players.length===0||templeQuiz||guruEncounter)return;
     if(isOnline&&!isMyTurn)return; // online: only active player rolls
     if(autoRoll&&!gameReadyRef.current)return; // block timer auto-roll during init
     // ═══ GURU ENCOUNTER / COSMIC CARD — every 5th turn ═══
-    const totalTurns=gameStats.current.turns||0;
-    if(totalTurns>0&&totalTurns%5===0&&!guruEncounter&&!cosmicCard&&!templeQuiz&&!autoRoll){
+    const totalTurns=(gameStats.current.turns||0)+1; // +1 because increment happens after this check
+    if(totalTurns>1&&totalTurns%5===0&&!guruEncounter&&!cosmicCard&&!templeQuiz&&!autoRoll){
       if(Math.random()<0.5){
         // Guru encounter
         const available=GURUS.filter(g=>{const used=usedGuruQRef.current[g.id]||[];return g.questions.length>used.length;});
@@ -4724,20 +4743,10 @@ export default function MokshaPatam108(){
               usedTempleQRef.current[templeKey]=[...(usedTempleQRef.current[templeKey]||[]),qIdx];
               const question=temple.questions[qIdx];
               play("chime");
+              // Store context for the quiz callback (avoids closure bugs)
+              const tCur=cur,tP=p,tPName=pName;
               showEvent({icon:temple.icon,title:`${temple.name} — ${temple.en}`,subtitle:temple.intro,color:temple.color},()=>{
-                setTempleQuiz({temple,question,square:p,onAnswer:(correct)=>{
-                  setTempleQuiz(null);
-                  if(correct){
-                    nPunya[cur]+=2;showKarmaToast(pName,2,'punya',temple.icon);play("ladder");
-                    addCGEntry('dharma_p',p,`${temple.en} ✓`);
-                    // Advance 3 extra squares (check for snakes/ladders at new position skipped for simplicity)
-                    p=Math.min(p+3,100);nPos[cur]=p;
-                  }else{
-                    nPapa[cur]+=1;showKarmaToast(pName,1,'papa',temple.icon);play("snake");
-                    addCGEntry('dharma_x',p,`${temple.en} ✗`);
-                  }
-                  finishTurn(true);
-                }});
+                setTempleQuiz({temple,question,square:tP,playerIdx:tCur,playerName:tPName});
               });
             }else{finishTurn();}
           }
@@ -6070,13 +6079,13 @@ export default function MokshaPatam108(){
               {templeQuiz.question.q}
             </div>
             <div style={{display:"flex",flexDirection:"column",gap:10}}>
-              <button onClick={()=>templeQuiz.onAnswer(true)} style={{
+              <button onClick={()=>handleTempleAnswer(true)} style={{
                 background:`${templeQuiz.temple.color}15`,border:`1px solid ${templeQuiz.temple.color}40`,
                 color:"#e8d8a0",padding:"12px 16px",fontSize:isMobile?12:13,
                 fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:8,
                 lineHeight:1.6,textAlign:"left",
               }}>{templeQuiz.question.a}</button>
-              <button onClick={()=>templeQuiz.onAnswer(false)} style={{
+              <button onClick={()=>handleTempleAnswer(false)} style={{
                 background:"rgba(200,100,60,.08)",border:"1px solid rgba(200,100,60,.25)",
                 color:"#e0c8a0",padding:"12px 16px",fontSize:isMobile?12:13,
                 fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:8,
@@ -6103,9 +6112,23 @@ export default function MokshaPatam108(){
             <div style={{maxWidth:isMobile?340:480,textAlign:"center",animation:"fadeIn .5s ease"}}>
               <div style={{fontSize:9,letterSpacing:6,color:`${guruEncounter.guru.color}50`,
                 fontFamily:"'Cinzel',serif",marginBottom:12}}>GURU ENCOUNTER</div>
-              <div style={{fontSize:isMobile?64:80,marginBottom:12,
-                filter:`drop-shadow(0 0 30px ${guruEncounter.guru.color})`,
-              }}>{guruEncounter.guru.icon}</div>
+              {guruEncounter.guru.image?(
+                <div style={{width:isMobile?120:160,height:isMobile?120:160,borderRadius:"50%",
+                  margin:"0 auto 16px",overflow:"hidden",
+                  border:`3px solid ${guruEncounter.guru.color}60`,
+                  boxShadow:`0 0 40px ${guruEncounter.guru.color}30, 0 0 80px ${guruEncounter.guru.color}15`,
+                }}>
+                  <img src={guruEncounter.guru.image} alt={guruEncounter.guru.en}
+                    style={{width:"100%",height:"100%",objectFit:"cover"}}
+                    onError={(e)=>{e.target.style.display='none';e.target.nextSibling.style.display='flex'}}/>
+                  <div style={{display:"none",width:"100%",height:"100%",alignItems:"center",justifyContent:"center",
+                    fontSize:isMobile?64:80,background:`${guruEncounter.guru.color}10`}}>{guruEncounter.guru.icon}</div>
+                </div>
+              ):(
+                <div style={{fontSize:isMobile?64:80,marginBottom:12,
+                  filter:`drop-shadow(0 0 30px ${guruEncounter.guru.color})`,
+                }}>{guruEncounter.guru.icon}</div>
+              )}
               <div style={{fontFamily:"'Yatra One',serif",fontSize:isMobile?24:32,
                 color:guruEncounter.guru.color,marginBottom:4,letterSpacing:3,
                 textShadow:`0 0 40px ${guruEncounter.guru.color}80`,
@@ -6728,18 +6751,21 @@ export default function MokshaPatam108(){
               <div style={{display:"grid",gridTemplateColumns:"repeat(10,1fr)",position:"relative",zIndex:6}}>
               {board.map(({num})=>{
                 const sn=SNAKES[num],ld=LADDERS[num],dl=DLM_SQ.includes(num),mk=num===108;
+                const tmpl=TEMPLE_SQUARES[num]?TEMPLES[TEMPLE_SQUARES[num]]:null;
                 const ph=[];for(let i=0;i<nP;i++){const rp=isOnline&&i!==myPlayerIndex&&displayPos.length>0?displayPos[i]:pos[i];if((rp||1)===num)ph.push(i)}
                 let bg="transparent",bdr="rgba(200,160,60,.08)";
                 if(mk){bg="radial-gradient(circle,rgba(240,200,80,.2),transparent)";bdr="rgba(240,200,80,.5)"}
                 else if(sn){bg="radial-gradient(circle,rgba(180,60,20,.2),transparent)";bdr="rgba(180,60,20,.3)"}
                 else if(ld){bg="radial-gradient(circle,rgba(200,160,60,.15),transparent)";bdr="rgba(200,160,60,.2)"}
+                else if(tmpl){bg=`radial-gradient(circle,${tmpl.color}25,transparent)`;bdr=`${tmpl.color}50`}
                 else if(dl){bg="radial-gradient(circle,rgba(120,80,180,.2),transparent)";bdr="rgba(140,100,200,.35)"}
                 return(<div key={num} onMouseEnter={()=>!isMobile&&setHov(num)} onMouseLeave={()=>!isMobile&&setHov(null)} onClick={()=>{if(isMobile)setHov(h=>h===num?null:num)}} style={{aspectRatio:"1",background:bg,border:`0.5px solid ${hov===num?"rgba(240,200,80,.6)":bdr}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .2s"}}>
                   <span style={{position:"absolute",top:1,left:2,fontSize:"clamp(7px,1.2vw,11px)",color:"rgba(240,210,130,.5)",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:700}}>{num}</span>
                   {mk&&<span style={{fontSize:"clamp(14px,2.5vw,22px)",animation:"mp 3s ease infinite",color:"#f0d050"}}>ॐ</span>}
                   {sn&&<><span style={{fontSize:"clamp(10px,2vw,16px)",lineHeight:1}}>𓆙</span><span style={{fontSize:"clamp(7px,1.2vw,11px)",color:"#ffb040",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 1px 4px #000,0 0 12px rgba(180,60,20,.5)"}}>{sn.skt}</span><span style={{fontSize:"clamp(5px,.9vw,8px)",color:"#ffa040",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1.1,textShadow:"0 0 6px #000,0 0 10px rgba(180,60,20,.4)"}}>{sn.en}</span></>}
                   {ld&&<><span style={{fontSize:"clamp(9px,1.8vw,14px)",lineHeight:1}}>🪔</span><span style={{fontSize:"clamp(7px,1.2vw,11px)",color:"#ffe070",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 0 12px rgba(200,160,60,.4)"}}>{ld.skt}</span><span style={{fontSize:"clamp(5px,.9vw,8px)",color:"#f0d060",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1.1,textShadow:"0 0 6px #000"}}>{ld.en}</span></>}
-                  {dl&&<><span style={{fontSize:"clamp(8px,1.5vw,13px)",lineHeight:1}}>⚖</span><span style={{fontSize:"clamp(5px,.8vw,7px)",color:"#c8a0f0",fontFamily:"'Cinzel',serif",fontWeight:900,textShadow:"0 0 8px #000",letterSpacing:1}}>DHARMA</span></>}
+                  {tmpl&&<><span style={{fontSize:"clamp(10px,2vw,16px)",lineHeight:1,filter:`drop-shadow(0 0 4px ${tmpl.color}60)`}}>{tmpl.icon}</span><span style={{fontSize:"clamp(5px,.8vw,7px)",color:tmpl.color,fontFamily:"'Cinzel',serif",fontWeight:900,textShadow:"0 0 8px #000",letterSpacing:1,lineHeight:1.1}}>TEMPLE</span></>}
+                  {dl&&!tmpl&&<><span style={{fontSize:"clamp(8px,1.5vw,13px)",lineHeight:1}}>⚖</span><span style={{fontSize:"clamp(5px,.8vw,7px)",color:"#c8a0f0",fontFamily:"'Cinzel',serif",fontWeight:900,textShadow:"0 0 8px #000",letterSpacing:1}}>DHARMA</span></>}
                   {ph.length>0&&<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",gap:2,zIndex:15,pointerEvents:"none"}}>
                     {ph.map(pi=>{const c=players[pi]?.char;const isMoving=pi===cur&&busy;const isActive=pi===cur;const pc=c?.color||"#fff";return <div key={pi} style={{display:"flex",flexDirection:"column",alignItems:"center",transition:"all .3s ease",transform:isMoving?"scale(1.7) translateY(-8px)":isActive?"scale(1.4)":"scale(0.9)",zIndex:isActive?20:15}}>
                       {isActive&&<div style={{position:"absolute",inset:-2,borderRadius:4,background:`${pc}15`,border:`1.5px solid ${pc}40`,animation:"activeGlow 1.5s ease infinite","--pc":pc}}/>}
