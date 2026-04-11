@@ -4652,7 +4652,7 @@ export default function MokshaPatam108(){
           return;
         }
       }
-      // COSMIC CARD — every 12th of THIS PLAYER's turns but NOT if guru already fired
+      // COSMIC CARD — every 12th of THIS PLAYER's turns
       if(myTurns>1&&myTurns%12===0&&lastKnowledgeTurnRef.current!==`${cur}_${myTurns}`){
         lastKnowledgeTurnRef.current=`${cur}_${myTurns}`;
         const p=pos[cur]||1;
@@ -7656,12 +7656,15 @@ export default function MokshaPatam108(){
                 opacity:(isOnline&&!isMyTurn)?0.3:1,transition:'opacity .3s',animation:(!busy&&!dil&&!win&&isMyTurn)?'rollPulse 2s ease infinite':'none'}}>
               {busy?"Rolling...":(isOnline&&!isMyTurn)?`${players[cur]?.name||'Opponent'}'s turn`:"Roll Dice"}
             </button>
-            {/* Guru arrival countdown — per current player */}
+            {/* Guru arrival countdown — per current player with offset */}
             {(()=>{
               const pt=gameStats.current.playerTurns||{};
+              const go=gameStats.current.guruOffset||{};
               const myT=pt[cur]||0;
-              const nextGuru=Math.ceil((myT+1)/8)*8;
-              const turnsLeft=nextGuru-(myT+1);
+              const off=go[cur]||0;
+              const adjusted=myT-off;
+              const nextGuru=Math.ceil((adjusted+1)/8)*8+off;
+              const turnsLeft=nextGuru-myT;
               if(turnsLeft<=0||turnsLeft>5||busy||win)return null;
               const intensity=1-turnsLeft/5; // 0 to 1 as guru approaches
               return(
