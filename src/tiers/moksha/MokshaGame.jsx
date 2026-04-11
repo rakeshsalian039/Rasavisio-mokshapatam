@@ -4917,8 +4917,14 @@ export default function MokshaPatam108(){
               ?`You have reached the final step — Dhyana, Meditation. After this test, you must roll exact one to enter Moksha. Only absolute surrender opens the final gate. Step seven of seven.`
               :`Step ${stepNum} of 7 on the Sacred Path: ${sq.skt} — ${sq.en}. ${sq.desc}. A test of your soul awaits.`;
             const ashtangaStaticKey=`ashtanga_step_${stepNum}`;
-            eMsg=`${sq.icon} ${sq.skt} — Step ${stepNum}/7`;play("dilemma");
-            showEvent({icon:sq.icon,title:`अष्टांग मार्ग · Step ${stepNum}`,subtitle:introText,color:"#f0d050",staticKey:ashtangaStaticKey},()=>{
+            eMsg=`${sq.icon} ${sq.skt} — Step ${stepNum}/7`;
+            if(isFirstStep)playTempleBell();else play("dilemma");
+            showEvent({icon:isFirstStep?"🪷":sq.icon,
+              title:isFirstStep?"🪷 अष्टांग मार्ग — THE SACRED PATH":`अष्टांग मार्ग · Step ${stepNum}`,
+              subtitle:isFirstStep
+                ?`${pName}, you have entered the Ashtanga Marga.\n\n🔸 From here: 1 step per turn — no dice shortcuts\n🔸 Each step tests your knowledge of yoga\n🔸 Correct = advance + Punya | Wrong = stay + Papa\n🔸 Only the pure reach Moksha\n\n${introText}`
+                :introText,
+              color:"#f0d050",staticKey:ashtangaStaticKey},()=>{
               addCGEntry('sacred',p,`${sq.skt} · ${sq.en}`);
               if(stepNum===1) speakCG('sacred',500);
               // Pick random riddle for this step
@@ -6484,19 +6490,33 @@ export default function MokshaPatam108(){
                   {(templeLore.playerName||'SEEKER').toUpperCase()} &middot; PROVE YOUR KNOWLEDGE
                 </span>
               </div>
-              <button onClick={()=>{
-                const{temple,question,square,playerIdx,playerName}=templeLore;
-                setTempleLore(null);
-                setTempleQuiz({temple,question,square,playerIdx,playerName});
-              }} style={{
-                background:`${templeLore.temple.color}15`,
-                border:`1px solid ${templeLore.temple.color}50`,
-                color:templeLore.temple.color,
-                padding:isMobile?"12px 28px":"14px 40px",
-                fontSize:isMobile?12:14,fontFamily:"'Cinzel',serif",
-                cursor:"pointer",borderRadius:8,letterSpacing:isMobile?2:4,fontWeight:700,
-                boxShadow:`0 0 30px ${templeLore.temple.color}15`,
-              }}>ENTER THE TEMPLE</button>
+              <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:10}}>
+                <button onClick={()=>{
+                  VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){};
+                  const{temple,question,square,playerIdx,playerName}=templeLore;
+                  setTempleLore(null);
+                  setTempleQuiz({temple,question,square,playerIdx,playerName});
+                }} style={{
+                  background:`${templeLore.temple.color}15`,
+                  border:`1px solid ${templeLore.temple.color}50`,
+                  color:templeLore.temple.color,
+                  padding:isMobile?"12px 28px":"14px 40px",
+                  fontSize:isMobile?12:14,fontFamily:"'Cinzel',serif",
+                  cursor:"pointer",borderRadius:8,letterSpacing:isMobile?2:4,fontWeight:700,
+                  boxShadow:`0 0 30px ${templeLore.temple.color}15`,
+                }}>ENTER THE TEMPLE</button>
+                <button onClick={()=>{
+                  VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){};
+                  const{temple,question,square,playerIdx,playerName}=templeLore;
+                  setTempleLore(null);
+                  setTempleQuiz({temple,question,square,playerIdx,playerName});
+                }} style={{
+                  background:"transparent",border:"none",
+                  color:"rgba(200,180,140,.35)",fontSize:isMobile?10:11,
+                  fontFamily:"'Cinzel',serif",cursor:"pointer",letterSpacing:2,
+                  padding:"4px 12px",
+                }}>SKIP TO QUIZ →</button>
+              </div>
             </div>
           </div>
 
@@ -7498,6 +7518,19 @@ export default function MokshaPatam108(){
               </span>
             </div>}
           </div>
+          {/* Moksha gate warning — shows when on sacred path with Papa > Punya */}
+          {(pos[cur]||1)>=101&&papa[cur]>punya[cur]&&!win&&(
+            <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,
+              marginTop:4,padding:"5px 14px",
+              background:"rgba(200,60,40,.08)",border:"1px solid rgba(200,60,40,.25)",
+              borderRadius:8,animation:"mp 2s ease infinite",
+            }}>
+              <span style={{fontSize:12}}>⚠</span>
+              <span style={{fontSize:isMobile?9:11,color:"#e08060",fontFamily:"'Cinzel',serif",letterSpacing:1}}>
+                Papa ({papa[cur]}) exceeds Punya ({punya[cur]}) — Moksha will REJECT you!
+              </span>
+            </div>
+          )}
         </div>
         {/* PANEL — desktop only */}
         {!isMobile&&<div style={{flex:"0 1 310px",display:"flex",flexDirection:"column",gap:8,minWidth:"clamp(250px,40vw,310px)",maxWidth:360,overflowY:"auto",WebkitOverflowScrolling:"touch"}}>
@@ -7601,6 +7634,27 @@ export default function MokshaPatam108(){
                 opacity:(isOnline&&!isMyTurn)?0.3:1,transition:'opacity .3s',animation:(!busy&&!dil&&!win&&isMyTurn)?'rollPulse 2s ease infinite':'none'}}>
               {busy?"Rolling...":(isOnline&&!isMyTurn)?`${players[cur]?.name||'Opponent'}'s turn`:"Roll Dice"}
             </button>
+            {/* Active guru blessing indicator */}
+            {guruBlessingRef.current&&!busy&&(
+              <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,
+                marginTop:4,padding:"4px 12px",
+                background:"rgba(240,200,80,.06)",border:"1px solid rgba(240,200,80,.2)",
+                borderRadius:20,animation:"mp 2s ease infinite",
+              }}>
+                <span style={{fontSize:14}}>
+                  {guruBlessingRef.current.type==='double_roll'?'🔢':
+                   guruBlessingRef.current.type==='advance_2'?'🌍':
+                   guruBlessingRef.current.type==='shield'?'🛡':
+                   guruBlessingRef.current.type==='skip_papa'?'🧘':
+                   guruBlessingRef.current.type==='auto_dilemma'?'📜':
+                   guruBlessingRef.current.type==='heal_papa'?'🔪':
+                   guruBlessingRef.current.type==='see_roll'?'🏛':'🌊'}
+                </span>
+                <span style={{fontSize:9,color:"#f0d050",fontFamily:"'Cinzel',serif",letterSpacing:1}}>
+                  {guruBlessingRef.current.name} ACTIVE
+                </span>
+              </div>
+            )}
             {/* Donate / Feedback — subtle */}
             <button onClick={()=>setShowPostGame(true)} style={{
               width:"100%",marginTop:6,background:"transparent",
