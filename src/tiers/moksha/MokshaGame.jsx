@@ -3831,6 +3831,18 @@ function useSound(){
   },[gc]);
 }
 
+// ═══ TEMPLE BELL — plays MP3 from /temple-bell.mp3 ═══
+const templeBellAudioRef={current:null};
+function playTempleBell(){
+  try{
+    if(templeBellAudioRef.current){templeBellAudioRef.current.pause();templeBellAudioRef.current.currentTime=0;}
+    const a=new Audio('/temple-bell.mp3');
+    a.volume=0.6;
+    templeBellAudioRef.current=a;
+    a.play().catch(()=>{});
+  }catch(e){}
+}
+
 function Naga({x1,y1,x2,y2,id}){
   const dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy),nx=-dy/len,amp=len*.16;
   const hue=["#4a3020","#3a2818","#503828","#3a2015","#453020"][id%5];
@@ -4561,7 +4573,7 @@ export default function MokshaPatam108(){
     if(correct){
       setPunya(prev=>{const n=[...prev];n[playerIdx]+=2;return n});
       setPos(prev=>{const n=[...prev];n[playerIdx]=Math.min(square+3,100);return n});
-      showKarmaToast(playerName,2,'punya',temple.icon);play("ladder");
+      showKarmaToast(playerName,2,'punya',temple.icon);play("ladder");playTempleBell();haptic('Success');
       addCGEntry('dharma_p',square,`${temple.en} ✓`);
     }else{
       setPapa(prev=>{const n=[...prev];n[playerIdx]+=1;return n});
@@ -4751,7 +4763,7 @@ export default function MokshaPatam108(){
               const qIdx=pool[Math.floor(Math.random()*pool.length)];
               usedTempleQRef.current[templeKey]=[...(usedTempleQRef.current[templeKey]||[]),qIdx];
               const question=temple.questions[qIdx];
-              play("chime");
+              play("chime");playTempleBell();
               const tCur=cur,tP=p,tPName=pName;
               setTempleLore({temple,templeKey,question,square:tP,playerIdx:tCur,playerName:tPName});
             }else{finishTurn();}
@@ -6496,38 +6508,56 @@ export default function MokshaPatam108(){
               </div>
 
               {/* RIGHT/BOTTOM: Question content */}
-              <div style={{flex:1,order:isMobile?2:2,textAlign:isMobile?"center":"left",maxWidth:isMobile?"100%":420}}>
+              <div style={{flex:1,order:isMobile?2:2,maxWidth:isMobile?"100%":460}}>
+                {/* Guru identity row */}
+                <div style={{display:"flex",alignItems:"center",gap:isMobile?8:12,
+                  marginBottom:isMobile?12:18}}>
+                  <div style={{width:isMobile?32:40,height:isMobile?32:40,borderRadius:"50%",
+                    overflow:"hidden",border:`1.5px solid ${guruEncounter.guru.color}40`,flexShrink:0}}>
+                    {guruEncounter.guru.image?
+                      <img src={guruEncounter.guru.image} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
+                      :<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:isMobile?18:22,background:`${guruEncounter.guru.color}15`}}>{guruEncounter.guru.icon}</div>
+                    }
+                  </div>
+                  <div>
+                    <div style={{fontFamily:"'Yatra One',serif",fontSize:isMobile?16:20,
+                      color:guruEncounter.guru.color,letterSpacing:1,lineHeight:1.2}}>{guruEncounter.guru.name}</div>
+                    <div style={{fontSize:isMobile?9:10,color:`${guruEncounter.guru.color}50`,
+                      fontFamily:"'Cinzel',serif",letterSpacing:1}}>{guruEncounter.guru.en}</div>
+                  </div>
+                </div>
+
                 {/* Player context */}
-                <div style={{display:"flex",alignItems:"center",gap:8,
-                  justifyContent:isMobile?"center":"flex-start",marginBottom:isMobile?10:16}}>
-                  <span style={{fontSize:isMobile?18:22}}>{players[cur]?.char?.icon}</span>
-                  <span style={{fontSize:isMobile?11:13,color:"rgba(240,200,80,.6)",
-                    fontFamily:"'Cinzel',serif",letterSpacing:2}}>
-                    {(players[cur]?.name||'SEEKER').toUpperCase()} FACES THE GURU
-                  </span>
+                <div style={{fontSize:isMobile?9:10,letterSpacing:isMobile?2:4,
+                  color:"rgba(240,200,80,.45)",fontFamily:"'Cinzel',serif",
+                  marginBottom:isMobile?10:14,textAlign:isMobile?"center":"left"}}>
+                  {players[cur]?.char?.icon} {(players[cur]?.name||'SEEKER').toUpperCase()} &middot; ANSWER THE GURU
                 </div>
 
-                {/* Guru identity */}
-                <div style={{fontFamily:"'Yatra One',serif",fontSize:isMobile?20:26,
-                  color:guruEncounter.guru.color,letterSpacing:2,marginBottom:4}}>{guruEncounter.guru.name}</div>
-                <div style={{fontSize:isMobile?10:12,color:`${guruEncounter.guru.color}55`,
-                  fontFamily:"'Cinzel',serif",letterSpacing:2,marginBottom:isMobile?14:20}}>
-                  {guruEncounter.guru.en} &middot; {guruEncounter.guru.era}
-                </div>
-
-                {/* Question */}
-                <div style={{fontSize:isMobile?14:16,color:"#e0d0a0",lineHeight:2,
-                  marginBottom:isMobile?18:24,fontFamily:"'Noto Serif Devanagari',serif",
-                  padding:isMobile?"12px 14px":"16px 20px",
-                  background:`${guruEncounter.guru.color}06`,
-                  borderLeft:`3px solid ${guruEncounter.guru.color}40`,
-                  borderRadius:"0 8px 8px 0",
+                {/* Question card — distinct */}
+                <div style={{
+                  padding:isMobile?"16px 14px":"20px 24px",marginBottom:isMobile?16:22,
+                  background:`linear-gradient(180deg,${guruEncounter.guru.color}0a,${guruEncounter.guru.color}04)`,
+                  border:`1px solid ${guruEncounter.guru.color}22`,
+                  borderLeft:`4px solid ${guruEncounter.guru.color}55`,
+                  borderRadius:"0 10px 10px 0",
                 }}>
-                  {guruEncounter.question.q}
+                  <div style={{fontSize:isMobile?8:10,letterSpacing:3,
+                    color:`${guruEncounter.guru.color}50`,fontFamily:"'Cinzel',serif",
+                    marginBottom:isMobile?6:8}}>THE GURU ASKS</div>
+                  <div style={{fontSize:isMobile?14:17,color:"#f0e8c8",lineHeight:2,
+                    fontFamily:"'Noto Serif Devanagari',serif"}}>
+                    {guruEncounter.question.q}
+                  </div>
                 </div>
 
-                {/* Answer buttons — identical styling, randomized order */}
-                <div style={{display:"flex",flexDirection:"column",gap:10}}>
+                {/* Answers label */}
+                <div style={{fontSize:isMobile?8:10,letterSpacing:3,
+                  color:"rgba(200,180,140,.3)",fontFamily:"'Cinzel',serif",
+                  marginBottom:isMobile?8:10,textAlign:isMobile?"center":"left"}}>CHOOSE YOUR ANSWER</div>
+
+                {/* Answer buttons — identical, randomized, A/B labels */}
+                <div style={{display:"flex",flexDirection:"column",gap:isMobile?10:12}}>
                   {[
                     {text:guruEncounter.question.a,correct:true},
                     {text:guruEncounter.question.b,correct:false}
@@ -6537,26 +6567,39 @@ export default function MokshaPatam108(){
                         const g=guruEncounter.guru;
                         const nPun=[...punya];nPun[cur]+=2;setPunya(nPun);
                         showKarmaToast(players[cur]?.name||'Seeker',2,'punya',g.icon);
-                        play("ladder");setTimeout(()=>play("chime"),300);haptic('Success');
+                        play("ladder");setTimeout(()=>playTempleBell(),300);haptic('Success');
                         guruBlessingRef.current={type:g.blessing,name:g.blessingName};
                         setGuruEncounter(e=>({...e,phase:'result',correct:true}));
+                        if(!muted){
+                          const blessingText=`${g.en} blesses you. ${g.blessingDesc}`;
+                          setTimeout(()=>VoiceEngine.speakNarrator(blessingText,chosenLang,null),800);
+                        }
                       }else{
                         play("yamaLaugh");haptic('Heavy');
                         setGuruEncounter(e=>({...e,phase:'result',correct:false}));
                       }
                       setTimeout(()=>setGuruEncounter(null),5000);
                     }} style={{
-                      background:`${guruEncounter.guru.color}08`,border:`1px solid ${guruEncounter.guru.color}28`,
-                      color:"#e0d0a0",padding:isMobile?"12px 14px":"14px 18px",fontSize:isMobile?13:14,
-                      fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:8,lineHeight:1.7,
-                      textAlign:"left",
-                    }}>{opt.text}</button>
+                      background:"rgba(200,180,140,.04)",border:"1px solid rgba(200,180,140,.18)",
+                      color:"#e0d0a0",padding:isMobile?"13px 14px":"15px 20px",
+                      fontSize:isMobile?13:15,fontFamily:"'Noto Serif Devanagari',serif",
+                      cursor:"pointer",borderRadius:10,lineHeight:1.8,textAlign:"left",
+                      display:"flex",alignItems:"flex-start",gap:isMobile?10:14,
+                    }}>
+                      <span style={{flexShrink:0,width:isMobile?22:26,height:isMobile?22:26,
+                        borderRadius:"50%",border:"1.5px solid rgba(200,180,140,.3)",
+                        display:"flex",alignItems:"center",justifyContent:"center",
+                        fontSize:isMobile?11:13,color:"rgba(200,180,140,.5)",fontFamily:"'Cinzel',serif",
+                        marginTop:2,
+                      }}>{i===0?'A':'B'}</span>
+                      <span>{opt.text}</span>
+                    </button>
                   ))}
                 </div>
 
-                {/* UX context hint */}
-                <div style={{fontSize:isMobile?9:10,color:"rgba(200,160,60,.25)",
-                  fontFamily:"'Cinzel',serif",letterSpacing:3,marginTop:isMobile?12:18,
+                {/* UX context */}
+                <div style={{fontSize:isMobile?8:10,color:"rgba(200,160,60,.2)",
+                  fontFamily:"'Cinzel',serif",letterSpacing:3,marginTop:isMobile?14:20,
                   textAlign:isMobile?"center":"left",
                 }}>EVERY 5TH TURN &middot; AN ANCIENT GURU TESTS YOUR KNOWLEDGE</div>
               </div>
@@ -7202,6 +7245,7 @@ export default function MokshaPatam108(){
                   if(isMobile)setHov(h=>h===num?null:num);
                   // Temple info — only when idle (not busy, no popups active)
                   if(tmpl&&!busy&&!dil&&!templeLore&&!templeQuiz&&!guruEncounter&&!cosmicCard&&!eventPopup&&!win){
+                    playTempleBell();
                     setTempleInfo({temple:tmpl,templeKey:TEMPLE_SQUARES[num]});
                   }
                 }} style={{aspectRatio:"1",background:bg,border:`0.5px solid ${hov===num?"rgba(240,200,80,.6)":bdr}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .2s",
