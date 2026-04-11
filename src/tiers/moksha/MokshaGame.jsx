@@ -4679,54 +4679,45 @@ export default function MokshaPatam108(){
     gameStats.current.turns=(gameStats.current.turns||0)+1;
     let r=Math.floor(Math.random()*6)+1;
     const gi=Math.floor(Math.random()*9),g=GRAHA[gi];
+    setRv(r);setGv(g);
+    const pName=players[cur]?.name||"Seeker";
 
     // ═══ GURU BLESSING ACTIVATION ═══
+    // IMPORTANT: do NOT call setState here (setPunya/setPapa/setShieldA)
+    // — it causes re-render mid-roll and breaks the animation.
+    // Instead, modify the local arrays (nPunya/nPapa/nShield) below.
     const blessing=guruBlessingRef.current;
     let blessingMsg=null;
+    let blessingHealPapa=false, blessingGrantShield=false, blessingExtraPunya=0;
     if(blessing&&!players[cur]?.cpu){
       if(blessing.type==='double_roll'){
-        // Bhaskara: double dice value
         r=Math.min(r*2,12);
         blessingMsg=`🔢 ${blessing.name}: Bhaskara doubled your roll to ${r}!`;
         guruBlessingRef.current=null;
       }else if(blessing.type==='advance_2'){
         blessingMsg=`🌍 ${blessing.name}: Aryabhata propels you 2 extra squares!`;
-        // Don't nullify yet — applied below after tot is calculated
       }else if(blessing.type==='heal_papa'){
-        // Sushruta: remove 1 Papa immediately
-        if(papa[cur]>0){
-          const np=[...papa];np[cur]=Math.max(0,np[cur]-1);setPapa(np);
-          blessingMsg=`🔪 ${blessing.name}: Sushruta heals 1 Papa from your karma!`;
-        }else{
-          blessingMsg=`🔪 ${blessing.name}: Sushruta finds no Papa to heal. Your karma is clean!`;
-        }
+        blessingHealPapa=true;
+        blessingMsg=papa[cur]>0
+          ?`🔪 ${blessing.name}: Sushruta heals 1 Papa from your karma!`
+          :`🔪 ${blessing.name}: Sushruta finds no Papa to heal. Your karma is clean!`;
         guruBlessingRef.current=null;
       }else if(blessing.type==='shield'){
-        // Charaka: grant shield (same as Venus)
-        const ns=[...shieldA];ns[cur]=true;setShieldA(ns);
-        blessingMsg=`🌿 ${blessing.name}: Charaka grants you an Ayurvedic Shield! Next snake is neutralized.`;
+        blessingGrantShield=true;
+        blessingMsg=`🌿 ${blessing.name}: Charaka grants you an Ayurvedic Shield!`;
         guruBlessingRef.current=null;
       }else if(blessing.type==='skip_papa'){
-        // Patanjali: skip next Papa — stays active until consumed at snake/Papa event
-        blessingMsg=`🧘 ${blessing.name}: Patanjali's discipline shields your karma. Next Papa penalty nullified.`;
-        // Don't nullify — consumed when Papa would be added
+        blessingMsg=`🧘 ${blessing.name}: Patanjali's discipline shields your karma.`;
       }else if(blessing.type==='auto_dilemma'){
-        // Panini: auto-correct next dilemma — stays active until consumed
-        blessingMsg=`📜 ${blessing.name}: Panini's precision guides your next Dharma Dilemma to the Punya path.`;
-        // Don't nullify — consumed when dilemma appears
+        blessingMsg=`📜 ${blessing.name}: Panini's precision guides your next Dilemma.`;
       }else if(blessing.type==='see_roll'||blessing.type==='choose_graha'){
-        // Chanakya/Varahamihira: simplified — grant +3 Punya
-        const np=[...punya];np[cur]+=3;setPunya(np);
-        showKarmaToast(pName,3,'punya','🏛');
+        blessingExtraPunya=3;
         blessingMsg=blessing.type==='see_roll'
-          ?`🏛 ${blessing.name}: Chanakya's strategic vision grants you +3 Punya!`
-          :`🌊 ${blessing.name}: Varahamihira's cosmic foresight grants you +3 Punya!`;
+          ?`🏛 ${blessing.name}: Chanakya grants you +3 Punya!`
+          :`🌊 ${blessing.name}: Varahamihira grants you +3 Punya!`;
         guruBlessingRef.current=null;
       }
     }
-
-    setRv(r);setGv(g);
-    const pName=players[cur]?.name||"Seeker";
 
     // Compute graha effects first
     let tot=r;
@@ -4737,6 +4728,10 @@ export default function MokshaPatam108(){
     }
     const oldP=pos[cur];let newP=oldP+tot;
     const extras=[];const nPunya=[...punya];const nPapa=[...papa];const nShield=[...shieldA];const nPos=[...pos];const nSkip=[...skipA];
+    // Apply deferred blessing effects to LOCAL arrays (not state)
+    if(blessingHealPapa){nPapa[cur]=Math.max(0,nPapa[cur]-1);showKarmaToast(pName,1,'punya','🔪')}
+    if(blessingGrantShield){nShield[cur]=true}
+    if(blessingExtraPunya>0){nPunya[cur]+=blessingExtraPunya;showKarmaToast(pName,blessingExtraPunya,'punya','🏛')}
     let grahaStory="";
     const onSacredPath=oldP>=101;
     // Show guru blessing activation message
@@ -6794,18 +6789,21 @@ export default function MokshaPatam108(){
                         const g=guruEncounter.guru;
                         const nPun=[...punya];nPun[cur]+=2;setPunya(nPun);
                         showKarmaToast(players[cur]?.name||'Seeker',2,'punya',g.icon);
-                        play("ladder");setTimeout(()=>playTempleBell(),300);haptic('Success');
+                        play("ladder");playTempleBell();haptic('Success');
                         guruBlessingRef.current={type:g.blessing,name:g.blessingName};
                         setGuruEncounter(e=>({...e,phase:'result',correct:true}));
+                        // Speak blessing after bell finishes (1.5s)
                         if(!muted){
                           const blessingText=`${g.en} blesses you. ${g.blessingDesc}`;
-                          VoiceEngine.speakNarrator(blessingText,chosenLang,null);
+                          const voiceFile=`/guru-voices/${g.id}-blessing-en.mp3`;
+                          setTimeout(()=>VoiceEngine.speakNarrator(blessingText,chosenLang,voiceFile),1500);
                         }
+                        setTimeout(()=>setGuruEncounter(null),6000);
                       }else{
                         play("yamaLaugh");haptic('Heavy');
                         setGuruEncounter(e=>({...e,phase:'result',correct:false}));
+                        setTimeout(()=>setGuruEncounter(null),5000);
                       }
-                      setTimeout(()=>setGuruEncounter(null),5000);
                     }} style={{
                       background:"rgba(200,180,140,.04)",border:"1px solid rgba(200,180,140,.18)",
                       color:"#e0d0a0",padding:isMobile?"13px 14px":"15px 20px",
