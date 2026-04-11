@@ -5071,6 +5071,27 @@ export default function MokshaPatam108(){
     return()=>{console.log('[DHARMA-DEBUG] cleanup — clearing timer');clearTimeout(timer)};
   },[dil,muted]);
 
+  // ═══ GURU VOICE — auto-play intro speech when guru appears ═══
+  useEffect(()=>{
+    if(!guruEncounter||guruEncounter.phase!=='intro'||muted)return;
+    VoiceEngine.stop();
+    try{window.speechSynthesis.cancel()}catch(e){}
+    const voiceFile=`/guru-voices/${guruEncounter.guru.id}-en.mp3`;
+    const timer=setTimeout(()=>{
+      // Try static file first, fall back to TTS
+      fetch(voiceFile,{method:'HEAD'}).then(r=>{
+        if(r.ok){
+          VoiceEngine.speakNarrator(guruEncounter.guru.introLine,chosenLang,voiceFile);
+        }else{
+          VoiceEngine.speakNarrator(guruEncounter.guru.introLine,chosenLang,null);
+        }
+      }).catch(()=>{
+        VoiceEngine.speakNarrator(guruEncounter.guru.introLine,chosenLang,null);
+      });
+    },600);
+    return()=>{clearTimeout(timer)};
+  },[guruEncounter,muted,chosenLang]);
+
   const board=useMemo(()=>{const s=[];for(let r=0;r<10;r++)for(let c=0;c<10;c++){const a=9-r;s.push({num:a*10+(a%2===0?c:9-c)+1})}return s},[]);
   const conns=useMemo(()=>{const l=[];Object.entries(SNAKES).forEach(([f,{to}])=>{const a=sqP(+f),b=sqP(to);l.push({f:a,t:b,type:"s",id:+f})});Object.entries(LADDERS).forEach(([f,{to}])=>{const a=sqP(+f),b=sqP(to);l.push({f:a,t:b,type:"l",id:+f})});return l},[]);
   const shl=SHLOKAS[shI];
