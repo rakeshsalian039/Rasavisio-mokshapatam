@@ -4994,7 +4994,16 @@ export default function MokshaPatam108(){
             // P5: Navagraha cinematic zoom after 1.2s
             setTimeout(()=>{
               setRollingPhase('graha_zoom');
-              // P6: zoom shown — user taps to proceed (auto-advance after 5s)
+              // Sacred path: skip graha zoom quickly — no effects here
+              if(onSacredPath){
+                setTimeout(()=>{
+                  setDiceReveal(null);setRollingPhase(null);
+                  if(!bgMuted)ambient.unduck();
+                  startMovement();
+                },2000);
+                return;
+              }
+              // P6: zoom shown — user taps to proceed (auto-advance after 8s)
               // Voice narration starts on zoom page
               if(!muted&&grahaStory){
                 const lang=chosenLang==='hi'?'hi':'en';
@@ -7383,7 +7392,18 @@ export default function MokshaPatam108(){
       <div style={{display:"flex",gap:isMobile?4:14,flexWrap:"wrap",justifyContent:"center",width:"100%",maxWidth:1140,boxSizing:"border-box"}}>
         {/* BOARD */}
         <div style={{flex:"1 1 340px",maxWidth:isMobile?"calc(100vw - 8px)":720,minWidth:0,width:isMobile?"calc(100vw - 8px)":undefined,overflow:"hidden",boxSizing:"border-box"}}>
-          <div style={{border:"2px solid rgba(200,160,60,.3)",background:"radial-gradient(ellipse at 30% 30%,rgba(60,45,20,.2),transparent 50%),radial-gradient(ellipse at 70% 70%,rgba(60,45,20,.15),transparent 50%),#1e1810",boxShadow:"0 0 60px rgba(0,0,0,.5),inset 0 0 40px rgba(0,0,0,.3)",borderRadius:2,overflow:"hidden",boxSizing:"border-box",width:"100%"}}>
+          <div style={(()=>{
+            const turns=gameStats.current.turns||0;
+            const nextGuru=Math.ceil((turns+1)/8)*8;
+            const turnsLeft=nextGuru-(turns+1);
+            const guruGlow=turnsLeft<=3&&turnsLeft>0&&!busy&&!win;
+            const intensity=guruGlow?1-turnsLeft/3:0;
+            return{border:`2px solid rgba(200,160,60,${guruGlow?.3+intensity*.4:.3})`,
+              background:"radial-gradient(ellipse at 30% 30%,rgba(60,45,20,.2),transparent 50%),radial-gradient(ellipse at 70% 70%,rgba(60,45,20,.15),transparent 50%),#1e1810",
+              boxShadow:`0 0 60px rgba(0,0,0,.5),inset 0 0 40px rgba(0,0,0,.3)${guruGlow?`,0 0 ${15+intensity*30}px rgba(240,200,80,${intensity*.15})`:""}`,
+              borderRadius:2,overflow:"hidden",boxSizing:"border-box",width:"100%",
+              transition:"border-color 1s, box-shadow 1s"};
+          })()}>
             {/* ═══ SACRED CROWN — Ashtanga Marga (101-108) ═══ */}
             <div style={{position:"relative",background:"linear-gradient(180deg,rgba(240,200,80,.08),rgba(20,16,10,.3))",borderBottom:"2px solid rgba(240,200,80,.25)",padding:"6px 4px 4px",overflow:"hidden"}}>
               {/* Geometric Hindu pattern overlay */}
@@ -7629,6 +7649,30 @@ export default function MokshaPatam108(){
                 opacity:(isOnline&&!isMyTurn)?0.3:1,transition:'opacity .3s',animation:(!busy&&!dil&&!win&&isMyTurn)?'rollPulse 2s ease infinite':'none'}}>
               {busy?"Rolling...":(isOnline&&!isMyTurn)?`${players[cur]?.name||'Opponent'}'s turn`:"Roll Dice"}
             </button>
+            {/* Guru arrival countdown */}
+            {(()=>{
+              const turns=gameStats.current.turns||0;
+              const nextGuru=Math.ceil((turns+1)/8)*8;
+              const turnsLeft=nextGuru-(turns+1);
+              if(turnsLeft<=0||turnsLeft>5||busy||win)return null;
+              const intensity=1-turnsLeft/5; // 0 to 1 as guru approaches
+              return(
+                <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,
+                  marginTop:4,padding:"4px 12px",
+                  background:`rgba(240,200,80,${0.02+intensity*0.06})`,
+                  border:`1px solid rgba(240,200,80,${0.1+intensity*0.3})`,
+                  borderRadius:20,transition:"all .5s ease",
+                  boxShadow:turnsLeft<=2?`0 0 ${10+intensity*20}px rgba(240,200,80,${intensity*0.2})`:"none",
+                }}>
+                  <span style={{fontSize:12,filter:turnsLeft<=1?"drop-shadow(0 0 6px rgba(240,200,80,.6))":"none",
+                    animation:turnsLeft<=1?"mp 1.5s ease infinite":"none"}}>🧘</span>
+                  <span style={{fontSize:isMobile?8:10,color:`rgba(240,200,80,${0.3+intensity*0.5})`,
+                    fontFamily:"'Cinzel',serif",letterSpacing:1}}>
+                    {turnsLeft===1?"GURU ARRIVES NEXT TURN!":turnsLeft===2?"Guru in 2 turns":`Guru in ${turnsLeft} turns`}
+                  </span>
+                </div>
+              );
+            })()}
             {/* Active guru blessing indicator */}
             {guruBlessingRef.current&&!busy&&(
               <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,
