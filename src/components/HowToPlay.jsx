@@ -91,16 +91,16 @@ const PAGES = [
     title: 'Knowledge Temples',
     sub: '9 TEMPLES OF ANCIENT INDIAN SCIENCE',
     body: 'Nine sacred temples are embedded in the board — each dedicated to a branch of knowledge that India gave the world. Land on one and face a quiz. Correct: +1 Punya and advance 3 squares. Wrong: +1 Papa. The complete curriculum of Nalanda University, reborn in a game.',
-    items: [
-      { label: 'वैद्यशाला', desc: 'Ayurveda & Surgery', templeKey: 'vaidya', color: '#40a060' },
-      { label: 'शिल्पशाला', desc: 'Engineering & Steel', templeKey: 'shilpa', color: '#c09040' },
-      { label: 'गणितपीठ', desc: 'Mathematics & Zero', templeKey: 'ganita', color: '#6080c0' },
-      { label: 'शब्दमन्दिर', desc: 'Language & Sound', templeKey: 'shabda', color: '#a080c0' },
-      { label: 'ज्योतिषपीठ', desc: 'Astronomy', templeKey: 'jyotish', color: '#4080c0' },
-      { label: 'राजनीतिपीठ', desc: 'Statecraft', templeKey: 'rajniti', color: '#c0a040' },
-      { label: 'कृषिपीठ', desc: 'Agriculture', templeKey: 'krishi', color: '#80a040' },
-      { label: 'कलापीठ', desc: 'Arts & Music', templeKey: 'kala', color: '#c060a0' },
-      { label: 'दर्शनपीठ', desc: 'Philosophy', templeKey: 'darshan', color: '#8060c0' },
+    temples: [
+      { name: 'वैद्यशाला', en: 'Hall of Healing', desc: 'Sushruta\'s 121 surgical instruments. Rhinoplasty in 600 BCE.', templeKey: 'vaidya', color: '#40a060' },
+      { name: 'शिल्पशाला', en: 'Forge of Wonders', desc: 'Iron Pillar: 1,600 years without rust. Carbon nanotubes in Wootz steel.', templeKey: 'shilpa', color: '#c09040' },
+      { name: 'गणितपीठ', en: 'Throne of Numbers', desc: 'Zero, pi, calculus — all invented here. 500 years before Newton.', templeKey: 'ganita', color: '#6080c0' },
+      { name: 'शब्दमन्दिर', en: 'Temple of Sound', desc: 'Panini\'s 3,959 rules = world\'s first programming language.', templeKey: 'shabda', color: '#a080c0' },
+      { name: 'ज्योतिषपीठ', en: 'Observatory of Stars', desc: 'Aryabhata knew Earth rotates — 1,000 years before Copernicus.', templeKey: 'jyotish', color: '#4080c0' },
+      { name: 'राजनीतिपीठ', en: 'Hall of Strategy', desc: 'Chanakya\'s Arthashastra — 5,000 pages. Machiavelli was a pamphlet.', templeKey: 'rajniti', color: '#c0a040' },
+      { name: 'कृषिपीठ', en: 'Garden of Earth', desc: 'India domesticated rice, cotton, sugarcane. Drew Columbus west.', templeKey: 'krishi', color: '#80a040' },
+      { name: 'कलापीठ', en: 'Temple of Arts', desc: '108 dance poses. 22 micro-tones. Kailasa carved from one cliff.', templeKey: 'kala', color: '#c060a0' },
+      { name: 'दर्शनपीठ', en: 'Hall of Wisdom', desc: 'Atoms in 600 BCE. Fuzzy logic in 6th century. Quantum parallels.', templeKey: 'darshan', color: '#8060c0' },
     ],
     color: '#c09040',
   },
@@ -110,16 +110,16 @@ const PAGES = [
     shlokaEn: 'The Guru is Brahma, Vishnu, and Shiva themselves — Guru Stotram',
     title: 'Guru Encounters',
     sub: '8 ANCIENT MASTERS WHO SHAPED CIVILIZATION',
-    body: 'Every 8 turns, an ancient Indian genius materializes from history. Answer their question correctly: +2 Punya and a unique blessing — a real gameplay power. Answer wrongly: +1 Papa, and the Guru departs in disappointment. Each Guru has a different blessing that changes your fortune.',
-    items: [
-      { icon: '🌍', label: 'आर्यभट', desc: '+2 extra squares', color: '#4080c0' },
-      { icon: '🔪', label: 'सुश्रुत', desc: 'Heal 1 Papa', color: '#c04040' },
-      { icon: '🏛', label: 'चाणक्य', desc: '+3 Punya', color: '#c0a040' },
-      { icon: '📜', label: 'पाणिनि', desc: 'Auto-correct dilemma', color: '#a080c0' },
-      { icon: '🌿', label: 'चरक', desc: 'Snake shield', color: '#40a060' },
-      { icon: '∞', label: 'भास्कर', desc: 'Double dice', color: '#60a0c0' },
-      { icon: '🌊', label: 'वराहमिहिर', desc: '+3 Punya', color: '#6080a0' },
-      { icon: '🧘', label: 'पतञ्जलि', desc: 'Skip next Papa', color: '#c08060' },
+    body: 'Every 8 turns, an ancient Indian genius materializes from history itself. Answer their question correctly: +2 Punya and a unique blessing — a real gameplay power that changes your fortune. Answer wrongly: +1 Papa.',
+    gurus: [
+      { id: 'aryabhata', name: 'आर्यभट', en: 'Aryabhata', era: '476 CE', title: 'The Man Who Moved the Earth', blessing: '+2 extra squares', color: '#4080c0' },
+      { id: 'sushruta', name: 'सुश्रुत', en: 'Sushruta', era: '600 BCE', title: 'The Father of Surgery', blessing: 'Heal 1 Papa', color: '#c04040' },
+      { id: 'chanakya', name: 'चाणक्य', en: 'Chanakya', era: '375 BCE', title: 'The Kingmaker', blessing: '+3 Punya', color: '#c0a040' },
+      { id: 'panini', name: 'पाणिनि', en: 'Panini', era: '400 BCE', title: 'The First Programmer', blessing: 'Auto-correct dilemma', color: '#a080c0' },
+      { id: 'charaka', name: 'चरक', en: 'Charaka', era: '300 BCE', title: 'The Wandering Healer', blessing: 'Snake shield', color: '#40a060' },
+      { id: 'bhaskara', name: 'भास्कर', en: 'Bhaskara II', era: '1114 CE', title: 'Infinity\'s Poet', blessing: 'Double dice roll', color: '#60a0c0' },
+      { id: 'varahamihira', name: 'वराहमिहिर', en: 'Varahamihira', era: '505 CE', title: 'The Prophet', blessing: '+3 Punya', color: '#6080a0' },
+      { id: 'patanjali', name: 'पतञ्जलि', en: 'Patanjali', era: '200 BCE', title: 'Architect of Consciousness', blessing: 'Skip next Papa', color: '#c08060' },
     ],
     color: '#4080c0',
   },
@@ -298,6 +298,94 @@ export default function HowToPlay({ onClose }) {
               }}>
                 {pg.body}
               </div>
+            </div>
+          )}
+
+          {/* ── TEMPLES — large SVG icons with descriptions ── */}
+          {pg.temples && (
+            <div style={{
+              display: 'grid', gridTemplateColumns: 'repeat(3,1fr)',
+              gap: 'clamp(6px,1.5vw,10px)', width: '100%',
+              marginTop: 'clamp(16px,3vw,24px)',
+            }}>
+              {pg.temples.map((t, i) => (
+                <div key={i} style={{
+                  padding: 'clamp(10px,2vw,16px) clamp(4px,1vw,8px)',
+                  background: `${t.color}08`, border: `1px solid ${t.color}18`,
+                  borderRadius: 10, textAlign: 'center',
+                  ...ani(0.5 + i * 0.05),
+                  animation: `htpReveal .5s cubic-bezier(0.16,1,0.3,1) ${0.5 + i * 0.05}s both`,
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 4 }}>
+                    <TempleIcon templeKey={t.templeKey} size={36} color={t.color} />
+                  </div>
+                  <div style={{
+                    fontSize: 'clamp(10px,2vw,13px)', color: t.color,
+                    fontFamily: "'Noto Serif Devanagari',serif", fontWeight: 700,
+                    lineHeight: 1.3, marginBottom: 2,
+                  }}>{t.name}</div>
+                  <div style={{
+                    fontSize: 'clamp(7px,1.3vw,9px)', color: 'rgba(255,255,255,.35)',
+                    fontFamily: "'Cinzel',serif", letterSpacing: 1, marginBottom: 4,
+                  }}>{t.en}</div>
+                  <div style={{
+                    fontSize: 'clamp(7px,1.2vw,9px)', color: 'rgba(200,180,140,.4)',
+                    lineHeight: 1.5,
+                  }}>{t.desc}</div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* ── GURUS — portrait images with names and blessings ── */}
+          {pg.gurus && (
+            <div style={{
+              display: 'grid', gridTemplateColumns: 'repeat(4,1fr)',
+              gap: 'clamp(6px,1.5vw,10px)', width: '100%',
+              marginTop: 'clamp(16px,3vw,24px)',
+            }}>
+              {pg.gurus.map((g, i) => (
+                <div key={i} style={{
+                  padding: 'clamp(8px,1.5vw,12px) clamp(4px,1vw,6px)',
+                  background: `${g.color}08`, border: `1px solid ${g.color}18`,
+                  borderRadius: 10, textAlign: 'center',
+                  ...ani(0.5 + i * 0.06),
+                  animation: `htpReveal .5s cubic-bezier(0.16,1,0.3,1) ${0.5 + i * 0.06}s both`,
+                }}>
+                  {/* Guru portrait */}
+                  <div style={{
+                    width: 'clamp(44px,10vw,64px)', height: 'clamp(44px,10vw,64px)',
+                    borderRadius: '50%', overflow: 'hidden', margin: '0 auto 6px',
+                    border: `2px solid ${g.color}40`,
+                    boxShadow: `0 0 15px ${g.color}20`,
+                  }}>
+                    <img src={`/gurus/${g.id}.png`} alt={g.en}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center' }}
+                      onError={(e) => { e.target.style.display = 'none' }} />
+                  </div>
+                  {/* Sanskrit name */}
+                  <div style={{
+                    fontSize: 'clamp(10px,2vw,13px)', color: g.color,
+                    fontFamily: "'Yatra One',serif", lineHeight: 1.2, marginBottom: 1,
+                  }}>{g.name}</div>
+                  {/* English name + era */}
+                  <div style={{
+                    fontSize: 'clamp(7px,1.2vw,9px)', color: 'rgba(255,255,255,.35)',
+                    fontFamily: "'Cinzel',serif", letterSpacing: 0.5, marginBottom: 2,
+                  }}>{g.en} · {g.era}</div>
+                  {/* Title */}
+                  <div style={{
+                    fontSize: 'clamp(6px,1.1vw,8px)', color: `${g.color}60`,
+                    fontFamily: "'Cinzel',serif", marginBottom: 4, lineHeight: 1.3,
+                  }}>{g.title}</div>
+                  {/* Blessing */}
+                  <div style={{
+                    fontSize: 'clamp(7px,1.2vw,9px)', color: 'rgba(200,180,140,.5)',
+                    padding: '3px 6px', background: `${g.color}0a`,
+                    borderRadius: 6, border: `1px solid ${g.color}12`,
+                  }}>{g.blessing}</div>
+                </div>
+              ))}
             </div>
           )}
 
