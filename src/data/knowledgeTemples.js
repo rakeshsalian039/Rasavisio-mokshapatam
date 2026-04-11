@@ -12,6 +12,9 @@ export const TEMPLES = {
   vaidya: {
     name: 'वैद्यशाला', en: 'Hall of Healing', icon: '🏥', color: '#40a060',
     realm: 'Bhuloka',
+    shloka: 'शरीरमाद्यं खलु धर्मसाधनम्',
+    shlokaEn: 'The body is the primary instrument of dharma — Kalidasa',
+    lore: 'In the great university of Takshashila, there stood a hall where the scent of turmeric never faded. Here, Jivaka studied for seven years before becoming Buddha\'s physician. Here, Sushruta\'s students practiced on gourds and lotus stems before touching human flesh. When Bakhtiyar Khilji burned Nalanda\'s nine-storey library in 1193 CE, thousands of Ayurvedic manuscripts turned to ash — knowledge of 1,120 diseases, 121 surgical instruments, and cures that modern medicine is only now rediscovering. You stand where that knowledge once lived. Some of it survives. Can you receive it?',
     intro: 'You enter the ancient Vaidyashala — where Dhanvantari\'s disciples healed with herbs, surgery, and cosmic knowledge. The walls breathe with the scent of turmeric and sandalwood.',
     questions: [
       { q: 'Sushruta (600 BCE) is called the Father of Surgery. How many surgical instruments did he describe in the Sushruta Samhita?', a: '121 instruments — forceps, scalpels, trocars, needles', b: '45 basic tools', explain: 'Sushruta described 121 instruments, many matching modern surgical designs almost exactly. He performed rhinoplasty, cataract removal, and even Caesarean sections.' },
@@ -41,6 +44,9 @@ export const TEMPLES = {
   shilpa: {
     name: 'शिल्पशाला', en: 'Forge of Wonders', icon: '⚒', color: '#c09040',
     realm: 'Bhuloka',
+    shloka: 'कर्मण्येवाधिकारस्ते मा फलेषु कदाचन',
+    shlokaEn: 'You have the right to work, but never to its fruits — Gita 2.47',
+    lore: 'The Iron Pillar of Delhi has stood for 1,600 years without a single spot of rust. The Wootz steel of South India contained carbon nanotubes — a material modern labs couldn\'t create until the 21st century. The 80-tonne capstone of Thanjavur temple was lifted 66 metres using a 6.5 km ramp — no cranes, no engines, just mathematics and human will. When the British arrived, they found technologies they couldn\'t explain. When they left, they took the knowledge and called it their own. This forge remembers what the world forgot.',
     intro: 'The heat of a thousand forges hits your face. Welcome to the Shilpashala — where Indian metallurgists forged steel that baffled empires, and engineers built structures that defy time itself.',
     questions: [
       { q: 'The Iron Pillar of Delhi has stood for over 1,600 years without rusting. What protects it?', a: 'Phosphorus-rich iron creates a self-healing protective layer called misawite — an accidental nanotechnology', b: 'A thick gold coating applied by Gupta craftsmen', explain: 'IIT Kanpur analysis revealed the pillar\'s iron contains 1% phosphorus. In Delhi\'s climate, this forms a crystalline iron-hydrogen-phosphate layer that repairs itself.' },
@@ -70,6 +76,9 @@ export const TEMPLES = {
   ganita: {
     name: 'गणितपीठ', en: 'Throne of Numbers', icon: '🔢', color: '#6080c0',
     realm: 'Antarloka',
+    shloka: 'शून्यात् सर्वं प्रभवति',
+    shlokaEn: 'From zero, everything emerges',
+    lore: 'They called it "shunya" — the void. But it wasn\'t nothing. It was the most powerful idea in human history. From this single concept, India gave the world the place-value system, the decimal notation, and the foundation of all modern mathematics. Aryabhata computed pi to 4 decimal places in 499 CE. Brahmagupta defined gravity in 628 CE. Bhaskara II discovered calculus 500 years before Newton. The Kerala School proved infinite series 200 years before Europe. When the Arabs translated these texts, they called them "Indian numerals." When Europe received them, they called them "Arabic numerals." The origin was erased. But the numbers remember.',
     intro: 'Numbers swirl in the air like fireflies. This is the Ganitapeetha — where Indian mathematicians gave the world zero, infinity, and the decimal system. Every calculation you perform today began here.',
     questions: [
       { q: 'Aryabhata gave the world the concept of zero (shunya). But what else did he contribute to the number system?', a: 'The place-value system — the idea that a digit\'s position determines its value (ones, tens, hundreds). This IS modern mathematics', b: 'Roman numerals', explain: 'Without place-value, you can\'t do arithmetic efficiently. Every calculation in computers, banks, and physics uses Aryabhata\'s system via Arabic transmission.' },
@@ -99,6 +108,9 @@ export const TEMPLES = {
   shabda: {
     name: 'शब्दमन्दिर', en: 'Temple of Sound', icon: '📜', color: '#a080c0',
     realm: 'Antarloka',
+    shloka: 'वागर्थाविव सम्पृक्तौ',
+    shlokaEn: 'Word and meaning are inseparably united — Kalidasa',
+    lore: 'In the 4th century BCE, a man named Panini looked at the chaos of human language and saw order. He wrote 3,959 rules — and with them, encoded the entire Sanskrit language into what computer scientists now recognize as the world\'s first formal grammar. NASA\'s Rick Briggs called Sanskrit "the most suitable language for computer processing." The Vedas were transmitted without writing for 3,000 years using 8 recitation patterns — error-correction codes that predate checksums by millennia. When Om is measured, it vibrates at 136.1 Hz — the exact frequency of Earth\'s orbital period converted to sound. The ancients didn\'t just speak. They programmed reality with vibration.',
     intro: 'Vibrations of ancient Sanskrit fill this space. You have entered the Shabdamandir — where Panini encoded language into an algorithm, where mantras were measured as frequencies, and where sound itself was understood as the fabric of creation.',
     questions: [
       { q: 'Panini\'s Ashtadhyayi (4th century BCE) formalized Sanskrit grammar with exactly how many rules?', a: '3,959 rules — creating the most complete and scientific grammar of any language in human history', b: '500 general guidelines', explain: 'Panini\'s grammar is so precise and complete that it\'s been called "the first formal system in history" — predating Boolean logic by 2,200 years.' },
@@ -128,6 +140,9 @@ export const TEMPLES = {
   jyotish: {
     name: 'ज्योतिषपीठ', en: 'Observatory of Stars', icon: '🔭', color: '#4080c0',
     realm: 'Svargaloka',
+    shloka: 'ज्योतिषामयनं साक्षात् यत्तज्ज्ञेयं विचक्षणैः',
+    shlokaEn: 'The science of light — to be known by the wise',
+    lore: 'Aryabhata said the Earth spins in 499 CE. The world didn\'t listen for a thousand years. He calculated its circumference to 99.8% accuracy — without a telescope, without a satellite, with nothing but a shadow, a stick, and a mind that could see what others couldn\'t. Brahmagupta described gravity in 628 CE — a millennium before Newton\'s apple. The Surya Siddhanta computed the year to within 1.4 seconds. Jaipur\'s Samrat Yantra reads time to 2-second precision — the largest sundial ever built. India didn\'t just observe the stars. India calculated them. And when those calculations reached Baghdad, then Europe, they changed the world — though India\'s name was quietly removed from the credits.',
     intro: 'The celestial dome opens above you. Welcome to the Jyotishapeetha — where Indian astronomers mapped the cosmos with a precision that still astounds modern science. Every star has a name. Every planet has a story. Every calculation, a revelation.',
     questions: [
       { q: 'Aryabhata (499 CE) made a revolutionary claim about Earth. What was it?', a: 'Earth rotates on its own axis — the stars appear to move, but it\'s actually Earth spinning. He stated this 1,000 years before Copernicus', b: 'Earth is the center of the universe', explain: 'Aryabhata wrote in the Aryabhatiya: "Just as a man in a boat moving forward sees the stationary objects moving backward, so are the stationary stars seen by people on Earth as moving westward."' },
@@ -157,6 +172,9 @@ export const TEMPLES = {
   rajniti: {
     name: 'राजनीतिपीठ', en: 'Hall of Strategy', icon: '🏛', color: '#c0a040',
     realm: 'Svargaloka',
+    shloka: 'प्रजासुखे सुखं राज्ञः',
+    shlokaEn: 'In the happiness of the people lies the happiness of the king — Arthashastra',
+    lore: 'Takshashila. Founded ~700 BCE. The world\'s first university. Ten thousand students from Babylon, Greece, China, and Arabia. Sixty subjects. Seven-year programs. No fees for the deserving. Chanakya taught here — and from this campus, he overthrew a tyrant and built the largest empire India had ever seen. His Arthashastra — 5,000 pages of governance, espionage, economics, and strategy — makes Machiavelli\'s Prince look like a pamphlet. When Nalanda fell in 1193 CE, its library burned for three months. The knowledge of governance, diplomacy, and statecraft accumulated over millennia was reduced to ash. But some manuscripts survived. And in them, a blueprint for civilization that the modern world is still catching up to.',
     intro: 'Torches illuminate ancient scrolls and chessboards. This is the Rajnitipeetha — where Chanakya plotted empires, where universities housed 10,000 scholars, and where governance was elevated to a science so complete that the world has yet to surpass it.',
     questions: [
       { q: 'Chanakya\'s Arthashastra (3rd century BCE) is the world\'s most comprehensive ancient treatise on governance. How many books does it contain?', a: '15 books covering statecraft, economics, military strategy, law, espionage, diplomacy, and administration', b: '3 short chapters', explain: 'The Arthashastra is 5,000+ pages of detailed governance — tax systems, price controls, spy networks, fort design, foreign policy. Machiavelli\'s Prince (1513) is a pamphlet in comparison.' },
@@ -186,6 +204,9 @@ export const TEMPLES = {
   krishi: {
     name: 'कृषिपीठ', en: 'Garden of Earth', icon: '🌾', color: '#80a040',
     realm: 'Bhuloka',
+    shloka: 'अन्नं बहु कुर्वीत तद्व्रतम्',
+    shlokaEn: 'Produce food in abundance — that is the sacred vow — Taittiriya Upanishad',
+    lore: 'India domesticated rice 10,000 years ago. Cotton 7,000 years ago. Sugarcane, jute, sesame, black pepper — the list of crops India gave the world stretches longer than any other civilization\'s. The Harappan cities of 3000 BCE had water management systems more sophisticated than most modern Indian towns. Krishi Parasara, written 2,000 years ago, classified soils by tasting them — and modern chemistry confirms the correlation. When the spice trade drew Columbus west (he was looking for India), it literally redrew the map of the world. Every meal you eat carries seeds from this soil.',
     intro: 'Rich soil crumbles between your fingers. Monsoon clouds gather overhead. This is the Krshipeetha — where Indian farmers, botanists, and ecologists developed the most sophisticated agricultural systems the ancient world had ever seen.',
     questions: [
       { q: 'The Indus Valley civilization (3000 BCE) practiced what advanced agricultural technique?', a: 'Flood-retreat farming along the Indus + irrigation channels + granary storage systems covering entire cities', b: 'Only rain-fed farming', explain: 'Harappan cities had centralized granaries (like Mohenjo-daro\'s Great Granary) and sophisticated canal systems — evidence of planned agricultural infrastructure 5,000 years ago.' },
@@ -215,6 +236,9 @@ export const TEMPLES = {
   kala: {
     name: 'कलापीठ', en: 'Temple of Arts', icon: '🎭', color: '#c060a0',
     realm: 'Antarloka',
+    shloka: 'नाट्यं भिन्नरुचेर्जनस्य बहुधाप्येकं समाराधनम्',
+    shlokaEn: 'Drama is the one offering that delights people of every taste — Natya Shastra',
+    lore: 'Bharata\'s Natya Shastra — 36 chapters, written before Christ was born — remains the most complete treatise on performing arts ever created by any civilization. It defines 8 emotional essences (Rasa) that all art must evoke, 108 dance positions that map every possible movement of the human body, and 22 micro-tonal intervals that give Indian music an emotional depth Western scales cannot match. The Ajanta cave paintings demonstrate perspective and chiaroscuro 1,000 years before the Renaissance. Kailasa Temple at Ellora was carved from a single cliff — top down, 200,000 tonnes of rock removed, zero margin for error. India didn\'t just create art. India created the science of art.',
     intro: 'Music fills the air — a veena plays notes that seem to rearrange your thoughts. Colors swirl on invisible canvases. This is the Kalapeetha — where Indian artists, dancers, musicians, and sculptors created art forms so profound they were considered pathways to the divine.',
     questions: [
       { q: 'Bharata\'s Natya Shastra (~200 BCE) is the world\'s most comprehensive ancient text on what?', a: 'Performing arts — 36 chapters covering drama, dance, music, stage design, audience psychology, costumes, makeup, and the theory of Rasa (emotional essence)', b: 'Only dance techniques', explain: 'No other ancient civilization produced anything comparable in scope. It defines 8 Rasas, 108 dance poses, 64 acting techniques, and complete stagecraft.' },
@@ -244,6 +268,9 @@ export const TEMPLES = {
   darshan: {
     name: 'दर्शनपीठ', en: 'Hall of Wisdom', icon: '🔮', color: '#8060c0',
     realm: 'Svargaloka',
+    shloka: 'अहं ब्रह्मास्मि',
+    shlokaEn: 'I am the infinite — Brihadaranyaka Upanishad',
+    lore: 'India produced atheists (Charvaka), logicians (Nyaya), atomists (Vaisheshika), psychologists (Samkhya), and transcendentalists (Vedanta) — all before Socrates was born. Six orthodox schools and countless heterodox traditions debated for millennia, not with swords but with logic. Kanada proposed atoms in 600 BCE — 2,400 years before Dalton. Nagarjuna\'s "emptiness" mirrors quantum field theory. Patanjali\'s "chitta vritti nirodha" maps to Default Mode Network deactivation seen in fMRI. Erwin Schrödinger kept a copy of the Upanishads by his bedside. Heisenberg said Indian philosophy made quantum mechanics feel familiar. The deepest questions of modern physics were asked — and often answered — in Sanskrit, millennia ago.',
     intro: 'The air itself becomes thought. Concepts crystallize into visible forms. You have entered the Darshanapeetha — where Indian philosophers mapped the architecture of consciousness, debated the nature of reality, and asked questions that modern physics is only now beginning to answer.',
     questions: [
       { q: 'How many classical schools of Indian philosophy (Darshanas) exist?', a: 'Six orthodox (Astika): Nyaya, Vaisheshika, Samkhya, Yoga, Mimamsa, Vedanta — plus heterodox schools like Buddhism, Jainism, Charvaka', b: 'Only one — Vedanta', explain: 'India\'s philosophical tradition is not monolithic — it contains atheistic materialism (Charvaka), logical positivism (Nyaya), atomic theory (Vaisheshika), and transcendental idealism (Advaita Vedanta).' },

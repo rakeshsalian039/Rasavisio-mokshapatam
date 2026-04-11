@@ -4219,6 +4219,7 @@ export default function MokshaPatam108(){
   const[showPostGame,setShowPostGame]=useState(false);
   const[pendingPlayers,setPendingPlayers]=useState(null); // held during CG intro
   // ── Knowledge Board state ──
+  const[templeLore,setTempleLore]=useState(null);         // {temple, templeKey, question, square, playerIdx, playerName}
   const[templeQuiz,setTempleQuiz]=useState(null);        // {temple, question, onAnswer}
   const[guruEncounter,setGuruEncounter]=useState(null);   // {guru, question, phase:'intro'|'question'|'result'}
   const[cosmicCard,setCosmicCard]=useState(null);         // {title, icon, fact, source}
@@ -4521,7 +4522,7 @@ export default function MokshaPatam108(){
     setPos(Array(n).fill(1));setDisplayPos(Array(n).fill(1));setPunya(Array(n).fill(0));setPapa(Array(n).fill(0));
     setShieldA(Array(n).fill(false));setSkipA(Array(n).fill(false));
     setCur(0);setWin(null);setHist([]);setRv(null);setGv(null);setLastRollBy(null);setDiceReveal(null);setBusy(false);setDil(null);setUsedDharma([]);VoiceEngine._audioCtxUnlocked=false;
-    setTempleQuiz(null);setGuruEncounter(null);setCosmicCard(null);usedTempleQRef.current={};usedGuruQRef.current={};usedCosmicRef.current=[];guruBlessingRef.current=null;lastKnowledgeTurnRef.current=0;
+    setTempleLore(null);setTempleQuiz(null);setGuruEncounter(null);setCosmicCard(null);usedTempleQRef.current={};usedGuruQRef.current={};usedCosmicRef.current=[];guruBlessingRef.current=null;lastKnowledgeTurnRef.current=0;
     setCgEntries([]);setShowMoksha(false);setShowPostGame(false);
     setMsg(`${pList[0].name} the ${pList[0].char.name} — your journey begins.`);
     gameStats.current={startTime:Date.now(),turns:0,snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0,grahaHits:{sun:0,moon:0,mars:0,mercury:0,jupiter:0,venus:0,saturn:0,rahu:0,ketu:0}};
@@ -4571,7 +4572,7 @@ export default function MokshaPatam108(){
   },[templeQuiz,nP]);
 
   const doRoll=useCallback((autoRoll=false)=>{
-    if(dil||win||busy||players.length===0||templeQuiz||guruEncounter)return;
+    if(dil||win||busy||players.length===0||templeLore||templeQuiz||guruEncounter)return;
     if(isOnline&&!isMyTurn)return; // online: only active player rolls
     if(autoRoll&&!gameReadyRef.current)return; // block timer auto-roll during init
     // ═══ GURU ENCOUNTER / COSMIC CARD — every 5th HUMAN turn ═══
@@ -4750,11 +4751,8 @@ export default function MokshaPatam108(){
               usedTempleQRef.current[templeKey]=[...(usedTempleQRef.current[templeKey]||[]),qIdx];
               const question=temple.questions[qIdx];
               play("chime");
-              // Store context for the quiz callback (avoids closure bugs)
               const tCur=cur,tP=p,tPName=pName;
-              showEvent({icon:temple.icon,title:`${temple.name} — ${temple.en}`,subtitle:temple.intro,color:temple.color},()=>{
-                setTempleQuiz({temple,question,square:tP,playerIdx:tCur,playerName:tPName});
-              });
+              setTempleLore({temple,templeKey,question,square:tP,playerIdx:tCur,playerName:tPName});
             }else{finishTurn();}
           }
           else if(DLM_SQ.includes(p)){
@@ -6084,6 +6082,115 @@ export default function MokshaPatam108(){
       WebkitOverflowScrolling:"touch",
     }}>
       {globalOverlays}
+      {/* ═══ TEMPLE LORE — cinematic intro before quiz ═══ */}
+      {templeLore&&(
+        <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:258,
+          background:`radial-gradient(ellipse at 50% 20%,${templeLore.temple.color}12,rgba(3,2,1,.98) 60%)`,
+          backdropFilter:"blur(15px)",WebkitBackdropFilter:"blur(15px)",
+          display:"flex",flexDirection:"column",overflow:"hidden",
+          animation:"fadeIn .8s ease",
+        }}>
+          {/* Decorative top border — Vedic pattern */}
+          <div style={{width:"100%",height:3,
+            background:`linear-gradient(90deg,transparent,${templeLore.temple.color},transparent)`,
+            opacity:0.4}}/>
+
+          {/* Scrollable content */}
+          <div style={{flex:1,overflowY:"auto",display:"flex",flexDirection:"column",
+            alignItems:"center",justifyContent:"center",
+            padding:isMobile?"24px 16px":"48px 40px"}}>
+
+            {/* Temple SVG icon — large */}
+            <div style={{marginBottom:isMobile?12:20,
+              animation:"grahaZoomIn .8s cubic-bezier(0.34,1.52,0.64,1) forwards"}}>
+              <TempleIcon templeKey={templeLore.templeKey} size={isMobile?70:100} color={templeLore.temple.color}/>
+            </div>
+
+            {/* Sanskrit name */}
+            <div style={{fontFamily:"'Yatra One',serif",
+              fontSize:isMobile?"clamp(28px,8vw,40px)":"clamp(40px,5vw,60px)",
+              color:templeLore.temple.color,letterSpacing:isMobile?3:6,
+              textShadow:`0 0 50px ${templeLore.temple.color}70`,
+              marginBottom:4,textAlign:"center",
+              animation:"grahaNameIn .6s ease .2s both",
+            }}>{templeLore.temple.name}</div>
+
+            {/* English name */}
+            <div style={{fontSize:isMobile?14:18,color:"rgba(255,255,255,.45)",
+              fontFamily:"'Cinzel',serif",letterSpacing:isMobile?3:6,marginBottom:4,
+              animation:"grahaNameIn .5s ease .3s both",
+            }}>{templeLore.temple.en.toUpperCase()}</div>
+
+            {/* Realm indicator */}
+            <div style={{fontSize:isMobile?9:11,color:`${templeLore.temple.color}50`,
+              fontFamily:"'Cinzel',serif",letterSpacing:isMobile?2:4,marginBottom:isMobile?8:14,
+              animation:"grahaNameIn .4s ease .35s both",
+            }}>SQUARE {templeLore.square} &middot; {templeLore.temple.realm.toUpperCase()}</div>
+
+            {/* Divider */}
+            <div style={{width:isMobile?60:100,height:2,
+              background:`linear-gradient(90deg,transparent,${templeLore.temple.color},transparent)`,
+              marginBottom:isMobile?14:22,animation:"grahaNameIn .4s ease .4s both"}}/>
+
+            {/* Shloka — Sanskrit verse */}
+            {templeLore.temple.shloka&&(
+              <div style={{textAlign:"center",marginBottom:isMobile?14:22,
+                animation:"grahaNameIn .5s ease .5s both"}}>
+                <div style={{fontFamily:"'Noto Serif Devanagari',serif",fontSize:isMobile?16:20,
+                  color:`${templeLore.temple.color}cc`,lineHeight:1.8,fontStyle:"italic",
+                  textShadow:`0 0 20px ${templeLore.temple.color}30`,
+                }}>"{templeLore.temple.shloka}"</div>
+                <div style={{fontSize:isMobile?10:12,color:"rgba(200,180,140,.4)",
+                  fontFamily:"'Cinzel',serif",letterSpacing:2,marginTop:4,
+                }}>{templeLore.temple.shlokaEn}</div>
+              </div>
+            )}
+
+            {/* Lore text — the cinematic narrative */}
+            <div style={{maxWidth:isMobile?340:560,textAlign:"center",
+              animation:"grahaNameIn .6s ease .65s both"}}>
+              <div style={{fontSize:isMobile?13:16,color:"rgba(220,200,160,.7)",lineHeight:2.1,
+                fontFamily:"'Noto Serif Devanagari',serif",
+                padding:isMobile?"16px 14px":"22px 28px",
+                background:`${templeLore.temple.color}06`,
+                border:`1px solid ${templeLore.temple.color}18`,borderRadius:12,
+              }}>
+                {templeLore.temple.lore}
+              </div>
+            </div>
+
+            {/* Player context + Enter button */}
+            <div style={{marginTop:isMobile?20:30,textAlign:"center",
+              animation:"grahaNameIn .5s ease .85s both"}}>
+              <div style={{display:"flex",alignItems:"center",gap:8,justifyContent:"center",marginBottom:12}}>
+                <span style={{fontSize:isMobile?18:22}}>{players[templeLore.playerIdx]?.char?.icon}</span>
+                <span style={{fontSize:isMobile?10:12,color:"rgba(240,200,80,.5)",
+                  fontFamily:"'Cinzel',serif",letterSpacing:2}}>
+                  {(templeLore.playerName||'SEEKER').toUpperCase()} &middot; PROVE YOUR KNOWLEDGE
+                </span>
+              </div>
+              <button onClick={()=>{
+                const{temple,question,square,playerIdx,playerName}=templeLore;
+                setTempleLore(null);
+                setTempleQuiz({temple,question,square,playerIdx,playerName});
+              }} style={{
+                background:`${templeLore.temple.color}15`,
+                border:`1px solid ${templeLore.temple.color}50`,
+                color:templeLore.temple.color,
+                padding:isMobile?"12px 28px":"14px 40px",
+                fontSize:isMobile?12:14,fontFamily:"'Cinzel',serif",
+                cursor:"pointer",borderRadius:8,letterSpacing:isMobile?2:4,fontWeight:700,
+                boxShadow:`0 0 30px ${templeLore.temple.color}15`,
+              }}>ENTER THE TEMPLE</button>
+            </div>
+          </div>
+
+          {/* Bottom border */}
+          <div style={{width:"100%",height:2,
+            background:`linear-gradient(90deg,transparent,${templeLore.temple.color}40,transparent)`}}/>
+        </div>
+      )}
+
       {/* ═══ KNOWLEDGE TEMPLE QUIZ ═══ */}
       {templeQuiz&&(
         <div style={{position:"fixed",inset:0,zIndex:260,
