@@ -5086,10 +5086,16 @@ export default function MokshaPatam108(){
         }
       }
       if(np[dil.pi]>=50&&!win){setWin(dil.pi);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory")}
-      // Clear dil FIRST so useEffect cleanup doesn't kill the voice we just started
-      const dilRef=dil;
+      // Clear dil — delay turn advance so sacred voice can play
       const nextCurA=(dil.pi+1)%nP;
-      setDil(null);setCur(nextCurA);
+      const isCorrectSacred=ch.k==="punya"&&dil.ashtanga;
+      setDil(null);
+      // If correct sacred answer with voice, wait 5s before advancing to next player
+      if(isCorrectSacred&&!muted){
+        setTimeout(()=>setCur(nextCurA),5000);
+      }else{
+        setCur(nextCurA);
+      }
       // Online: submit ashtanga result
       if(isOnline){
         const newStateA={cur:nextCurA,pos:[...npos],punya:[...np],papa:[...npa],
