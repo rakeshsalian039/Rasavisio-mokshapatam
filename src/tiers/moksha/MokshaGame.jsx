@@ -6316,22 +6316,19 @@ export default function MokshaPatam108(){
               {templeQuiz.question.q}
             </div>
 
-            {/* Answer buttons */}
+            {/* Answer buttons — both identical styling so player must READ */}
             <div style={{display:"flex",flexDirection:"column",gap:12}}>
-              <button onClick={()=>handleTempleAnswer(true)} style={{
-                background:`${templeQuiz.temple.color}10`,border:`1px solid ${templeQuiz.temple.color}35`,
-                color:"#e8d8a0",padding:isMobile?"13px 16px":"15px 20px",fontSize:isMobile?13:15,
-                fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:10,
-                lineHeight:1.7,textAlign:"left",
-                transition:"all .2s",
-              }}>{templeQuiz.question.a}</button>
-              <button onClick={()=>handleTempleAnswer(false)} style={{
-                background:"rgba(200,100,60,.06)",border:"1px solid rgba(200,100,60,.22)",
-                color:"#e0c8a0",padding:isMobile?"13px 16px":"15px 20px",fontSize:isMobile?13:15,
-                fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:10,
-                lineHeight:1.7,textAlign:"left",
-                transition:"all .2s",
-              }}>{templeQuiz.question.b}</button>
+              {[
+                {text:templeQuiz.question.a,correct:true},
+                {text:templeQuiz.question.b,correct:false}
+              ].sort(()=>Math.random()-0.5).map((opt,i)=>(
+                <button key={i} onClick={()=>handleTempleAnswer(opt.correct)} style={{
+                  background:`${templeQuiz.temple.color}08`,border:`1px solid ${templeQuiz.temple.color}28`,
+                  color:"#e0d0a0",padding:isMobile?"13px 16px":"15px 20px",fontSize:isMobile?13:15,
+                  fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:10,
+                  lineHeight:1.7,textAlign:"left",transition:"all .2s",
+                }}>{opt.text}</button>
+              ))}
             </div>
           </div>
 
@@ -6513,32 +6510,32 @@ export default function MokshaPatam108(){
                   {guruEncounter.question.q}
                 </div>
 
-                {/* Answer buttons */}
+                {/* Answer buttons — identical styling, randomized order */}
                 <div style={{display:"flex",flexDirection:"column",gap:10}}>
-                  <button onClick={()=>{
-                    const g=guruEncounter.guru;
-                    const nPun=[...punya];nPun[cur]+=2;setPunya(nPun);
-                    showKarmaToast(players[cur]?.name||'Seeker',2,'punya',g.icon);
-                    play("ladder");setTimeout(()=>play("chime"),300);haptic('Success');
-                    guruBlessingRef.current={type:g.blessing,name:g.blessingName};
-                    setGuruEncounter(e=>({...e,phase:'result',correct:true}));
-                    setTimeout(()=>setGuruEncounter(null),5000);
-                  }} style={{
-                    background:`${guruEncounter.guru.color}10`,border:`1px solid ${guruEncounter.guru.color}35`,
-                    color:"#e8d8a0",padding:isMobile?"12px 14px":"14px 18px",fontSize:isMobile?13:14,
-                    fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:8,lineHeight:1.7,
-                    textAlign:"left",
-                  }}>{guruEncounter.question.a}</button>
-                  <button onClick={()=>{
-                    play("yamaLaugh");haptic('Heavy');
-                    setGuruEncounter(e=>({...e,phase:'result',correct:false}));
-                    setTimeout(()=>setGuruEncounter(null),5000);
-                  }} style={{
-                    background:"rgba(200,100,60,.06)",border:"1px solid rgba(200,100,60,.20)",
-                    color:"#e0c8a0",padding:isMobile?"12px 14px":"14px 18px",fontSize:isMobile?13:14,
-                    fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:8,lineHeight:1.7,
-                    textAlign:"left",
-                  }}>{guruEncounter.question.b}</button>
+                  {[
+                    {text:guruEncounter.question.a,correct:true},
+                    {text:guruEncounter.question.b,correct:false}
+                  ].sort(()=>Math.random()-0.5).map((opt,i)=>(
+                    <button key={i} onClick={()=>{
+                      if(opt.correct){
+                        const g=guruEncounter.guru;
+                        const nPun=[...punya];nPun[cur]+=2;setPunya(nPun);
+                        showKarmaToast(players[cur]?.name||'Seeker',2,'punya',g.icon);
+                        play("ladder");setTimeout(()=>play("chime"),300);haptic('Success');
+                        guruBlessingRef.current={type:g.blessing,name:g.blessingName};
+                        setGuruEncounter(e=>({...e,phase:'result',correct:true}));
+                      }else{
+                        play("yamaLaugh");haptic('Heavy');
+                        setGuruEncounter(e=>({...e,phase:'result',correct:false}));
+                      }
+                      setTimeout(()=>setGuruEncounter(null),5000);
+                    }} style={{
+                      background:`${guruEncounter.guru.color}08`,border:`1px solid ${guruEncounter.guru.color}28`,
+                      color:"#e0d0a0",padding:isMobile?"12px 14px":"14px 18px",fontSize:isMobile?13:14,
+                      fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:8,lineHeight:1.7,
+                      textAlign:"left",
+                    }}>{opt.text}</button>
+                  ))}
                 </div>
 
                 {/* UX context hint */}
@@ -7198,7 +7195,7 @@ export default function MokshaPatam108(){
                   {mk&&<span style={{fontSize:"clamp(14px,2.5vw,22px)",animation:"mp 3s ease infinite",color:"#f0d050"}}>ॐ</span>}
                   {sn&&<><span style={{fontSize:"clamp(10px,2vw,16px)",lineHeight:1}}>𓆙</span><span style={{fontSize:"clamp(7px,1.2vw,11px)",color:"#ffb040",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 1px 4px #000,0 0 12px rgba(180,60,20,.5)"}}>{sn.skt}</span><span style={{fontSize:"clamp(5px,.9vw,8px)",color:"#ffa040",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1.1,textShadow:"0 0 6px #000,0 0 10px rgba(180,60,20,.4)"}}>{sn.en}</span></>}
                   {ld&&<><span style={{fontSize:"clamp(9px,1.8vw,14px)",lineHeight:1}}>🪔</span><span style={{fontSize:"clamp(7px,1.2vw,11px)",color:"#ffe070",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 0 12px rgba(200,160,60,.4)"}}>{ld.skt}</span><span style={{fontSize:"clamp(5px,.9vw,8px)",color:"#f0d060",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1.1,textShadow:"0 0 6px #000"}}>{ld.en}</span></>}
-                  {tmpl&&<><TempleIcon templeKey={TEMPLE_SQUARES[num]} size={isMobile?32:44} color={tmpl.color}/><span style={{fontSize:"clamp(7px,1.3vw,11px)",color:tmpl.color,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,textShadow:`0 1px 3px #000, 0 0 10px ${tmpl.color}50`,lineHeight:1,letterSpacing:0.5,marginTop:-4}}>{tmpl.name}</span></>}
+                  {tmpl&&<><TempleIcon templeKey={TEMPLE_SQUARES[num]} size={isMobile?40:56} color={tmpl.color}/><span style={{fontSize:"clamp(7px,1.3vw,11px)",color:tmpl.color,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,textShadow:`0 1px 3px #000, 0 0 10px ${tmpl.color}50`,lineHeight:1,letterSpacing:0.5,marginTop:-4}}>{tmpl.name}</span></>}
                   {dl&&!tmpl&&<><span style={{fontSize:"clamp(8px,1.5vw,13px)",lineHeight:1}}>⚖</span><span style={{fontSize:"clamp(5px,.8vw,7px)",color:"#c8a0f0",fontFamily:"'Cinzel',serif",fontWeight:900,textShadow:"0 0 8px #000",letterSpacing:1}}>DHARMA</span></>}
                   {ph.length>0&&<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",gap:2,zIndex:15,pointerEvents:"none"}}>
                     {ph.map(pi=>{const c=players[pi]?.char;const isMoving=pi===cur&&busy;const isActive=pi===cur;const pc=c?.color||"#fff";return <div key={pi} style={{display:"flex",flexDirection:"column",alignItems:"center",transition:"all .3s ease",transform:isMoving?"scale(1.7) translateY(-8px)":isActive?"scale(1.4)":"scale(0.9)",zIndex:isActive?20:15}}>
