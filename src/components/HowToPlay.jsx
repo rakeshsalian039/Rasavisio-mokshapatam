@@ -202,7 +202,7 @@ export default function HowToPlay({ onClose }) {
   return (
     <div style={{
       position: 'fixed', inset: 0, zIndex: 300,
-      background: `radial-gradient(ellipse at 50% 20%, ${pg.color}08, #060503 60%)`,
+      background: `radial-gradient(ellipse at 50% 20%, ${pg.color}08, #060503 60%), #060503`,
       display: 'flex', flexDirection: 'column', overflow: 'hidden',
     }}>
       <style>{CSS}</style>
