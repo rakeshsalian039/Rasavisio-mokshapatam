@@ -327,14 +327,38 @@ function rlm(n){return n<=33?"bhuloka":n<=66?"antarloka":n<=100?"svargaloka":"mo
 
 // The 8-fold Sacred Path (Ashtanga Marga) — squares 101-108
 const SACRED_PATH=[
-  {num:101,skt:"यम",en:"Yama",desc:"Self-restraint",icon:"🪷"},
-  {num:102,skt:"नियम",en:"Niyama",desc:"Discipline",icon:"🔥"},
-  {num:103,skt:"आसन",en:"Asana",desc:"Steadiness",icon:"🧘"},
-  {num:104,skt:"प्राणायाम",en:"Pranayama",desc:"Life-force",icon:"💨"},
-  {num:105,skt:"प्रत्याहार",en:"Pratyahara",desc:"Withdrawal",icon:"👁"},
-  {num:106,skt:"धारणा",en:"Dharana",desc:"Concentration",icon:"🎯"},
-  {num:107,skt:"ध्यान",en:"Dhyana",desc:"Meditation",icon:"✨"},
-  {num:108,skt:"मोक्ष",en:"MOKSHA",desc:"Liberation",icon:"ॐ"},
+  {num:101,skt:"यम",en:"Yama",desc:"Self-restraint",icon:"🪷",
+    shloka:"अहिंसासत्यास्तेयब्रह्मचर्यापरिग्रहा यमाः",
+    shlokaEn:"Non-violence, truth, non-stealing, continence, non-possessiveness — these are the Yamas — Yoga Sutra 2.30",
+    lore:"Before you master the body, before you master the breath, before you master the mind — you must master yourself. The five Yamas are not commandments from above. They are observations from within. Ahimsa is not just avoiding physical harm — it is the refusal to wound with thought, word, or silence. Satya is not just speaking truth — it is BEING truth, even when truth is costly. Gandhi built an empire of change on Ahimsa alone. The entire civil rights movement — King, Mandela — traces back to this first step of an Indian sage who lived 2,200 years ago. Before you can change the world, you must stop harming it."},
+  {num:102,skt:"नियम",en:"Niyama",desc:"Discipline",icon:"🔥",
+    shloka:"शौचसन्तोषतपःस्वाध्यायेश्वरप्रणिधानानि नियमाः",
+    shlokaEn:"Purity, contentment, austerity, self-study, surrender — these are the Niyamas — Yoga Sutra 2.32",
+    lore:"The Yamas govern how you treat the world. The Niyamas govern how you treat yourself. Shaucha is not just cleanliness of body — it is clarity of perception. Santosha is not passive acceptance — it is the radical act of choosing peace in a world that profits from your anxiety. Tapas — the burning discipline — is not self-punishment. It is the fire that transforms coal into diamond. Every world-changing discovery, every masterpiece, every revolution began with someone who refused to be comfortable. Svadhyaya — self-study — is the most terrifying journey: looking inward without flinching. And Ishvara Pranidhana — surrender — is not weakness. It is the ultimate strength: releasing the illusion that you control the universe."},
+  {num:103,skt:"आसन",en:"Asana",desc:"Steadiness",icon:"🧘",
+    shloka:"स्थिरसुखमासनम्",
+    shlokaEn:"The posture should be steady and comfortable — Yoga Sutra 2.46",
+    lore:"The entire modern yoga industry — $80 billion globally — is built on a misunderstanding of this single word. Patanjali devoted exactly THREE sutras to Asana out of 196. Three. It was never about flexibility or Instagram poses. 'Sthira Sukham Asanam' — the seat should be steady and comfortable. That is all. Why? Because you cannot meditate if your body is screaming. The body is the vehicle, not the destination. Yet within this simplicity hides profound science: NASA research confirmed that yoga poses increase bone density. Harvard proved specific poses reduce cortisol by 25%. The ancient rishis who sat in padmasana for hours weren't exercising — they were tuning an instrument. The body is a frequency receiver. Asana is the tuning."},
+  {num:104,skt:"प्राणायाम",en:"Pranayama",desc:"Life-force",icon:"💨",
+    shloka:"तस्मिन्सति श्वासप्रश्वासयोर्गतिविच्छेदः प्राणायामः",
+    shlokaEn:"When that (asana) is accomplished, pranayama is the regulation of breath — Yoga Sutra 2.49",
+    lore:"You breathe 22,000 times a day. You are aware of almost none of them. Pranayama is the art of making the unconscious conscious — and in doing so, rewiring your entire nervous system. When Navy SEALs need to stay calm under gunfire, they use box breathing — 4 counts in, 4 hold, 4 out. This IS Pranayama, stripped of its Sanskrit name and sold as 'tactical breathing.' When Wim Hof climbed Everest in shorts, he used Tummo breathing — a Pranayama technique Tibetan monks have practiced for centuries. Stanford research proved 5 minutes of cyclic sighing reduces anxiety more effectively than medication. The vagus nerve — the longest nerve in your body — runs from brain to gut through every organ. Breath controls the vagus nerve. The vagus nerve controls everything else. Patanjali knew this 2,200 years ago. He just didn't need an fMRI to prove it."},
+  {num:105,skt:"प्रत्याहार",en:"Pratyahara",desc:"Withdrawal",icon:"👁",
+    shloka:"स्वविषयासम्प्रयोगे चित्तस्वरूपानुकार इवेन्द्रियाणां प्रत्याहारः",
+    shlokaEn:"Pratyahara is the withdrawal of the senses from their objects, as if imitating the mind's own nature — Yoga Sutra 2.54",
+    lore:"You are being consumed. Every notification, every scroll, every advertisement is a hook in your attention — pulling your consciousness outward into a world designed to exploit it. The average person checks their phone 96 times a day. Social media algorithms are engineered by neuroscientists to trigger dopamine loops. You are not using your phone. Your phone is using you. Pratyahara is the ancient antidote to the modern attention crisis. It is not closing your eyes to the world — it is choosing what enters your mind. The turtle withdraws its limbs not out of fear, but out of mastery. The senses are wild horses. Pratyahara is the moment you take the reins. In a world that monetizes your distraction, the ability to withdraw attention at will is not just a spiritual practice — it is an act of rebellion."},
+  {num:106,skt:"धारणा",en:"Dharana",desc:"Concentration",icon:"🎯",
+    shloka:"देशबन्धश्चित्तस्य धारणा",
+    shlokaEn:"Dharana is the binding of the mind to one place — Yoga Sutra 3.1",
+    lore:"Cal Newport calls it 'Deep Work.' Mihaly Csikszentmihalyi calls it 'Flow.' Silicon Valley calls it 'hyperfocus.' Patanjali called it Dharana — 2,200 years before any of them were born. The ability to hold attention on a single point without wavering is the rarest and most valuable skill in the modern economy. A study by Microsoft found the average human attention span has dropped from 12 seconds in 2000 to 8 seconds in 2015 — less than a goldfish. Dharana is the training that reverses this collapse. Neuroscience confirms: sustained focus physically thickens the prefrontal cortex, increases grey matter in the anterior cingulate, and strengthens the neural circuits of executive function. The ancient rishis who meditated on a single flame for hours were not wasting time. They were building the most powerful organ in the known universe — an undistracted human mind."},
+  {num:107,skt:"ध्यान",en:"Dhyana",desc:"Meditation",icon:"✨",
+    shloka:"तत्र प्रत्ययैकतानता ध्यानम्",
+    shlokaEn:"Dhyana is the unbroken flow of awareness toward that point — Yoga Sutra 3.2",
+    lore:"Dharana is holding a note. Dhyana is the music that flows when you stop trying to hold it. It is not something you DO — it is what happens when you stop doing everything else. The difference between concentration and meditation is the difference between a photograph and a river. One is frozen effort. The other is effortless flow. When the US Marines adopted mindfulness training, PTSD rates dropped by 50%. When Google offered meditation to employees, it became the most oversubscribed course in company history. Hedge fund managers, Olympic athletes, Navy SEALs — the highest performers on Earth all converge on the same ancient practice from the same ancient text. But here is Patanjali's secret: Dhyana cannot be taught. It can only arise. You create the conditions — silence, stillness, sustained attention — and then you let go. The river was always flowing. You were just too busy to notice."},
+  {num:108,skt:"मोक्ष",en:"MOKSHA",desc:"Liberation",icon:"ॐ",
+    shloka:"तदा द्रष्टुः स्वरूपेऽवस्थानम्",
+    shlokaEn:"Then the seer abides in its own true nature — Yoga Sutra 1.3",
+    lore:"This is not a square on a board. This is the moment the board disappears. Moksha is not a place you reach — it is the realization that you were never separate from it. The wave discovers it was always the ocean. The drop discovers it was always the rain. Every religion, every philosophy, every mystic tradition across every civilization has pointed to this same experience: the dissolution of the boundary between self and cosmos. Schrödinger read the Upanishads and saw quantum mechanics. Einstein felt something 'behind the energy' and called it cosmic religious feeling. The rishis sat in silence and simply said: 'Tat tvam asi' — You are That. Not you WILL BE that. Not you COULD BE that. You ARE that. Right now. Always. The game of Moksha Patam ends here. But only the game. What you truly are has no beginning and no end. You are the player, the board, and the sacred path itself. ॐ"},
 ];
 
 // ═══ ASHTANGA RIDDLES — 5-6 per step, tricky but solvable ═══
@@ -4235,6 +4259,7 @@ export default function MokshaPatam108(){
   const[pendingPlayers,setPendingPlayers]=useState(null); // held during CG intro
   // ── Knowledge Board state ──
   const[templeInfo,setTempleInfo]=useState(null);          // {temple, templeKey} — info-only popup (tap to explore)
+  const[sacredInfo,setSacredInfo]=useState(null);          // {step} — sacred path info popup
   const[templeLore,setTempleLore]=useState(null);         // {temple, templeKey, question, square, playerIdx, playerName}
   const[templeQuiz,setTempleQuiz]=useState(null);        // {temple, question, onAnswer}
   const[guruEncounter,setGuruEncounter]=useState(null);   // {guru, question, phase:'intro'|'question'|'result'}
@@ -4553,7 +4578,7 @@ export default function MokshaPatam108(){
     setPos(Array(n).fill(1));setDisplayPos(Array(n).fill(1));setPunya(Array(n).fill(0));setPapa(Array(n).fill(0));
     setShieldA(Array(n).fill(false));setSkipA(Array(n).fill(false));
     setCur(0);setWin(null);setHist([]);setRv(null);setGv(null);setLastRollBy(null);setDiceReveal(null);setBusy(false);setDil(null);setUsedDharma([]);VoiceEngine._audioCtxUnlocked=false;
-    setTempleInfo(null);setTempleLore(null);setTempleQuiz(null);setGuruEncounter(null);setCosmicCard(null);usedTempleQRef.current={};usedGuruQRef.current={};usedCosmicRef.current=[];guruBlessingRef.current=null;lastKnowledgeTurnRef.current=0;
+    setTempleInfo(null);setSacredInfo(null);setTempleLore(null);setTempleQuiz(null);setGuruEncounter(null);setCosmicCard(null);usedTempleQRef.current={};usedGuruQRef.current={};usedCosmicRef.current=[];guruBlessingRef.current=null;lastKnowledgeTurnRef.current=0;
     setCgEntries([]);setShowMoksha(false);setShowPostGame(false);
     setMsg(`${pList[0].name} the ${pList[0].char.name} — your journey begins.`);
     gameStats.current={startTime:Date.now(),turns:0,snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0,grahaHits:{sun:0,moon:0,mars:0,mercury:0,jupiter:0,venus:0,saturn:0,rahu:0,ketu:0}};
@@ -6280,6 +6305,101 @@ export default function MokshaPatam108(){
         </div>
       )}
 
+      {/* ═══ SACRED PATH INFO — cinematic exploration ═══ */}
+      {sacredInfo&&(
+        <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:257,
+          background:`radial-gradient(ellipse at 50% 20%,rgba(240,200,80,.08),rgba(3,2,1,.98) 55%)`,
+          backdropFilter:"blur(18px)",WebkitBackdropFilter:"blur(18px)",
+          display:"flex",flexDirection:"column",overflow:"hidden",
+          animation:"fadeIn .8s ease",
+        }} onClick={()=>{VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){};setSacredInfo(null)}}>
+          {/* Top golden line */}
+          <div style={{width:"100%",height:3,
+            background:"linear-gradient(90deg,transparent,rgba(240,200,80,.5),transparent)",opacity:0.6}}/>
+
+          <div style={{flex:1,overflowY:"auto",display:"flex",flexDirection:"column",
+            alignItems:"center",justifyContent:"center",
+            padding:isMobile?"24px 16px":"48px 40px"}} onClick={e=>e.stopPropagation()}>
+
+            {/* Step number */}
+            <div style={{fontSize:isMobile?9:11,letterSpacing:isMobile?4:8,
+              color:"rgba(240,200,80,.35)",fontFamily:"'Cinzel',serif",marginBottom:isMobile?8:14,
+              animation:"grahaNameIn .4s ease both",
+            }}>STEP {sacredInfo.step.num-100} OF 8 &middot; THE SACRED PATH</div>
+
+            {/* Sacred Path Icon — LARGE */}
+            <div style={{marginBottom:isMobile?12:20,
+              animation:"grahaZoomIn .8s cubic-bezier(0.34,1.52,0.64,1) forwards"}}>
+              <SacredPathIcon stepIndex={sacredInfo.stepIdx} size={isMobile?80:120}/>
+            </div>
+
+            {/* Sanskrit name */}
+            <div style={{fontFamily:"'Yatra One',serif",
+              fontSize:isMobile?"clamp(32px,9vw,48px)":"clamp(48px,6vw,72px)",
+              color:"#f0d050",letterSpacing:isMobile?4:8,
+              textShadow:"0 0 60px rgba(240,200,80,.5), 0 0 120px rgba(240,200,80,.2)",
+              marginBottom:4,textAlign:"center",
+              animation:"grahaNameIn .6s ease .2s both",
+            }}>{sacredInfo.step.skt}</div>
+
+            {/* English name + description */}
+            <div style={{fontSize:isMobile?16:22,color:"rgba(255,255,255,.5)",
+              fontFamily:"'Cinzel',serif",letterSpacing:isMobile?4:8,marginBottom:4,
+              animation:"grahaNameIn .5s ease .3s both",
+            }}>{sacredInfo.step.en.toUpperCase()}</div>
+            <div style={{fontSize:isMobile?12:15,color:"rgba(240,200,80,.4)",
+              fontFamily:"'Cinzel',serif",letterSpacing:2,marginBottom:isMobile?10:18,
+              animation:"grahaNameIn .4s ease .35s both",
+            }}>{sacredInfo.step.desc}</div>
+
+            {/* Divider */}
+            <div style={{width:isMobile?60:100,height:2,
+              background:"linear-gradient(90deg,transparent,rgba(240,200,80,.6),transparent)",
+              marginBottom:isMobile?14:22,animation:"grahaNameIn .4s ease .4s both"}}/>
+
+            {/* Shloka — the original Sanskrit verse */}
+            {sacredInfo.step.shloka&&(
+              <div style={{textAlign:"center",marginBottom:isMobile?16:24,maxWidth:isMobile?340:560,
+                animation:"grahaNameIn .5s ease .5s both"}}>
+                <div style={{fontFamily:"'Noto Serif Devanagari',serif",
+                  fontSize:isMobile?16:22,color:"rgba(240,200,80,.8)",lineHeight:1.9,
+                  fontStyle:"italic",textShadow:"0 0 30px rgba(240,200,80,.2)",
+                }}>"{sacredInfo.step.shloka}"</div>
+                <div style={{fontSize:isMobile?10:13,color:"rgba(200,180,140,.4)",
+                  fontFamily:"'Cinzel',serif",letterSpacing:1,marginTop:6,lineHeight:1.7,
+                }}>{sacredInfo.step.shlokaEn}</div>
+              </div>
+            )}
+
+            {/* Lore narrative — the goosebump text */}
+            <div style={{maxWidth:isMobile?340:600,textAlign:"center",
+              animation:"grahaNameIn .6s ease .65s both"}}>
+              <div style={{fontSize:isMobile?13:17,color:"rgba(220,200,160,.7)",lineHeight:2.2,
+                fontFamily:"'Noto Serif Devanagari',serif",
+                padding:isMobile?"18px 16px":"24px 32px",
+                background:"rgba(240,200,80,.03)",
+                border:"1px solid rgba(240,200,80,.12)",borderRadius:14,
+              }}>
+                {sacredInfo.step.lore}
+              </div>
+            </div>
+
+            {/* Dismiss */}
+            <button onClick={()=>{VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){};setSacredInfo(null)}} style={{
+              marginTop:isMobile?20:28,background:"transparent",
+              border:"1px solid rgba(240,200,80,.25)",
+              color:"rgba(240,200,80,.6)",padding:"10px 24px",fontSize:isMobile?10:12,
+              fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:6,letterSpacing:3,
+              animation:"grahaNameIn .4s ease 1s both",
+            }}>CLOSE</button>
+          </div>
+
+          {/* Bottom golden line */}
+          <div style={{width:"100%",height:2,
+            background:"linear-gradient(90deg,transparent,rgba(240,200,80,.3),transparent)"}}/>
+        </div>
+      )}
+
       {/* ═══ TEMPLE LORE — cinematic intro before quiz ═══ */}
       {templeLore&&(
         <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:258,
@@ -7259,7 +7379,18 @@ export default function MokshaPatam108(){
                   const ph=[];for(let i=0;i<nP;i++){const rp=isOnline&&i!==myPlayerIndex&&displayPos.length>0?displayPos[i]:pos[i];if((rp||1)===sq.num)ph.push(i)}
                   const isMoksha=sq.num===108;
                   const stepIdx=sq.num-101;
-                  return(<div key={sq.num} onMouseEnter={()=>!isMobile&&setHov(sq.num)} onMouseLeave={()=>!isMobile&&setHov(null)} onClick={()=>{if(isMobile)setHov(h=>h===sq.num?null:sq.num)}} style={{aspectRatio:"1",background:isMoksha?"radial-gradient(circle,rgba(240,200,80,.2),rgba(240,200,80,.04))":"radial-gradient(circle,rgba(240,200,80,.06),transparent)",border:`1px solid ${hov===sq.num?"rgba(240,200,80,.7)":isMoksha?"rgba(240,200,80,.4)":"rgba(240,200,80,.12)"}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .3s",borderRadius:isMoksha?4:2,animation:isMoksha?"mp 3s ease infinite":"sacredGlow 4s ease infinite",animationDelay:`${stepIdx*0.3}s`,boxShadow:isMoksha?"0 0 20px rgba(240,200,80,.15)":"none"}}>
+                  return(<div key={sq.num} onMouseEnter={()=>!isMobile&&setHov(sq.num)} onMouseLeave={()=>!isMobile&&setHov(null)} onClick={()=>{
+                    if(isMobile)setHov(h=>h===sq.num?null:sq.num);
+                    // Sacred path info — only when idle
+                    if(!busy&&!dil&&!templeLore&&!templeQuiz&&!guruEncounter&&!cosmicCard&&!eventPopup&&!win&&!sacredInfo){
+                      playTempleBell();
+                      setSacredInfo({step:sq,stepIdx});
+                      if(!muted){
+                        const voiceFile=`/sacred-voices/step${stepIdx}-en.mp3`;
+                        setTimeout(()=>VoiceEngine.speakNarrator(sq.lore,chosenLang,voiceFile),500);
+                      }
+                    }
+                  }} style={{aspectRatio:"1",background:isMoksha?"radial-gradient(circle,rgba(240,200,80,.2),rgba(240,200,80,.04))":"radial-gradient(circle,rgba(240,200,80,.06),transparent)",border:`1px solid ${hov===sq.num?"rgba(240,200,80,.7)":isMoksha?"rgba(240,200,80,.4)":"rgba(240,200,80,.12)"}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .3s",borderRadius:isMoksha?4:2,animation:isMoksha?"mp 3s ease infinite":"sacredGlow 4s ease infinite",animationDelay:`${stepIdx*0.3}s`,boxShadow:isMoksha?"0 0 20px rgba(240,200,80,.15)":"none"}}>
                     <span style={{position:"absolute",top:1,left:2,fontSize:"clamp(6px,1vw,9px)",color:"rgba(240,210,130,.5)",fontWeight:700}}>{sq.num}</span>
                     <SacredPathIcon stepIndex={stepIdx} size={isMobile?38:52}/>
                     <span style={{fontSize:isMoksha?"clamp(8px,1.3vw,13px)":"clamp(7px,1.1vw,11px)",color:isMoksha?"#f0d050":"#e8c850",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 0 16px rgba(240,200,80,.2)"}}>{sq.skt}</span>
