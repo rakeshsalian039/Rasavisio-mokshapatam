@@ -5063,8 +5063,8 @@ export default function MokshaPatam108(){
           const voiceText=stepNum>=7
             ?`${pName}, you have mastered ${stepEn}. Only Moksha remains. Your soul stands at the threshold of liberation.`
             :`${pName}, your soul ascends. ${stepEn} complete. Step ${stepNum} of 7 on the Sacred Path. Your wisdom deepens.`;
-          const voiceFile=`/sacred-voices/step${stepNum-1}-en.mp3`;
-          setTimeout(()=>VoiceEngine.speakNarrator(voiceText,chosenLang,null),1500);
+          const voiceFile=`/sacred-voices/correct${stepNum-1}-en.mp3`;
+          setTimeout(()=>VoiceEngine.speakNarrator(voiceText,chosenLang,voiceFile),1500);
           setTimeout(()=>{if(!bgMuted)ambient.unduck();},6000);
         }
       }else{
