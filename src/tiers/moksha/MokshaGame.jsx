@@ -1060,7 +1060,7 @@ const VoiceEngine = {
       const bowlF = ctx.createBiquadFilter(); bowlF.type='bandpass'; bowlF.frequency.value=528; bowlF.Q.value=12;
       bowl.connect(bowlF); bowlF.connect(bowlG);
       // Route
-      const master = ctx.createGain(); master.gain.value=1.0;
+      const master = ctx.createGain(); master.gain.value=0.45;
       src.connect(cut); cut.connect(pres); pres.connect(air);
       air.connect(master); air.connect(conv); conv.connect(rvMix); rvMix.connect(master);
       bowlG.connect(master); master.connect(ctx.destination);
