@@ -253,7 +253,7 @@ const STORY_PAGES=[
     {icon:"⚖",accent:"#a0c8e0",title:"21 Moral Crossroads",text:"From the Mahabharata and real life. Ancient dilemmas that kings, sages, and warriors faced — now yours to answer."},
     {icon:"🙏",accent:"#80c080",title:"Choose Punya — The Righteous Path",text:"Harder. Costlier. Sometimes you move back. But your soul grows lighter. Karma accumulates."},
     {icon:"💀",accent:"#e06030",title:"Choose Papa — The Dark Path",text:"Easier. You advance faster. But sin accumulates. And the gates of Moksha may reject you."},
-    {icon:"⚡",accent:"#f0d050",title:"Balance is Everything",text:"30 Punya anywhere = instant Moksha. But Papa can undo lifetimes of Punya. Every choice is permanent."},
+    {icon:"⚡",accent:"#f0d050",title:"Balance is Everything",text:"50 Punya anywhere = instant Moksha. But Papa can undo lifetimes of Punya. Every choice is permanent."},
   ],
   bullets_hi:[
     {icon:"⚖",accent:"#a0c8e0",title:"21 नैतिक चौराहे",text:"महाभारत और असल जीवन से। राजाओं, ऋषियों और योद्धाओं के सामने आए प्राचीन प्रश्न — अब तुम्हारे सामने।"},
@@ -300,7 +300,7 @@ const STORY_PAGES=[
   bullets_en:[
     {icon:"🔱",accent:"#f0d050",title:"Path 1 — Reach Square 108",text:"Roll the exact number to land on 108. But the gate won't open for a tainted soul — Punya must equal or exceed Papa."},
     {icon:"💔",accent:"#e06030",title:"If Impure",text:"Cast back to Square 67. Back to suffering. The board shows no mercy."},
-    {icon:"ॐ",accent:"#80c080",title:"Path 2 — Karma Victory",text:"Accumulate 30 Punya from any square. The board itself dissolves beneath you. Instant Moksha. The rarest path."},
+    {icon:"ॐ",accent:"#80c080",title:"Path 2 — Karma Victory",text:"Accumulate 50 Punya from any square. The board itself dissolves beneath you. Instant Moksha. The rarest path."},
     {icon:"🐍",accent:"#c08060",title:"The Dice Are Ready",text:"The serpents can smell your fear. The planets watch your every step. Step onto the board."},
   ],
   bullets_hi:[
@@ -309,7 +309,7 @@ const STORY_PAGES=[
     {icon:"ॐ",accent:"#80c080",title:"रास्ता 2 — कर्म विजय",text:"कहीं से भी 30 पुण्य इकट्ठा करो। पट विलीन हो जाता है। तुरंत मोक्ष। सबसे दुर्लभ रास्ता।"},
     {icon:"🐍",accent:"#c08060",title:"पासे तैयार हैं",text:"सांप तुम्हारे डर की गंध सूंघ रहे हैं। कदम रखो पट पर।"},
   ],
-  en:"Two paths to escape the wheel of Samsara. The First Path, reach Square 108 with an exact roll. But even if you arrive, the gates will not open for a tainted soul. Your Punya must equal or exceed your Papa. If impure, you are cast back to Square 67. To suffer again. The Second Path, far rarer, far more beautiful. Accumulate 30 Punya at any moment during your journey. The board itself dissolves beneath you. Instant Moksha. This is the ancient truth the sages encoded. A truly pure soul can break free from any square. The dice are ready. The serpents can smell your fear. Step onto the board.",
+  en:"Two paths to escape the wheel of Samsara. The First Path, reach Square 108 with an exact roll. But even if you arrive, the gates will not open for a tainted soul. Your Punya must equal or exceed your Papa. If impure, you are cast back to Square 67. To suffer again. The Second Path, far rarer, far more beautiful. Accumulate 50 Punya at any moment during your journey. The board itself dissolves beneath you. Instant Moksha. This is the ancient truth the sages encoded. A truly pure soul can break free from any square. The dice are ready. The serpents can smell your fear. Step onto the board.",
   hi:"संसार के चक्र से बचने के दो रास्ते। पहला, खाना 108 पर सटीक पासे से। लेकिन दूषित आत्मा के लिए द्वार नहीं। पुण्य पाप से ज़्यादा होना चाहिए। अशुद्ध हो तो 67 पर वापस। दूसरा रास्ता, 30 पुण्य। पट विलीन। तुरंत मोक्ष। पासे तैयार हैं। सांप तुम्हारे डर की गंध सूंघ रहे हैं।",
   visuals:[{type:"animatedBoard",mode:"intro"}]}
 ];
@@ -2058,8 +2058,8 @@ function DharmaStage() {
       setShake(true);
       setTimeout(()=>setShake(false),600);
       setTokenSq(sq=>Math.max(1,Math.min(99,sq+c.sq)));
-      if(side==='punya') setPunya(p=>Math.min(30,p+c.karma));
-      else setPapa(p=>Math.min(30,p+c.karma));
+      if(side==='punya') setPunya(p=>Math.min(50,p+c.karma));
+      else setPapa(p=>Math.min(50,p+c.karma));
     },800);
 
     // Auto-advance to next card
@@ -4614,9 +4614,9 @@ export default function MokshaPatam108(){
     const{temple,playerIdx,playerName,square}=templeQuiz;
     setTempleQuiz(null);
     if(correct){
-      setPunya(prev=>{const n=[...prev];n[playerIdx]+=2;return n});
+      setPunya(prev=>{const n=[...prev];n[playerIdx]+=1;return n});
       setPos(prev=>{const n=[...prev];n[playerIdx]=Math.min(square+3,100);return n});
-      showKarmaToast(playerName,2,'punya',temple.icon);play("ladder");playTempleBell();haptic('Success');
+      showKarmaToast(playerName,1,'punya',temple.icon);play("ladder");playTempleBell();haptic('Success');
       addCGEntry('dharma_p',square,`${temple.en} ✓`);
     }else{
       setPapa(prev=>{const n=[...prev];n[playerIdx]+=1;return n});
@@ -4636,8 +4636,8 @@ export default function MokshaPatam108(){
     const isHumanTurn=!players[cur]?.cpu;
     const totalTurns=(gameStats.current.turns||0)+1;
     if(isHumanTurn&&!autoRoll){
-      // GURU — every 5th turn (5,10,15,20...)
-      if(totalTurns>1&&totalTurns%5===0&&lastKnowledgeTurnRef.current!==totalTurns){
+      // GURU — every 8th turn (8,16,24,32...)
+      if(totalTurns>1&&totalTurns%8===0&&lastKnowledgeTurnRef.current!==totalTurns){
         lastKnowledgeTurnRef.current=totalTurns;
         const available=GURUS.filter(g=>{const used=usedGuruQRef.current[g.id]||[];return g.questions.length>used.length;});
         if(available.length>0){
@@ -4651,8 +4651,8 @@ export default function MokshaPatam108(){
           return;
         }
       }
-      // COSMIC CARD — every 7th turn (7,14,21,28...) but NOT if guru already fired this turn
-      if(totalTurns>1&&totalTurns%7===0&&lastKnowledgeTurnRef.current!==totalTurns){
+      // COSMIC CARD — every 12th turn (12,24,36...) but NOT if guru already fired this turn
+      if(totalTurns>1&&totalTurns%12===0&&lastKnowledgeTurnRef.current!==totalTurns){
         lastKnowledgeTurnRef.current=totalTurns;
         const p=pos[cur]||1;
         const realm=p<=33?'bhuloka':p<=66?'antarloka':'svargaloka';
@@ -4806,9 +4806,9 @@ export default function MokshaPatam108(){
             if(p>(gameStats.current.highest||1))gameStats.current.highest=p;
             setMsg([eMsg,...extras].filter(Boolean).join(" · ")||`Moved to ${p}.`);
             setHist(h=>[...h.slice(-12),`${pName}→${p}`]);
-            if(nPunya[cur]>=30&&!win){setWin(cur);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory");
+            if(nPunya[cur]>=50&&!win){setWin(cur);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory");
               addCGEntry('moksha',p,`30 पुण्य · कर्म विजय`);
-              showEvent({icon:"ॐ",title:"KARMA VICTORY!",subtitle:`${pName} has accumulated 30 Punya! The board dissolves. Instant Moksha!`,color:"#f0d050"},()=>{speakCG('moksha',300);setTimeout(()=>setShowMoksha(true),1200);});
+              showEvent({icon:"ॐ",title:"KARMA VICTORY!",subtitle:`${pName} has accumulated 50 Punya! The board dissolves. Instant Moksha!`,color:"#f0d050"},()=>{speakCG('moksha',300);setTimeout(()=>setShowMoksha(true),1200);});
             }
             // Balance warning — Chitragupta watches when it's knife-edge
             const pu=nPunya[cur],pa=nPapa[cur];
@@ -4850,7 +4850,7 @@ export default function MokshaPatam108(){
             showKarmaToast(pName,2,'papa','𓆙');play("snake");setTimeout(()=>play("yamaLaugh"),320);haptic('Heavy');
             showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} caught you! ${sn.tale} Dragged from ${o} to ${p}. +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`,staticKey:"snake_hit"},()=>{
               addCGEntry('snake',p,`${sn.skt} · ${o}→${p}`);
-              if(!muted){if(yamaTimerRef.current)clearTimeout(yamaTimerRef.current);yamaTimerRef.current=setTimeout(()=>{yamaTimerRef.current=null;VoiceEngine.playYamaTaunt("snake",chosenLang);},1000);}
+              if(!muted){if(yamaTimerRef.current)clearTimeout(yamaTimerRef.current);yamaTimerRef.current=setTimeout(()=>{yamaTimerRef.current=null;VoiceEngine.playYamaTaunt("snake",chosenLang);},300);}
               setTimeout(()=>{if(!bgMuted)ambient.unduck();},7000);
               finishTurn(true);
             });
@@ -5060,7 +5060,7 @@ export default function MokshaPatam108(){
           setTimeout(()=>{if(!bgMuted)ambient.unduck();},5000);
         }
       }
-      if(np[dil.pi]>=30&&!win){setWin(dil.pi);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory")}
+      if(np[dil.pi]>=50&&!win){setWin(dil.pi);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory")}
       // Clear dil FIRST so useEffect cleanup doesn't kill the voice we just started
       const dilRef=dil;
       const nextCurA=(dil.pi+1)%nP;
@@ -5068,7 +5068,7 @@ export default function MokshaPatam108(){
       // Online: submit ashtanga result
       if(isOnline){
         const newStateA={cur:nextCurA,pos:[...npos],punya:[...np],papa:[...npa],
-          shieldA:[...nsh],skipA:[...nsk],win:np[dil.pi]>=30?dil.pi:null,dil:null,usedDharma};
+          shieldA:[...nsh],skipA:[...nsk],win:np[dil.pi]>=50?dil.pi:null,dil:null,usedDharma};
         submitTurn(newStateA,{moveType:'dilemma_pick',dilemmaPick:ci}).catch(logError);
         lastAppliedSeqRef.current=(lastAppliedSeqRef.current??0)+1;
       }
@@ -5089,13 +5089,13 @@ export default function MokshaPatam108(){
     setMsg(parts.join(", ")||"Balanced.");
     if(ch.k==="punya"){play("chime");showKarmaToast(pName,fx.punya||1,'punya','⚖');gameStats.current.riddlesC++;addCGEntry('dharma_p',npos[dil.pi]||1,dil.en||'');speakCG('dharma_p',600);setTimeout(()=>{if(!bgMuted)ambient.unduck();},3200);}
     else if(ch.k==="papa"){play("yamaLaugh");showKarmaToast(pName,fx.papa||1,'papa','⚖');gameStats.current.riddlesW++;addCGEntry('dharma_x',npos[dil.pi]||1,dil.en||'');speakCG('dharma_x',4000);setTimeout(()=>{if(!bgMuted)ambient.unduck();},6500);}
-    if(np[dil.pi]>=30&&!win){setWin(dil.pi);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory")}
+    if(np[dil.pi]>=50&&!win){setWin(dil.pi);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory")}
     const nextCurD=(cur+1)%nP;
     setDil(null);setCur(nextCurD);
     // Online: write state after dharma resolution
     if(isOnline){
       const newState={cur:nextCurD,pos:[...npos],punya:[...np],papa:[...npa],
-        shieldA:[...nsh],skipA:[...nsk],win:np[dil.pi]>=30?dil.pi:null,dil:null,usedDharma};
+        shieldA:[...nsh],skipA:[...nsk],win:np[dil.pi]>=50?dil.pi:null,dil:null,usedDharma};
       submitTurn(newState,{moveType:'dilemma_pick',dilemmaPick:ci}).catch(logError);
       lastAppliedSeqRef.current=(lastAppliedSeqRef.current??0)+1;
     }
@@ -6801,6 +6801,9 @@ export default function MokshaPatam108(){
                         setTimeout(()=>setGuruEncounter(null),6000);
                       }else{
                         play("yamaLaugh");haptic('Heavy');
+                        // Wrong guru answer: +1 Papa
+                        const nPap=[...papa];nPap[cur]+=1;setPapa(nPap);
+                        showKarmaToast(players[cur]?.name||'Seeker',1,'papa','💀');
                         setGuruEncounter(e=>({...e,phase:'result',correct:false}));
                         setTimeout(()=>setGuruEncounter(null),5000);
                       }
@@ -7480,15 +7483,18 @@ export default function MokshaPatam108(){
           </div>
           {/* Karma Victory + Punya needed indicator */}
           <div style={{display:"flex",justifyContent:"center",gap:12,marginTop:4,fontSize:"clamp(8px,1vw,10px)",flexWrap:"wrap",alignItems:"center"}}>
-            <div style={{display:"flex",alignItems:"center",gap:4,padding:"3px 10px",background:"rgba(100,200,100,.06)",border:"1px solid rgba(100,200,100,.12)",borderRadius:12}}>
-              <span style={{color:"#80c080",fontWeight:700}}>⚡ Karma Victory: 30 Punya</span>
+            <div style={{display:"flex",alignItems:"center",gap:6,padding:"3px 10px",background:"rgba(100,200,100,.06)",border:"1px solid rgba(100,200,100,.12)",borderRadius:12}}>
+              <span style={{color:"#80c080",fontWeight:700,fontSize:"clamp(7px,.9vw,9px)"}}>⚡ {punya[cur]||0}/50</span>
+              <div style={{width:40,height:4,background:"rgba(100,200,100,.15)",borderRadius:2,overflow:"hidden"}}>
+                <div style={{width:`${Math.min(100,(punya[cur]||0)/50*100)}%`,height:"100%",background:"#80c080",borderRadius:2,transition:"width .5s ease"}}/>
+              </div>
             </div>
             <div style={{display:"flex",alignItems:"center",gap:4,padding:"3px 10px",background:"rgba(240,200,80,.06)",border:"1px solid rgba(240,200,80,.12)",borderRadius:12}}>
               <span style={{color:"#f0d050",fontWeight:700}}>ॐ Moksha: Punya ≥ Papa at Sq 108</span>
             </div>
-            {players[cur]&&<div style={{padding:"3px 10px",background:punya[cur]>=30?"rgba(100,200,100,.1)":punya[cur]>=papa[cur]?"rgba(240,200,80,.08)":"rgba(200,80,60,.08)",border:`1px solid ${punya[cur]>=30?"rgba(100,200,100,.2)":punya[cur]>=papa[cur]?"rgba(240,200,80,.15)":"rgba(200,80,60,.15)"}`,borderRadius:12}}>
-              <span style={{color:punya[cur]>=30?"#80c080":punya[cur]>=papa[cur]?"#f0d050":"#e08060",fontWeight:700}}>
-                {punya[cur]>=30?"⚡ KARMA READY!":`You: ${punya[cur]} Punya / ${papa[cur]} Papa ${punya[cur]>=papa[cur]?"✓ Pure":"✗ Impure"}`}
+            {players[cur]&&<div style={{padding:"3px 10px",background:punya[cur]>=50?"rgba(100,200,100,.1)":punya[cur]>=papa[cur]?"rgba(240,200,80,.08)":"rgba(200,80,60,.08)",border:`1px solid ${punya[cur]>=50?"rgba(100,200,100,.2)":punya[cur]>=papa[cur]?"rgba(240,200,80,.15)":"rgba(200,80,60,.15)"}`,borderRadius:12}}>
+              <span style={{color:punya[cur]>=50?"#80c080":punya[cur]>=papa[cur]?"#f0d050":"#e08060",fontWeight:700}}>
+                {punya[cur]>=50?"⚡ KARMA READY!":`You: ${punya[cur]} Punya / ${papa[cur]} Papa ${punya[cur]>=papa[cur]?"✓ Pure":"✗ Impure"}`}
               </span>
             </div>}
           </div>
@@ -7651,7 +7657,7 @@ export default function MokshaPatam108(){
                 <button onClick={()=>{const np=[...pos];np[cur]=108;setPos(np);setMsg("DEV: →108")}} style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",color:"#e8c850",padding:"6px",fontSize:10,cursor:"pointer",borderRadius:3}}>Jump to 108</button>
                 <button onClick={()=>{const np=[...punya];np[cur]+=5;setPunya(np);setMsg("DEV: +5 Punya")}} style={{background:"rgba(100,200,100,.1)",border:"1px solid rgba(100,200,100,.2)",color:"#80c080",padding:"6px",fontSize:10,cursor:"pointer",borderRadius:3}}>+5 Punya</button>
                 <button onClick={()=>{const np=[...papa];np[cur]+=5;setPapa(np);setMsg("DEV: +5 Papa")}} style={{background:"rgba(200,80,60,.1)",border:"1px solid rgba(200,80,60,.2)",color:"#e08060",padding:"6px",fontSize:10,cursor:"pointer",borderRadius:3}}>+5 Papa</button>
-                <button onClick={()=>{const np=[...punya];np[cur]=30;setPunya(np);setMsg("DEV: Punya=30 KARMA!")}} style={{background:"rgba(100,200,100,.15)",border:"1px solid rgba(100,200,100,.3)",color:"#80c080",padding:"6px",fontSize:10,cursor:"pointer",borderRadius:3}}>Set 30 Punya</button>
+                <button onClick={()=>{const np=[...punya];np[cur]=50;setPunya(np);setMsg("DEV: Punya=50 KARMA!")}} style={{background:"rgba(100,200,100,.15)",border:"1px solid rgba(100,200,100,.3)",color:"#80c080",padding:"6px",fontSize:10,cursor:"pointer",borderRadius:3}}>Set 50 Punya</button>
                 <button onClick={()=>{const np=[...punya];np[cur]=0;setPunya(np);const npa=[...papa];npa[cur]=0;setPapa(npa);setMsg("DEV: Reset karma")}} style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",color:"#c0b080",padding:"6px",fontSize:10,cursor:"pointer",borderRadius:3}}>Reset Karma</button>
                 <button onClick={()=>{const ns=[...shieldA];ns[cur]=!ns[cur];setShieldA(ns);setMsg("DEV: Shield "+(ns[cur]?"ON":"OFF"))}} style={{background:"rgba(200,160,200,.1)",border:"1px solid rgba(200,160,200,.2)",color:"#d0a0d0",padding:"6px",fontSize:10,cursor:"pointer",borderRadius:3}}>Toggle Shield</button>
                 <button onClick={()=>{play("yamaLaugh");setMsg("DEV: Yama laughs!")}} style={{background:"rgba(200,60,60,.1)",border:"1px solid rgba(200,60,60,.2)",color:"#e06060",padding:"6px",fontSize:10,cursor:"pointer",borderRadius:3}}>Test Laugh</button>
