@@ -6231,87 +6231,189 @@ export default function MokshaPatam108(){
           )}
 
           {guruEncounter.phase==='question'&&(
-            <div style={{maxWidth:isMobile?380:500,textAlign:"center",animation:"fadeIn .4s ease",
-              display:"flex",flexDirection:"column",alignItems:"center"}}>
-              {guruEncounter.guru.image?(
-                <div style={{width:isMobile?80:100,height:isMobile?80:100,borderRadius:"50%",
-                  overflow:"hidden",marginBottom:12,
-                  border:`2px solid ${guruEncounter.guru.color}50`,
-                  boxShadow:`0 0 30px ${guruEncounter.guru.color}25`,
-                }}>
-                  <img src={guruEncounter.guru.image} alt={guruEncounter.guru.en}
-                    style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"top center"}}
-                    onError={(e)=>{e.target.parentElement.innerHTML=`<span style="font-size:${isMobile?48:60}px">${guruEncounter.guru.icon}</span>`}}/>
-                </div>
-              ):(
-                <div style={{fontSize:isMobile?48:60,marginBottom:12,
-                  filter:`drop-shadow(0 0 20px ${guruEncounter.guru.color})`,
-                }}>{guruEncounter.guru.icon}</div>
-              )}
-              <div style={{fontFamily:"'Yatra One',serif",fontSize:isMobile?18:22,
-                color:guruEncounter.guru.color,marginBottom:16,letterSpacing:2}}>{guruEncounter.guru.name}</div>
-              <div style={{fontSize:isMobile?13:15,color:"#e0d0a0",lineHeight:1.9,
-                marginBottom:22,fontFamily:"'Noto Serif Devanagari',serif"}}>
-                {guruEncounter.question.q}
+            <div style={{display:"flex",flexDirection:isMobile?"column":"row",
+              alignItems:isMobile?"center":"flex-start",gap:isMobile?16:36,
+              animation:"fadeIn .4s ease",flex:1}}>
+
+              {/* LEFT/TOP: Guru image */}
+              <div style={{flexShrink:0,order:isMobile?1:1,
+                width:isMobile?"min(50vw,180px)":"min(30vw,280px)"}}>
+                {guruEncounter.guru.image?(
+                  <div style={{width:"100%",aspectRatio:"3/4",borderRadius:isMobile?10:14,overflow:"hidden",
+                    border:`1px solid ${guruEncounter.guru.color}30`,
+                    boxShadow:`0 0 40px ${guruEncounter.guru.color}20, 0 15px 40px rgba(0,0,0,.4)`,
+                  }}>
+                    <img src={guruEncounter.guru.image} alt={guruEncounter.guru.en}
+                      style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"top center"}}
+                      onError={(e)=>{e.target.parentElement.style.display='none'}}/>
+                    <div style={{position:"absolute",bottom:0,left:0,right:0,height:"30%",
+                      background:"linear-gradient(transparent,rgba(3,2,1,.8))",pointerEvents:"none"}}/>
+                  </div>
+                ):(
+                  <div style={{fontSize:isMobile?80:120,textAlign:"center",
+                    filter:`drop-shadow(0 0 30px ${guruEncounter.guru.color})`,
+                  }}>{guruEncounter.guru.icon}</div>
+                )}
               </div>
-              <div style={{display:"flex",flexDirection:"column",gap:10}}>
-                <button onClick={()=>{
-                  const g=guruEncounter.guru;
-                  const nPun=[...punya];nPun[cur]+=2;setPunya(nPun);
-                  showKarmaToast(players[cur]?.name||'Seeker',2,'punya',g.icon);play("chime");
-                  guruBlessingRef.current={type:g.blessing,name:g.blessingName};
-                  setGuruEncounter(e=>({...e,phase:'result',correct:true}));
-                  setTimeout(()=>setGuruEncounter(null),3500);
-                }} style={{
-                  background:`${guruEncounter.guru.color}12`,border:`1px solid ${guruEncounter.guru.color}35`,
-                  color:"#e8d8a0",padding:"12px 16px",fontSize:isMobile?12:13,
-                  fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:8,lineHeight:1.6,textAlign:"left",
-                }}>{guruEncounter.question.a}</button>
-                <button onClick={()=>{
-                  play("snake");
-                  setGuruEncounter(e=>({...e,phase:'result',correct:false}));
-                  setTimeout(()=>setGuruEncounter(null),3000);
-                }} style={{
-                  background:"rgba(200,100,60,.08)",border:"1px solid rgba(200,100,60,.20)",
-                  color:"#e0c8a0",padding:"12px 16px",fontSize:isMobile?12:13,
-                  fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:8,lineHeight:1.6,textAlign:"left",
-                }}>{guruEncounter.question.b}</button>
+
+              {/* RIGHT/BOTTOM: Question content */}
+              <div style={{flex:1,order:isMobile?2:2,textAlign:isMobile?"center":"left",maxWidth:isMobile?"100%":420}}>
+                {/* Player context */}
+                <div style={{display:"flex",alignItems:"center",gap:8,
+                  justifyContent:isMobile?"center":"flex-start",marginBottom:isMobile?10:16}}>
+                  <span style={{fontSize:isMobile?18:22}}>{players[cur]?.char?.icon}</span>
+                  <span style={{fontSize:isMobile?11:13,color:"rgba(240,200,80,.6)",
+                    fontFamily:"'Cinzel',serif",letterSpacing:2}}>
+                    {(players[cur]?.name||'SEEKER').toUpperCase()} FACES THE GURU
+                  </span>
+                </div>
+
+                {/* Guru identity */}
+                <div style={{fontFamily:"'Yatra One',serif",fontSize:isMobile?20:26,
+                  color:guruEncounter.guru.color,letterSpacing:2,marginBottom:4}}>{guruEncounter.guru.name}</div>
+                <div style={{fontSize:isMobile?10:12,color:`${guruEncounter.guru.color}55`,
+                  fontFamily:"'Cinzel',serif",letterSpacing:2,marginBottom:isMobile?14:20}}>
+                  {guruEncounter.guru.en} &middot; {guruEncounter.guru.era}
+                </div>
+
+                {/* Question */}
+                <div style={{fontSize:isMobile?14:16,color:"#e0d0a0",lineHeight:2,
+                  marginBottom:isMobile?18:24,fontFamily:"'Noto Serif Devanagari',serif",
+                  padding:isMobile?"12px 14px":"16px 20px",
+                  background:`${guruEncounter.guru.color}06`,
+                  borderLeft:`3px solid ${guruEncounter.guru.color}40`,
+                  borderRadius:"0 8px 8px 0",
+                }}>
+                  {guruEncounter.question.q}
+                </div>
+
+                {/* Answer buttons */}
+                <div style={{display:"flex",flexDirection:"column",gap:10}}>
+                  <button onClick={()=>{
+                    const g=guruEncounter.guru;
+                    const nPun=[...punya];nPun[cur]+=2;setPunya(nPun);
+                    showKarmaToast(players[cur]?.name||'Seeker',2,'punya',g.icon);play("chime");
+                    guruBlessingRef.current={type:g.blessing,name:g.blessingName};
+                    setGuruEncounter(e=>({...e,phase:'result',correct:true}));
+                    setTimeout(()=>setGuruEncounter(null),4000);
+                  }} style={{
+                    background:`${guruEncounter.guru.color}10`,border:`1px solid ${guruEncounter.guru.color}35`,
+                    color:"#e8d8a0",padding:isMobile?"12px 14px":"14px 18px",fontSize:isMobile?13:14,
+                    fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:8,lineHeight:1.7,
+                    textAlign:"left",
+                  }}>{guruEncounter.question.a}</button>
+                  <button onClick={()=>{
+                    play("snake");
+                    setGuruEncounter(e=>({...e,phase:'result',correct:false}));
+                    setTimeout(()=>setGuruEncounter(null),4000);
+                  }} style={{
+                    background:"rgba(200,100,60,.06)",border:"1px solid rgba(200,100,60,.20)",
+                    color:"#e0c8a0",padding:isMobile?"12px 14px":"14px 18px",fontSize:isMobile?13:14,
+                    fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:8,lineHeight:1.7,
+                    textAlign:"left",
+                  }}>{guruEncounter.question.b}</button>
+                </div>
+
+                {/* UX context hint */}
+                <div style={{fontSize:isMobile?9:10,color:"rgba(200,160,60,.25)",
+                  fontFamily:"'Cinzel',serif",letterSpacing:3,marginTop:isMobile?12:18,
+                  textAlign:isMobile?"center":"left",
+                }}>EVERY 5TH TURN &middot; AN ANCIENT GURU TESTS YOUR KNOWLEDGE</div>
               </div>
             </div>
           )}
 
           {guruEncounter.phase==='result'&&(
-            <div style={{maxWidth:isMobile?340:460,textAlign:"center",animation:"fadeIn .4s ease"}}>
-              <div style={{fontSize:isMobile?48:60,marginBottom:16}}>{guruEncounter.guru.icon}</div>
-              {guruEncounter.correct?(
-                <>
-                  <div style={{fontFamily:"'Cinzel',serif",fontSize:isMobile?16:20,
-                    color:"#f0d050",letterSpacing:3,marginBottom:12}}>BLESSED BY {guruEncounter.guru.en.toUpperCase()}</div>
-                  <div style={{fontSize:isMobile?12:14,color:"rgba(200,180,140,.7)",lineHeight:1.8,marginBottom:12}}>
-                    +2 Punya &middot; {guruEncounter.guru.blessingName}: {guruEncounter.guru.blessingDesc}
+            <div style={{display:"flex",flexDirection:isMobile?"column":"row",
+              alignItems:"center",gap:isMobile?16:36,
+              animation:"fadeIn .4s ease",flex:1}}>
+
+              {/* Guru image */}
+              <div style={{flexShrink:0,width:isMobile?"min(45vw,160px)":"min(25vw,240px)"}}>
+                {guruEncounter.guru.image?(
+                  <div style={{width:"100%",aspectRatio:"3/4",borderRadius:isMobile?10:14,overflow:"hidden",
+                    border:`1px solid ${guruEncounter.correct?'rgba(240,200,80,.4)':'rgba(200,100,60,.3)'}`,
+                    boxShadow:guruEncounter.correct
+                      ?`0 0 50px rgba(240,200,80,.2)`
+                      :`0 0 30px rgba(200,100,60,.15)`,
+                    opacity:guruEncounter.correct?1:0.6,
+                    transition:"opacity .5s ease",
+                  }}>
+                    <img src={guruEncounter.guru.image} alt={guruEncounter.guru.en}
+                      style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"top center"}}
+                      onError={(e)=>{e.target.parentElement.style.display='none'}}/>
                   </div>
-                  <div style={{fontSize:isMobile?11:13,color:"rgba(200,180,140,.45)",lineHeight:1.8,
-                    fontStyle:"italic",padding:"10px 16px",background:`${guruEncounter.guru.color}08`,
-                    borderRadius:8,border:`1px solid ${guruEncounter.guru.color}15`}}>
-                    {guruEncounter.question.explain}
-                  </div>
-                </>
-              ):(
-                <>
-                  <div style={{fontFamily:"'Cinzel',serif",fontSize:isMobile?14:16,
-                    color:"rgba(200,160,100,.6)",letterSpacing:3,marginBottom:12}}>THE GURU DEPARTS</div>
-                  <div style={{fontSize:isMobile?12:13,color:"rgba(200,180,140,.5)",lineHeight:1.8,
-                    fontStyle:"italic",marginBottom:12}}>"{guruEncounter.guru.departLine}"</div>
-                  <div style={{fontSize:isMobile?11:13,color:"rgba(200,180,140,.4)",lineHeight:1.8,
-                    padding:"10px 16px",background:"rgba(200,100,60,.05)",borderRadius:8,
-                    border:"1px solid rgba(200,100,60,.12)"}}>
-                    The correct answer: {guruEncounter.question.a}<br/><br/>{guruEncounter.question.explain}
-                  </div>
-                </>
-              )}
+                ):(
+                  <div style={{fontSize:isMobile?60:90,textAlign:"center",
+                    opacity:guruEncounter.correct?1:0.5,
+                  }}>{guruEncounter.guru.icon}</div>
+                )}
+              </div>
+
+              {/* Result content */}
+              <div style={{flex:1,textAlign:isMobile?"center":"left",maxWidth:isMobile?"100%":420}}>
+                {/* Player who was tested */}
+                <div style={{display:"flex",alignItems:"center",gap:8,
+                  justifyContent:isMobile?"center":"flex-start",marginBottom:12}}>
+                  <span style={{fontSize:18}}>{players[cur]?.char?.icon}</span>
+                  <span style={{fontSize:11,color:"rgba(200,180,140,.5)",
+                    fontFamily:"'Cinzel',serif",letterSpacing:2}}>
+                    {(players[cur]?.name||'SEEKER').toUpperCase()}
+                  </span>
+                </div>
+
+                {guruEncounter.correct?(
+                  <>
+                    <div style={{fontFamily:"'Cinzel',serif",fontSize:isMobile?18:24,
+                      color:"#f0d050",letterSpacing:3,marginBottom:8,
+                      textShadow:"0 0 30px rgba(240,200,80,.4)",
+                    }}>BLESSED</div>
+                    <div style={{fontFamily:"'Yatra One',serif",fontSize:isMobile?16:20,
+                      color:guruEncounter.guru.color,marginBottom:12,letterSpacing:2}}>
+                      {guruEncounter.guru.name} &middot; {guruEncounter.guru.en}
+                    </div>
+                    <div style={{fontSize:isMobile?13:15,color:"rgba(240,200,80,.8)",lineHeight:1.8,marginBottom:14,
+                      fontFamily:"'Cinzel',serif"}}>
+                      +2 Punya &middot; {guruEncounter.guru.blessingName}
+                    </div>
+                    <div style={{fontSize:isMobile?12:14,color:"rgba(200,180,140,.55)",lineHeight:1.9,
+                      fontStyle:"italic",padding:isMobile?"12px 14px":"14px 20px",
+                      background:`${guruEncounter.guru.color}08`,
+                      borderRadius:10,border:`1px solid ${guruEncounter.guru.color}18`,
+                      fontFamily:"'Noto Serif Devanagari',serif",
+                      textAlign:isMobile?"center":"left",
+                    }}>
+                      {guruEncounter.question.explain}
+                    </div>
+                  </>
+                ):(
+                  <>
+                    <div style={{fontFamily:"'Cinzel',serif",fontSize:isMobile?16:20,
+                      color:"rgba(200,140,80,.6)",letterSpacing:3,marginBottom:8}}>THE GURU DEPARTS</div>
+                    <div style={{fontFamily:"'Yatra One',serif",fontSize:isMobile?14:18,
+                      color:`${guruEncounter.guru.color}80`,marginBottom:12,letterSpacing:2}}>
+                      {guruEncounter.guru.name}
+                    </div>
+                    <div style={{fontSize:isMobile?12:14,color:"rgba(200,180,140,.45)",lineHeight:1.9,
+                      fontStyle:"italic",marginBottom:14,
+                      fontFamily:"'Noto Serif Devanagari',serif"}}>
+                      "{guruEncounter.guru.departLine}"
+                    </div>
+                    <div style={{fontSize:isMobile?12:13,color:"rgba(200,180,140,.35)",lineHeight:1.8,
+                      padding:isMobile?"12px 14px":"14px 20px",
+                      background:"rgba(200,100,60,.04)",borderRadius:10,
+                      border:"1px solid rgba(200,100,60,.12)",
+                      textAlign:isMobile?"center":"left",
+                    }}>
+                      <span style={{color:"rgba(240,200,80,.5)"}}>Correct answer:</span> {guruEncounter.question.a}
+                      <br/><br/>{guruEncounter.question.explain}
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           )}
-          </div>{/* close scrollable content */}
+          </div>
         </div>
       )}
 
