@@ -14,6 +14,7 @@ import { useAuth, GoogleIcon, AppleIcon, RASHI, getZodiac } from '../../shared/u
 import GameDB from '../../shared/useAuth';
 import { log, warn, error as logError } from '../../utils/logger';
 import { TEMPLE_SQUARES, TEMPLES } from '../../data/knowledgeTemples';
+import TempleIcon from '../../components/TempleIcon';
 import { GURUS } from '../../data/guruEncounters';
 import { COSMIC_CARDS } from '../../data/cosmicKnowledge';
 log("Supabase init:", supabase ? "connected" : "not configured");
@@ -3886,6 +3887,7 @@ const CSS=`
 *{box-sizing:border-box;margin:0}body{margin:0;background:#0c0a07}
 @keyframes dt{0%{transform:rotate(0) scale(1)}50%{transform:rotate(180deg) scale(1.1)}100%{transform:rotate(360deg) scale(1)}}
 @keyframes mp{0%,100%{text-shadow:0 0 15px rgba(240,200,80,.3)}50%{text-shadow:0 0 40px rgba(240,200,80,.7)}}
+@keyframes templeFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 @keyframes reveal{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
 @keyframes breathe{0%,100%{border-color:rgba(200,160,60,.15)}50%{border-color:rgba(200,160,60,.35)}}
 @keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
@@ -7008,7 +7010,7 @@ export default function MokshaPatam108(){
                   {mk&&<span style={{fontSize:"clamp(14px,2.5vw,22px)",animation:"mp 3s ease infinite",color:"#f0d050"}}>ॐ</span>}
                   {sn&&<><span style={{fontSize:"clamp(10px,2vw,16px)",lineHeight:1}}>𓆙</span><span style={{fontSize:"clamp(7px,1.2vw,11px)",color:"#ffb040",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 1px 4px #000,0 0 12px rgba(180,60,20,.5)"}}>{sn.skt}</span><span style={{fontSize:"clamp(5px,.9vw,8px)",color:"#ffa040",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1.1,textShadow:"0 0 6px #000,0 0 10px rgba(180,60,20,.4)"}}>{sn.en}</span></>}
                   {ld&&<><span style={{fontSize:"clamp(9px,1.8vw,14px)",lineHeight:1}}>🪔</span><span style={{fontSize:"clamp(7px,1.2vw,11px)",color:"#ffe070",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 0 12px rgba(200,160,60,.4)"}}>{ld.skt}</span><span style={{fontSize:"clamp(5px,.9vw,8px)",color:"#f0d060",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1.1,textShadow:"0 0 6px #000"}}>{ld.en}</span></>}
-                  {tmpl&&<><span style={{fontSize:"clamp(12px,2.5vw,20px)",lineHeight:1,filter:`drop-shadow(0 2px 3px rgba(0,0,0,.8)) drop-shadow(0 0 8px ${tmpl.color}90)`,animation:"mp 3s ease infinite"}}>{tmpl.icon}</span><span style={{fontSize:"clamp(7px,1.3vw,11px)",color:tmpl.color,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,textShadow:`0 1px 3px #000, 0 0 10px ${tmpl.color}50`,lineHeight:1.1,letterSpacing:0.5}}>{tmpl.name}</span></>}
+                  {tmpl&&<><TempleIcon templeKey={TEMPLE_SQUARES[num]} size={isMobile?22:30} color={tmpl.color}/><span style={{fontSize:"clamp(7px,1.3vw,11px)",color:tmpl.color,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,textShadow:`0 1px 3px #000, 0 0 10px ${tmpl.color}50`,lineHeight:1,letterSpacing:0.5,marginTop:-2}}>{tmpl.name}</span></>}
                   {dl&&!tmpl&&<><span style={{fontSize:"clamp(8px,1.5vw,13px)",lineHeight:1}}>⚖</span><span style={{fontSize:"clamp(5px,.8vw,7px)",color:"#c8a0f0",fontFamily:"'Cinzel',serif",fontWeight:900,textShadow:"0 0 8px #000",letterSpacing:1}}>DHARMA</span></>}
                   {ph.length>0&&<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",gap:2,zIndex:15,pointerEvents:"none"}}>
                     {ph.map(pi=>{const c=players[pi]?.char;const isMoving=pi===cur&&busy;const isActive=pi===cur;const pc=c?.color||"#fff";return <div key={pi} style={{display:"flex",flexDirection:"column",alignItems:"center",transition:"all .3s ease",transform:isMoving?"scale(1.7) translateY(-8px)":isActive?"scale(1.4)":"scale(0.9)",zIndex:isActive?20:15}}>
