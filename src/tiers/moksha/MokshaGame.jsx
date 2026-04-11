@@ -6222,13 +6222,15 @@ export default function MokshaPatam108(){
 
   return(
     <div style={{...PG,
-      padding:"10px 8px",
+      overflow:"auto",
+      padding:"10px 4px",
       paddingTop:"max(10px, env(safe-area-inset-top, 10px))",
       paddingBottom:"max(20px, env(safe-area-inset-bottom, 20px))",
-      paddingLeft:"max(8px, env(safe-area-inset-left, 8px))",
-      paddingRight:"max(8px, env(safe-area-inset-right, 8px))",
+      paddingLeft:"max(4px, env(safe-area-inset-left, 4px))",
+      paddingRight:"max(4px, env(safe-area-inset-right, 4px))",
       display:"flex",flexDirection:"column",alignItems:"center",
       WebkitOverflowScrolling:"touch",
+      boxSizing:"border-box",maxWidth:"100vw",
     }}>
       {globalOverlays}
       {/* ═══ TEMPLE INFO — tap to explore (dismissible, no quiz) ═══ */}
@@ -7362,9 +7364,9 @@ export default function MokshaPatam108(){
           ))}
         </div>
       )}
-      <div style={{display:"flex",gap:14,flexWrap:"wrap",justifyContent:"center",width:"100%",maxWidth:1140}}>
+      <div style={{display:"flex",gap:isMobile?6:14,flexWrap:"wrap",justifyContent:"center",width:"100%",maxWidth:1140}}>
         {/* BOARD */}
-        <div style={{flex:"1 1 340px",maxWidth:isMobile?"100%":720,minWidth:300,width:isMobile?"100%":undefined}}>
+        <div style={{flex:"1 1 340px",maxWidth:isMobile?"100%":720,minWidth:0,width:isMobile?"100%":undefined,overflow:"hidden"}}>
           <div style={{border:"2px solid rgba(200,160,60,.3)",background:"radial-gradient(ellipse at 30% 30%,rgba(60,45,20,.2),transparent 50%),radial-gradient(ellipse at 70% 70%,rgba(60,45,20,.15),transparent 50%),#1e1810",boxShadow:"0 0 60px rgba(0,0,0,.5),inset 0 0 40px rgba(0,0,0,.3)",borderRadius:2,overflow:"hidden"}}>
             {/* ═══ SACRED CROWN — Ashtanga Marga (101-108) ═══ */}
             <div style={{position:"relative",background:"linear-gradient(180deg,rgba(240,200,80,.08),rgba(20,16,10,.3))",borderBottom:"2px solid rgba(240,200,80,.25)",padding:"6px 4px 4px",overflow:"hidden"}}>
