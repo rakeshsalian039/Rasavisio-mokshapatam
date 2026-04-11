@@ -33,19 +33,24 @@ export function useAuth(){
     if(!supabase){setLoading(false);return}
 
     const isOAuthReturn=window.location.hash.includes('access_token');
+    console.log('[AUTH-DEBUG] Init. isOAuthReturn:', isOAuthReturn, 'hash:', window.location.hash.slice(0,50));
     let resolved=false;
-    const done=(u)=>{if(resolved)return;resolved=true;setLoading(false);if(u){setUser(u);loadProfile(u.id)}};
+    const done=(u)=>{
+      if(resolved)return;resolved=true;setLoading(false);
+      console.log('[AUTH-DEBUG] done() called. user:', u?.email||'null');
+      if(u){setUser(u);loadProfile(u.id)}
+    };
 
     const timeout=setTimeout(()=>{
       if(!resolved){
-        warn("Auth: Timeout — proceeding as guest");
+        console.log('[AUTH-DEBUG] TIMEOUT after 5s — no session found');
         done(null);
       }
     },5000);
 
-    // Listen for auth state changes (fires on OAuth redirect, sign-out, etc.)
+    // Listen for auth state changes
     const{data:{subscription}}=supabase.auth.onAuthStateChange(async(event,session)=>{
-      log("Auth: onAuthStateChange",event);
+      console.log('[AUTH-DEBUG] onAuthStateChange:', event, 'user:', session?.user?.email||'null');
       clearTimeout(timeout);
       if(session?.user){
         resolved=true;
@@ -60,20 +65,20 @@ export function useAuth(){
       }
     });
 
-    // ALWAYS call getSession — works for both returning sessions AND OAuth
-    // Supabase v2 automatically exchanges the hash token during getSession()
+    // Call getSession
+    console.log('[AUTH-DEBUG] Calling getSession...');
     supabase.auth.getSession()
       .then(({data:{session}})=>{
+        console.log('[AUTH-DEBUG] getSession result:', session?'HAS SESSION '+session.user?.email:'NO SESSION');
         if(!resolved){
           clearTimeout(timeout);
-          log("Auth: getSession",session?"found user":"no session");
           done(session?.user||null);
         }
       })
       .catch(e=>{
+        console.log('[AUTH-DEBUG] getSession ERROR:', e.message);
         if(!resolved){
           clearTimeout(timeout);
-          logError("Auth: getSession error:",e);
           done(null);
         }
       });
