@@ -36,15 +36,14 @@ export function useAuth(){
     let resolved=false;
     const done=(u)=>{if(resolved)return;resolved=true;setLoading(false);if(u){setUser(u);loadProfile(u.id)}};
 
-    // Longer timeout if returning from OAuth (Supabase needs time to process the hash)
     const timeout=setTimeout(()=>{
       if(!resolved){
         warn("Auth: Timeout — proceeding as guest");
         done(null);
       }
-    },isOAuthReturn?8000:3000);
+    },5000);
 
-    // Listen for auth changes FIRST — this is what fires on OAuth return
+    // Listen for auth state changes (fires on OAuth redirect, sign-out, etc.)
     const{data:{subscription}}=supabase.auth.onAuthStateChange(async(event,session)=>{
       log("Auth: onAuthStateChange",event);
       clearTimeout(timeout);
@@ -53,7 +52,6 @@ export function useAuth(){
         setUser(session.user);
         setLoading(false);
         await loadProfile(session.user.id);
-        // Clean up the hash from URL after successful OAuth
         if(isOAuthReturn&&window.history.replaceState){
           window.history.replaceState(null,'',window.location.pathname);
         }
@@ -62,24 +60,23 @@ export function useAuth(){
       }
     });
 
-    // If NOT an OAuth return, also try getSession for existing sessions
-    if(!isOAuthReturn){
-      supabase.auth.getSession()
-        .then(({data:{session}})=>{
-          if(!resolved){
-            clearTimeout(timeout);
-            log("Auth: getSession",session?"found user":"no session");
-            done(session?.user||null);
-          }
-        })
-        .catch(e=>{
-          if(!resolved){
-            clearTimeout(timeout);
-            logError("Auth: getSession error:",e);
-            done(null);
-          }
-        });
-    }
+    // ALWAYS call getSession — works for both returning sessions AND OAuth
+    // Supabase v2 automatically exchanges the hash token during getSession()
+    supabase.auth.getSession()
+      .then(({data:{session}})=>{
+        if(!resolved){
+          clearTimeout(timeout);
+          log("Auth: getSession",session?"found user":"no session");
+          done(session?.user||null);
+        }
+      })
+      .catch(e=>{
+        if(!resolved){
+          clearTimeout(timeout);
+          logError("Auth: getSession error:",e);
+          done(null);
+        }
+      });
 
     return()=>{clearTimeout(timeout);subscription.unsubscribe()};
   },[]);
