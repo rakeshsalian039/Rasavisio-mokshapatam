@@ -4161,6 +4161,9 @@ export default function MokshaPatam108(){
   },[showProfile]);
 
   const[screen,setScreen]=useState("title"); // title|story|pickcount|setup|chitragupta|game
+  const[showResume,setShowResume]=useState(()=>{
+    try{const s=localStorage.getItem('mp108_savedGame');return s?JSON.parse(s):null}catch(e){return null}
+  });
   const isMobile=useIsMobile();
   const[showMultiplayer,setShowMultiplayer]=useState(false); // secret: long-press 5s on PLAY ONLINE
   const[showComingSoon,setShowComingSoon]=useState(false);
@@ -4183,6 +4186,33 @@ export default function MokshaPatam108(){
     // Push state so browser back button fires popstate
     window.history.pushState({screen:newScreen},'',window.location.pathname);
   },[]);
+
+  const resumeGame=useCallback((saved)=>{
+    try{
+      setPos(saved.pos);setPunya(saved.punya);setPapa(saved.papa);
+      setShieldA(saved.shieldA);setSkipA(saved.skipA);
+      setCur(saved.cur);setUsedDharma(saved.usedDharma||[]);
+      setNP(saved.nP||2);setChosenLang(saved.chosenLang||'en');
+      const restoredPlayers=saved.players.map((p,i)=>{
+        const charData=CHARS.find(c=>c.name===p.char?.name)||CHARS[i%CHARS.length];
+        return{name:p.name,char:charData,cpu:!!p.cpu};
+      });
+      setPlayers(restoredPlayers);
+      gameStats.current=saved.gameStats||{startTime:Date.now(),turns:0,humanTurns:0,playerTurns:{},snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0,grahaHits:{}};
+      usedTempleQRef.current=saved.usedTempleQ||{};
+      usedGuruQRef.current=saved.usedGuruQ||{};
+      usedCosmicRef.current=saved.usedCosmic||[];
+      guruBlessingRef.current=saved.guruBlessing||null;
+      lastKnowledgeTurnRef.current=saved.lastKnowledgeTurn||0;
+      navigateTo("game");
+      setShowResume(null);
+      setMsg("Game resumed from where you left off.");
+      setTimeout(()=>{gameReadyRef.current=true},3000);
+    }catch(e){
+      localStorage.removeItem('mp108_savedGame');
+      setShowResume(null);
+    }
+  },[navigateTo]);
 
   useEffect(()=>{
     // On mount, replace current history entry with title screen
@@ -4621,6 +4651,36 @@ export default function MokshaPatam108(){
     setBusy(false);
     setCur(c=>(c+1)%nP);
   },[templeQuiz,nP]);
+
+  // ═══ GAME STATE PERSISTENCE — save after every turn ═══
+  const saveGameState=useCallback(()=>{
+    try{
+      const state={
+        pos,punya,papa,shieldA,skipA,cur,win,
+        usedDharma,players:players.map(p=>({name:p.name,char:p.char,cpu:!!p.cpu})),
+        gameStats:gameStats.current,
+        usedTempleQ:usedTempleQRef.current,
+        usedGuruQ:usedGuruQRef.current,
+        usedCosmic:usedCosmicRef.current,
+        guruBlessing:guruBlessingRef.current,
+        lastKnowledgeTurn:lastKnowledgeTurnRef.current,
+        chosenLang,nP,
+        savedAt:Date.now(),
+      };
+      localStorage.setItem('mp108_savedGame',JSON.stringify(state));
+    }catch(e){}
+  },[pos,punya,papa,shieldA,skipA,cur,win,usedDharma,players,chosenLang,nP]);
+
+  // Auto-save after state changes (debounced by React batching)
+  useEffect(()=>{
+    if(screen==='game'&&players.length>0&&!win){
+      saveGameState();
+    }
+    // Clear save on win
+    if(win!==null){
+      localStorage.removeItem('mp108_savedGame');
+    }
+  },[cur,screen,win,saveGameState,players]);
 
   const doRoll=useCallback((autoRoll=false)=>{
     if(dil||win||busy||players.length===0||templeLore||templeQuiz||guruEncounter)return;
@@ -5285,7 +5345,7 @@ export default function MokshaPatam108(){
     {showPostGame&&(
       <MokshaPostGamePopup
         onClose={()=>setShowPostGame(false)}
-        onNewJourney={()=>{setShowPostGame(false);navigateTo("title");setWin(null);setPlayers([]);setOnlineRoomId(null);setMyPlayerIndex(null);lastAppliedSeqRef.current=-1;ambient.stop();}}
+        onNewJourney={()=>{setShowPostGame(false);navigateTo("title");setWin(null);setPlayers([]);setOnlineRoomId(null);setMyPlayerIndex(null);lastAppliedSeqRef.current=-1;ambient.stop();localStorage.removeItem('mp108_savedGame');}}
       />
     )}
     {/* ═══ SACRED BACKGROUND — visible on ALL screens ═══ */}
@@ -5642,6 +5702,34 @@ export default function MokshaPatam108(){
         </div>
 
         <div style={{fontSize:"clamp(9px,1.2vw,11px)",fontStyle:"italic",opacity:.25,marginBottom:20,letterSpacing:2,textAlign:"center"}}>"Rise through virtue. Fall through vice. Seek liberation."</div>
+
+        {/* ═══ RESUME SAVED GAME ═══ */}
+        {showResume&&(
+          <div style={{width:"100%",marginBottom:16,animation:"reveal 1s ease both"}}>
+            <div style={{background:"linear-gradient(180deg,rgba(240,200,80,.06),rgba(240,200,80,.02))",
+              border:"1px solid rgba(240,200,80,.2)",borderRadius:12,padding:"16px 18px",textAlign:"center"}}>
+              <div style={{fontSize:11,letterSpacing:3,color:"#f0d050",marginBottom:8}}>🪷 SAVED GAME FOUND</div>
+              <div style={{fontSize:12,color:"#c0b080",marginBottom:4}}>
+                {showResume.players?.map(p=>p.name).join(' vs ')} · Square {Math.max(...(showResume.pos||[1]))}
+              </div>
+              <div style={{fontSize:10,color:"#8a7a50",marginBottom:12}}>
+                Punya: {Math.max(...(showResume.punya||[0]))} · Turn {showResume.gameStats?.turns||0}
+              </div>
+              <div style={{display:"flex",gap:10,justifyContent:"center"}}>
+                <button onClick={()=>resumeGame(showResume)} style={{
+                  padding:"8px 20px",background:"rgba(240,200,80,.1)",border:"1px solid rgba(240,200,80,.35)",
+                  color:"#f0d050",fontSize:12,fontFamily:"'Cinzel',serif",cursor:"pointer",
+                  borderRadius:6,letterSpacing:2,
+                }}>RESUME</button>
+                <button onClick={()=>{localStorage.removeItem('mp108_savedGame');setShowResume(null)}} style={{
+                  padding:"8px 20px",background:"transparent",border:"1px solid rgba(200,160,60,.15)",
+                  color:"#8a7a50",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",
+                  borderRadius:6,letterSpacing:1,
+                }}>NEW GAME</button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* ═══ MANDATORY LOGIN GATE ═══ */}
         {!auth.user && !auth.loading ? (
