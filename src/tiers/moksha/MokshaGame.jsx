@@ -4238,6 +4238,21 @@ export default function MokshaPatam108(){
   const[templeQuiz,setTempleQuiz]=useState(null);        // {temple, question, onAnswer}
   const[guruEncounter,setGuruEncounter]=useState(null);   // {guru, question, phase:'intro'|'question'|'result'}
   const[cosmicCard,setCosmicCard]=useState(null);         // {title, icon, fact, source}
+  // Shuffled answer options — computed once when question changes, not on every render
+  const templeOptions=useMemo(()=>{
+    if(!templeQuiz?.question)return[];
+    const opts=[{text:templeQuiz.question.a,correct:true},{text:templeQuiz.question.b,correct:false}];
+    if(templeQuiz.question.c)opts.push({text:templeQuiz.question.c,correct:false});
+    for(let i=opts.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[opts[i],opts[j]]=[opts[j],opts[i]]}
+    return opts;
+  },[templeQuiz]);
+  const guruOptions=useMemo(()=>{
+    if(!guruEncounter?.question||guruEncounter.phase!=='question')return[];
+    const opts=[{text:guruEncounter.question.a,correct:true},{text:guruEncounter.question.b,correct:false}];
+    if(guruEncounter.question.c)opts.push({text:guruEncounter.question.c,correct:false});
+    for(let i=opts.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[opts[i],opts[j]]=[opts[j],opts[i]]}
+    return opts;
+  },[guruEncounter?.question,guruEncounter?.phase]);
   const usedTempleQRef=useRef({});    // {vaidya:[0,3,7], shilpa:[1,5], ...} — used question indices per temple
   const usedGuruQRef=useRef({});      // {aryabhata:[0,2], sushruta:[1], ...}
   const usedCosmicRef=useRef([]);     // indices of used cosmic cards
@@ -6344,11 +6359,7 @@ export default function MokshaPatam108(){
 
             {/* Answer buttons — identical styling, randomized */}
             <div style={{display:"flex",flexDirection:"column",gap:isMobile?10:14}}>
-              {[
-                {text:templeQuiz.question.a,correct:true},
-                {text:templeQuiz.question.b,correct:false},
-                ...(templeQuiz.question.c?[{text:templeQuiz.question.c,correct:false}]:[]),
-              ].sort(()=>Math.random()-0.5).map((opt,i)=>(
+              {templeOptions.map((opt,i)=>(
                 <button key={i} onClick={()=>handleTempleAnswer(opt.correct)} style={{
                   background:"rgba(200,180,140,.04)",
                   border:"1px solid rgba(200,180,140,.18)",
@@ -6568,11 +6579,7 @@ export default function MokshaPatam108(){
 
                 {/* Answer buttons — identical, randomized, A/B labels */}
                 <div style={{display:"flex",flexDirection:"column",gap:isMobile?10:12}}>
-                  {[
-                    {text:guruEncounter.question.a,correct:true},
-                    {text:guruEncounter.question.b,correct:false},
-                    ...(guruEncounter.question.c?[{text:guruEncounter.question.c,correct:false}]:[]),
-                  ].sort(()=>Math.random()-0.5).map((opt,i)=>(
+                  {guruOptions.map((opt,i)=>(
                     <button key={i} onClick={()=>{
                       if(opt.correct){
                         const g=guruEncounter.guru;
