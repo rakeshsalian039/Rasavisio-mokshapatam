@@ -15,6 +15,7 @@ import GameDB from '../../shared/useAuth';
 import { log, warn, error as logError } from '../../utils/logger';
 import { TEMPLE_SQUARES, TEMPLES } from '../../data/knowledgeTemples';
 import TempleIcon from '../../components/TempleIcon';
+import SacredPathIcon from '../../components/SacredPathIcon';
 import { GURUS } from '../../data/guruEncounters';
 import { COSMIC_CARDS } from '../../data/cosmicKnowledge';
 log("Supabase init:", supabase ? "connected" : "not configured");
@@ -7255,43 +7256,7 @@ export default function MokshaPatam108(){
                   const stepIdx=sq.num-101;
                   return(<div key={sq.num} onMouseEnter={()=>!isMobile&&setHov(sq.num)} onMouseLeave={()=>!isMobile&&setHov(null)} onClick={()=>{if(isMobile)setHov(h=>h===sq.num?null:sq.num)}} style={{aspectRatio:"1",background:isMoksha?"radial-gradient(circle,rgba(240,200,80,.2),rgba(240,200,80,.04))":"radial-gradient(circle,rgba(240,200,80,.06),transparent)",border:`1px solid ${hov===sq.num?"rgba(240,200,80,.7)":isMoksha?"rgba(240,200,80,.4)":"rgba(240,200,80,.12)"}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .3s",borderRadius:isMoksha?4:2,animation:isMoksha?"mp 3s ease infinite":"sacredGlow 4s ease infinite",animationDelay:`${stepIdx*0.3}s`,boxShadow:isMoksha?"0 0 20px rgba(240,200,80,.15)":"none"}}>
                     <span style={{position:"absolute",top:1,left:2,fontSize:"clamp(6px,1vw,9px)",color:"rgba(240,210,130,.5)",fontWeight:700}}>{sq.num}</span>
-                    {/* Custom SVG icon for each step */}
-                    <svg width="clamp(20px,3.5vw,32px)" height="clamp(20px,3.5vw,32px)" viewBox="0 0 24 24" fill="none" style={{marginBottom:2}}>
-                      {stepIdx===0&&<>{/* Yama - Self-restraint: lotus bud (closed) */}
-                        <path d="M12 18 L12 10" stroke="#f0d050" strokeWidth="1.2"/>
-                        <path d="M8 10 Q10 4 12 6 Q14 4 16 10 Q14 7 12 8 Q10 7 8 10Z" fill="#f0d050" opacity=".7"/>
-                      </>}
-                      {stepIdx===1&&<>{/* Niyama - Discipline: flame */}
-                        <path d="M12 4 Q16 10 14 14 Q13 16 12 18 Q11 16 10 14 Q8 10 12 4Z" fill="#f0d050" opacity=".7"/>
-                        <path d="M12 8 Q14 12 13 15 Q12 16 12 18 Q12 16 11 15 Q10 12 12 8Z" fill="#ffa040" opacity=".6"/>
-                      </>}
-                      {stepIdx===2&&<>{/* Asana - Steadiness: meditating figure */}
-                        <circle cx="12" cy="7" r="2.5" stroke="#f0d050" strokeWidth="1" fill="none"/>
-                        <path d="M12 10 L12 16 M8 20 L12 16 L16 20 M7 14 L12 12 L17 14" stroke="#f0d050" strokeWidth="1" strokeLinecap="round"/>
-                      </>}
-                      {stepIdx===3&&<>{/* Pranayama - Life-force: wind spiral */}
-                        <path d="M6 12 Q8 8 12 8 Q16 8 16 12 Q16 15 12 14 Q9 13 10 16" fill="none" stroke="#f0d050" strokeWidth="1.2" strokeLinecap="round"/>
-                        <path d="M8 16 Q10 19 14 18 Q17 17 17 14" fill="none" stroke="#f0d050" strokeWidth=".8" strokeLinecap="round" opacity=".5"/>
-                      </>}
-                      {stepIdx===4&&<>{/* Pratyahara - Withdrawal: eye closing */}
-                        <ellipse cx="12" cy="12" rx="7" ry="4" stroke="#f0d050" strokeWidth="1" fill="none"/>
-                        <circle cx="12" cy="12" r="2" fill="#f0d050" opacity=".5"/>
-                        <line x1="5" y1="8" x2="19" y2="16" stroke="#f0d050" strokeWidth=".8" opacity=".6"/>
-                      </>}
-                      {stepIdx===5&&<>{/* Dharana - Concentration: yantra/triangle */}
-                        <polygon points="12,4 20,19 4,19" fill="none" stroke="#f0d050" strokeWidth="1"/>
-                        <polygon points="12,19 20,6 4,6" fill="none" stroke="#f0d050" strokeWidth=".7" opacity=".5"/>
-                        <circle cx="12" cy="12" r="2" fill="#f0d050" opacity=".4"/>
-                      </>}
-                      {stepIdx===6&&<>{/* Dhyana - Meditation: third eye */}
-                        <circle cx="12" cy="12" r="6" stroke="#f0d050" strokeWidth=".8" fill="none"/>
-                        <circle cx="12" cy="12" r="3" stroke="#f0d050" strokeWidth=".6" fill="none" opacity=".6"/>
-                        <circle cx="12" cy="12" r="1.5" fill="#f0d050" opacity=".7"><animate attributeName="r" values="1;2;1" dur="3s" repeatCount="indefinite"/></circle>
-                      </>}
-                      {stepIdx===7&&<>{/* Moksha - Liberation: OM symbol simplified */}
-                        <text x="12" y="17" textAnchor="middle" fill="#f0d050" fontSize="16" fontFamily="serif" fontWeight="bold">ॐ</text>
-                      </>}
-                    </svg>
+                    <SacredPathIcon stepIndex={stepIdx} size={isMobile?28:36}/>
                     <span style={{fontSize:isMoksha?"clamp(8px,1.3vw,13px)":"clamp(7px,1.1vw,11px)",color:isMoksha?"#f0d050":"#e8c850",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 0 16px rgba(240,200,80,.2)"}}>{sq.skt}</span>
                     <span style={{fontSize:"clamp(5px,.8vw,8px)",color:"#c0a050",letterSpacing:1,lineHeight:1.1,fontFamily:"'Cinzel',serif",fontWeight:700,textShadow:"0 0 6px #000"}}>{sq.en}</span>
                     {ph.length>0&&<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",gap:2,zIndex:15,pointerEvents:"none"}}>
