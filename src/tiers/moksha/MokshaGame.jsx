@@ -4590,15 +4590,14 @@ export default function MokshaPatam108(){
     if(dil||win||busy||players.length===0||templeLore||templeQuiz||guruEncounter)return;
     if(isOnline&&!isMyTurn)return; // online: only active player rolls
     if(autoRoll&&!gameReadyRef.current)return; // block timer auto-roll during init
-    // ═══ GURU ENCOUNTER / COSMIC CARD — every 5th HUMAN turn ═══
-    // Skip for CPU/Yama players — only human players face gurus
+    // ═══ GURU ENCOUNTER (every 5th) / COSMIC CARD (every 7th) ═══
+    // Skip for CPU/Yama — only human players get knowledge events
     const isHumanTurn=!players[cur]?.cpu;
     const totalTurns=(gameStats.current.turns||0)+1;
-    if(isHumanTurn&&totalTurns>1&&totalTurns%5===0&&lastKnowledgeTurnRef.current!==totalTurns&&!autoRoll){
-      lastKnowledgeTurnRef.current=totalTurns;
-      // 60% guru encounter, 40% cosmic card
-      if(Math.random()<0.6){
-        // Guru encounter
+    if(isHumanTurn&&!autoRoll){
+      // GURU — every 5th turn (5,10,15,20...)
+      if(totalTurns>1&&totalTurns%5===0&&lastKnowledgeTurnRef.current!==totalTurns){
+        lastKnowledgeTurnRef.current=totalTurns;
         const available=GURUS.filter(g=>{const used=usedGuruQRef.current[g.id]||[];return g.questions.length>used.length;});
         if(available.length>0){
           const guru=available[Math.floor(Math.random()*available.length)];
@@ -4606,23 +4605,26 @@ export default function MokshaPatam108(){
           let pool=guru.questions.map((_,i)=>i).filter(i=>!used.includes(i));
           const qIdx=pool[Math.floor(Math.random()*pool.length)];
           usedGuruQRef.current[guru.id]=[...used,qIdx];
-          play("chime"); // temple bell when guru appears
+          playTempleBell();
           setGuruEncounter({guru,question:guru.questions[qIdx],phase:'intro',forPlayer:cur});
           return;
         }
       }
-      // Cosmic knowledge card (realm-based)
-      const p=pos[cur]||1;
-      const realm=p<=33?'bhuloka':p<=66?'antarloka':'svargaloka';
-      const cards=COSMIC_CARDS[realm]||[];
-      const usedIds=usedCosmicRef.current;
-      const available=cards.filter((_,i)=>!usedIds.includes(`${realm}_${i}`));
-      if(available.length>0){
-        const idx=Math.floor(Math.random()*available.length);
-        const origIdx=cards.indexOf(available[idx]);
-        usedCosmicRef.current=[...usedIds,`${realm}_${origIdx}`];
-        setCosmicCard(available[idx]);
-        return;
+      // COSMIC CARD — every 7th turn (7,14,21,28...) but NOT if guru already fired this turn
+      if(totalTurns>1&&totalTurns%7===0&&lastKnowledgeTurnRef.current!==totalTurns){
+        lastKnowledgeTurnRef.current=totalTurns;
+        const p=pos[cur]||1;
+        const realm=p<=33?'bhuloka':p<=66?'antarloka':'svargaloka';
+        const cards=COSMIC_CARDS[realm]||[];
+        const usedIds=usedCosmicRef.current;
+        const available=cards.filter((_,i)=>!usedIds.includes(`${realm}_${i}`));
+        if(available.length>0){
+          const idx=Math.floor(Math.random()*available.length);
+          const origIdx=cards.indexOf(available[idx]);
+          usedCosmicRef.current=[...usedIds,`${realm}_${origIdx}`];
+          setCosmicCard(available[idx]);
+          return;
+        }
       }
     }
     if(skipA[cur]){const ns=[...skipA];ns[cur]=false;setSkipA(ns);setMsg(`${players[cur].name}'s turn is skipped.`);setCur(c=>(c+1)%nP);return}
@@ -4768,6 +4770,11 @@ export default function MokshaPatam108(){
               play("chime");playTempleBell();
               const tCur=cur,tP=p,tPName=pName;
               setTempleLore({temple,templeKey,question,square:tP,playerIdx:tCur,playerName:tPName});
+              // Speak temple lore
+              if(!muted){
+                const voiceFile=`/temple-voices/${templeKey}-en.mp3`;
+                setTimeout(()=>VoiceEngine.speakNarrator(temple.lore||temple.intro,chosenLang,voiceFile),600);
+              }
             }else{finishTurn();}
           }
           else if(DLM_SQ.includes(p)){
@@ -6339,14 +6346,15 @@ export default function MokshaPatam108(){
             <div style={{display:"flex",flexDirection:"column",gap:isMobile?10:14}}>
               {[
                 {text:templeQuiz.question.a,correct:true},
-                {text:templeQuiz.question.b,correct:false}
+                {text:templeQuiz.question.b,correct:false},
+                ...(templeQuiz.question.c?[{text:templeQuiz.question.c,correct:false}]:[]),
               ].sort(()=>Math.random()-0.5).map((opt,i)=>(
                 <button key={i} onClick={()=>handleTempleAnswer(opt.correct)} style={{
                   background:"rgba(200,180,140,.04)",
                   border:"1px solid rgba(200,180,140,.18)",
-                  color:"#e0d0a0",padding:isMobile?"14px 16px":"16px 22px",
-                  fontSize:isMobile?13:15,fontFamily:"'Noto Serif Devanagari',serif",
-                  cursor:"pointer",borderRadius:10,lineHeight:1.8,textAlign:"left",
+                  color:"#e0d0a0",padding:isMobile?"12px 14px":"14px 20px",
+                  fontSize:isMobile?12:14,fontFamily:"'Noto Serif Devanagari',serif",
+                  cursor:"pointer",borderRadius:10,lineHeight:1.7,textAlign:"left",
                   transition:"all .2s",
                   display:"flex",alignItems:"flex-start",gap:isMobile?10:14,
                 }}>
@@ -6354,8 +6362,8 @@ export default function MokshaPatam108(){
                     borderRadius:"50%",border:"1.5px solid rgba(200,180,140,.3)",
                     display:"flex",alignItems:"center",justifyContent:"center",
                     fontSize:isMobile?11:13,color:"rgba(200,180,140,.5)",fontFamily:"'Cinzel',serif",
-                    marginTop:2,
-                  }}>{i===0?'A':'B'}</span>
+                    marginTop:1,
+                  }}>{'ABC'[i]}</span>
                   <span>{opt.text}</span>
                 </button>
               ))}
@@ -6562,7 +6570,8 @@ export default function MokshaPatam108(){
                 <div style={{display:"flex",flexDirection:"column",gap:isMobile?10:12}}>
                   {[
                     {text:guruEncounter.question.a,correct:true},
-                    {text:guruEncounter.question.b,correct:false}
+                    {text:guruEncounter.question.b,correct:false},
+                    ...(guruEncounter.question.c?[{text:guruEncounter.question.c,correct:false}]:[]),
                   ].sort(()=>Math.random()-0.5).map((opt,i)=>(
                     <button key={i} onClick={()=>{
                       if(opt.correct){
@@ -6593,7 +6602,7 @@ export default function MokshaPatam108(){
                         display:"flex",alignItems:"center",justifyContent:"center",
                         fontSize:isMobile?11:13,color:"rgba(200,180,140,.5)",fontFamily:"'Cinzel',serif",
                         marginTop:2,
-                      }}>{i===0?'A':'B'}</span>
+                      }}>{'ABC'[i]}</span>
                       <span>{opt.text}</span>
                     </button>
                   ))}
@@ -7249,6 +7258,12 @@ export default function MokshaPatam108(){
                   if(tmpl&&!busy&&!dil&&!templeLore&&!templeQuiz&&!guruEncounter&&!cosmicCard&&!eventPopup&&!win){
                     playTempleBell();
                     setTempleInfo({temple:tmpl,templeKey:TEMPLE_SQUARES[num]});
+                    // Speak temple lore when exploring
+                    if(!muted){
+                      const tk=TEMPLE_SQUARES[num];
+                      const voiceFile=`/temple-voices/${tk}-en.mp3`;
+                      setTimeout(()=>VoiceEngine.speakNarrator(tmpl.lore||tmpl.intro,chosenLang,voiceFile),500);
+                    }
                   }
                 }} style={{aspectRatio:"1",background:bg,border:`0.5px solid ${hov===num?"rgba(240,200,80,.6)":bdr}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .2s",
                   ...(tmpl?{boxShadow:`inset 0 -2px 6px ${tmpl.color}20, inset 0 1px 3px ${tmpl.color}15, 0 2px 8px ${tmpl.color}18`,borderWidth:1,borderRadius:2}:{}),
