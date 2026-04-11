@@ -4224,6 +4224,7 @@ export default function MokshaPatam108(){
   const usedGuruQRef=useRef({});      // {aryabhata:[0,2], sushruta:[1], ...}
   const usedCosmicRef=useRef([]);     // indices of used cosmic cards
   const guruBlessingRef=useRef(null); // active guru blessing: {type:'shield'|'double_roll'|'skip_papa'|...}
+  const lastKnowledgeTurnRef=useRef(0); // prevents guru/cosmic from firing twice on same turn
   // ── Chitragupta state ──
   const[cgEntries,setCgEntries]=useState([]);
   const[showMoksha,setShowMoksha]=useState(false);
@@ -4518,7 +4519,7 @@ export default function MokshaPatam108(){
     setPos(Array(n).fill(1));setDisplayPos(Array(n).fill(1));setPunya(Array(n).fill(0));setPapa(Array(n).fill(0));
     setShieldA(Array(n).fill(false));setSkipA(Array(n).fill(false));
     setCur(0);setWin(null);setHist([]);setRv(null);setGv(null);setLastRollBy(null);setDiceReveal(null);setBusy(false);setDil(null);setUsedDharma([]);VoiceEngine._audioCtxUnlocked=false;
-    setTempleQuiz(null);setGuruEncounter(null);setCosmicCard(null);usedTempleQRef.current={};usedGuruQRef.current={};usedCosmicRef.current=[];guruBlessingRef.current=null;
+    setTempleQuiz(null);setGuruEncounter(null);setCosmicCard(null);usedTempleQRef.current={};usedGuruQRef.current={};usedCosmicRef.current=[];guruBlessingRef.current=null;lastKnowledgeTurnRef.current=0;
     setCgEntries([]);setShowMoksha(false);setShowPostGame(false);
     setMsg(`${pList[0].name} the ${pList[0].char.name} — your journey begins.`);
     gameStats.current={startTime:Date.now(),turns:0,snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0,grahaHits:{sun:0,moon:0,mars:0,mercury:0,jupiter:0,venus:0,saturn:0,rahu:0,ketu:0}};
@@ -4572,8 +4573,9 @@ export default function MokshaPatam108(){
     if(isOnline&&!isMyTurn)return; // online: only active player rolls
     if(autoRoll&&!gameReadyRef.current)return; // block timer auto-roll during init
     // ═══ GURU ENCOUNTER / COSMIC CARD — every 5th turn ═══
-    const totalTurns=(gameStats.current.turns||0)+1; // +1 because increment happens after this check
-    if(totalTurns>1&&totalTurns%5===0&&!guruEncounter&&!cosmicCard&&!templeQuiz&&!autoRoll){
+    const totalTurns=(gameStats.current.turns||0)+1;
+    if(totalTurns>1&&totalTurns%5===0&&!lastKnowledgeTurnRef.current!==totalTurns&&!autoRoll){
+      lastKnowledgeTurnRef.current=totalTurns; // mark this turn as handled
       if(Math.random()<0.5){
         // Guru encounter
         const available=GURUS.filter(g=>{const used=usedGuruQRef.current[g.id]||[];return g.questions.length>used.length;});
@@ -4584,7 +4586,7 @@ export default function MokshaPatam108(){
           const qIdx=pool[Math.floor(Math.random()*pool.length)];
           usedGuruQRef.current[guru.id]=[...used,qIdx];
           setGuruEncounter({guru,question:guru.questions[qIdx],phase:'intro'});
-          return; // block dice roll until guru is dismissed
+          return;
         }
       }else{
         // Cosmic knowledge card (realm-based)
@@ -4598,7 +4600,7 @@ export default function MokshaPatam108(){
           const origIdx=cards.indexOf(available[idx]);
           usedCosmicRef.current=[...usedIds,`${realm}_${origIdx}`];
           setCosmicCard(available[idx]);
-          return; // block dice roll until card is dismissed
+          return;
         }
       }
     }
@@ -6229,10 +6231,23 @@ export default function MokshaPatam108(){
           )}
 
           {guruEncounter.phase==='question'&&(
-            <div style={{maxWidth:isMobile?340:460,textAlign:"center",animation:"fadeIn .4s ease"}}>
-              <div style={{fontSize:isMobile?48:60,marginBottom:12,
-                filter:`drop-shadow(0 0 20px ${guruEncounter.guru.color})`,
-              }}>{guruEncounter.guru.icon}</div>
+            <div style={{maxWidth:isMobile?380:500,textAlign:"center",animation:"fadeIn .4s ease",
+              display:"flex",flexDirection:"column",alignItems:"center"}}>
+              {guruEncounter.guru.image?(
+                <div style={{width:isMobile?80:100,height:isMobile?80:100,borderRadius:"50%",
+                  overflow:"hidden",marginBottom:12,
+                  border:`2px solid ${guruEncounter.guru.color}50`,
+                  boxShadow:`0 0 30px ${guruEncounter.guru.color}25`,
+                }}>
+                  <img src={guruEncounter.guru.image} alt={guruEncounter.guru.en}
+                    style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"top center"}}
+                    onError={(e)=>{e.target.parentElement.innerHTML=`<span style="font-size:${isMobile?48:60}px">${guruEncounter.guru.icon}</span>`}}/>
+                </div>
+              ):(
+                <div style={{fontSize:isMobile?48:60,marginBottom:12,
+                  filter:`drop-shadow(0 0 20px ${guruEncounter.guru.color})`,
+                }}>{guruEncounter.guru.icon}</div>
+              )}
               <div style={{fontFamily:"'Yatra One',serif",fontSize:isMobile?18:22,
                 color:guruEncounter.guru.color,marginBottom:16,letterSpacing:2}}>{guruEncounter.guru.name}</div>
               <div style={{fontSize:isMobile?13:15,color:"#e0d0a0",lineHeight:1.9,
