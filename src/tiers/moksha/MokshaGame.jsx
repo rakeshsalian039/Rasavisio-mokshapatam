@@ -6098,57 +6098,112 @@ export default function MokshaPatam108(){
 
       {/* ═══ GURU ENCOUNTER ═══ */}
       {guruEncounter&&(
-        <div style={{position:"fixed",inset:0,zIndex:265,
-          background:`radial-gradient(ellipse at 50% 30%,${guruEncounter.guru.color}18,rgba(3,2,1,.96) 70%)`,
-          backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",
-          display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
-          padding:16,overflowY:"auto",
+        <div style={{position:"fixed",inset:0,zIndex:265,overflow:"hidden",
+          background:`linear-gradient(135deg,rgba(3,2,1,.98) 40%,${guruEncounter.guru.color}12 100%)`,
+          backdropFilter:"blur(15px)",WebkitBackdropFilter:"blur(15px)",
         }}>
-          {/* Ambient rings */}
-          <div style={{position:"absolute",width:isMobile?240:320,height:isMobile?240:320,borderRadius:"50%",
-            border:`1px solid ${guruEncounter.guru.color}12`,animation:"grahaOrbit 8s linear infinite",pointerEvents:"none"}}/>
+          {/* Ambient light behind guru image */}
+          <div style={{position:"absolute",right:isMobile?"-20%":"-5%",top:"5%",
+            width:isMobile?"80vw":"50vw",height:"90vh",
+            background:`radial-gradient(ellipse at 60% 40%,${guruEncounter.guru.color}18,transparent 65%)`,
+            pointerEvents:"none"}}/>
+          {/* Orbital rings */}
+          <div style={{position:"absolute",right:isMobile?"10%":"20%",top:"15%",
+            width:isMobile?200:350,height:isMobile?200:350,borderRadius:"50%",
+            border:`1px solid ${guruEncounter.guru.color}0a`,animation:"grahaOrbit 12s linear infinite",pointerEvents:"none"}}/>
+          <div style={{position:"absolute",right:isMobile?"15%":"25%",top:"20%",
+            width:isMobile?140:240,height:isMobile?140:240,borderRadius:"50%",
+            border:`1px solid ${guruEncounter.guru.color}06`,animation:"grahaOrbit 7s linear infinite reverse",pointerEvents:"none"}}/>
+
+          {/* Scrollable content */}
+          <div style={{position:"relative",zIndex:2,height:"100%",overflowY:"auto",
+            display:"flex",flexDirection:"column",padding:isMobile?"20px 16px":"40px 48px"}}>
 
           {guruEncounter.phase==='intro'&&(
-            <div style={{maxWidth:isMobile?340:480,textAlign:"center",animation:"fadeIn .5s ease"}}>
-              <div style={{fontSize:9,letterSpacing:6,color:`${guruEncounter.guru.color}50`,
-                fontFamily:"'Cinzel',serif",marginBottom:12}}>GURU ENCOUNTER</div>
-              {guruEncounter.guru.image?(
-                <div style={{width:isMobile?120:160,height:isMobile?120:160,borderRadius:"50%",
-                  margin:"0 auto 16px",overflow:"hidden",
-                  border:`3px solid ${guruEncounter.guru.color}60`,
-                  boxShadow:`0 0 40px ${guruEncounter.guru.color}30, 0 0 80px ${guruEncounter.guru.color}15`,
-                }}>
-                  <img src={guruEncounter.guru.image} alt={guruEncounter.guru.en}
-                    style={{width:"100%",height:"100%",objectFit:"cover"}}
-                    onError={(e)=>{e.target.style.display='none';e.target.nextSibling.style.display='flex'}}/>
-                  <div style={{display:"none",width:"100%",height:"100%",alignItems:"center",justifyContent:"center",
-                    fontSize:isMobile?64:80,background:`${guruEncounter.guru.color}10`}}>{guruEncounter.guru.icon}</div>
+            <div style={{display:"flex",flexDirection:isMobile?"column":"row",
+              alignItems:isMobile?"center":"flex-start",gap:isMobile?16:40,
+              animation:"fadeIn .6s ease",flex:1}}>
+
+              {/* LEFT: Text content */}
+              <div style={{flex:1,maxWidth:isMobile?"100%":520,order:isMobile?2:1,
+                textAlign:isMobile?"center":"left"}}>
+                <div style={{fontSize:isMobile?8:10,letterSpacing:isMobile?4:8,
+                  color:`${guruEncounter.guru.color}45`,fontFamily:"'Cinzel',serif",
+                  marginBottom:isMobile?8:16}}>GURU ENCOUNTER</div>
+
+                {/* Sanskrit name */}
+                <div style={{fontFamily:"'Yatra One',serif",
+                  fontSize:isMobile?"clamp(28px,8vw,38px)":"clamp(40px,4.5vw,60px)",
+                  color:guruEncounter.guru.color,letterSpacing:isMobile?3:5,lineHeight:1.2,
+                  textShadow:`0 0 50px ${guruEncounter.guru.color}60`,marginBottom:4,
+                }}>{guruEncounter.guru.name}</div>
+
+                {/* English name */}
+                <div style={{fontSize:isMobile?14:18,color:"rgba(255,255,255,.5)",
+                  fontFamily:"'Cinzel',serif",letterSpacing:isMobile?2:4,marginBottom:4,
+                  fontWeight:700}}>{guruEncounter.guru.en.toUpperCase()}</div>
+
+                {/* Divider line */}
+                <div style={{width:isMobile?60:100,height:2,
+                  background:`linear-gradient(90deg,${guruEncounter.guru.color},transparent)`,
+                  margin:isMobile?"8px auto":"8px 0",marginBottom:isMobile?10:16}}/>
+
+                {/* Era + Title */}
+                <div style={{fontSize:isMobile?11:13,color:`${guruEncounter.guru.color}70`,
+                  fontFamily:"'Cinzel',serif",letterSpacing:2,marginBottom:isMobile?14:20}}>
+                  {guruEncounter.guru.era} &middot; {guruEncounter.guru.title}
                 </div>
-              ):(
-                <div style={{fontSize:isMobile?64:80,marginBottom:12,
-                  filter:`drop-shadow(0 0 30px ${guruEncounter.guru.color})`,
-                }}>{guruEncounter.guru.icon}</div>
-              )}
-              <div style={{fontFamily:"'Yatra One',serif",fontSize:isMobile?24:32,
-                color:guruEncounter.guru.color,marginBottom:4,letterSpacing:3,
-                textShadow:`0 0 40px ${guruEncounter.guru.color}80`,
-              }}>{guruEncounter.guru.name}</div>
-              <div style={{fontSize:isMobile?12:14,color:"rgba(255,255,255,.4)",
-                fontFamily:"'Cinzel',serif",letterSpacing:3,marginBottom:6}}>{guruEncounter.guru.en}</div>
-              <div style={{fontSize:isMobile?10:11,color:`${guruEncounter.guru.color}60`,
-                fontFamily:"'Cinzel',serif",letterSpacing:2,marginBottom:20}}>{guruEncounter.guru.era} &middot; {guruEncounter.guru.title}</div>
-              <div style={{fontSize:isMobile?12:13,color:"rgba(200,180,140,.55)",lineHeight:1.9,
-                fontStyle:"italic",marginBottom:16}}>{guruEncounter.guru.intro}</div>
-              <div style={{fontSize:isMobile?13:15,color:"#e0d0a0",lineHeight:2,
-                fontFamily:"'Noto Serif Devanagari',serif",marginBottom:24,
-                padding:"16px 20px",background:`${guruEncounter.guru.color}08`,
-                border:`1px solid ${guruEncounter.guru.color}20`,borderRadius:12,
-              }}>"{guruEncounter.guru.introLine}"</div>
-              <button onClick={()=>setGuruEncounter(e=>({...e,phase:'question'}))} style={{
-                background:"transparent",border:`1px solid ${guruEncounter.guru.color}40`,
-                color:guruEncounter.guru.color,padding:"12px 28px",fontSize:12,
-                fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:6,letterSpacing:3,
-              }}>ACCEPT THE CHALLENGE</button>
+
+                {/* Cinematic intro narration */}
+                <div style={{fontSize:isMobile?12:15,color:"rgba(200,180,140,.6)",lineHeight:2,
+                  fontStyle:"italic",marginBottom:isMobile?14:22,
+                  fontFamily:"'Noto Serif Devanagari',serif"}}>
+                  {guruEncounter.guru.intro}
+                </div>
+
+                {/* Guru's speech */}
+                <div style={{fontSize:isMobile?13:16,color:"#e0d0a0",lineHeight:2,
+                  fontFamily:"'Noto Serif Devanagari',serif",
+                  padding:isMobile?"14px 16px":"18px 24px",
+                  background:`${guruEncounter.guru.color}08`,
+                  borderLeft:`3px solid ${guruEncounter.guru.color}50`,
+                  borderRadius:"0 10px 10px 0",marginBottom:isMobile?20:28,
+                }}>"{guruEncounter.guru.introLine}"</div>
+
+                <button onClick={()=>setGuruEncounter(e=>({...e,phase:'question'}))} style={{
+                  background:`${guruEncounter.guru.color}12`,
+                  border:`1px solid ${guruEncounter.guru.color}50`,
+                  color:guruEncounter.guru.color,padding:isMobile?"12px 24px":"14px 36px",
+                  fontSize:isMobile?12:14,fontFamily:"'Cinzel',serif",cursor:"pointer",
+                  borderRadius:8,letterSpacing:isMobile?2:4,fontWeight:700,
+                  boxShadow:`0 0 30px ${guruEncounter.guru.color}15`,
+                  display:"block",margin:isMobile?"0 auto":"0",
+                }}>ACCEPT THE CHALLENGE</button>
+              </div>
+
+              {/* RIGHT: Guru image */}
+              <div style={{order:isMobile?1:2,flexShrink:0,
+                width:isMobile?"min(55vw,200px)":"min(35vw,380px)",
+                display:"flex",flexDirection:"column",alignItems:"center"}}>
+                {guruEncounter.guru.image?(
+                  <div style={{position:"relative",width:"100%",aspectRatio:"3/4",
+                    borderRadius:isMobile?12:16,overflow:"hidden",
+                    boxShadow:`0 0 60px ${guruEncounter.guru.color}25, 0 20px 60px rgba(0,0,0,.5)`,
+                    border:`1px solid ${guruEncounter.guru.color}30`,
+                  }}>
+                    <img src={guruEncounter.guru.image} alt={guruEncounter.guru.en}
+                      style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"top center"}}
+                      onError={(e)=>{e.target.parentElement.style.display='none'}}/>
+                    {/* Gradient overlay at bottom */}
+                    <div style={{position:"absolute",bottom:0,left:0,right:0,height:"40%",
+                      background:"linear-gradient(transparent,rgba(3,2,1,.9))",pointerEvents:"none"}}/>
+                  </div>
+                ):(
+                  <div style={{fontSize:isMobile?80:140,
+                    filter:`drop-shadow(0 0 40px ${guruEncounter.guru.color}) drop-shadow(0 0 80px ${guruEncounter.guru.color}40)`,
+                  }}>{guruEncounter.guru.icon}</div>
+                )}
+              </div>
             </div>
           )}
 
@@ -6220,6 +6275,7 @@ export default function MokshaPatam108(){
               )}
             </div>
           )}
+          </div>{/* close scrollable content */}
         </div>
       )}
 
