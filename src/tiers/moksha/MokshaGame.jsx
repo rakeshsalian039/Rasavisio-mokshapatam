@@ -4930,13 +4930,25 @@ export default function MokshaPatam108(){
               const qIdx=pool[Math.floor(Math.random()*pool.length)];
               usedTempleQRef.current[templeKey]=[...(usedTempleQRef.current[templeKey]||[]),qIdx];
               const question=temple.questions[qIdx];
-              play("chime");playTempleBell();
               const tCur=cur,tP=p,tPName=pName;
-              setTempleLore({temple,templeKey,question,square:tP,playerIdx:tCur,playerName:tPName});
-              // Speak temple lore
-              if(!muted){
-                const voiceFile=`/temple-voices/${templeKey}-en.mp3`;
-                setTimeout(()=>VoiceEngine.speakNarrator(temple.lore||temple.intro,chosenLang,voiceFile),600);
+              // CPU/Yama: auto-answer (80% wrong) and skip lore/quiz UI
+              if(players[cur]?.cpu){
+                const isCorrect=Math.random()<0.2; // 20% chance CPU gets it right
+                if(isCorrect){
+                  nPunya[cur]+=1;p=Math.min(p+3,100);nPos[cur]=p;
+                  eMsg=`${temple.icon} ${tPName} answered correctly at ${temple.en}`;
+                }else{
+                  nPapa[cur]+=1;
+                  eMsg=`${temple.icon} ${tPName} failed at ${temple.en}`;
+                }
+                finishTurn(true);
+              }else{
+                play("chime");playTempleBell();
+                setTempleLore({temple,templeKey,question,square:tP,playerIdx:tCur,playerName:tPName});
+                if(!muted){
+                  const voiceFile=`/temple-voices/${templeKey}-en.mp3`;
+                  setTimeout(()=>VoiceEngine.speakNarrator(temple.lore||temple.intro,chosenLang,voiceFile),600);
+                }
               }
             }else{finishTurn();}
           }
