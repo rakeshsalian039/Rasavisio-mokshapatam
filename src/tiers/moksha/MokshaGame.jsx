@@ -5043,7 +5043,7 @@ export default function MokshaPatam108(){
                 play("chime");playTempleBell();
                 setTempleLore({temple,templeKey,question,qIdx,square:tP,playerIdx:tCur,playerName:tPName});
                 if(!muted){
-                  const voiceFile=`/temple-voices/${templeKey}-en.mp3`;
+                  const voiceFile=`/temple-voices/${templeKey}-${chosenLang==='hi'?'hi':'en'}.mp3`;
                   setTimeout(()=>VoiceEngine.speakNarrator(temple.lore||temple.intro,chosenLang,voiceFile),600);
                 }
               }
@@ -5232,7 +5232,7 @@ export default function MokshaPatam108(){
           const voiceText=stepNum>=7
             ?`${pName}, you have mastered ${stepEn}. Only Moksha remains. Your soul stands at the threshold of liberation.`
             :`${pName}, your soul ascends. ${stepEn} complete. Step ${stepNum} of 7 on the Sacred Path. Your wisdom deepens.`;
-          const voiceFile=`/sacred-voices/correct${stepNum-1}-en.mp3`;
+          const voiceFile=`/sacred-voices/correct${stepNum-1}-${chosenLang==='hi'?'hi':'en'}.mp3`;
           setTimeout(()=>VoiceEngine.speakNarrator(voiceText,chosenLang,voiceFile),1500);
           setTimeout(()=>{if(!bgMuted)ambient.unduck();},6000);
         }
@@ -5419,7 +5419,7 @@ export default function MokshaPatam108(){
     if(!guruEncounter||guruEncounter.phase!=='intro'||muted)return;
     VoiceEngine.stop();
     try{window.speechSynthesis.cancel()}catch(e){}
-    const voiceFile=`/guru-voices/${guruEncounter.guru.id}-en.mp3`;
+    const voiceFile=`/guru-voices/${guruEncounter.guru.id}-${chosenLang==='hi'?'hi':'en'}.mp3`;
     const timer=setTimeout(()=>{
       // Try static file first, fall back to TTS
       fetch(voiceFile,{method:'HEAD'}).then(r=>{
@@ -7132,7 +7132,7 @@ export default function MokshaPatam108(){
                         // Speak blessing after bell finishes (1.5s)
                         if(!muted){
                           const blessingText=`${g.en} blesses you. ${g.blessingDesc}`;
-                          const voiceFile=`/guru-voices/${g.id}-blessing-en.mp3`;
+                          const voiceFile=`/guru-voices/${g.id}-blessing-${chosenLang==='hi'?'hi':'en'}.mp3`;
                           setTimeout(()=>VoiceEngine.speakNarrator(blessingText,chosenLang,voiceFile),1500);
                         }
                         // Let blessing voice finish naturally — don't stop it
@@ -7742,7 +7742,7 @@ export default function MokshaPatam108(){
                       playTempleBell();
                       setSacredInfo({step:sq,stepIdx});
                       if(!muted){
-                        const voiceFile=`/sacred-voices/step${stepIdx}-en.mp3`;
+                        const voiceFile=`/sacred-voices/step${stepIdx}-${chosenLang==='hi'?'hi':'en'}.mp3`;
                         setTimeout(()=>VoiceEngine.speakNarrator(sq.lore,chosenLang,voiceFile),500);
                       }
                     }
@@ -7806,7 +7806,7 @@ export default function MokshaPatam108(){
                     // Speak temple lore when exploring
                     if(!muted){
                       const tk=TEMPLE_SQUARES[num];
-                      const voiceFile=`/temple-voices/${tk}-en.mp3`;
+                      const voiceFile=`/temple-voices/${tk}-${chosenLang==='hi'?'hi':'en'}.mp3`;
                       setTimeout(()=>VoiceEngine.speakNarrator(tmpl.lore||tmpl.intro,chosenLang,voiceFile),500);
                     }
                   }
