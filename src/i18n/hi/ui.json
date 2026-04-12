@@ -1,0 +1,99 @@
+{
+  "game_title": "मोक्ष पटम् १०८",
+  "game_subtitle": "मोक्ष पटम् 108",
+  "game_tagline": "कर्म का प्राचीन खेल",
+
+  "knowledge_temple": "ज्ञान मंदिर",
+  "enter_the_temple": "मंदिर में प्रवेश करें",
+  "skip_to_quiz": "प्रश्न पर जाएं →",
+  "prove_knowledge": "अपना ज्ञान सिद्ध करें",
+  "enters_temple": "मंदिर में प्रवेश करता है",
+  "question": "प्रश्न",
+  "choose_answer": "उत्तर चुनें",
+  "square": "खाना",
+
+  "guru_encounter": "गुरु भेंट",
+  "accept_challenge": "चुनौती स्वीकार करें",
+  "faces_guru": "गुरु का सामना करता है",
+  "answer_guru": "गुरु को उत्तर दो",
+  "guru_asks": "गुरु पूछते हैं",
+  "blessed": "आशीर्वाद",
+  "guru_departs": "गुरु चले गए",
+  "guru_arrives_next": "अगले मोड़ पर गुरु आएंगे!",
+  "guru_in_turns": "गुरु {n} मोड़ में",
+  "every_8_turns": "हर 8वें मोड़ पर · एक प्राचीन गुरु तुम्हारी परीक्षा लेता है",
+
+  "did_you_know": "क्या आप जानते हैं?",
+  "continue": "आगे बढ़ें",
+  "close": "बंद करें",
+  "tap_continue": "आगे बढ़ने के लिए टैप करें",
+
+  "sacred_path": "पवित्र मार्ग",
+  "step_of_8": "चरण {n} / 8 · पवित्र मार्ग",
+  "vedic_astronomy": "वैदिक खगोल विज्ञान",
+
+  "karma_victory": "कर्म विजय",
+  "karma_victory_desc": "{name} ने 50 पुण्य एकत्र कर लिए! पट विलीन हो गया। तत्काल मोक्ष!",
+  "karma_ready": "⚡ कर्म विजय तैयार!",
+  "punya_progress": "⚡ {n}/50",
+  "moksha_victory": "मोक्ष",
+  "moksha_desc": "खाना 108 पर पुण्य ≥ पाप",
+  "moksha_rejected": "मोक्ष के द्वार ने अस्वीकार किया!",
+  "moksha_rejected_desc": "{name}, तुम्हारी आत्मा अशुद्ध है! पुण्य ({punya}) < पाप ({papa})। खाना 67 पर वापस।",
+  "moksha_warning": "पाप ({papa}) पुण्य ({punya}) से अधिक — मोक्ष अस्वीकार करेगा!",
+
+  "you_pure": "तुम: {punya} पुण्य / {papa} पाप ✓ शुद्ध",
+  "you_impure": "तुम: {punya} पुण्य / {papa} पाप ✗ अशुद्ध",
+
+  "roll_dice": "पासा फेंको",
+  "rolling": "फेंक रहे हैं...",
+  "opponents_turn": "{name} की बारी",
+
+  "blessing_active": "{name} सक्रिय",
+  "blessing_aryabhata": "खगोलीय प्रक्षेपण",
+  "blessing_sushruta": "शल्य शुद्धिकरण",
+  "blessing_chanakya": "रणनीतिक दृष्टि",
+  "blessing_panini": "पूर्ण वाणी",
+  "blessing_charaka": "आयुर्वेदिक कवच",
+  "blessing_bhaskara": "गणितीय गुणन",
+  "blessing_varahamihira": "ब्रह्मांडीय भविष्यवाणी",
+  "blessing_patanjali": "योगिक अनुशासन",
+
+  "naga": "नाग",
+  "virtue": "गुण",
+  "dharma": "धर्म",
+
+  "saved_game_found": "🪷 सहेजा हुआ खेल मिला",
+  "resume": "जारी रखें",
+  "new_game": "नया खेल",
+  "game_resumed": "जहाँ छोड़ा था वहाँ से शुरू।",
+
+  "connecting_cosmos": "🙏 ब्रह्मांड से जुड़ रहे हैं...",
+  "sign_in": "साइन इन करें",
+  "enter_sacred_board": "पवित्र पट पर प्रवेश करें",
+  "sign_in_google": "Google से साइन इन करें",
+  "sign_in_save_karma": "कर्म को जन्मों तक सहेजने के लिए साइन इन करें",
+
+  "begin_journey": "📜 यात्रा शुरू करें",
+  "how_to_play": "कैसे खेलें",
+  "play_now": "⚡ अभी खेलो",
+  "skip": "छोड़ें →",
+  "next": "अगला →",
+  "prev": "← पिछला",
+  "back": "← वापस",
+  "begin": "शुरू करें ▸",
+
+  "chapter_of": "अध्याय {n} / {total}",
+  "menu": "☰ मेनू",
+  "rules": "📜 नियम",
+  "encyclopaedia": "📖 ज्ञानकोश",
+
+  "correct": "✓ सही!",
+  "wrong": "✗ गलत!",
+
+  "ashtanga_marga": "अष्टांग मार्ग · आठ-सूत्री पवित्र मार्ग",
+
+  "error_title": "ब्रह्मांडीय व्यवस्था में गड़बड़ी",
+  "error_desc": "कुछ अप्रत्याशित हुआ। मोक्ष का मार्ग बाधित हो गया।",
+  "error_button": "मार्ग पर लौटें"
+}

@@ -1,0 +1,99 @@
+{
+  "game_title": "मोक्ष पटम् १०८",
+  "game_subtitle": "MOKSHA PATAM 108",
+  "game_tagline": "THE ANCIENT GAME OF KARMA",
+
+  "knowledge_temple": "KNOWLEDGE TEMPLE",
+  "enter_the_temple": "ENTER THE TEMPLE",
+  "skip_to_quiz": "SKIP TO QUIZ →",
+  "prove_knowledge": "PROVE YOUR KNOWLEDGE",
+  "enters_temple": "ENTERS THE TEMPLE",
+  "question": "QUESTION",
+  "choose_answer": "CHOOSE YOUR ANSWER",
+  "square": "SQUARE",
+
+  "guru_encounter": "GURU ENCOUNTER",
+  "accept_challenge": "ACCEPT THE CHALLENGE",
+  "faces_guru": "FACES THE GURU",
+  "answer_guru": "ANSWER THE GURU",
+  "guru_asks": "THE GURU ASKS",
+  "blessed": "BLESSED",
+  "guru_departs": "THE GURU DEPARTS",
+  "guru_arrives_next": "GURU ARRIVES NEXT TURN!",
+  "guru_in_turns": "Guru in {n} turns",
+  "every_8_turns": "EVERY 8TH TURN · AN ANCIENT GURU TESTS YOUR KNOWLEDGE",
+
+  "did_you_know": "DID YOU KNOW?",
+  "continue": "CONTINUE",
+  "close": "CLOSE",
+  "tap_continue": "TAP TO CONTINUE",
+
+  "sacred_path": "THE SACRED PATH",
+  "step_of_8": "STEP {n} OF 8 · THE SACRED PATH",
+  "vedic_astronomy": "VEDIC ASTRONOMY",
+
+  "karma_victory": "KARMA VICTORY",
+  "karma_victory_desc": "{name} has accumulated 50 Punya! The board dissolves. Instant Moksha!",
+  "karma_ready": "⚡ KARMA READY!",
+  "punya_progress": "⚡ {n}/50",
+  "moksha_victory": "MOKSHA",
+  "moksha_desc": "Punya ≥ Papa at Sq 108",
+  "moksha_rejected": "Gates of Moksha REJECT You!",
+  "moksha_rejected_desc": "{name}, your soul is impure! Punya ({punya}) < Papa ({papa}). Cast back to 67.",
+  "moksha_warning": "Papa ({papa}) exceeds Punya ({punya}) — Moksha will REJECT you!",
+
+  "you_pure": "You: {punya} Punya / {papa} Papa ✓ Pure",
+  "you_impure": "You: {punya} Punya / {papa} Papa ✗ Impure",
+
+  "roll_dice": "Roll Dice",
+  "rolling": "Rolling...",
+  "opponents_turn": "{name}'s turn",
+
+  "blessing_active": "{name} ACTIVE",
+  "blessing_aryabhata": "Celestial Propulsion",
+  "blessing_sushruta": "Surgical Purification",
+  "blessing_chanakya": "Strategic Vision",
+  "blessing_panini": "Perfect Speech",
+  "blessing_charaka": "Ayurvedic Shield",
+  "blessing_bhaskara": "Mathematical Multiplication",
+  "blessing_varahamihira": "Cosmic Prediction",
+  "blessing_patanjali": "Yogic Discipline",
+
+  "naga": "Nāga",
+  "virtue": "Virtue",
+  "dharma": "Dharma",
+
+  "saved_game_found": "🪷 SAVED GAME FOUND",
+  "resume": "RESUME",
+  "new_game": "NEW GAME",
+  "game_resumed": "Game resumed from where you left off.",
+
+  "connecting_cosmos": "🙏 Connecting to the cosmos...",
+  "sign_in": "Sign In",
+  "enter_sacred_board": "ENTER THE SACRED BOARD",
+  "sign_in_google": "Sign in with Google",
+  "sign_in_save_karma": "Sign in to save your karma across lifetimes",
+
+  "begin_journey": "📜 BEGIN THE JOURNEY",
+  "how_to_play": "HOW TO PLAY",
+  "play_now": "⚡ Play Now",
+  "skip": "SKIP →",
+  "next": "Next →",
+  "prev": "← Prev",
+  "back": "← Back",
+  "begin": "BEGIN ▸",
+
+  "chapter_of": "CHAPTER {n} OF {total}",
+  "menu": "☰ MENU",
+  "rules": "📜 Rules",
+  "encyclopaedia": "📖 Encyclopaedia",
+
+  "correct": "✓ Correct!",
+  "wrong": "✗ Wrong!",
+
+  "ashtanga_marga": "अष्टांग मार्ग · The 8-Fold Sacred Path",
+
+  "error_title": "A disturbance in the cosmic order",
+  "error_desc": "Something unexpected happened. The path to Moksha has been disrupted.",
+  "error_button": "Return to the Path"
+}
