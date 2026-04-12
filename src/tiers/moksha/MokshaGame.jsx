@@ -4772,7 +4772,7 @@ export default function MokshaPatam108(){
           const idx=Math.floor(Math.random()*available.length);
           const origIdx=cards.indexOf(available[idx]);
           usedCosmicRef.current=[...usedIds,`${realm}_${origIdx}`];
-          setCosmicCard(available[idx]);
+          setCosmicCard({...available[idx],_realm:realm,_idx:origIdx});
           return;
         }
       }
@@ -5022,7 +5022,7 @@ export default function MokshaPatam108(){
             }else{
               eMsg=`⚖ ${d.en}`;play("dilemma");
               showEvent({icon:"⚖",title:`${d.t} — ${d.en}`,subtitle:`${pName} faces a Dharma Dilemma! Dismiss to read the story and choose your path.`,color:"#d0b870"},()=>{
-                setDil({...d,pi:cur});finishTurn();
+                setDil({...d,pi:cur,dIdx});finishTurn();
               });
             }
           }
@@ -6549,7 +6549,7 @@ export default function MokshaPatam108(){
               fontFamily:"'Noto Serif Devanagari',serif",marginBottom:16,
               maxHeight:isMobile?140:200,overflowY:"auto",
             }}>
-              {templeInfo.temple.lore}
+              {tq(`temples.${templeInfo.templeKey||""}_lore`,templeInfo.temple.lore)}
             </div>
 
             {/* Dismiss */}
@@ -6625,7 +6625,7 @@ export default function MokshaPatam108(){
                 }}>"{sacredInfo.step.shloka}"</div>
                 <div style={{fontSize:isMobile?10:13,color:"rgba(200,180,140,.4)",
                   fontFamily:"'Cinzel',serif",letterSpacing:1,marginTop:6,lineHeight:1.7,
-                }}>{sacredInfo.step.shlokaEn}</div>
+                }}>{tq(`sacred.${["yama","niyama","asana","pranayama","pratyahara","dharana","dhyana","moksha"][sacredInfo.stepIdx]||"yama"}_shlokaEn`,sacredInfo.step.shlokaEn)}</div>
               </div>
             )}
 
@@ -6638,7 +6638,7 @@ export default function MokshaPatam108(){
                 background:"rgba(240,200,80,.03)",
                 border:"1px solid rgba(240,200,80,.12)",borderRadius:14,
               }}>
-                {sacredInfo.step.lore}
+                {tq(`sacred.${["yama","niyama","asana","pranayama","pratyahara","dharana","dhyana","moksha"][sacredInfo.stepIdx]||"yama"}_lore`,sacredInfo.step.lore)}
               </div>
             </div>
 
@@ -6731,7 +6731,7 @@ export default function MokshaPatam108(){
                 background:`${templeLore.temple.color}06`,
                 border:`1px solid ${templeLore.temple.color}18`,borderRadius:12,
               }}>
-                {templeLore.temple.lore}
+                {tq(`temples.${templeLore.templeKey||""}_lore`,templeLore.temple.lore)}
               </div>
             </div>
 
@@ -6932,7 +6932,7 @@ export default function MokshaPatam108(){
                 <div style={{fontSize:isMobile?12:15,color:"rgba(200,180,140,.6)",lineHeight:2,
                   fontStyle:"italic",marginBottom:isMobile?14:22,
                   fontFamily:"'Noto Serif Devanagari',serif"}}>
-                  {guruEncounter.guru.intro}
+                  {tq(`gurus.${guruEncounter.guru?.id||""}_intro`,guruEncounter.guru.intro)}
                 </div>
 
                 {/* Guru's speech */}
@@ -7188,7 +7188,7 @@ export default function MokshaPatam108(){
                     <div style={{fontSize:isMobile?12:14,color:"rgba(200,180,140,.45)",lineHeight:1.9,
                       fontStyle:"italic",marginBottom:14,
                       fontFamily:"'Noto Serif Devanagari',serif"}}>
-                      "{guruEncounter.guru.departLine}"
+                      "{tq(`gurus.${guruEncounter.guru?.id||""}_departLine`,guruEncounter.guru.departLine)}"
                     </div>
                     <div style={{fontSize:isMobile?12:13,color:"rgba(200,180,140,.35)",lineHeight:1.8,
                       padding:isMobile?"12px 14px":"14px 20px",
@@ -7226,10 +7226,10 @@ export default function MokshaPatam108(){
             <div style={{fontSize:38,marginBottom:10,
               filter:"drop-shadow(0 0 15px rgba(240,200,80,.25))"}}>{cosmicCard.icon}</div>
             <div style={{fontSize:isMobile?15:17,fontFamily:"'Yatra One',serif",
-              color:"#f0d050",marginBottom:10,letterSpacing:2}}>{cosmicCard.title}</div>
+              color:"#f0d050",marginBottom:10,letterSpacing:2}}>{tq(`cosmic.${cosmicCard._realm||'bhuloka'}_${cosmicCard._idx||0}_title`,cosmicCard.title)}</div>
             <div style={{fontSize:isMobile?12:14,color:"#d0c090",lineHeight:1.9,
               fontStyle:"italic",fontFamily:"'Noto Serif Devanagari',serif",marginBottom:10}}>
-              {cosmicCard.fact}
+              {tq(`cosmic.${cosmicCard._realm||'bhuloka'}_${cosmicCard._idx||0}_fact`,cosmicCard.fact)}
             </div>
             <div style={{fontSize:9,color:"rgba(200,160,60,.3)",
               fontFamily:"'Cinzel',serif",letterSpacing:2,marginBottom:14}}>
@@ -7261,7 +7261,7 @@ export default function MokshaPatam108(){
       <div style={{fontSize:48,marginBottom:6,filter:"drop-shadow(0 0 15px rgba(200,160,60,.4))"}}>⚖</div>
       <div style={{fontSize:8,letterSpacing:5,color:"#d0b870",opacity:.6,fontWeight:700,marginBottom:4}}>DHARMA DILEMMA</div>
       <div style={{fontSize:"clamp(18px,4vw,24px)",fontFamily:"'Yatra One',serif",color:"#f0d050",letterSpacing:2}}>{dil.t}</div>
-      <div style={{fontSize:13,color:"#d0b870",fontWeight:700,marginTop:4,letterSpacing:1}}>{dil.en}</div>
+      <div style={{fontSize:13,color:"#d0b870",fontWeight:700,marginTop:4,letterSpacing:1}}>{tq(`dilemmas.d${dil.dIdx||0}_en`,dil.en)}</div>
       </div>
       <div style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",background:"rgba(200,160,60,.06)",border:"1px solid rgba(200,160,60,.12)",borderRadius:4,marginBottom:16}}>
       <span style={{fontSize:24}}>{players[dil.pi]?.char?.icon}</span>
@@ -7270,7 +7270,7 @@ export default function MokshaPatam108(){
       <div style={{fontSize:10,opacity:.5}}>{players[dil.pi]?.char?.name} · Square {pos[dil.pi]||1} · पुण्य {punya[dil.pi]||0} · पाप {papa[dil.pi]||0}</div>
       </div>
       </div>
-      <div style={{fontSize:"clamp(12px,1.5vw,14px)",color:"#e0d0a0",lineHeight:2,marginBottom:20,fontStyle:"italic",padding:"0 4px",maxHeight:200,overflowY:"auto"}}>{dil.txt}</div>
+      <div style={{fontSize:"clamp(12px,1.5vw,14px)",color:"#e0d0a0",lineHeight:2,marginBottom:20,fontStyle:"italic",padding:"0 4px",maxHeight:200,overflowY:"auto"}}>{tq(`dilemmas.d${dil.dIdx||0}_txt`,dil.txt)}</div>
       <div style={{display:"flex",flexDirection:"column",gap:10}}>
       {dil.c.map((ch,ci)=>{
       const isAshtanga=!!dil.ashtanga;
@@ -7281,7 +7281,7 @@ export default function MokshaPatam108(){
       return <button key={ci} onClick={()=>{VoiceEngine.unlockAudio();isMyDilemma&&solvD(ci);}}
       disabled={!isMyDilemma}
       style={{display:"block",width:"100%",background:btnBg,border:`2px solid ${btnBorder}`,color:btnColor,padding:"14px 16px",fontSize:"clamp(12px,1.4vw,14px)",fontFamily:"'Cinzel',serif",cursor:isMyDilemma?"pointer":"not-allowed",textAlign:"left",lineHeight:1.7,borderRadius:6,transition:"all .2s",letterSpacing:1,opacity:isMyDilemma?1:0.45,minHeight:52,touchAction:"manipulation",WebkitTapHighlightColor:"transparent"}}>
-      {ch.l}
+      {tq(`dilemmas.d${dil.dIdx||0}_choice${ci}`,ch.l)}
       {!isMyDilemma&&<span style={{float:'right',fontSize:9,opacity:.4,fontFamily:"'Cinzel',serif"}}>Watching...</span>}
       </button>})}
       </div>
@@ -7382,7 +7382,7 @@ export default function MokshaPatam108(){
             </div>
             <div style={{fontSize:isMobile?12:14,color:"rgba(225,205,165,.58)",lineHeight:1.85,
               fontFamily:"'Noto Serif Devanagari',serif"}}>
-              {diceReveal.g.desc.slice(0,120)}…
+              {tq(`graha.${diceReveal.g.fx||''}_desc`,diceReveal.g.desc).slice(0,120)}…
             </div>
           </div>
 
@@ -7464,7 +7464,7 @@ export default function MokshaPatam108(){
           }}>
             <div style={{fontSize:isMobile?14:16,color:"rgba(225,205,165,.88)",
               lineHeight:1.9,fontFamily:"'Noto Serif Devanagari',serif"}}>
-              {diceReveal.grahaStory||diceReveal.g.desc}
+              {diceReveal.grahaStory||tq(`graha.${diceReveal.g.fx||''}_desc`,diceReveal.g.desc)}
             </div>
           </div>
 
@@ -7480,7 +7480,7 @@ export default function MokshaPatam108(){
               <div style={{fontSize:isMobile?8:9,letterSpacing:isMobile?3:5,
                 color:"rgba(240,200,80,.45)",fontFamily:"'Cinzel',serif",marginBottom:5}}>{t("ui.vedic_astronomy")}</div>
               <div style={{fontSize:isMobile?11:13,color:"rgba(200,180,140,.7)",
-                lineHeight:1.8,fontStyle:"italic"}}>{diceReveal.g.science}</div>
+                lineHeight:1.8,fontStyle:"italic"}}>{tq(`graha.${diceReveal.g.fx||''}_science`,diceReveal.g.science)}</div>
             </div>
           )}
 
