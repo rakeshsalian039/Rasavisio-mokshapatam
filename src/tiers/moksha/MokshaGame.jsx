@@ -265,23 +265,6 @@ const STORY_PAGES=[
   en:"Every few squares, life stops you. A Dharma Dilemma appears. An ancient crossroads. These are not simple questions. They are the same moral choices that destroyed kings and elevated sages. Karna gave away his divine armour to a beggar. Knowing it would kill him. Eklavya cut off his own thumb for his guru. Yudhishthira told a half-truth to win a war. These choices are yours now. Choose Punya, the righteous path, and move back but grow purer. Choose Papa, the easy path, advance faster but sin accumulates. The board does not care about your intentions. Only your karma matters at the final gate.",
   hi:"हर कुछ खानों पर, जीवन तुम्हें रोकता है। एक धर्म दुविधा प्रकट होती है। एक प्राचीन चौराहा। ये सरल प्रश्न नहीं हैं। ये वही नैतिक चुनाव हैं जिन्होंने राजाओं को नष्ट किया और ऋषियों को ऊपर उठाया। कर्ण ने अपना दिव्य कवच एक भिखारी को दिया। जानते हुए कि इससे मृत्यु होगी। एकलव्य ने गुरु के लिए अपना अंगूठा काटा। युधिष्ठिर ने युद्ध जीतने के लिए आधा सच बोला। ये चुनाव अब तुम्हारे हैं।",
   visuals:[{type:"dharmaStage"}]},
-  // ═══ NEW PAGES: Temples, Gurus ═══
-  bullets_en:[
-    {icon:"🪷",accent:"#f0d050",title:"Above Square 100 — A Different World",text:"Once you pass square 100, dice rolls no longer matter. You move exactly ONE step per turn."},
-    {icon:"📖",accent:"#c0a0e0",title:"Patanjali's Ashtanga Yoga",text:"Each of the 8 steps tests your knowledge of yoga and dharma. Answer correctly — gain Punya. Fail — gain Papa and fall back."},
-    {icon:"🚪",accent:"#f0b840",title:"The Final Gate at 107",text:"At Dhyana (square 107), you need an exact roll of 1. Only absolute surrender opens the gate to Moksha."},
-    {icon:"ॐ",accent:"#80c080",title:"The Navagraha Cannot Touch You",text:"On the Sacred Path, no planet effects apply. No swapping. No pushing. You are beyond the material world."},
-  ],
-  bullets_hi:[
-    {icon:"🪷",accent:"#f0d050",title:"खाना 100 के ऊपर — एक अलग दुनिया",text:"खाना 100 पार करने के बाद, पासे से कोई फर्क नहीं। हर बारी एक ही कदम चलते हो।"},
-    {icon:"📖",accent:"#c0a0e0",title:"पतंजलि का अष्टांग योग",text:"8 में से हर कदम योग और धर्म ज्ञान की परीक्षा लेता है। सही उत्तर दो — पुण्य मिलता है। गलत — पाप और वापस।"},
-    {icon:"🚪",accent:"#f0b840",title:"खाना 107 पर अंतिम द्वार",text:"ध्यान पर, सटीक 1 चाहिए। केवल पूर्ण समर्पण मोक्ष का द्वार खोलता है।"},
-    {icon:"ॐ",accent:"#80c080",title:"नवग्रह तुम्हें नहीं छू सकते",text:"पवित्र मार्ग पर कोई ग्रह प्रभाव नहीं। अदला-बदली नहीं। धक्का नहीं। तुम भौतिक संसार से परे हो।"},
-  ],
-  en:"Past square 100, the rules change. You have transcended the material world. The Navagraha cannot touch you. You move one step at a time along the Ashtanga Marga — the eight-fold path of Patanjali. Yama, self-restraint. Niyama, discipline. Asana, steadiness. Pranayama, the expansion of life-force. Pratyahara, withdrawal of the senses. Dharana, single-pointed concentration. Dhyana, deep meditation. And finally, Moksha at square 108, liberation from the cycle of birth and death. But at square 107, the Dhyana gate demands exactness. You must roll a one. Only perfect surrender, no grasping, no eagerness, opens the final door.",
-  hi:"खाना 100 के बाद, नियम बदल जाते हैं। तुम भौतिक संसार को पार कर चुके हो। नवग्रह तुम्हें नहीं छू सकते। अष्टांग मार्ग पर एक-एक कदम चलते हो। यम, नियम, आसन, प्राणायाम, प्रत्याहार, धारणा, ध्यान। और अंत में, खाना 108 पर मोक्ष — जन्म और मृत्यु के चक्र से मुक्ति। लेकिन खाना 107 पर, ध्यान का द्वार सटीकता मांगता है। सटीक 1 फेंकना होगा। केवल पूर्ण समर्पण अंतिम द्वार खोलता है।",
-  visuals:[{type:"sacredPathStage"}]},
-  // ═══ NEW PAGES: Temples, Gurus ═══
   {title:"Knowledge Temples",icon:"🏛",
   bullets_en:[
     {icon:"🏥",accent:"#40a060",title:"वैद्यशाला · Hall of Healing",text:"Sushruta described 121 surgical instruments in 600 BCE. British surgeons learned his rhinoplasty technique in the 1790s."},
