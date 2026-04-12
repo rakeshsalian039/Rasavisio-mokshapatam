@@ -6403,8 +6403,8 @@ export default function MokshaPatam108(){
   useEffect(()=>{
     if(screen!=="mangalacharan"||!mangalShloka)return;
     if(!muted){
-      const sfx=chosenLang==='hi'?'hi':'en';
-      const url=`/shlokas/shloka-${mangalShloka.id}-${sfx}.mp3`;
+      // Sanskrit shlokas have one universal audio file (Sanskrit is language-independent)
+      const url=`/shlokas/shloka-${mangalShloka.id}.mp3`;
       setTimeout(()=>VoiceEngine.speakNarrator(mangalShloka.shloka,chosenLang,url),800);
     }
     const t1=setTimeout(()=>setMangalPhase(1),4000);

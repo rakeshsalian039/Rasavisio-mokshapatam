@@ -78,14 +78,13 @@ for i,s in enumerate(result[:20]):
     print(f'{i}|||{s}')
 ")
 
-echo "── श्लोक (20 shlokas × 2 langs = 40 files) ──"
+echo "── श्लोक (20 shlokas — Sanskrit is universal) ──"
 echo ""
 
 while IFS='|||' read -r idx text; do
   [[ -z "$idx" ]] && continue
-  # Sanskrit shloka — same voice for both EN and HI versions
-  tts "$OUT_DIR/shloka-${idx}-en.mp3" "$VOICE" "$SKT_INSTR" "$text"
-  tts "$OUT_DIR/shloka-${idx}-hi.mp3" "$VOICE" "$SKT_INSTR" "$text"
+  # Sanskrit shloka — one file, same for all languages
+  tts "$OUT_DIR/shloka-${idx}.mp3" "$VOICE" "$SKT_INSTR" "$text"
 done <<< "$SHLOKAS"
 
 echo ""
