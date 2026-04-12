@@ -4415,6 +4415,20 @@ export default function MokshaPatam108(){
   const[yamaPhase,setYamaPhase]=useState(0); // 0=intro speaking, 1=who are you?, 2=go to setup // tracks which players are CPU
   const[mangalShloka,setMangalShloka]=useState(null);  // selected shloka object for mangalacharan
   const[mangalPhase,setMangalPhase]=useState(0);        // 0=shloka, 1=pronounce, 2=meaning, 3=begin
+
+  // ═══ MANGALACHARAN — voice + phase progression ═══
+  useEffect(()=>{
+    if(screen!=="mangalacharan"||!mangalShloka)return;
+    if(!muted){
+      const url=`/shlokas/shloka-${mangalShloka.id}.mp3`;
+      setTimeout(()=>VoiceEngine.speakNarrator(mangalShloka.shloka,chosenLang,url),800);
+    }
+    const t1=setTimeout(()=>setMangalPhase(1),4000);
+    const t2=setTimeout(()=>setMangalPhase(2),8000);
+    const t3=setTimeout(()=>setMangalPhase(3),13000);
+    const t4=setTimeout(()=>{VoiceEngine.stop();navigateTo("game");gameReadyRef.current=true},20000);
+    return()=>{clearTimeout(t1);clearTimeout(t2);clearTimeout(t3);clearTimeout(t4);VoiceEngine.stop()};
+  },[screen,mangalShloka]);
   const[narrateStartedAt,setNarrateStartedAt]=useState(null); // timestamp when narrator audio actually begins — used for DiceStage graha sync
 
   const sfx=useSound();
@@ -6398,22 +6412,6 @@ export default function MokshaPatam108(){
       </div>
     </div>
   );
-
-  // ═══ MANGALACHARAN — Sacred Shloka Invocation ═══
-  useEffect(()=>{
-    if(screen!=="mangalacharan"||!mangalShloka)return;
-    if(!muted){
-      // Sanskrit shlokas have one universal audio file (Sanskrit is language-independent)
-      const url=`/shlokas/shloka-${mangalShloka.id}.mp3`;
-      setTimeout(()=>VoiceEngine.speakNarrator(mangalShloka.shloka,chosenLang,url),800);
-    }
-    const t1=setTimeout(()=>setMangalPhase(1),4000);
-    const t2=setTimeout(()=>setMangalPhase(2),8000);
-    const t3=setTimeout(()=>setMangalPhase(3),13000);
-    // Auto-advance to game after 20s
-    const t4=setTimeout(()=>{VoiceEngine.stop();navigateTo("game");gameReadyRef.current=true},20000);
-    return()=>{clearTimeout(t1);clearTimeout(t2);clearTimeout(t3);clearTimeout(t4);VoiceEngine.stop()};
-  },[screen,mangalShloka]);
 
   if(screen==="mangalacharan"&&mangalShloka){
     const sl=mangalShloka;const ph=mangalPhase;const isHi=chosenLang==='hi';
