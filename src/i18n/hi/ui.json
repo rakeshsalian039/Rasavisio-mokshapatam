@@ -146,6 +146,13 @@
   "trait_judgment": "विवेक",
   "trait_renunciation": "त्याग",
 
+  "mangalacharan_title": "मंगलाचरण",
+  "repeat_after_me": "इसे बोलिए...",
+  "meaning_label": "अर्थ",
+  "let_game_begin": "खेल आरम्भ हो",
+  "dice_ready": "पासे तैयार हैं। खेल आरम्भ हो।",
+  "skip_invocation": "आगे बढ़ें",
+
   "error_title": "ब्रह्मांडीय व्यवस्था में गड़बड़ी",
   "error_desc": "कुछ अप्रत्याशित हुआ। मोक्ष का मार्ग बाधित हो गया।",
   "error_button": "मार्ग पर लौटें"

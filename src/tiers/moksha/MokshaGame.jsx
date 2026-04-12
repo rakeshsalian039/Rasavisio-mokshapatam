@@ -49,6 +49,7 @@ import TempleIcon from '../../components/TempleIcon';
 import SacredPathIcon from '../../components/SacredPathIcon';
 import { GURUS } from '../../data/guruEncounters';
 import { COSMIC_CARDS } from '../../data/cosmicKnowledge';
+import { MANGALACHARAN } from '../../data/mangalacharan';
 log("Supabase init:", supabase ? "connected" : "not configured");
 
 const SNAKES={16:{to:4,skt:"क्रोध",en:"WRATH",tale:"As Duryodhana's rage consumed the Kuru dynasty..."},23:{to:7,skt:"लोभ",en:"GREED",tale:"Like Shakuni who gambled away an empire..."},33:{to:12,skt:"मोह",en:"DELUSION",tale:"Dhritarashtra's blind love veiled all judgment..."},38:{to:21,skt:"मात्सर्य",en:"ENVY",tale:"Duryodhana burned with jealousy at Indraprastha..."},47:{to:29,skt:"काम",en:"DESIRE",tale:"Keechaka's lust brought his annihilation..."},56:{to:41,skt:"मद",en:"PRIDE",tale:"Ravana's arrogance toppled golden Lanka..."},62:{to:44,skt:"भय",en:"TERROR",tale:"Arjuna paralysed before the great war..."},74:{to:51,skt:"द्वेष",en:"HATRED",tale:"Drona and Drupada's hatred echoed ages..."},85:{to:59,skt:"आलस्य",en:"SLOTH",tale:"Kumbhakarna slept while dharma crumbled..."},95:{to:68,skt:"अहंकार",en:"EGO",tale:"Parashurama's ego challenged even Rama..."}};
@@ -4293,7 +4294,7 @@ export default function MokshaPatam108(){
       if(!prev){setScreen('title');return;}
       // Map back: where should each screen go?
       const backMap={
-        game:'title', chitragupta:'setup', setup:'pickcount',
+        game:'title', mangalacharan:'chitragupta', chitragupta:'setup', setup:'pickcount',
         pickcount:'story', story:'title', yama:'pickcount',
       };
       navigateTo(backMap[prev]||'title');
@@ -4412,6 +4413,8 @@ export default function MokshaPatam108(){
   const[gameVoicesPct,setGameVoicesPct]=useState(0);
   const[gameVoicesReady,setGameVoicesReady]=useState(false);
   const[yamaPhase,setYamaPhase]=useState(0); // 0=intro speaking, 1=who are you?, 2=go to setup // tracks which players are CPU
+  const[mangalShloka,setMangalShloka]=useState(null);  // selected shloka object for mangalacharan
+  const[mangalPhase,setMangalPhase]=useState(0);        // 0=shloka, 1=pronounce, 2=meaning, 3=begin
   const[narrateStartedAt,setNarrateStartedAt]=useState(null); // timestamp when narrator audio actually begins — used for DiceStage graha sync
 
   const sfx=useSound();
@@ -4697,8 +4700,15 @@ export default function MokshaPatam108(){
     setCgEntries([]);setShowMoksha(false);setShowPostGame(false);
     setMsg(`${pList[0].name} the ${pList[0].char.name} — your journey begins.`);
     gameStats.current={startTime:Date.now(),turns:0,humanTurns:0,playerTurns:{},snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0,grahaHits:{sun:0,moon:0,mars:0,mercury:0,jupiter:0,venus:0,saturn:0,rahu:0,ketu:0}};
-    navigateTo("game");
-    setTimeout(()=>{ gameReadyRef.current=true; },3000); // allow timer after 3s
+    // Mangalacharan — sacred invocation before game (skip for online games)
+    if(isOnline){
+      navigateTo("game");
+      setTimeout(()=>{ gameReadyRef.current=true; },3000);
+    }else{
+      const shloka=MANGALACHARAN[Math.floor(Math.random()*MANGALACHARAN.length)];
+      setMangalShloka(shloka);setMangalPhase(0);
+      navigateTo("mangalacharan");
+    }
     // Preload critical audio files in background
     try{
       ['/temple-bell.mp3',
@@ -6388,6 +6398,122 @@ export default function MokshaPatam108(){
       </div>
     </div>
   );
+
+  // ═══ MANGALACHARAN — Sacred Shloka Invocation ═══
+  useEffect(()=>{
+    if(screen!=="mangalacharan"||!mangalShloka)return;
+    if(!muted){
+      const sfx=chosenLang==='hi'?'hi':'en';
+      const url=`/shlokas/shloka-${mangalShloka.id}-${sfx}.mp3`;
+      setTimeout(()=>VoiceEngine.speakNarrator(mangalShloka.shloka,chosenLang,url),800);
+    }
+    const t1=setTimeout(()=>setMangalPhase(1),4000);
+    const t2=setTimeout(()=>setMangalPhase(2),8000);
+    const t3=setTimeout(()=>setMangalPhase(3),13000);
+    // Auto-advance to game after 20s
+    const t4=setTimeout(()=>{VoiceEngine.stop();navigateTo("game");gameReadyRef.current=true},20000);
+    return()=>{clearTimeout(t1);clearTimeout(t2);clearTimeout(t3);clearTimeout(t4);VoiceEngine.stop()};
+  },[screen,mangalShloka]);
+
+  if(screen==="mangalacharan"&&mangalShloka){
+    const sl=mangalShloka;const ph=mangalPhase;const isHi=chosenLang==='hi';
+    const goGame=()=>{VoiceEngine.stop();navigateTo("game");gameReadyRef.current=true};
+    return(
+      <div style={{position:"fixed",inset:0,zIndex:300,
+        background:"radial-gradient(ellipse at 50% 30%,rgba(40,30,10,.95),rgba(8,6,3,.99) 70%)",
+        display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
+        padding:"clamp(16px,4vw,40px)",overflow:"hidden",
+      }}>
+        <style>{`@keyframes shlokaGlow{0%,100%{text-shadow:0 0 20px rgba(240,200,80,.15),0 2px 40px rgba(240,200,80,.08)}50%{text-shadow:0 0 50px rgba(240,200,80,.35),0 2px 60px rgba(240,200,80,.15)}}`}</style>
+
+        {/* Radial ambient glow */}
+        <div style={{position:"absolute",top:"20%",left:"50%",transform:"translateX(-50%)",
+          width:"60vw",height:"60vw",borderRadius:"50%",
+          background:"radial-gradient(circle,rgba(240,200,80,.04),transparent 60%)",
+          pointerEvents:"none"}}/>
+
+        {/* Skip button */}
+        <button onClick={goGame} style={{position:"absolute",top:16,right:16,
+          background:"transparent",border:"1px solid rgba(200,160,60,.15)",
+          color:"rgba(200,160,60,.3)",padding:"4px 14px",fontSize:9,cursor:"pointer",
+          borderRadius:4,fontFamily:"'Cinzel',serif",letterSpacing:2,zIndex:10,
+        }}>{t("ui.skip_invocation")}</button>
+
+        {/* Header — मंगलाचरण */}
+        <div style={{fontSize:9,letterSpacing:8,color:"rgba(240,200,80,.3)",
+          fontFamily:"'Cinzel',serif",marginBottom:16,
+          animation:"fadeIn 1s ease both",
+        }}>{t("ui.mangalacharan_title")}</div>
+
+        {/* OM symbol */}
+        <div style={{fontSize:36,marginBottom:16,opacity:.15,
+          animation:"fadeIn 1.5s ease both",filter:"drop-shadow(0 0 20px rgba(240,200,80,.3))"}}>ॐ</div>
+
+        {/* Sanskrit Shloka — large Devanagari */}
+        <div style={{
+          fontFamily:"'Noto Serif Devanagari','Yatra One',serif",
+          fontSize:"clamp(18px,4.5vw,32px)",color:"#f0d050",
+          textAlign:"center",lineHeight:2.2,maxWidth:700,
+          whiteSpace:"pre-line",letterSpacing:1,
+          animation:"shlokaGlow 4s ease infinite, fadeIn .8s ease .3s both",
+        }}>"{sl.shloka}"</div>
+
+        {/* Phase 1: Pronunciation + Repeat prompt */}
+        {ph>=1&&(
+          <div style={{marginTop:20,textAlign:"center",animation:"fadeIn .8s ease both"}}>
+            <div style={{fontSize:10,letterSpacing:4,color:"rgba(240,200,80,.35)",
+              fontFamily:"'Cinzel',serif",marginBottom:8}}>{t("ui.repeat_after_me")}</div>
+            <div style={{fontSize:"clamp(13px,2.5vw,17px)",color:"rgba(220,200,160,.5)",
+              fontFamily:"'Cinzel',serif",fontStyle:"italic",lineHeight:2,
+              maxWidth:600,whiteSpace:"pre-line",
+            }}>{sl.pronounce}</div>
+          </div>
+        )}
+
+        {/* Phase 2: Meaning + Source */}
+        {ph>=2&&(
+          <div style={{marginTop:24,textAlign:"center",animation:"fadeIn .8s ease both",maxWidth:600}}>
+            <div style={{fontSize:9,letterSpacing:4,color:"rgba(240,200,80,.25)",
+              fontFamily:"'Cinzel',serif",marginBottom:8}}>{t("ui.meaning_label")}</div>
+            <div style={{fontSize:"clamp(12px,2.5vw,15px)",
+              color:"rgba(200,180,140,.55)",lineHeight:2,
+              fontFamily:"'Noto Serif Devanagari',serif",fontStyle:"italic",
+              padding:"14px 20px",
+              background:"rgba(240,200,80,.03)",border:"1px solid rgba(240,200,80,.08)",
+              borderRadius:10,
+            }}>{isHi?sl.meaning_hi:sl.meaning_en}</div>
+            <div style={{fontSize:10,color:"rgba(200,160,60,.25)",
+              fontFamily:"'Cinzel',serif",letterSpacing:2,marginTop:10,
+            }}>— {isHi?sl.source:sl.source_en}</div>
+          </div>
+        )}
+
+        {/* Phase 3: BEGIN */}
+        {ph>=3&&(
+          <div style={{marginTop:28,textAlign:"center",animation:"fadeIn .6s ease both"}}>
+            <div style={{fontSize:"clamp(16px,3.5vw,24px)",color:"#f0d050",
+              fontFamily:"'Cinzel',serif",letterSpacing:6,fontWeight:700,
+              textShadow:"0 0 40px rgba(240,200,80,.4)",marginBottom:16,
+              animation:"pulse 2s ease infinite",
+            }}>{t("ui.let_game_begin")}</div>
+            <button onClick={goGame} style={{
+              background:"rgba(240,200,80,.08)",
+              border:"1.5px solid rgba(240,200,80,.4)",
+              color:"#f0d050",padding:"14px 40px",fontSize:14,
+              fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:8,
+              letterSpacing:4,fontWeight:700,
+              boxShadow:"0 0 30px rgba(240,200,80,.1)",
+              transition:"all .3s",
+            }}>{t("ui.begin")}</button>
+          </div>
+        )}
+
+        {/* Decorative bottom line */}
+        <div style={{position:"absolute",bottom:0,left:0,right:0,height:2,
+          background:"linear-gradient(90deg,transparent,rgba(240,200,80,.2),transparent)"}}/>
+      </div>
+    );
+  }
 
   // ═══ CHITRAGUPTA INTRO ═══
   if(screen==="chitragupta"){

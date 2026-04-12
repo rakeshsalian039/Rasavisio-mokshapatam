@@ -146,6 +146,13 @@
   "trait_judgment": "Judgment",
   "trait_renunciation": "Renunciation",
 
+  "mangalacharan_title": "SACRED INVOCATION",
+  "repeat_after_me": "Speak it aloud...",
+  "meaning_label": "MEANING",
+  "let_game_begin": "LET THE GAME BEGIN",
+  "dice_ready": "The dice are ready. Let the game begin.",
+  "skip_invocation": "SKIP",
+
   "error_title": "A disturbance in the cosmic order",
   "error_desc": "Something unexpected happened. The path to Moksha has been disrupted.",
   "error_button": "Return to the Path"
