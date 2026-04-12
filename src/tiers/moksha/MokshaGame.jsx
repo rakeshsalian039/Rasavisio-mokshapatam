@@ -6305,9 +6305,9 @@ export default function MokshaPatam108(){
 
         {/* Header */}
         <div style={{fontSize:40,marginBottom:10,filter:"drop-shadow(0 0 20px rgba(240,200,80,.35))",animation:"pulse 3s ease infinite"}}>🔱</div>
-        <div style={{fontSize:9,letterSpacing:6,color:"#5a4a30",marginBottom:6,fontFamily:"'Cinzel',serif"}}>CHOOSE YOUR PATH</div>
-        <h2 style={{fontSize:"clamp(24px,5vw,38px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"0 0 4px",textAlign:"center",textShadow:"0 0 30px rgba(240,200,80,.25)"}}>How Many Seekers?</h2>
-        <p style={{fontSize:12,opacity:.3,marginBottom:32,letterSpacing:4,fontFamily:"'Cinzel',serif",textAlign:"center"}}>Each soul walks a different path</p>
+        <div style={{fontSize:9,letterSpacing:6,color:"#5a4a30",marginBottom:6,fontFamily:"'Cinzel',serif"}}>{t("ui.choose_your_path")}</div>
+        <h2 style={{fontSize:"clamp(24px,5vw,38px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"0 0 4px",textAlign:"center",textShadow:"0 0 30px rgba(240,200,80,.25)"}}>{t("ui.how_many_seekers")}</h2>
+        <p style={{fontSize:12,opacity:.3,marginBottom:32,letterSpacing:4,fontFamily:"'Cinzel',serif",textAlign:"center"}}>{t("ui.each_soul_walks")}</p>
 
         {/* Mode cards */}
         <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:12,width:"100%",marginBottom:14}}>
@@ -6330,11 +6330,11 @@ export default function MokshaPatam108(){
             <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 20% 50%,rgba(160,40,40,.15),transparent 60%)",pointerEvents:"none"}}/>
             <div style={{fontSize:52,filter:"drop-shadow(0 0 16px rgba(200,40,40,.6))",flexShrink:0,animation:"pulse 3s ease infinite"}}>☠️</div>
             <div style={{flex:1}}>
-              <div style={{fontSize:18,fontFamily:"'Yatra One',serif",color:"#e08080",letterSpacing:2,marginBottom:4}}>1 vs Yama</div>
-              <div style={{fontSize:11,color:"#906060",lineHeight:1.7}}>Face the God of Death alone. Yama plays every turn — cold, karmic, inevitable. Can your dharma outlast Death?</div>
+              <div style={{fontSize:18,fontFamily:"'Yatra One',serif",color:"#e08080",letterSpacing:2,marginBottom:4}}>{t("ui.vs_yama")}</div>
+              <div style={{fontSize:11,color:"#906060",lineHeight:1.7}}>{t("ui.vs_yama_desc")}</div>
               <div style={{display:"flex",gap:8,marginTop:10,flexWrap:"wrap"}}>
-                {["☠️ CPU opponent","⚡ Instant start","🎲 Hardest karma test"].map((t,i)=>(
-                  <span key={i} style={{fontSize:9,padding:"2px 8px",borderRadius:10,background:"rgba(160,40,40,.12)",border:"1px solid rgba(160,40,40,.2)",color:"#c07070",letterSpacing:1}}>{t}</span>
+                {[["☠️",t("ui.cpu_opponent")],["⚡",t("ui.instant_start")],["🎲",t("ui.hardest_karma")]].map(([icon,label],i)=>(
+                  <span key={i} style={{fontSize:9,padding:"2px 8px",borderRadius:10,background:"rgba(160,40,40,.12)",border:"1px solid rgba(160,40,40,.2)",color:"#c07070",letterSpacing:1}}>{icon} {label}</span>
                 ))}
               </div>
             </div>
@@ -6343,9 +6343,9 @@ export default function MokshaPatam108(){
 
           {/* 2, 3, 4 player cards */}
           {[
-            {n:2,icon:"👥",label:"2 Players",desc:"Sacred duel. Two souls, one board, one Moksha.",tags:["⚔️ Head to head","🔱 Classic"]},
-            {n:3,icon:"🧘",label:"3 Players",desc:"The dharmic triangle. Alliance and betrayal.",tags:["🌌 3-way","⚖ Complex"]},
-            {n:4,icon:"🕉",label:"4 Players",desc:"Four cardinal paths. Maximum chaos and karma.",tags:["🎭 Full house","🔱 Epic"]}
+            {n:2,icon:"👥",label:t("ui.players_2"),desc:t("ui.desc_2"),tags:["⚔️ "+t("ui.tag_head_to_head"),"🔱 "+t("ui.tag_classic")]},
+            {n:3,icon:"🧘",label:t("ui.players_3"),desc:t("ui.desc_3"),tags:["🌌 "+t("ui.tag_3way"),"⚖ "+t("ui.tag_complex")]},
+            {n:4,icon:"🕉",label:t("ui.players_4"),desc:t("ui.desc_4"),tags:["🎭 "+t("ui.tag_full_house"),"🔱 "+t("ui.tag_epic")]}
           ].map(({n,icon,label,desc,tags})=>(
             <div key={n}
               onClick={()=>{setNP(n);setIsCPU(Array(n).fill(false));setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);navigateTo("setup")}}
@@ -7350,7 +7350,7 @@ export default function MokshaPatam108(){
       {!isMyDilemma&&<span style={{float:'right',fontSize:9,opacity:.4,fontFamily:"'Cinzel',serif"}}>Watching...</span>}
       </button>})}
       </div>
-      <div style={{textAlign:"center",marginTop:14,fontSize:9,opacity:.25,letterSpacing:2}}>CHOOSE YOUR PATH WISELY</div>
+      <div style={{textAlign:"center",marginTop:14,fontSize:9,opacity:.25,letterSpacing:2}}>{t("ui.choose_wisely")}</div>
       </div>
       </div>}
 
