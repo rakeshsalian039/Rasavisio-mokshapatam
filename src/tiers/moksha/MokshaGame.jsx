@@ -213,24 +213,6 @@ const STORY_PAGES=[
   en:"Look at the board. It is not a board. It is a map of your soul's journey. 108 squares. Three realms. And one destination. Bhuloka, Squares 1 through 33, the Earthly Realm, where chaos reigns and most souls are trapped forever. Antarloka, Squares 34 through 66, the Inner Realm, where cunning serpents poison your mind with doubt. Svargaloka, Squares 67 through 99, the Celestial Realm, where a single fall destroys lifetimes of progress. And above it all, the Sacred Crown, Squares 101 to 108, the Ashtanga Marga, the eight-fold path of Patanjali. Here you move one step at a time. Each step tests your knowledge of yoga and dharma. Only those who pass all eight gates may attempt Moksha.",
   hi:"पट को देखो। ये सिर्फ पट नहीं है। ये तुम्हारी आत्मा की यात्रा का नक्शा है। 108 खाने। तीन लोक। और एक मंज़िल। भूलोक, खाना 1 से 33, पृथ्वी लोक, जहाँ अराजकता राज करती है। अंतर्लोक, खाना 34 से 66, आंतरिक लोक, जहाँ चालाक सर्प तुम्हारे मन में संदेह का विष भरते हैं। स्वर्गलोक, खाना 67 से 99, दिव्य लोक, जहाँ एक गिरावट जन्मों की साधना मिटा देती है। और सबसे ऊपर, पवित्र मुकुट, खाना 101 से 108, अष्टांग मार्ग, पतंजलि का आठ-सूत्री मार्ग।",
   visuals:[{type:"animatedBoard",mode:"realms"}]},
-  {title:"Two Sacred Dice",icon:"🎲",
-  bullets_en:[
-    {icon:"🎲",accent:"#f0d050",title:"Karma Die (1–6)",text:"The six-sided die of fate. Roll it and move forward. Familiar. Simple. But only half the story."},
-    {icon:"🌌",accent:"#c0a0e0",title:"Navagraha Die — The 9 Planets",text:"Nine living gods that intervene in your journey. Each planet has cosmic power over your fate."},
-    {icon:"☀",accent:"#f0b840",title:"Blessings",text:"Surya +2 steps · Chandra +1 Punya · Brihaspati blesses all · Shukra grants divine Shield"},
-    {icon:"⚡",accent:"#e08060",title:"Chaos & Curses",text:"Mangal pushes rivals back · Budh swaps positions · Shani sets you back 3 squares"},
-    {icon:"🌑",accent:"#9060a0",title:"Shadow & Fate",text:"Rahu steals Punya from the leader · Ketu strips all shields from every player"},
-  ],
-  bullets_hi:[
-    {icon:"🎲",accent:"#f0d050",title:"कर्म पासा (1–6)",text:"भाग्य का छह-मुखी पासा। फेंको और आगे बढ़ो। परिचित। सरल। लेकिन आधी कहानी।"},
-    {icon:"🌌",accent:"#c0a0e0",title:"नवग्रह पासा — 9 ग्रह",text:"नौ जीवित देवता जो तुम्हारी यात्रा में हस्तक्षेप करते हैं।"},
-    {icon:"☀",accent:"#f0b840",title:"आशीर्वाद",text:"सूर्य +2 कदम · चन्द्र +1 पुण्य · बृहस्पति सबको आशीर्वाद · शुक्र दिव्य कवच"},
-    {icon:"⚡",accent:"#e08060",title:"अराजकता और शाप",text:"मंगल प्रतिद्वंद्वी को पीछे धकेलता · बुध स्थान बदलता · शनि 3 खाने पीछे"},
-    {icon:"🌑",accent:"#9060a0",title:"छाया और भाग्य",text:"राहु नेता का पुण्य चुराता · केतु सबके कवच छीनता"},
-  ],
-  en:"Every turn, you roll not one, but two dice. The first, the Karma Die, a six-sided die that moves you across the board. Simple. Familiar. But the second die, the Navagraha Die, this is what makes this game truly ancient. Nine planets. Nine cosmic forces. Each one, a living god that intervenes in your journey. Surya, the Sun, blazes your path with 2 extra steps. Chandra, the Moon, purifies you with Punya. Mangal, Mars, fills you with battle fury, pushing your rival back 3 squares. Budh, Mercury, swaps your position. Brihaspati, Jupiter, blesses everyone. Shukra, Venus, grants a divine Shield. Shani, Saturn, pushes you back 3 squares. Rahu steals from the leader. Ketu strips all shields.",
-  hi:"हर बारी, तुम एक नहीं, दो पासे फेंकते हो। पहला, कर्म पासा। लेकिन दूसरा, नवग्रह पासा, यही इस खेल को प्राचीन बनाता है। नौ ग्रह। सूर्य 2 अतिरिक्त कदम। चन्द्र पुण्य। मंगल प्रतिद्वंद्वी को पीछे। बुध स्थान बदलता। बृहस्पति सबको। शुक्र कवच। शनि 3 पीछे। राहु चुराता। केतु कवच छीनता।",
-  visuals:[{type:"diceStage"}]},
   {title:"Serpents & Virtues",icon:"𓆙",
   bullets_en:[
     {icon:"𓆙",accent:"#e06030",title:"10 Living Nightmares",text:"Ten Nagas coil across the board. Each one a manifestation of the darkest force inside the human soul."},
@@ -249,6 +231,24 @@ const STORY_PAGES=[
   en:"Ten colossal Nagas coil around this board. They are not just snakes. They are living nightmares. Each one a manifestation of the darkest force inside every human soul. Krodh, Wrath. Lobh, Greed. Moh, Delusion. When a serpent catches you, it drags you screaming into the depths. You lose squares, and gain 2 Papa, sin karma. But for every serpent, there is a ladder, a virtue. Daya, Compassion. Satya, Truth. Seva, Service. Bhakti, Devotion. When a ladder lifts you, you gain 1 Punya, sacred merit. Between the serpents, Dharma Dilemmas appear. Ancient moral choices from the epics. Choose wisely, for your choices shape your karma.",
   hi:"दस विशाल नाग इस पट पर कुंडली मारे बैठे हैं। ये सिर्फ सांप नहीं हैं। ये जीवित दुःस्वप्न हैं। क्रोध। लोभ। मोह। जब कोई सांप पकड़ता है, 2 पाप मिलता है। लेकिन हर सांप के लिए एक सीढ़ी है। दया। सत्य। सेवा। भक्ति। जब सीढ़ी उठाती है, 1 पुण्य मिलता है।",
   visuals:[{type:"animatedBoard",mode:"snakeladder"}]},
+  {title:"Two Sacred Dice",icon:"🎲",
+  bullets_en:[
+    {icon:"🎲",accent:"#f0d050",title:"Karma Die (1–6)",text:"The six-sided die of fate. Roll it and move forward. Familiar. Simple. But only half the story."},
+    {icon:"🌌",accent:"#c0a0e0",title:"Navagraha Die — The 9 Planets",text:"Nine living gods that intervene in your journey. Each planet has cosmic power over your fate."},
+    {icon:"☀",accent:"#f0b840",title:"Blessings",text:"Surya +2 steps · Chandra +1 Punya · Brihaspati blesses all · Shukra grants divine Shield"},
+    {icon:"⚡",accent:"#e08060",title:"Chaos & Curses",text:"Mangal pushes rivals back · Budh swaps positions · Shani sets you back 3 squares"},
+    {icon:"🌑",accent:"#9060a0",title:"Shadow & Fate",text:"Rahu steals Punya from the leader · Ketu strips all shields from every player"},
+  ],
+  bullets_hi:[
+    {icon:"🎲",accent:"#f0d050",title:"कर्म पासा (1–6)",text:"भाग्य का छह-मुखी पासा। फेंको और आगे बढ़ो। परिचित। सरल। लेकिन आधी कहानी।"},
+    {icon:"🌌",accent:"#c0a0e0",title:"नवग्रह पासा — 9 ग्रह",text:"नौ जीवित देवता जो तुम्हारी यात्रा में हस्तक्षेप करते हैं।"},
+    {icon:"☀",accent:"#f0b840",title:"आशीर्वाद",text:"सूर्य +2 कदम · चन्द्र +1 पुण्य · बृहस्पति सबको आशीर्वाद · शुक्र दिव्य कवच"},
+    {icon:"⚡",accent:"#e08060",title:"अराजकता और शाप",text:"मंगल प्रतिद्वंद्वी को पीछे धकेलता · बुध स्थान बदलता · शनि 3 खाने पीछे"},
+    {icon:"🌑",accent:"#9060a0",title:"छाया और भाग्य",text:"राहु नेता का पुण्य चुराता · केतु सबके कवच छीनता"},
+  ],
+  en:"Every turn, you roll not one, but two dice. The first, the Karma Die, a six-sided die that moves you across the board. Simple. Familiar. But the second die, the Navagraha Die, this is what makes this game truly ancient. Nine planets. Nine cosmic forces. Each one, a living god that intervenes in your journey. Surya, the Sun, blazes your path with 2 extra steps. Chandra, the Moon, purifies you with Punya. Mangal, Mars, fills you with battle fury, pushing your rival back 3 squares. Budh, Mercury, swaps your position. Brihaspati, Jupiter, blesses everyone. Shukra, Venus, grants a divine Shield. Shani, Saturn, pushes you back 3 squares. Rahu steals from the leader. Ketu strips all shields.",
+  hi:"हर बारी, तुम एक नहीं, दो पासे फेंकते हो। पहला, कर्म पासा। लेकिन दूसरा, नवग्रह पासा, यही इस खेल को प्राचीन बनाता है। नौ ग्रह। सूर्य 2 अतिरिक्त कदम। चन्द्र पुण्य। मंगल प्रतिद्वंद्वी को पीछे। बुध स्थान बदलता। बृहस्पति सबको। शुक्र कवच। शनि 3 पीछे। राहु चुराता। केतु कवच छीनता।",
+  visuals:[{type:"diceStage"}]},
   {title:"Dharma Dilemma",icon:"⚖",
   bullets_en:[
     {icon:"⚖",accent:"#a0c8e0",title:"21 Moral Crossroads",text:"From the Mahabharata and real life. Ancient dilemmas that kings, sages, and warriors faced — now yours to answer."},
@@ -281,23 +281,7 @@ const STORY_PAGES=[
   en:"Past square 100, the rules change. You have transcended the material world. The Navagraha cannot touch you. You move one step at a time along the Ashtanga Marga — the eight-fold path of Patanjali. Yama, self-restraint. Niyama, discipline. Asana, steadiness. Pranayama, the expansion of life-force. Pratyahara, withdrawal of the senses. Dharana, single-pointed concentration. Dhyana, deep meditation. And finally, Moksha at square 108, liberation from the cycle of birth and death. But at square 107, the Dhyana gate demands exactness. You must roll a one. Only perfect surrender, no grasping, no eagerness, opens the final door.",
   hi:"खाना 100 के बाद, नियम बदल जाते हैं। तुम भौतिक संसार को पार कर चुके हो। नवग्रह तुम्हें नहीं छू सकते। अष्टांग मार्ग पर एक-एक कदम चलते हो। यम, नियम, आसन, प्राणायाम, प्रत्याहार, धारणा, ध्यान। और अंत में, खाना 108 पर मोक्ष — जन्म और मृत्यु के चक्र से मुक्ति। लेकिन खाना 107 पर, ध्यान का द्वार सटीकता मांगता है। सटीक 1 फेंकना होगा। केवल पूर्ण समर्पण अंतिम द्वार खोलता है।",
   visuals:[{type:"sacredPathStage"}]},
-  {title:"Yama Awaits",icon:"💀",
-  bullets_en:[
-    {icon:"☠️",accent:"#e06060",title:"Not a Computer — A Cosmic Force",text:"In solo mode, you face Yama. The God of Death. He has judged souls since the dawn of creation."},
-    {icon:"🎲",accent:"#c06060",title:"Yama Plays Different Rules",text:"He favours Papa choices 60% of the time. He cannot be reasoned with. He cannot be bribed."},
-    {icon:"😂",accent:"#e04040",title:"When His Serpents Catch You",text:"He laughs. Oh, how he laughs. His voice echoes like thunder through an empty temple."},
-    {icon:"👥",accent:"#c0b080",title:"Solo or Multiplayer",text:"Face Yama alone. Or bring 2, 3, or 4 seekers. But only one soul achieves Moksha first."},
-  ],
-  bullets_hi:[
-    {icon:"☠️",accent:"#e06060",title:"कंप्यूटर नहीं — ब्रह्मांडीय शक्ति",text:"अकेले खेलो तो यमराज से सामना। मृत्यु के देवता। सृष्टि के आरम्भ से न्याय कर रहे हैं।"},
-    {icon:"🎲",accent:"#c06060",title:"यमराज अलग नियमों से खेलता है",text:"60% बार पाप चुनता है। न तर्क, न रिश्वत।"},
-    {icon:"😂",accent:"#e04040",title:"जब उसके सांप पकड़ें",text:"वो हंसता है। खाली मंदिर में गरज की तरह उसकी आवाज़ गूंजती है।"},
-    {icon:"👥",accent:"#c0b080",title:"अकेले या साथ",text:"अकेले यमराज से लड़ो। या 2, 3, 4 साधक साथ आएं। मोक्ष पहले एक ही पाएगा।"},
-  ],
-  en:"In solo mode, you do not play alone. You play against Yama. The God of Death. Lord of the Underworld. Judge of all souls. He is not a computer opponent. He is a cosmic force who has been judging souls since the dawn of creation. Yama plays by different rules. He cannot be reasoned with. He cannot be bribed. And when his serpents catch you, he laughs. Oh, how he laughs. You will hear him. His voice echoes through the board like thunder through an empty temple. Every move you make, he watches. Every mistake, he remembers. You may choose to face Yama alone, or bring companions. 2, 3, or 4 seekers can walk this path together. But remember, only one soul achieves Moksha first.",
-  hi:"अकेले खेलते हो तो यमराज से सामना होता है। मृत्यु के देवता। वो ब्रह्मांडीय शक्ति है। यमराज अलग नियमों से खेलता है। जब उसके सांप तुम्हें पकड़ते हैं, वो हंसता है। उसकी आवाज़ पट पर गूंजती है जैसे खाली मंदिर में गरज। साथी ला सकते हो। लेकिन मोक्ष पहले एक ही पाएगा।",
-  visuals:[{type:"versus",data:{icon:"💀",name:"यमराज · YAMA",desc:"God of Death · Judge of Souls"}}]},
-  // ═══ NEW PAGES: Temples, Gurus, Cosmic ═══
+  // ═══ NEW PAGES: Temples, Gurus ═══
   {title:"Knowledge Temples",icon:"🏛",
   bullets_en:[
     {icon:"🏥",accent:"#40a060",title:"वैद्यशाला · Hall of Healing",text:"Sushruta described 121 surgical instruments in 600 BCE. British surgeons learned his rhinoplasty technique in the 1790s."},
@@ -335,23 +319,6 @@ const STORY_PAGES=[
   en:"Every eight turns, an ancient Indian genius materializes from history itself. Aryabhata, who calculated the Earth's circumference to 99.8% accuracy when the world thought the Earth was flat. Sushruta, who performed surgery 2,600 years ago. Chanakya, whose statecraft manual makes Machiavelli look like a child. Panini, whose grammar rules are the world's first programming language. Patanjali, who mapped the architecture of consciousness itself. Answer their question correctly and receive their unique blessing — a real gameplay power that changes your fortune. Answer wrongly, and the Guru departs in disappointment, leaving you with the weight of Papa.",
   hi:"हर आठवें मोड़ पर, एक प्राचीन भारतीय प्रतिभा इतिहास से प्रकट होती है। आर्यभट, सुश्रुत, चाणक्य, पाणिनि, पतंजलि। उनके प्रश्न का सही उत्तर दो और उनका आशीर्वाद पाओ — एक वास्तविक खेल शक्ति। गलत उत्तर दो और गुरु निराश होकर चले जाते हैं, पाप छोड़कर।",
   visuals:[{type:"guruGrid"}]},
-
-  {title:"Cosmic Knowledge",icon:"✨",
-  bullets_en:[
-    {icon:"🌍",accent:"#f0d050",title:"Did You Know?",text:"Every 12 turns, the cosmos reveals a mind-blowing fact about ancient India. Real history. Documented science."},
-    {icon:"⚗",accent:"#c09040",title:"Wootz Steel",text:"Ancient Indian crucible steel contained carbon nanotubes — discovered by electron microscopy in 2006. Published in Nature."},
-    {icon:"📐",accent:"#6080c0",title:"Before Pythagoras",text:"Baudhayana's Sulbasutras contained the theorem 300 years before Pythagoras. It should be called the Baudhayana Theorem."},
-    {icon:"🏛",accent:"#8060c0",title:"The Iron Pillar",text:"Delhi's Iron Pillar (402 CE) — 1,600 years without rusting. Phosphorus-rich iron creates self-healing misawite. Accidental nanotechnology."},
-  ],
-  bullets_hi:[
-    {icon:"🌍",accent:"#f0d050",title:"क्या आप जानते हैं?",text:"हर 12 मोड़ पर, ब्रह्मांड प्राचीन भारत के बारे में एक अद्भुत तथ्य प्रकट करता है।"},
-    {icon:"⚗",accent:"#c09040",title:"वूट्ज़ स्टील",text:"प्राचीन भारतीय क्रूसिबल स्टील में कार्बन नैनोट्यूब थे — 2006 में खोजे गए।"},
-    {icon:"📐",accent:"#6080c0",title:"पायथागोरस से पहले",text:"बौधायन के शुल्बसूत्र में प्रमेय पायथागोरस से 300 साल पहले था।"},
-    {icon:"🏛",accent:"#8060c0",title:"लौह स्तंभ",text:"दिल्ली का लौह स्तंभ (402 ई.) — 1,600 साल बिना जंग। आकस्मिक नैनो-तकनीक।"},
-  ],
-  en:"Every twelve turns, the cosmos whispers a secret — a fact about ancient India so extraordinary it sounds impossible. But every single fact is documented history. Aryabhata calculated Earth's circumference to 99.8% accuracy in 499 CE. Wootz steel from South India contained carbon nanotubes, discovered by Nature journal in 2006. Baudhayana wrote the Pythagorean theorem 300 years before Pythagoras was born. The Iron Pillar of Delhi has stood for 1,600 years without rusting — creating an accidental nanotechnology. You don't just play this game. You learn what the world forgot.",
-  hi:"हर बारहवें मोड़ पर ब्रह्मांड एक रहस्य फुसफुसाता है — प्राचीन भारत के बारे में ऐसा तथ्य जो असंभव लगता है लेकिन प्रलेखित इतिहास है। आप सिर्फ खेलते नहीं — आप सीखते हैं जो दुनिया भूल गई।",
-  visuals:[{type:"cosmicDemo"}]},
 
   {title:"The Path to Moksha",icon:"ॐ",
   bullets_en:[
@@ -5999,62 +5966,66 @@ export default function MokshaPatam108(){
 
       if(vis.type==="dharmaStage") return <DharmaStage key={0}/>;
       if(vis.type==="sacredPathStage") return <SacredPathStage key={0} SACRED_PATH={SACRED_PATH}/>;
-      // ═══ TEMPLE GRID — 9 temples with 3D SVG icons ═══
+      // ═══ TEMPLE GRID — 9 temples with LARGE 3D SVG icons ═══
       if(vis.type==="templeGrid") return(
-        <div key={0} style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,width:"100%",maxWidth:360,margin:"0 auto",animation:"fadeIn .6s ease"}}>
+        <div key={0} style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:isMobile?10:14,width:"100%",maxWidth:480,margin:"0 auto",animation:"fadeIn .6s ease"}}>
           {[
-            {key:'vaidya',name:'वैद्यशाला',en:'Healing',color:'#40a060'},
-            {key:'shilpa',name:'शिल्पशाला',en:'Engineering',color:'#c09040'},
-            {key:'ganita',name:'गणितपीठ',en:'Math',color:'#6080c0'},
-            {key:'shabda',name:'शब्दमन्दिर',en:'Sound',color:'#a080c0'},
-            {key:'jyotish',name:'ज्योतिषपीठ',en:'Stars',color:'#4080c0'},
-            {key:'rajniti',name:'राजनीतिपीठ',en:'Strategy',color:'#c0a040'},
-            {key:'krishi',name:'कृषिपीठ',en:'Earth',color:'#80a040'},
-            {key:'kala',name:'कलापीठ',en:'Arts',color:'#c060a0'},
-            {key:'darshan',name:'दर्शनपीठ',en:'Wisdom',color:'#8060c0'},
+            {key:'vaidya',name:'वैद्यशाला',en:'Hall of Healing',color:'#40a060'},
+            {key:'shilpa',name:'शिल्पशाला',en:'Forge of Wonders',color:'#c09040'},
+            {key:'ganita',name:'गणितपीठ',en:'Throne of Numbers',color:'#6080c0'},
+            {key:'shabda',name:'शब्दमन्दिर',en:'Temple of Sound',color:'#a080c0'},
+            {key:'jyotish',name:'ज्योतिषपीठ',en:'Observatory',color:'#4080c0'},
+            {key:'rajniti',name:'राजनीतिपीठ',en:'Hall of Strategy',color:'#c0a040'},
+            {key:'krishi',name:'कृषिपीठ',en:'Garden of Earth',color:'#80a040'},
+            {key:'kala',name:'कलापीठ',en:'Temple of Arts',color:'#c060a0'},
+            {key:'darshan',name:'दर्शनपीठ',en:'Hall of Wisdom',color:'#8060c0'},
           ].map((t,i)=>(
             <div key={t.key} style={{
-              background:`${t.color}0a`,border:`1px solid ${t.color}25`,borderRadius:10,
-              padding:"12px 6px",textAlign:"center",
+              background:`${t.color}0c`,border:`1px solid ${t.color}30`,borderRadius:12,
+              padding:isMobile?"14px 6px":"18px 10px",textAlign:"center",
               animation:`slideUp .5s ease ${i*0.08}s both`,
+              boxShadow:`0 0 20px ${t.color}10`,
             }}>
-              <div style={{display:"flex",justifyContent:"center",marginBottom:4}}>
-                <TempleIcon templeKey={t.key} size={40} color={t.color}/>
+              <div style={{display:"flex",justifyContent:"center",marginBottom:8}}>
+                <TempleIcon templeKey={t.key} size={isMobile?56:72} color={t.color}/>
               </div>
-              <div style={{fontSize:11,color:t.color,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:700,lineHeight:1.2}}>{t.name}</div>
-              <div style={{fontSize:8,color:`${t.color}60`,fontFamily:"'Cinzel',serif",letterSpacing:1,marginTop:2}}>{t.en}</div>
+              <div style={{fontSize:isMobile?12:14,color:t.color,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:700,lineHeight:1.2}}>{t.name}</div>
+              <div style={{fontSize:isMobile?8:10,color:`${t.color}55`,fontFamily:"'Cinzel',serif",letterSpacing:1,marginTop:3}}>{t.en}</div>
             </div>
           ))}
         </div>
       );
 
-      // ═══ GURU GRID — 8 guru portraits with images ═══
+      // ═══ GURU GRID — 8 guru portraits with LARGE images ═══
       if(vis.type==="guruGrid") return(
-        <div key={0} style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8,width:"100%",maxWidth:400,margin:"0 auto",animation:"fadeIn .6s ease"}}>
+        <div key={0} style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:isMobile?8:14,width:"100%",maxWidth:520,margin:"0 auto",animation:"fadeIn .6s ease"}}>
           {[
-            {id:'aryabhata',name:'आर्यभट',era:'476 CE',color:'#4080c0'},
-            {id:'sushruta',name:'सुश्रुत',era:'600 BCE',color:'#c04040'},
-            {id:'chanakya',name:'चाणक्य',era:'375 BCE',color:'#c0a040'},
-            {id:'panini',name:'पाणिनि',era:'400 BCE',color:'#a080c0'},
-            {id:'charaka',name:'चरक',era:'300 BCE',color:'#40a060'},
-            {id:'bhaskara',name:'भास्कर',era:'1114 CE',color:'#60a0c0'},
-            {id:'varahamihira',name:'वराहमिहिर',era:'505 CE',color:'#6080a0'},
-            {id:'patanjali',name:'पतञ्जलि',era:'200 BCE',color:'#c08060'},
+            {id:'aryabhata',name:'आर्यभट',en:'Aryabhata',era:'476 CE',title:'Moved the Earth',color:'#4080c0'},
+            {id:'sushruta',name:'सुश्रुत',en:'Sushruta',era:'600 BCE',title:'Father of Surgery',color:'#c04040'},
+            {id:'chanakya',name:'चाणक्य',en:'Chanakya',era:'375 BCE',title:'The Kingmaker',color:'#c0a040'},
+            {id:'panini',name:'पाणिनि',en:'Panini',era:'400 BCE',title:'First Programmer',color:'#a080c0'},
+            {id:'charaka',name:'चरक',en:'Charaka',era:'300 BCE',title:'Wandering Healer',color:'#40a060'},
+            {id:'bhaskara',name:'भास्कर',en:'Bhaskara II',era:'1114 CE',title:'Infinity\'s Poet',color:'#60a0c0'},
+            {id:'varahamihira',name:'वराहमिहिर',en:'Varahamihira',era:'505 CE',title:'The Prophet',color:'#6080a0'},
+            {id:'patanjali',name:'पतञ्जलि',en:'Patanjali',era:'200 BCE',title:'Mapped the Mind',color:'#c08060'},
           ].map((g,i)=>(
             <div key={g.id} style={{
               textAlign:"center",animation:`slideUp .5s ease ${i*0.08}s both`,
+              padding:isMobile?"6px 2px":"8px 4px",
             }}>
               <div style={{
-                width:64,height:64,borderRadius:"50%",overflow:"hidden",
-                margin:"0 auto 6px",border:`2px solid ${g.color}50`,
-                boxShadow:`0 0 16px ${g.color}25`,
+                width:isMobile?72:96,height:isMobile?72:96,borderRadius:"50%",overflow:"hidden",
+                margin:"0 auto 8px",border:`3px solid ${g.color}50`,
+                boxShadow:`0 0 24px ${g.color}30, 0 4px 12px rgba(0,0,0,.4)`,
               }}>
                 <img src={`/gurus/${g.id}.png`} alt={g.name}
                   style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"top center"}}
                   onError={(e)=>{e.target.style.display='none'}}/>
               </div>
-              <div style={{fontSize:12,color:g.color,fontFamily:"'Yatra One',serif",lineHeight:1.2}}>{g.name}</div>
-              <div style={{fontSize:7,color:`${g.color}50`,fontFamily:"'Cinzel',serif",letterSpacing:1}}>{g.era}</div>
+              <div style={{fontSize:isMobile?13:16,color:g.color,fontFamily:"'Yatra One',serif",lineHeight:1.2}}>{g.name}</div>
+              <div style={{fontSize:isMobile?8:10,color:"rgba(255,255,255,.4)",fontFamily:"'Cinzel',serif",letterSpacing:0.5,marginTop:2}}>{g.en}</div>
+              <div style={{fontSize:isMobile?7:8,color:`${g.color}50`,fontFamily:"'Cinzel',serif",marginTop:1}}>{g.era}</div>
+              <div style={{fontSize:isMobile?6:7,color:`${g.color}40`,fontFamily:"'Cinzel',serif",marginTop:1,fontStyle:"italic"}}>{g.title}</div>
             </div>
           ))}
         </div>
