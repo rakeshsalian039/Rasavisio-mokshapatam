@@ -6,6 +6,7 @@
 import { useState, useRef } from 'react';
 import TempleIcon from './TempleIcon';
 import SacredPathIcon from './SacredPathIcon';
+import { t } from '../i18n';
 
 // ── Temple bell (inline — no import dependency) ──
 const bellRef = { current: null };
@@ -17,157 +18,157 @@ function bell() {
   } catch (e) {}
 }
 
-// ═══ THE 10 PAGES ═══════════════════════════════════════════════════════════
-const PAGES = [
-  // ─── 1. THE INVITATION ───
-  {
-    shloka: 'कर्मण्येवाधिकारस्ते मा फलेषु कदाचन',
-    shlokaEn: 'You have the right to work, but never to its fruits — Bhagavad Gita 2.47',
-    title: 'Welcome, Seeker',
-    sub: 'THE ANCIENT GAME OF KARMA',
-    body: 'Five thousand years ago, before the Mahabharata was written, before temples were carved in stone — this game existed. It was called Moksha Patam, the path to liberation. The British stole it, stripped its soul, and renamed it "Snakes & Ladders." They removed the Sanskrit. They removed the karma. They removed the meaning.\n\nWe brought it all back.',
-    color: '#f0d050',
-  },
-  // ─── 2. THE BOARD ───
-  {
-    shloka: 'असतो मा सद्गमय · तमसो मा ज्योतिर्गमय',
-    shlokaEn: 'From unreal lead me to real, from darkness to light — Brihadaranyaka Upanishad',
-    title: 'The Sacred Board',
-    sub: 'THREE REALMS · 108 SQUARES',
-    body: 'The board is a map of existence itself. Three cosmic realms, each more treacherous than the last. And above them all — the Sacred Crown, where only the purest souls walk.',
-    items: [
-      { icon: '🌍', label: 'भूलोक · Bhuloka', desc: 'Squares 1-33\nThe Earthly Realm — chaos, raw desire, the beginning', color: '#8a6030' },
-      { icon: '🧠', label: 'अन्तर्लोक · Antarloka', desc: 'Squares 34-66\nThe Inner World — mind battles itself', color: '#5a80a0' },
-      { icon: '✨', label: 'स्वर्गलोक · Svargaloka', desc: 'Squares 67-99\nThe Celestial Realm — one slip destroys lifetimes', color: '#9070c0' },
-      { icon: '🪷', label: 'अष्टांग मार्ग', desc: 'Squares 101-108\nThe 8-Fold Sacred Path of Patanjali', color: '#f0d050' },
-    ],
-    color: '#c0a060',
-  },
-  // ─── 3. DICE ───
-  {
-    title: 'Two Dice of Destiny',
-    sub: 'KARMA DIE + NAVAGRAHA',
-    body: 'Each turn you roll two dice. The Karma Die (1-6) determines how many squares you move. The Navagraha Die summons one of 9 cosmic planetary forces — each with a unique power over your destiny. The planets are not random. They are karma.',
-    items: [
-      { icon: '☀', label: 'सूर्य · Surya', desc: '+2 extra steps', color: '#f0b840' },
-      { icon: '☾', label: 'चन्द्र · Chandra', desc: '+1 Punya', color: '#a0c8e0' },
-      { icon: '♂', label: 'मंगल · Mars', desc: 'Rival retreats 3', color: '#e07050' },
-      { icon: '♀', label: 'शुक्र · Venus', desc: 'Celestial Shield', color: '#d0a0c0' },
-      { icon: '♄', label: 'शनि · Saturn', desc: 'You retreat 3 · +1 Papa', color: '#8080a0' },
-    ],
-    color: '#f0d050',
-  },
-  // ─── 4. SNAKES & LADDERS ───
-  {
-    shloka: 'यदा यदा हि धर्मस्य ग्लानिर्भवति भारत',
-    shlokaEn: 'Whenever dharma declines... I manifest — Bhagavad Gita 4.7',
-    title: 'Serpents & Virtues',
-    sub: '10 VICES DRAG YOU DOWN · 10 VIRTUES LIFT YOU UP',
-    body: '10 Naga serpents — each named after a Sanskrit vice from the Mahabharata — drag you down and brand your soul with +2 Papa. 10 divine ladders — each named after a virtue embodied by legendary souls — lift you toward the light and grant +1 Punya. Every fall is a lesson. Every rise is grace.',
-    items: [
-      { icon: '𓆙', label: 'क्रोध · Wrath', desc: 'Duryodhana\'s consuming rage', color: '#e06030' },
-      { icon: '𓆙', label: 'अहंकार · Ego', desc: 'Parashurama\'s blind pride', color: '#e06030' },
-      { icon: '🪔', label: 'दया · Compassion', desc: 'Yudhishthira wept for enemies', color: '#f0d050' },
-      { icon: '🪔', label: 'भक्ति · Devotion', desc: 'Prahlada survived fire', color: '#f0d050' },
-    ],
-    color: '#e08040',
-  },
-  // ─── 5. DHARMA DILEMMAS ───
-  {
-    title: 'Dharma Dilemmas',
-    sub: '21 MORAL CROSSROADS',
-    body: 'At 21 marked squares, the universe presents a choice. Should Arjuna fight his own family? Should you report your friend\'s cheating? Each path carries karmic weight — Punya or Papa. There are no "right" answers. Only consequences. The character you build in these moments determines whether Moksha\'s gate opens or rejects you.',
-    items: [
-      { icon: '⚖', label: 'Draupadi\'s Disrobing', desc: 'Speak truth or protect yourself?', color: '#d0b870' },
-      { icon: '⚖', label: 'Karna\'s Divine Armour', desc: 'Keep power or sacrifice it?', color: '#d0b870' },
-      { icon: '⚖', label: 'The Honest Tax Return', desc: 'Modern dharma — truth or advantage?', color: '#d0b870' },
-    ],
-    color: '#d0b870',
-  },
-  // ─── 6. KNOWLEDGE TEMPLES ───
-  {
-    shloka: 'विद्या ददाति विनयम् · विनयाद् याति पात्रताम्',
-    shlokaEn: 'Knowledge gives humility. From humility comes worthiness. — Subhashita',
-    title: 'Knowledge Temples',
-    sub: '9 TEMPLES OF ANCIENT INDIAN SCIENCE',
-    body: 'Nine sacred temples are embedded in the board — each dedicated to a branch of knowledge that India gave the world. Land on one and face a quiz. Correct: +1 Punya and advance 3 squares. Wrong: +1 Papa. The complete curriculum of Nalanda University, reborn in a game.',
-    temples: [
-      { name: 'वैद्यशाला', en: 'Hall of Healing', desc: 'Sushruta\'s 121 surgical instruments. Rhinoplasty in 600 BCE.', templeKey: 'vaidya', color: '#40a060' },
-      { name: 'शिल्पशाला', en: 'Forge of Wonders', desc: 'Iron Pillar: 1,600 years without rust. Carbon nanotubes in Wootz steel.', templeKey: 'shilpa', color: '#c09040' },
-      { name: 'गणितपीठ', en: 'Throne of Numbers', desc: 'Zero, pi, calculus — all invented here. 500 years before Newton.', templeKey: 'ganita', color: '#6080c0' },
-      { name: 'शब्दमन्दिर', en: 'Temple of Sound', desc: 'Panini\'s 3,959 rules = world\'s first programming language.', templeKey: 'shabda', color: '#a080c0' },
-      { name: 'ज्योतिषपीठ', en: 'Observatory of Stars', desc: 'Aryabhata knew Earth rotates — 1,000 years before Copernicus.', templeKey: 'jyotish', color: '#4080c0' },
-      { name: 'राजनीतिपीठ', en: 'Hall of Strategy', desc: 'Chanakya\'s Arthashastra — 5,000 pages. Machiavelli was a pamphlet.', templeKey: 'rajniti', color: '#c0a040' },
-      { name: 'कृषिपीठ', en: 'Garden of Earth', desc: 'India domesticated rice, cotton, sugarcane. Drew Columbus west.', templeKey: 'krishi', color: '#80a040' },
-      { name: 'कलापीठ', en: 'Temple of Arts', desc: '108 dance poses. 22 micro-tones. Kailasa carved from one cliff.', templeKey: 'kala', color: '#c060a0' },
-      { name: 'दर्शनपीठ', en: 'Hall of Wisdom', desc: 'Atoms in 600 BCE. Fuzzy logic in 6th century. Quantum parallels.', templeKey: 'darshan', color: '#8060c0' },
-    ],
-    color: '#c09040',
-  },
-  // ─── 7. GURU ENCOUNTERS ───
-  {
-    shloka: 'गुरुर्ब्रह्मा गुरुर्विष्णुर्गुरुर्देवो महेश्वरः',
-    shlokaEn: 'The Guru is Brahma, Vishnu, and Shiva themselves — Guru Stotram',
-    title: 'Guru Encounters',
-    sub: '8 ANCIENT MASTERS WHO SHAPED CIVILIZATION',
-    body: 'Every 8 turns, an ancient Indian genius materializes from history itself. Answer their question correctly: +2 Punya and a unique blessing — a real gameplay power that changes your fortune. Answer wrongly: +1 Papa.',
-    gurus: [
-      { id: 'aryabhata', name: 'आर्यभट', en: 'Aryabhata', era: '476 CE', title: 'The Man Who Moved the Earth', blessing: '+2 extra squares', color: '#4080c0' },
-      { id: 'sushruta', name: 'सुश्रुत', en: 'Sushruta', era: '600 BCE', title: 'The Father of Surgery', blessing: 'Heal 1 Papa', color: '#c04040' },
-      { id: 'chanakya', name: 'चाणक्य', en: 'Chanakya', era: '375 BCE', title: 'The Kingmaker', blessing: '+3 Punya', color: '#c0a040' },
-      { id: 'panini', name: 'पाणिनि', en: 'Panini', era: '400 BCE', title: 'The First Programmer', blessing: 'Auto-correct dilemma', color: '#a080c0' },
-      { id: 'charaka', name: 'चरक', en: 'Charaka', era: '300 BCE', title: 'The Wandering Healer', blessing: 'Snake shield', color: '#40a060' },
-      { id: 'bhaskara', name: 'भास्कर', en: 'Bhaskara II', era: '1114 CE', title: 'Infinity\'s Poet', blessing: 'Double dice roll', color: '#60a0c0' },
-      { id: 'varahamihira', name: 'वराहमिहिर', en: 'Varahamihira', era: '505 CE', title: 'The Prophet', blessing: '+3 Punya', color: '#6080a0' },
-      { id: 'patanjali', name: 'पतञ्जलि', en: 'Patanjali', era: '200 BCE', title: 'Architect of Consciousness', blessing: 'Skip next Papa', color: '#c08060' },
-    ],
-    color: '#4080c0',
-  },
-  // ─── 8. COSMIC CARDS ───
-  {
-    title: 'Did You Know?',
-    sub: 'COSMIC KNOWLEDGE CARDS',
-    body: 'Every 12 turns, the cosmos whispers a secret — a fact about ancient India so extraordinary it sounds impossible. But every fact is documented history.\n\nAryabhata calculated the Earth\'s circumference to 99.8% accuracy in 499 CE. Wootz steel contained carbon nanotubes. Baudhayana wrote the Pythagorean theorem 300 years before Pythagoras.\n\nYou don\'t just play this game. You learn what the world forgot.',
-    color: '#f0d050',
-  },
-  // ─── 9. SACRED PATH ───
-  {
-    shloka: 'योगश्चित्तवृत्तिनिरोधः',
-    shlokaEn: 'Yoga is the cessation of the fluctuations of the mind — Yoga Sutra 1.2',
-    title: 'The Sacred Crown',
-    sub: 'ASHTANGA MARGA · THE 8-FOLD PATH',
-    body: 'After Square 100, the rules change completely. You enter Patanjali\'s 8-fold path — the final ascent to Moksha. Move only 1 step per turn. Each step tests your knowledge with a riddle. No dice shortcuts. No planetary effects. No one can push you or swap with you. It is just your soul and the path.',
-    items: [
-      { label: 'यम · Yama', desc: 'Self-restraint', stepIdx: 0 },
-      { label: 'नियम · Niyama', desc: 'Discipline', stepIdx: 1 },
-      { label: 'आसन · Asana', desc: 'Steadiness', stepIdx: 2 },
-      { label: 'प्राणायाम', desc: 'Life-force', stepIdx: 3 },
-      { label: 'प्रत्याहार', desc: 'Withdrawal', stepIdx: 4 },
-      { label: 'धारणा · Dharana', desc: 'Concentration', stepIdx: 5 },
-      { label: 'ध्यान · Dhyana', desc: 'Meditation', stepIdx: 6 },
-      { label: 'मोक्ष · MOKSHA', desc: 'Liberation', stepIdx: 7 },
-    ],
-    color: '#f0d050',
-  },
-  // ─── 10. VICTORY ───
-  {
-    shloka: 'तत् त्वम् असि',
-    shlokaEn: 'You are That — Chandogya Upanishad',
-    title: 'Two Paths to Liberation',
-    sub: 'HOW YOU WIN',
-    victory: [
-      {
-        icon: 'ॐ', label: 'Moksha Victory', color: '#f0d050',
-        desc: 'Reach Square 108 with your Punya equal to or greater than your Papa. If your soul is impure — Papa exceeds Punya — the gates of Moksha reject you, and you are cast back to Square 67. Purify yourself. Try again. Only the pure transcend.',
-      },
-      {
-        icon: '⚡', label: 'Karma Victory', color: '#80c080',
-        desc: 'Accumulate 50 Punya from any square on the board. The board itself dissolves beneath you. Instant liberation through accumulated virtue. Not through position, but through the weight of your righteous actions. The rarer, harder, more beautiful path.',
-      },
-    ],
-    color: '#f0d050',
-  },
-];
+// ── Per-popup language toggle button ──
+function LangToggle({ popupLang, setPopupLang, chosenLang, color }) {
+  const current = popupLang || chosenLang || 'en';
+  return (
+    <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+      <button onClick={(e) => { e.stopPropagation(); setPopupLang('en'); }} style={{
+        padding: '3px 10px', fontSize: 10, fontFamily: "'Cinzel',serif",
+        background: current === 'en' ? `${color}12` : 'transparent',
+        border: `1px solid ${current === 'en' ? color + '40' : color + '15'}`,
+        color: current === 'en' ? color : `${color}50`,
+        borderRadius: 12, cursor: 'pointer', letterSpacing: 1,
+      }}>EN</button>
+      <button onClick={(e) => { e.stopPropagation(); setPopupLang('hi'); }} style={{
+        padding: '3px 10px', fontSize: 10, fontFamily: "'Noto Serif Devanagari',serif",
+        background: current === 'hi' ? `${color}12` : 'transparent',
+        border: `1px solid ${current === 'hi' ? color + '40' : color + '15'}`,
+        color: current === 'hi' ? color : `${color}50`,
+        borderRadius: 12, cursor: 'pointer',
+      }}>हिन्दी</button>
+    </div>
+  );
+}
+
+// ═══ THE 10 PAGES (dynamic — generated from i18n keys) ════════════════════
+function getPages(lang) {
+  const h = (key) => t(`howtoplay.${key}`, lang);
+  return [
+    // ─── 1. THE INVITATION ───
+    {
+      shloka: h('p0_shloka'), shlokaEn: h('p0_shlokaEn'),
+      title: h('p0_title'), sub: h('p0_sub'), body: h('p0_body'),
+      color: '#f0d050',
+    },
+    // ─── 2. THE BOARD ───
+    {
+      shloka: h('p1_shloka'), shlokaEn: h('p1_shlokaEn'),
+      title: h('p1_title'), sub: h('p1_sub'), body: h('p1_body'),
+      items: [
+        { icon: '🌍', label: h('p1_item0_label'), desc: h('p1_item0_desc'), color: '#8a6030' },
+        { icon: '🧠', label: h('p1_item1_label'), desc: h('p1_item1_desc'), color: '#5a80a0' },
+        { icon: '✨', label: h('p1_item2_label'), desc: h('p1_item2_desc'), color: '#9070c0' },
+        { icon: '🪷', label: h('p1_item3_label'), desc: h('p1_item3_desc'), color: '#f0d050' },
+      ],
+      color: '#c0a060',
+    },
+    // ─── 3. DICE ───
+    {
+      title: h('p2_title'), sub: h('p2_sub'), body: h('p2_body'),
+      items: [
+        { icon: '☀', label: h('p2_item0_label'), desc: h('p2_item0_desc'), color: '#f0b840' },
+        { icon: '☾', label: h('p2_item1_label'), desc: h('p2_item1_desc'), color: '#a0c8e0' },
+        { icon: '♂', label: h('p2_item2_label'), desc: h('p2_item2_desc'), color: '#e07050' },
+        { icon: '♀', label: h('p2_item3_label'), desc: h('p2_item3_desc'), color: '#d0a0c0' },
+        { icon: '♄', label: h('p2_item4_label'), desc: h('p2_item4_desc'), color: '#8080a0' },
+      ],
+      color: '#f0d050',
+    },
+    // ─── 4. SNAKES & LADDERS ───
+    {
+      shloka: h('p3_shloka'), shlokaEn: h('p3_shlokaEn'),
+      title: h('p3_title'), sub: h('p3_sub'), body: h('p3_body'),
+      items: [
+        { icon: '𓆙', label: h('p3_item0_label'), desc: h('p3_item0_desc'), color: '#e06030' },
+        { icon: '𓆙', label: h('p3_item1_label'), desc: h('p3_item1_desc'), color: '#e06030' },
+        { icon: '🪔', label: h('p3_item2_label'), desc: h('p3_item2_desc'), color: '#f0d050' },
+        { icon: '🪔', label: h('p3_item3_label'), desc: h('p3_item3_desc'), color: '#f0d050' },
+      ],
+      color: '#e08040',
+    },
+    // ─── 5. DHARMA DILEMMAS ───
+    {
+      title: h('p4_title'), sub: h('p4_sub'), body: h('p4_body'),
+      items: [
+        { icon: '⚖', label: h('p4_item0_label'), desc: h('p4_item0_desc'), color: '#d0b870' },
+        { icon: '⚖', label: h('p4_item1_label'), desc: h('p4_item1_desc'), color: '#d0b870' },
+        { icon: '⚖', label: h('p4_item2_label'), desc: h('p4_item2_desc'), color: '#d0b870' },
+      ],
+      color: '#d0b870',
+    },
+    // ─── 6. KNOWLEDGE TEMPLES ───
+    {
+      shloka: h('p5_shloka'), shlokaEn: h('p5_shlokaEn'),
+      title: h('p5_title'), sub: h('p5_sub'), body: h('p5_body'),
+      temples: [
+        { name: 'वैद्यशाला', en: 'Hall of Healing', desc: h('p5_temple0_desc'), templeKey: 'vaidya', color: '#40a060' },
+        { name: 'शिल्पशाला', en: 'Forge of Wonders', desc: h('p5_temple1_desc'), templeKey: 'shilpa', color: '#c09040' },
+        { name: 'गणितपीठ', en: 'Throne of Numbers', desc: h('p5_temple2_desc'), templeKey: 'ganita', color: '#6080c0' },
+        { name: 'शब्दमन्दिर', en: 'Temple of Sound', desc: h('p5_temple3_desc'), templeKey: 'shabda', color: '#a080c0' },
+        { name: 'ज्योतिषपीठ', en: 'Observatory of Stars', desc: h('p5_temple4_desc'), templeKey: 'jyotish', color: '#4080c0' },
+        { name: 'राजनीतिपीठ', en: 'Hall of Strategy', desc: h('p5_temple5_desc'), templeKey: 'rajniti', color: '#c0a040' },
+        { name: 'कृषिपीठ', en: 'Garden of Earth', desc: h('p5_temple6_desc'), templeKey: 'krishi', color: '#80a040' },
+        { name: 'कलापीठ', en: 'Temple of Arts', desc: h('p5_temple7_desc'), templeKey: 'kala', color: '#c060a0' },
+        { name: 'दर्शनपीठ', en: 'Hall of Wisdom', desc: h('p5_temple8_desc'), templeKey: 'darshan', color: '#8060c0' },
+      ],
+      color: '#c09040',
+    },
+    // ─── 7. GURU ENCOUNTERS ───
+    {
+      shloka: h('p6_shloka'), shlokaEn: h('p6_shlokaEn'),
+      title: h('p6_title'), sub: h('p6_sub'), body: h('p6_body'),
+      gurus: [
+        { id: 'aryabhata', name: 'आर्यभट', en: 'Aryabhata', era: '476 CE', title: h('p6_guru0_title'), blessing: h('p6_guru0_blessing'), color: '#4080c0' },
+        { id: 'sushruta', name: 'सुश्रुत', en: 'Sushruta', era: '600 BCE', title: h('p6_guru1_title'), blessing: h('p6_guru1_blessing'), color: '#c04040' },
+        { id: 'chanakya', name: 'चाणक्य', en: 'Chanakya', era: '375 BCE', title: h('p6_guru2_title'), blessing: h('p6_guru2_blessing'), color: '#c0a040' },
+        { id: 'panini', name: 'पाणिनि', en: 'Panini', era: '400 BCE', title: h('p6_guru3_title'), blessing: h('p6_guru3_blessing'), color: '#a080c0' },
+        { id: 'charaka', name: 'चरक', en: 'Charaka', era: '300 BCE', title: h('p6_guru4_title'), blessing: h('p6_guru4_blessing'), color: '#40a060' },
+        { id: 'bhaskara', name: 'भास्कर', en: 'Bhaskara II', era: '1114 CE', title: h('p6_guru5_title'), blessing: h('p6_guru5_blessing'), color: '#60a0c0' },
+        { id: 'varahamihira', name: 'वराहमिहिर', en: 'Varahamihira', era: '505 CE', title: h('p6_guru6_title'), blessing: h('p6_guru6_blessing'), color: '#6080a0' },
+        { id: 'patanjali', name: 'पतञ्जलि', en: 'Patanjali', era: '200 BCE', title: h('p6_guru7_title'), blessing: h('p6_guru7_blessing'), color: '#c08060' },
+      ],
+      color: '#4080c0',
+    },
+    // ─── 8. COSMIC CARDS ───
+    {
+      title: h('p7_title'), sub: h('p7_sub'), body: h('p7_body'),
+      color: '#f0d050',
+    },
+    // ─── 9. SACRED PATH ───
+    {
+      shloka: h('p8_shloka'), shlokaEn: h('p8_shlokaEn'),
+      title: h('p8_title'), sub: h('p8_sub'), body: h('p8_body'),
+      items: [
+        { label: h('p8_item0_label'), desc: h('p8_item0_desc'), stepIdx: 0 },
+        { label: h('p8_item1_label'), desc: h('p8_item1_desc'), stepIdx: 1 },
+        { label: h('p8_item2_label'), desc: h('p8_item2_desc'), stepIdx: 2 },
+        { label: h('p8_item3_label'), desc: h('p8_item3_desc'), stepIdx: 3 },
+        { label: h('p8_item4_label'), desc: h('p8_item4_desc'), stepIdx: 4 },
+        { label: h('p8_item5_label'), desc: h('p8_item5_desc'), stepIdx: 5 },
+        { label: h('p8_item6_label'), desc: h('p8_item6_desc'), stepIdx: 6 },
+        { label: h('p8_item7_label'), desc: h('p8_item7_desc'), stepIdx: 7 },
+      ],
+      color: '#f0d050',
+    },
+    // ─── 10. VICTORY ───
+    {
+      shloka: h('p9_shloka'), shlokaEn: h('p9_shlokaEn'),
+      title: h('p9_title'), sub: h('p9_sub'),
+      victory: [
+        {
+          icon: 'ॐ', label: h('p9_victory0_label'), color: '#f0d050',
+          desc: h('p9_victory0_desc'),
+        },
+        {
+          icon: '⚡', label: h('p9_victory1_label'), color: '#80c080',
+          desc: h('p9_victory1_desc'),
+        },
+      ],
+      color: '#f0d050',
+    },
+  ];
+}
 
 // ═══ STYLES ═══
 const ani = (delay = 0) => ({
@@ -181,13 +182,17 @@ const CSS = `
 @keyframes htpFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 `;
 
-export default function HowToPlay({ onClose }) {
+export default function HowToPlay({ onClose, chosenLang }) {
   const [page, setPage] = useState(0);
   const [vis, setVis] = useState(true);
+  const [popupLang, setPopupLang] = useState(null);
   const scrollRef = useRef(null);
 
+  const lang = popupLang || chosenLang || 'en';
+  const pages = getPages(lang);
+
   const go = (p) => {
-    if (p < 0 || p >= PAGES.length) return;
+    if (p < 0 || p >= pages.length) return;
     setVis(false);
     bell();
     setTimeout(() => {
@@ -197,7 +202,7 @@ export default function HowToPlay({ onClose }) {
     }, 350);
   };
 
-  const pg = PAGES[page];
+  const pg = pages[page];
 
   return (
     <div style={{
@@ -220,11 +225,13 @@ export default function HowToPlay({ onClose }) {
       }}>
         <span style={{ fontSize: 10, letterSpacing: 4, color: `${pg.color}50`,
           fontFamily: "'Cinzel',serif" }}>
-          {page + 1} / {PAGES.length}
+          {page + 1} / {pages.length}
         </span>
+        <LangToggle popupLang={popupLang} setPopupLang={setPopupLang}
+          chosenLang={chosenLang} color={pg.color} />
         <span style={{ fontSize: 11, letterSpacing: 5, color: pg.color,
           fontFamily: "'Cinzel',serif", fontWeight: 700 }}>
-          HOW TO PLAY
+          {t('ui.how_to_play', lang)}
         </span>
         <button onClick={onClose} style={{
           background: 'transparent', border: `1px solid ${pg.color}25`,
@@ -308,30 +315,30 @@ export default function HowToPlay({ onClose }) {
               gap: 'clamp(6px,1.5vw,10px)', width: '100%',
               marginTop: 'clamp(16px,3vw,24px)',
             }}>
-              {pg.temples.map((t, i) => (
+              {pg.temples.map((tp, i) => (
                 <div key={i} style={{
                   padding: 'clamp(10px,2vw,16px) clamp(4px,1vw,8px)',
-                  background: `${t.color}08`, border: `1px solid ${t.color}18`,
+                  background: `${tp.color}08`, border: `1px solid ${tp.color}18`,
                   borderRadius: 10, textAlign: 'center',
                   ...ani(0.5 + i * 0.05),
                   animation: `htpReveal .5s cubic-bezier(0.16,1,0.3,1) ${0.5 + i * 0.05}s both`,
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 4 }}>
-                    <TempleIcon templeKey={t.templeKey} size={36} color={t.color} />
+                    <TempleIcon templeKey={tp.templeKey} size={36} color={tp.color} />
                   </div>
                   <div style={{
-                    fontSize: 'clamp(10px,2vw,13px)', color: t.color,
+                    fontSize: 'clamp(10px,2vw,13px)', color: tp.color,
                     fontFamily: "'Noto Serif Devanagari',serif", fontWeight: 700,
                     lineHeight: 1.3, marginBottom: 2,
-                  }}>{t.name}</div>
+                  }}>{tp.name}</div>
                   <div style={{
                     fontSize: 'clamp(7px,1.3vw,9px)', color: 'rgba(255,255,255,.35)',
                     fontFamily: "'Cinzel',serif", letterSpacing: 1, marginBottom: 4,
-                  }}>{t.en}</div>
+                  }}>{tp.en}</div>
                   <div style={{
                     fontSize: 'clamp(7px,1.2vw,9px)', color: 'rgba(200,180,140,.4)',
                     lineHeight: 1.5,
-                  }}>{t.desc}</div>
+                  }}>{tp.desc}</div>
                 </div>
               ))}
             </div>
@@ -490,12 +497,12 @@ export default function HowToPlay({ onClose }) {
           cursor: 'pointer', borderRadius: 4, fontFamily: "'Cinzel',serif",
           letterSpacing: 2, minWidth: 70,
         }}>
-          {page === 0 ? '✕ CLOSE' : '← BACK'}
+          {page === 0 ? `✕ ${t('ui.close', lang)}` : t('ui.back', lang)}
         </button>
 
         {/* Dots */}
         <div style={{ display: 'flex', gap: 3, alignItems: 'center' }}>
-          {PAGES.map((_, i) => (
+          {pages.map((_, i) => (
             <div key={i} onClick={() => go(i)} style={{
               width: i === page ? 14 : 5, height: 5, borderRadius: 3,
               background: i === page ? pg.color : `${pg.color}25`,
@@ -506,16 +513,16 @@ export default function HowToPlay({ onClose }) {
         </div>
 
         {/* Next */}
-        <button onClick={() => page === PAGES.length - 1 ? onClose() : go(page + 1)} style={{
-          background: page === PAGES.length - 1 ? `${pg.color}12` : 'transparent',
-          border: `1px solid ${page === PAGES.length - 1 ? pg.color + '45' : pg.color + '20'}`,
-          color: page === PAGES.length - 1 ? pg.color : `${pg.color}80`,
-          padding: '7px 14px', fontSize: page === PAGES.length - 1 ? 11 : 10,
+        <button onClick={() => page === pages.length - 1 ? onClose() : go(page + 1)} style={{
+          background: page === pages.length - 1 ? `${pg.color}12` : 'transparent',
+          border: `1px solid ${page === pages.length - 1 ? pg.color + '45' : pg.color + '20'}`,
+          color: page === pages.length - 1 ? pg.color : `${pg.color}80`,
+          padding: '7px 14px', fontSize: page === pages.length - 1 ? 11 : 10,
           cursor: 'pointer', borderRadius: 4, fontFamily: "'Cinzel',serif",
-          letterSpacing: 2, fontWeight: page === PAGES.length - 1 ? 700 : 400,
+          letterSpacing: 2, fontWeight: page === pages.length - 1 ? 700 : 400,
           minWidth: 70,
         }}>
-          {page === PAGES.length - 1 ? 'BEGIN ▸' : 'NEXT →'}
+          {page === pages.length - 1 ? t('ui.begin', lang) : t('ui.next', lang)}
         </button>
       </div>
 

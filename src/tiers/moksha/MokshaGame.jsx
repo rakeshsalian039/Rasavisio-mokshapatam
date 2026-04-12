@@ -4931,20 +4931,20 @@ export default function MokshaPatam108(){
     // ═══ STEP 1: Show graha popup, wait for user dismiss ═══
     const startMovement=()=>{
       // ═══ ASHTANGA STEPWISE: On sacred path, move exactly 1 step per turn ═══
-      if(oldP>=101&&oldP<107){newP=oldP+1;extras.push("Sacred Path: 1 step")}
+      if(oldP>=101&&oldP<107){newP=oldP+1;extras.push(t("ui.sacred_path")+": 1")}
       else if(oldP===107){
         // At the final gate — need EXACT roll of 1
-        if(r===1){newP=108;extras.push("ॐ Exact 1! Moksha gate opens!")}
-        else{newP=107;extras.push(`Rolled ${r} — need exact 1 for Moksha`);
-          setMsg(`${pName} rolled ${r} at the final gate. Only a roll of 1 opens Moksha!`);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);setSkipA(nSkip);setBusy(false);setCur(c=>(c+1)%nP);
-          showEvent({icon:"🚪",title:"The Gate of Moksha",subtitle:`${pName}, you stand at the final gate — ध्यान Dhyana, Square 107. You rolled ${r}. But Moksha demands EXACT 1. Only absolute surrender opens this gate. Roll again next turn.`,color:"#f0d050"});
+        if(r===1){newP=108;extras.push("ॐ "+t("ui.exact_1_moksha"))}
+        else{newP=107;extras.push(`${r} — ${t("ui.moksha_only_1")}`);
+          setMsg(`${pName}: ${t("ui.moksha_only_1")}`);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);setSkipA(nSkip);setBusy(false);setCur(c=>(c+1)%nP);
+          showEvent({icon:"🚪",title:t("ui.moksha_gate_title")||"The Gate of Moksha",subtitle:`${pName}, ${t("ui.moksha_only_1")}`,color:"#f0d050"});
           return}
       }
-      else if(newP>100&&oldP<=100){newP=101;extras.push("Entered Sacred Path!")}
-      if(newP>108){setMsg(`Overshot Moksha. ${extras.join(" · ")}`);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);setSkipA(nSkip);setBusy(false);setCur(c=>(c+1)%nP);return}
+      else if(newP>100&&oldP<=100){newP=101;extras.push(t("ui.entered_sacred_path"))}
+      if(newP>108){setMsg(`${t("ui.overshot_moksha")} ${extras.join(" · ")}`);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);setSkipA(nSkip);setBusy(false);setCur(c=>(c+1)%nP);return}
       if(newP<1)newP=1;
       let step=0;const steps=Math.abs(newP-oldP);const dir=newP>oldP?1:-1;
-      if(steps===0){setBusy(false);setCur(c=>(c+1)%nP);setMsg(extras.join(" · ")||"No movement.");setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);return}
+      if(steps===0){setBusy(false);setCur(c=>(c+1)%nP);setMsg(extras.join(" · ")||t("ui.no_movement"));setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setPos(nPos);return}
       // ═══ STEP 2: Animate movement (accelerates after 3 steps) ═══
       const animateStep=()=>{
         step++;nPos[cur]=oldP+dir*step;setPos([...nPos]);play("move");
@@ -4954,11 +4954,11 @@ export default function MokshaPatam108(){
           const finishTurn=(skipDharmaCheck)=>{
             nPos[cur]=p;setPos([...nPos]);setPunya(nPunya);setPapa(nPapa);setShieldA(nShield);setSkipA(nSkip);
             if(p>(gameStats.current.highest||1))gameStats.current.highest=p;
-            setMsg([eMsg,...extras].filter(Boolean).join(" · ")||`Moved to ${p}.`);
+            setMsg([eMsg,...extras].filter(Boolean).join(" · ")||`→ ${p}`);
             setHist(h=>[...h.slice(-12),`${pName}→${p}`]);
-            if(nPunya[cur]>=50&&!win){setWin(cur);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory");
+            if(nPunya[cur]>=50&&!win){setWin(cur);setMsg(t("ui.karma_transcends").replace("{name}",pName));play("victory");
               addCGEntry('moksha',p,`30 पुण्य · कर्म विजय`);
-              showEvent({icon:"ॐ",title:"KARMA VICTORY!",subtitle:`${pName} has accumulated 50 Punya! The board dissolves. Instant Moksha!`,color:"#f0d050"},()=>{speakCG('moksha',300);setTimeout(()=>setShowMoksha(true),1200);});
+              showEvent({icon:"ॐ",title:t("ui.karma_victory"),subtitle:t("ui.karma_victory_desc").replace("{name}",pName),color:"#f0d050"},()=>{speakCG('moksha',300);setTimeout(()=>setShowMoksha(true),1200);});
             }
             // Balance warning — Chitragupta watches when it's knife-edge
             const pu=nPunya[cur],pa=nPapa[cur];
@@ -5217,7 +5217,7 @@ export default function MokshaPatam108(){
         const stepNum=npos[dil.pi]-100;
         const stepName=SACRED_PATH[stepNum-1]?.skt||'';
         const stepEn=SACRED_PATH[stepNum-1]?.en||'';
-        setMsg(`🪷 ${stepName} — ${stepEn} complete! +${fx.punya||2} Punya`);
+        setMsg(`🪷 ${stepName} — ${t("ui.sacred_complete").replace("{name}",stepEn)} ${t("ui.plus_punya").replace("{n}",fx.punya||2)}`);
         gameStats.current.riddlesC++;
         play("ladder");playTempleBell();
         if(!muted){
@@ -5235,7 +5235,7 @@ export default function MokshaPatam108(){
         const backTo=Math.max(1,curPos-1);
         npos[dil.pi]=backTo;
         setPunya(np);setPapa(npa);setSkipA(nsk);setPos(npos);setShieldA(nsh);
-        setMsg(`✗ Wrong! ${pName} falls back to square ${backTo}. +${fx.papa||1} Papa`);
+        setMsg(`✗ ${t("ui.wrong_falls_back").replace("{sq}",backTo)} ${t("ui.plus_papa").replace("{n}",fx.papa||1)}`);
         gameStats.current.riddlesW++;
         // Play Yama laugh with delay
         play("yamaLaugh");
@@ -5247,7 +5247,7 @@ export default function MokshaPatam108(){
           setTimeout(()=>{if(!bgMuted)ambient.unduck();},5000);
         }
       }
-      if(np[dil.pi]>=50&&!win){setWin(dil.pi);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory")}
+      if(np[dil.pi]>=50&&!win){setWin(dil.pi);setMsg(t("ui.karma_transcends").replace("{name}",pName));play("victory")}
       // Clear dil — delay turn advance so sacred voice can play
       const nextCurA=(dil.pi+1)%nP;
       const isCorrectSacred=ch.k==="punya"&&dil.ashtanga;
@@ -5284,7 +5284,7 @@ export default function MokshaPatam108(){
     setMsg(parts.join(", ")||"Balanced.");
     if(ch.k==="punya"){play("chime");showKarmaToast(pName,fx.punya||1,'punya','⚖');gameStats.current.riddlesC++;addCGEntry('dharma_p',npos[dil.pi]||1,dil.en||'');speakCG('dharma_p',600);setTimeout(()=>{if(!bgMuted)ambient.unduck();},3200);}
     else if(ch.k==="papa"){play("yamaLaugh");showKarmaToast(pName,fx.papa||1,'papa','⚖');gameStats.current.riddlesW++;addCGEntry('dharma_x',npos[dil.pi]||1,dil.en||'');speakCG('dharma_x',4000);setTimeout(()=>{if(!bgMuted)ambient.unduck();},6500);}
-    if(np[dil.pi]>=50&&!win){setWin(dil.pi);setMsg(`ॐ KARMA VICTORY! ${pName} transcends!`);play("victory")}
+    if(np[dil.pi]>=50&&!win){setWin(dil.pi);setMsg(t("ui.karma_transcends").replace("{name}",pName));play("victory")}
     const nextCurD=(cur+1)%nP;
     setDil(null);setCur(nextCurD);
     // Online: write state after dharma resolution
@@ -5498,7 +5498,7 @@ export default function MokshaPatam108(){
       </button>:<button onClick={auth.signInGoogle} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 16px",background:"rgba(12,10,7,.9)",border:"1.5px solid rgba(200,160,60,.2)",borderRadius:22,cursor:"pointer",color:"#c0b080",fontSize:12,fontFamily:"'Cinzel',serif",backdropFilter:"blur(8px)",boxShadow:"0 2px 12px rgba(0,0,0,.4)",transition:"all .2s"}}><GoogleIcon/><span>Sign In</span></button>}
     </div>
     {showInfo   && <Encyclopedia onClose={()=>setShowInfo(false)}/>}
-    {showGuide  && <HowToPlay    onClose={()=>setShowGuide(false)}/>}
+    {showGuide  && <HowToPlay    onClose={()=>setShowGuide(false)} chosenLang={chosenLang}/>}
     {showCinematic && <CinematicOnboarding onComplete={()=>{setShowCinematic(false);navigateTo("pickcount")}} chosenLang={chosenLang} muted={muted}/>}
     {showRiddles&&<div key="riddles-panel" style={{position:"fixed",inset:0,background:"rgba(6,5,3,.95)",zIndex:300,overflowY:"auto",padding:"clamp(12px,3vw,24px)",animation:"fadeIn .3s ease"}}>
       <div style={{maxWidth:700,margin:"0 auto"}}>
@@ -6790,7 +6790,7 @@ export default function MokshaPatam108(){
                 <span style={{fontSize:isMobile?18:22}}>{players[templeLore.playerIdx]?.char?.icon}</span>
                 <span style={{fontSize:isMobile?10:12,color:"rgba(240,200,80,.5)",
                   fontFamily:"'Cinzel',serif",letterSpacing:2}}>
-                  {(templeLore.playerName||'SEEKER').toUpperCase()} &middot; PROVE YOUR KNOWLEDGE
+                  {(templeLore.playerName||'SEEKER').toUpperCase()} &middot; {t("ui.prove_knowledge")}
                 </span>
               </div>
               <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:10}}>
@@ -6861,7 +6861,7 @@ export default function MokshaPatam108(){
             <div style={{fontSize:isMobile?8:10,letterSpacing:isMobile?3:5,
               color:`${templeQuiz.temple.color}50`,fontFamily:"'Cinzel',serif",
               marginBottom:isMobile?8:12,textAlign:"center"}}>
-              {players[cur]?.char?.icon} {(players[cur]?.name||'SEEKER').toUpperCase()} &middot; PROVE YOUR KNOWLEDGE
+              {players[cur]?.char?.icon} {(players[cur]?.name||'SEEKER').toUpperCase()} &middot; {t("ui.prove_knowledge")}
             </div>
 
             {/* Question text — distinct card */}
@@ -6914,7 +6914,7 @@ export default function MokshaPatam108(){
           <div style={{fontSize:isMobile?8:10,color:"rgba(200,160,60,.2)",
             fontFamily:"'Cinzel',serif",letterSpacing:4,marginTop:isMobile?20:28,
             animation:"grahaNameIn .4s ease 1s both",
-          }}>SQUARE {templeQuiz.square} &middot; KNOWLEDGE TEMPLE</div>
+          }}>{t("ui.square_label").replace("{n}",templeQuiz.square)} &middot; {t("ui.knowledge_temple")}</div>
         </div>
       )}
 
@@ -7085,7 +7085,7 @@ export default function MokshaPatam108(){
                 <div style={{fontSize:isMobile?9:10,letterSpacing:isMobile?2:4,
                   color:"rgba(240,200,80,.45)",fontFamily:"'Cinzel',serif",
                   marginBottom:isMobile?10:14,textAlign:isMobile?"center":"left"}}>
-                  {players[cur]?.char?.icon} {(players[cur]?.name||'SEEKER').toUpperCase()} &middot; ANSWER THE GURU
+                  {players[cur]?.char?.icon} {(players[cur]?.name||'SEEKER').toUpperCase()} &middot; {t("ui.answer_the_guru")}
                 </div>
 
                 {/* Question card — distinct */}
@@ -7159,7 +7159,7 @@ export default function MokshaPatam108(){
                 <div style={{fontSize:isMobile?8:10,color:"rgba(200,160,60,.2)",
                   fontFamily:"'Cinzel',serif",letterSpacing:3,marginTop:isMobile?14:20,
                   textAlign:isMobile?"center":"left",
-                }}>EVERY 5TH TURN &middot; AN ANCIENT GURU TESTS YOUR KNOWLEDGE</div>
+                }}>{t("ui.every_8_turns")}</div>
               </div>
             </div>
           )}
@@ -7252,7 +7252,7 @@ export default function MokshaPatam108(){
                       border:"1px solid rgba(200,100,60,.12)",
                       textAlign:isMobile?"center":"left",
                     }}>
-                      <span style={{color:"rgba(240,200,80,.5)"}}>Correct answer:</span> {tq(`gurus.${guruEncounter.guru?.id||""}_a${guruEncounter.qIdx||0}`,guruEncounter.question.a)}
+                      <span style={{color:"rgba(240,200,80,.5)"}}>{t("ui.correct_answer_label")}</span> {tq(`gurus.${guruEncounter.guru?.id||""}_a${guruEncounter.qIdx||0}`,guruEncounter.question.a)}
                       <br/><br/>{tq(`gurus.${guruEncounter.guru?.id||""}_explain${guruEncounter.qIdx||0}`,guruEncounter.question.explain)}
                     </div>
                   </>
@@ -7307,8 +7307,8 @@ export default function MokshaPatam108(){
           <div style={{fontSize:18,fontFamily:"'Yatra One',serif",color:eventPopup.color,marginBottom:4,letterSpacing:2}}>{eventPopup.title}</div>
           {eventPopup.extra&&<div style={{fontSize:16,fontWeight:900,color:eventPopup.color,marginBottom:6,letterSpacing:4}}>{eventPopup.extra}</div>}
           <div style={{fontSize:11,color:"#d0c090",lineHeight:1.9,fontStyle:"italic",opacity:.8,maxHeight:200,overflowY:"auto"}}>{eventPopup.subtitle}</div>
-          <button onClick={()=>{VoiceEngine.unlockAudio();dismissEvent();}} style={{marginTop:16,background:"transparent",border:`1px solid ${eventPopup.color}40`,color:eventPopup.color,padding:"12px 28px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2,minHeight:44,touchAction:"manipulation",WebkitTapHighlightColor:"transparent"}}>TAP TO CONTINUE ▸</button>
-          {eventPopup.type==="graha"&&<div style={{marginTop:8,fontSize:9,opacity:.35,letterSpacing:2,fontFamily:"'Cinzel',serif"}}>auto-continues in 8s</div>}
+          <button onClick={()=>{VoiceEngine.unlockAudio();dismissEvent();}} style={{marginTop:16,background:"transparent",border:`1px solid ${eventPopup.color}40`,color:eventPopup.color,padding:"12px 28px",fontSize:11,fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:4,letterSpacing:2,minHeight:44,touchAction:"manipulation",WebkitTapHighlightColor:"transparent"}}>{t("ui.tap_continue")} ▸</button>
+          {eventPopup.type==="graha"&&<div style={{marginTop:8,fontSize:9,opacity:.35,letterSpacing:2,fontFamily:"'Cinzel',serif"}}>{t("ui.auto_continues")}</div>}
         </div>
       </div>}
       {dil&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.85)",zIndex:250,display:"flex",alignItems:"center",justifyContent:"center",padding:16,overflowY:"auto"}}>
@@ -7982,7 +7982,7 @@ export default function MokshaPatam108(){
                     animation:turnsLeft<=1?"mp 1.5s ease infinite":"none"}}>🧘</span>
                   <span style={{fontSize:isMobile?8:10,color:`rgba(240,200,80,${0.3+intensity*0.5})`,
                     fontFamily:"'Cinzel',serif",letterSpacing:1}}>
-                    {turnsLeft===1?"GURU ARRIVES NEXT TURN!":turnsLeft===2?"Guru in 2 turns":`Guru in ${turnsLeft} turns`}
+                    {turnsLeft===1?t("ui.guru_arrives_next"):t("ui.guru_in_turns").replace("{n}",turnsLeft)}
                   </span>
                 </div>
               );

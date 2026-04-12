@@ -31,6 +31,7 @@ import cosmic_en from './en/cosmic.json';
 import sacred_en from './en/sacred.json';
 import dilemmas_en from './en/dilemmas.json';
 import graha_en from './en/graha.json';
+import howtoplay_en from './en/howtoplay.json';
 
 // Hindi locale files (will be empty initially — filled by translators)
 import ui_hi from './hi/ui.json';
@@ -40,10 +41,11 @@ import cosmic_hi from './hi/cosmic.json';
 import sacred_hi from './hi/sacred.json';
 import dilemmas_hi from './hi/dilemmas.json';
 import graha_hi from './hi/graha.json';
+import howtoplay_hi from './hi/howtoplay.json';
 
 const LOCALES = {
-  en: { ui: ui_en, gurus: gurus_en, temples: temples_en, cosmic: cosmic_en, sacred: sacred_en, dilemmas: dilemmas_en, graha: graha_en },
-  hi: { ui: ui_hi, gurus: gurus_hi, temples: temples_hi, cosmic: cosmic_hi, sacred: sacred_hi, dilemmas: dilemmas_hi, graha: graha_hi },
+  en: { ui: ui_en, gurus: gurus_en, temples: temples_en, cosmic: cosmic_en, sacred: sacred_en, dilemmas: dilemmas_en, graha: graha_en, howtoplay: howtoplay_en },
+  hi: { ui: ui_hi, gurus: gurus_hi, temples: temples_hi, cosmic: cosmic_hi, sacred: sacred_hi, dilemmas: dilemmas_hi, graha: graha_hi, howtoplay: howtoplay_hi },
 };
 
 let currentLang = 'en';

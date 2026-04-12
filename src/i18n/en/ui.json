@@ -93,6 +93,23 @@
 
   "ashtanga_marga": "अष्टांग मार्ग · The 8-Fold Sacred Path",
 
+  "correct_answer_label": "Correct answer:",
+  "auto_continues": "auto-continues in 8s",
+  "plus_punya": "+{n} Punya",
+  "plus_papa": "+{n} Papa",
+  "moksha_only_1": "Only a roll of 1 opens Moksha!",
+  "overshot_moksha": "Overshot Moksha.",
+  "no_movement": "No movement.",
+  "karma_transcends": "⚡ KARMA VICTORY! {name} transcends!",
+  "sacred_complete": "{name} complete!",
+  "wrong_falls_back": "Wrong! Falls back to square {sq}.",
+  "back_plus_papa": "Back {n}, +{p} Papa",
+  "exact_1_moksha": "Exact 1! Moksha gate opens!",
+  "entered_sacred_path": "Entered Sacred Path!",
+  "answer_the_guru": "ANSWER THE GURU",
+  "square_label": "SQUARE {n}",
+  "moksha_gate_title": "The Gate of Moksha",
+
   "error_title": "A disturbance in the cosmic order",
   "error_desc": "Something unexpected happened. The path to Moksha has been disrupted.",
   "error_button": "Return to the Path"

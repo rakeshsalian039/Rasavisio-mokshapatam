@@ -93,6 +93,23 @@
 
   "ashtanga_marga": "अष्टांग मार्ग · आठ-सूत्री पवित्र मार्ग",
 
+  "correct_answer_label": "सही उत्तर:",
+  "auto_continues": "8 सेकंड में स्वतः आगे",
+  "plus_punya": "+{n} पुण्य",
+  "plus_papa": "+{n} पाप",
+  "moksha_only_1": "केवल 1 का पासा मोक्ष खोलता है!",
+  "overshot_moksha": "मोक्ष से आगे निकल गए।",
+  "no_movement": "कोई गति नहीं।",
+  "karma_transcends": "⚡ कर्म विजय! {name} मुक्त हो गए!",
+  "sacred_complete": "{name} पूर्ण!",
+  "wrong_falls_back": "गलत! वापस खाना {sq} पर।",
+  "back_plus_papa": "वापस {n}, +{p} पाप",
+  "exact_1_moksha": "सटीक 1! मोक्ष द्वार खुलता है!",
+  "entered_sacred_path": "पवित्र मार्ग में प्रवेश!",
+  "answer_the_guru": "गुरु को उत्तर दो",
+  "square_label": "खाना {n}",
+  "moksha_gate_title": "मोक्ष का द्वार",
+
   "error_title": "ब्रह्मांडीय व्यवस्था में गड़बड़ी",
   "error_desc": "कुछ अप्रत्याशित हुआ। मोक्ष का मार्ग बाधित हो गया।",
   "error_button": "मार्ग पर लौटें"
