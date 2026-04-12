@@ -1145,7 +1145,7 @@ const VoiceEngine = {
       const bowlF = ctx.createBiquadFilter(); bowlF.type='bandpass'; bowlF.frequency.value=528; bowlF.Q.value=12;
       bowl.connect(bowlF); bowlF.connect(bowlG);
       // Route
-      const master = ctx.createGain(); master.gain.value=0.45;
+      const master = ctx.createGain(); master.gain.value=0.85;
       src.connect(cut); cut.connect(pres); pres.connect(air);
       air.connect(master); air.connect(conv); conv.connect(rvMix); rvMix.connect(master);
       bowlG.connect(master); master.connect(ctx.destination);
@@ -6519,8 +6519,8 @@ export default function MokshaPatam108(){
       players={pendingPlayers||players}
       chosenLang={chosenLang}
       muted={muted}
-      onBegin={()=>startGame(pendingPlayers||players)}
-      onSkip={()=>startGame(pendingPlayers||players)}
+      onBegin={()=>{VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){};startGame(pendingPlayers||players)}}
+      onSkip={()=>{VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){};startGame(pendingPlayers||players)}}
     />;
   }
 
