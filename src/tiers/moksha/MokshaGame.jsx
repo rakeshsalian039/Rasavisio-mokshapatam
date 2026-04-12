@@ -4212,7 +4212,7 @@ export default function MokshaPatam108(){
   // Auto-load profile data when profile panel opens OR when auth resolves
   useEffect(()=>{
     if(!showProfile||!auth.user)return;
-    log("Profile: Auto-loading data...");
+    console.log("Profile: Loading data for",auth.user.id);
     // Refresh profile stats from DB
     auth.refresh();
     // Load history
@@ -4224,6 +4224,9 @@ export default function MokshaPatam108(){
     GameDB.getLeaderboard()
       .then(d=>setLeaderboard(d))
       .catch(e=>console.error("Leaderboard load failed:",e));
+    // Safety: clear loading after 8s even if promise hangs
+    const safety=setTimeout(()=>setHistLoading(false),8000);
+    return()=>clearTimeout(safety);
   },[showProfile,auth.user]);
 
   const[screen,setScreen]=useState("title"); // title|story|pickcount|setup|chitragupta|game

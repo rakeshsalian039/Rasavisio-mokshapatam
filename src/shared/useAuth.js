@@ -16,17 +16,17 @@ export function useAuth(){
   const loadProfile=async(uid)=>{
     if(!supabase||!uid)return;
     try{
-      log("Auth: Loading profile for",uid);
+      console.log("Auth: Loading profile for",uid);
       const{data,error:err}=await supabase.from('profiles').select('*').eq('id',uid);
-      if(err){logError("Auth: Profile load failed:",err.message);return}
+      if(err){console.error("Auth: Profile load failed:",err.message);return}
       if(data&&data.length>0){
         setProfile(data[0]);
-        log("Auth: Profile loaded",data[0].display_name);
+        console.log("Auth: Profile loaded ✓",data[0].display_name);
         if(data[0].birth_date){
           localStorage.setItem("mp108_birth",data[0].birth_date);
         }
-      }else{log("Auth: No profile found for",uid)}
-    }catch(e){logError("Auth: Profile load error:",e)}
+      }else{console.warn("Auth: No profile found for",uid)}
+    }catch(e){console.error("Auth: Profile load error:",e)}
   };
 
   useEffect(()=>{
@@ -47,12 +47,13 @@ export function useAuth(){
 
     // Listen for auth state changes
     const{data:{subscription}}=supabase.auth.onAuthStateChange(async(event,session)=>{
+      console.log("Auth: onAuthStateChange",event,session?.user?.id||"no user");
       clearTimeout(timeout);
       if(session?.user){
         resolved=true;
         setUser(session.user);
         setLoading(false);
-        await loadProfile(session.user.id);
+        loadProfile(session.user.id); // don't await — let UI render immediately
         if(isOAuthReturn&&window.history.replaceState){
           window.history.replaceState(null,'',window.location.pathname);
         }
@@ -182,20 +183,24 @@ const GameDB={
     return true;
   },
   async getHistory(userId,limit=20){
-    if(!supabase||!userId)return[];
+    if(!supabase||!userId){console.warn("GameDB: getHistory skipped — no supabase or userId");return[]}
     try{
+      console.log("GameDB: Loading history for",userId);
       const{data,error:err}=await supabase.from('game_history').select('*').eq('user_id',userId).order('played_at',{ascending:false}).limit(limit);
-      if(err){logError("GameDB: History error:",err.message);return[]}
+      if(err){console.error("GameDB: History query FAILED:",err.message,err.details,err.hint);return[]}
+      console.log("GameDB: History loaded ✓",data?.length||0,"records");
       return data||[];
-    }catch(e){logError("GameDB: History error:",e);return[]}
+    }catch(e){console.error("GameDB: History EXCEPTION:",e);return[]}
   },
   async getLeaderboard(limit=50){
-    if(!supabase)return[];
+    if(!supabase){console.warn("GameDB: getLeaderboard skipped — no supabase");return[]}
     try{
+      console.log("GameDB: Loading leaderboard...");
       const{data,error:err}=await supabase.from('profiles').select('id,display_name,avatar_url,total_games,total_wins,total_punya_earned,total_papa_earned,total_moksha_wins,total_karma_wins,total_riddles_correct,longest_streak,last_played_at').gt('total_games',0).order('total_punya_earned',{ascending:false}).limit(limit);
-      if(err){logError("GameDB: Leaderboard error:",err.message);return[]}
+      if(err){console.error("GameDB: Leaderboard query FAILED:",err.message,err.details,err.hint);return[]}
+      console.log("GameDB: Leaderboard loaded ✓",data?.length||0,"players");
       return(data||[]).map(p=>({...p,karma_score:(p.total_punya_earned||0)-(p.total_papa_earned||0)}));
-    }catch(e){logError("GameDB: Leaderboard error:",e);return[]}
+    }catch(e){console.error("GameDB: Leaderboard EXCEPTION:",e);return[]}
   },
   async getProfile(userId){
     if(!supabase||!userId)return null;
