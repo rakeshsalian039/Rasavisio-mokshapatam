@@ -6472,27 +6472,30 @@ export default function MokshaPatam108(){
         }}>{t("ui.skip_invocation")}</button>
 
         {/* Header — मंगलाचरण */}
-        <div style={{fontSize:9,letterSpacing:8,color:"rgba(240,200,80,.3)",
+        <div style={{fontSize:9,letterSpacing:8,color:"rgba(240,200,80,.45)",
           fontFamily:"'Cinzel',serif",marginBottom:16,
-          animation:"fadeIn 1s ease both",
+          animation:"fadeIn 1s ease both",position:"relative",zIndex:2,
         }}>{t("ui.mangalacharan_title")}</div>
 
         {/* OM symbol */}
-        <div style={{fontSize:36,marginBottom:16,opacity:.15,
-          animation:"fadeIn 1.5s ease both",filter:"drop-shadow(0 0 20px rgba(240,200,80,.3))"}}>ॐ</div>
+        <div style={{fontSize:48,marginBottom:16,position:"relative",zIndex:2,
+          animation:"fadeIn 1.5s ease both",
+          filter:"drop-shadow(0 0 30px rgba(240,200,80,.5)) drop-shadow(0 0 60px rgba(240,200,80,.2))",
+        }}>ॐ</div>
 
         {/* Sanskrit Shloka — large Devanagari */}
         <div style={{
           fontFamily:"'Noto Serif Devanagari','Yatra One',serif",
-          fontSize:"clamp(18px,4.5vw,32px)",color:"#f0d050",
+          fontSize:"clamp(20px,5vw,36px)",color:"#f0d050",
           textAlign:"center",lineHeight:2.2,maxWidth:700,
           whiteSpace:"pre-line",letterSpacing:1,
+          position:"relative",zIndex:2,
           animation:"shlokaGlow 4s ease infinite, fadeIn .8s ease .3s both",
         }}>"{sl.shloka}"</div>
 
         {/* Phase 1: Pronunciation + Repeat prompt */}
         {ph>=1&&(
-          <div style={{marginTop:20,textAlign:"center",animation:"fadeIn .8s ease both"}}>
+          <div style={{marginTop:20,textAlign:"center",animation:"fadeIn .8s ease both",position:"relative",zIndex:2}}>
             <div style={{fontSize:10,letterSpacing:4,color:"rgba(240,200,80,.35)",
               fontFamily:"'Cinzel',serif",marginBottom:8}}>{t("ui.repeat_after_me")}</div>
             <div style={{fontSize:"clamp(13px,2.5vw,17px)",color:"rgba(220,200,160,.5)",
@@ -6504,7 +6507,7 @@ export default function MokshaPatam108(){
 
         {/* Phase 2: Meaning + Source */}
         {ph>=2&&(
-          <div style={{marginTop:24,textAlign:"center",animation:"fadeIn .8s ease both",maxWidth:600}}>
+          <div style={{marginTop:24,textAlign:"center",animation:"fadeIn .8s ease both",maxWidth:600,position:"relative",zIndex:2}}>
             <div style={{fontSize:9,letterSpacing:4,color:"rgba(240,200,80,.25)",
               fontFamily:"'Cinzel',serif",marginBottom:8}}>{t("ui.meaning_label")}</div>
             <div style={{fontSize:"clamp(12px,2.5vw,15px)",
@@ -6522,7 +6525,7 @@ export default function MokshaPatam108(){
 
         {/* Phase 3: BEGIN */}
         {ph>=3&&(
-          <div style={{marginTop:28,textAlign:"center",animation:"fadeIn .6s ease both"}}>
+          <div style={{marginTop:28,textAlign:"center",animation:"fadeIn .6s ease both",position:"relative",zIndex:2}}>
             <div style={{fontSize:"clamp(16px,3.5vw,24px)",color:"#f0d050",
               fontFamily:"'Cinzel',serif",letterSpacing:6,fontWeight:700,
               textShadow:"0 0 40px rgba(240,200,80,.4)",marginBottom:16,
