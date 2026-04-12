@@ -1346,7 +1346,7 @@ const VoiceEngine = {
   // ═══ NARRATOR VOICE — Vedic temple processing for story onboarding ═══
   // staticUrl: pre-generated /onboarding/story-N-lang.mp3 (zero API cost)
   // onAudioStart: fires the MOMENT audio begins playing (used for UI sync)
-  async speakNarrator(text, lang, staticUrl, onAudioStart) {
+  async speakNarrator(text, lang, staticUrl, onAudioStart, volume) {
     this.stop();
     const myToken = this._stopToken;
 
@@ -1482,7 +1482,7 @@ const VoiceEngine = {
 
       // ═══ MASTER ═══
       const master = ctx.createGain();
-      master.gain.value = 1.1;
+      master.gain.value = volume || 1.1;
 
       // ═══ ROUTING ═══
       source.connect(bass);
@@ -4421,7 +4421,7 @@ export default function MokshaPatam108(){
     if(screen!=="mangalacharan"||!mangalShloka)return;
     if(!muted){
       const url=`/shlokas/shloka-${mangalShloka.id}.mp3`;
-      setTimeout(()=>VoiceEngine.speakNarrator(mangalShloka.shloka,chosenLang,url),800);
+      setTimeout(()=>VoiceEngine.speakNarrator(mangalShloka.shloka,chosenLang,url,null,1.6),800);
     }
     const t1=setTimeout(()=>setMangalPhase(1),4000);
     const t2=setTimeout(()=>setMangalPhase(2),8000);
@@ -6418,16 +6418,50 @@ export default function MokshaPatam108(){
     const goGame=()=>{VoiceEngine.stop();navigateTo("game");gameReadyRef.current=true};
     return(
       <div style={{position:"fixed",inset:0,zIndex:300,
-        background:"radial-gradient(ellipse at 50% 30%,rgba(40,30,10,.95),rgba(8,6,3,.99) 70%)",
+        background:"#020108",
         display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
         padding:"clamp(16px,4vw,40px)",overflow:"hidden",
       }}>
-        <style>{`@keyframes shlokaGlow{0%,100%{text-shadow:0 0 20px rgba(240,200,80,.15),0 2px 40px rgba(240,200,80,.08)}50%{text-shadow:0 0 50px rgba(240,200,80,.35),0 2px 60px rgba(240,200,80,.15)}}`}</style>
+        <style>{`
+          @keyframes shlokaGlow{0%,100%{text-shadow:0 0 20px rgba(240,200,80,.15),0 2px 40px rgba(240,200,80,.08)}50%{text-shadow:0 0 50px rgba(240,200,80,.35),0 2px 60px rgba(240,200,80,.15)}}
+          @keyframes cosmicDrift{0%{transform:translateY(0)}100%{transform:translateY(-50%)}}
+          @keyframes nebulaBreath{0%,100%{opacity:.15}50%{opacity:.3}}
+        `}</style>
 
-        {/* Radial ambient glow */}
-        <div style={{position:"absolute",top:"20%",left:"50%",transform:"translateX(-50%)",
-          width:"60vw",height:"60vw",borderRadius:"50%",
-          background:"radial-gradient(circle,rgba(240,200,80,.04),transparent 60%)",
+        {/* Cosmic starfield — 3 layers of stars */}
+        <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none"}}>
+          {/* Deep space gradient */}
+          <div style={{position:"absolute",inset:0,
+            background:"radial-gradient(ellipse at 50% 40%, #0a0818 0%, #020108 50%, #000 100%)"}}/>
+          {/* Nebula glow — purple/gold */}
+          <div style={{position:"absolute",top:"15%",left:"30%",width:"50vw",height:"50vw",borderRadius:"50%",
+            background:"radial-gradient(circle,rgba(100,60,180,.12),transparent 60%)",
+            animation:"nebulaBreath 8s ease infinite",filter:"blur(40px)"}}/>
+          <div style={{position:"absolute",top:"50%",right:"20%",width:"35vw",height:"35vw",borderRadius:"50%",
+            background:"radial-gradient(circle,rgba(240,180,60,.06),transparent 60%)",
+            animation:"nebulaBreath 12s ease 3s infinite",filter:"blur(30px)"}}/>
+          {/* Stars — CSS box-shadow trick for dozens of dots */}
+          {[1,2,3].map(layer=>(
+            <div key={layer} style={{
+              position:"absolute",top:0,left:0,
+              width:2/layer,height:2/layer,borderRadius:"50%",
+              background:"#fff",
+              animation:`cosmicDrift ${60+layer*20}s linear infinite`,
+              boxShadow:Array.from({length:80},()=>{
+                const x=Math.floor(Math.random()*2000);
+                const y=Math.floor(Math.random()*4000);
+                const s=Math.random()*1.5+0.3;
+                const b=Math.random()*0.6+0.4;
+                return `${x}px ${y}px ${s}px rgba(255,255,255,${b})`;
+              }).join(','),
+            }}/>
+          ))}
+        </div>
+
+        {/* Central golden divine glow */}
+        <div style={{position:"absolute",top:"25%",left:"50%",transform:"translateX(-50%)",
+          width:"50vw",height:"50vw",borderRadius:"50%",
+          background:"radial-gradient(circle,rgba(240,200,80,.06),transparent 50%)",
           pointerEvents:"none"}}/>
 
         {/* Skip button */}
