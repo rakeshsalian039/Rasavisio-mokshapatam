@@ -5397,6 +5397,7 @@ export default function MokshaPatam108(){
 
   // ═══ DHARMA VOICE — read aloud when card appears (skip CPU) ═══
   useEffect(()=>{
+    if(!dil)return;
     // Stop any lingering audio first, then duck ambient, then speak with delay
     VoiceEngine.stop();
     try{window.speechSynthesis.cancel()}catch(e){}
