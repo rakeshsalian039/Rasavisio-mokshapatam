@@ -297,6 +297,62 @@ const STORY_PAGES=[
   en:"In solo mode, you do not play alone. You play against Yama. The God of Death. Lord of the Underworld. Judge of all souls. He is not a computer opponent. He is a cosmic force who has been judging souls since the dawn of creation. Yama plays by different rules. He cannot be reasoned with. He cannot be bribed. And when his serpents catch you, he laughs. Oh, how he laughs. You will hear him. His voice echoes through the board like thunder through an empty temple. Every move you make, he watches. Every mistake, he remembers. You may choose to face Yama alone, or bring companions. 2, 3, or 4 seekers can walk this path together. But remember, only one soul achieves Moksha first.",
   hi:"अकेले खेलते हो तो यमराज से सामना होता है। मृत्यु के देवता। वो ब्रह्मांडीय शक्ति है। यमराज अलग नियमों से खेलता है। जब उसके सांप तुम्हें पकड़ते हैं, वो हंसता है। उसकी आवाज़ पट पर गूंजती है जैसे खाली मंदिर में गरज। साथी ला सकते हो। लेकिन मोक्ष पहले एक ही पाएगा।",
   visuals:[{type:"versus",data:{icon:"💀",name:"यमराज · YAMA",desc:"God of Death · Judge of Souls"}}]},
+  // ═══ NEW PAGES: Temples, Gurus, Cosmic ═══
+  {title:"Knowledge Temples",icon:"🏛",
+  bullets_en:[
+    {icon:"🏥",accent:"#40a060",title:"वैद्यशाला · Hall of Healing",text:"Sushruta described 121 surgical instruments in 600 BCE. British surgeons learned his rhinoplasty technique in the 1790s."},
+    {icon:"⚒",accent:"#c09040",title:"शिल्पशाला · Forge of Wonders",text:"The Iron Pillar of Delhi has stood 1,600 years without rusting. Wootz steel contained carbon nanotubes."},
+    {icon:"🔢",accent:"#6080c0",title:"गणितपीठ · Throne of Numbers",text:"India gave the world zero, the decimal system, and calculus — 500 years before Newton."},
+    {icon:"📜",accent:"#a080c0",title:"शब्दमन्दिर · Temple of Sound",text:"Panini's 3,959 grammar rules = the world's first programming language. Om vibrates at 136.1 Hz — Earth's orbital frequency."},
+    {icon:"🔭",accent:"#4080c0",title:"ज्योतिषपीठ · Observatory of Stars",text:"Aryabhata knew Earth rotates — 1,000 years before Copernicus. Surya Siddhanta's year = 1.4 seconds error."},
+  ],
+  bullets_hi:[
+    {icon:"🏥",accent:"#40a060",title:"वैद्यशाला · आरोग्य भवन",text:"सुश्रुत ने 600 ईसा पूर्व 121 शल्य चिकित्सा उपकरण बनाए। ब्रिटिश सर्जनों ने 1790 में उनकी नासिका पुनर्निर्माण तकनीक सीखी।"},
+    {icon:"⚒",accent:"#c09040",title:"शिल्पशाला · आश्चर्य भट्टी",text:"दिल्ली का लौह स्तंभ 1,600 साल से बिना जंग लगे खड़ा है। वूट्ज़ स्टील में कार्बन नैनोट्यूब थे।"},
+    {icon:"🔢",accent:"#6080c0",title:"गणितपीठ · संख्याओं का सिंहासन",text:"भारत ने दुनिया को शून्य, दशमलव पद्धति और कैलकुलस दिया — न्यूटन से 500 साल पहले।"},
+    {icon:"📜",accent:"#a080c0",title:"शब्दमन्दिर · ध्वनि मंदिर",text:"पाणिनि के 3,959 व्याकरण नियम = दुनिया की पहली प्रोग्रामिंग भाषा। ॐ 136.1 Hz पर कंपन करता है।"},
+    {icon:"🔭",accent:"#4080c0",title:"ज्योतिषपीठ · तारों की वेधशाला",text:"आर्यभट जानते थे कि पृथ्वी घूमती है — कोपरनिकस से 1,000 साल पहले।"},
+  ],
+  en:"Nine sacred temples are embedded across the board — each dedicated to a branch of ancient Indian knowledge that the world forgot. Ayurveda, Engineering, Mathematics, Language, Astronomy, Statecraft, Agriculture, Arts, and Philosophy. Land on a temple square and face a quiz. Answer correctly, and the ancients smile upon you — advance 3 squares and earn Punya. Answer wrongly, and Papa weighs on your karma. This is the complete curriculum of Nalanda University, the greatest seat of learning the world has ever known, reborn inside a game. When Bakhtiyar Khilji burned Nalanda's nine-storey library in 1193, it burned for three months. The knowledge survived. It lives here.",
+  hi:"नौ पवित्र मंदिर पट पर बिखरे हुए हैं — हर एक प्राचीन भारतीय ज्ञान की एक शाखा को समर्पित। आयुर्वेद, अभियांत्रिकी, गणित, भाषा, खगोल विज्ञान, राजनीति, कृषि, कला, और दर्शन। मंदिर के खाने पर उतरो और एक प्रश्नोत्तरी का सामना करो। सही उत्तर दो और आगे बढ़ो। गलत उत्तर और पाप तुम्हारे कर्म पर भारी पड़ेगा। यह नालंदा विश्वविद्यालय का पाठ्यक्रम है — खेल में पुनर्जन्म।",
+  visuals:[{type:"templeGrid"}]},
+
+  {title:"The Ancient Gurus",icon:"🧘",
+  bullets_en:[
+    {icon:"🌍",accent:"#4080c0",title:"आर्यभट · Aryabhata (476 CE)",text:"Calculated Earth's circumference to 99.8% accuracy. Knew Earth rotates 1,000 years before Copernicus. Blessing: +2 extra squares."},
+    {icon:"🔪",accent:"#c04040",title:"सुश्रुत · Sushruta (600 BCE)",text:"Father of Surgery. 121 instruments. Rhinoplasty. Cataract removal. Blessing: Heal 1 Papa."},
+    {icon:"🏛",accent:"#c0a040",title:"चाणक्य · Chanakya (375 BCE)",text:"Built the Maurya Empire from nothing. 5,000-page Arthashastra. Machiavelli was a pamphlet. Blessing: +3 Punya."},
+    {icon:"📜",accent:"#a080c0",title:"पाणिनि · Panini (400 BCE)",text:"3,959 grammar rules = world's first programming language. NASA called Sanskrit the most computer-friendly language. Blessing: Auto-correct dilemma."},
+    {icon:"🧘",accent:"#c08060",title:"पतञ्जलि · Patanjali (200 BCE)",text:"196 sutras mapped the architecture of consciousness. Every meditation app traces back to him. Blessing: Skip next Papa."},
+  ],
+  bullets_hi:[
+    {icon:"🌍",accent:"#4080c0",title:"आर्यभट (476 ई.)",text:"पृथ्वी की परिधि 99.8% सटीकता से मापी। कोपरनिकस से 1,000 साल पहले जानते थे कि पृथ्वी घूमती है। आशीर्वाद: +2 अतिरिक्त कदम।"},
+    {icon:"🔪",accent:"#c04040",title:"सुश्रुत (600 ई.पू.)",text:"शल्य चिकित्सा के जनक। 121 उपकरण। नासिका पुनर्निर्माण। मोतियाबिंद निकालना। आशीर्वाद: 1 पाप हटाना।"},
+    {icon:"🏛",accent:"#c0a040",title:"चाणक्य (375 ई.पू.)",text:"शून्य से मौर्य साम्राज्य बनाया। 5,000 पृष्ठ अर्थशास्त्र। आशीर्वाद: +3 पुण्य।"},
+    {icon:"📜",accent:"#a080c0",title:"पाणिनि (400 ई.पू.)",text:"3,959 व्याकरण नियम। नासा ने संस्कृत को सबसे कंप्यूटर-अनुकूल भाषा कहा। आशीर्वाद: दुविधा स्वतः सही।"},
+    {icon:"🧘",accent:"#c08060",title:"पतञ्जलि (200 ई.पू.)",text:"196 सूत्रों ने चेतना की वास्तुकला मैप की। हर ध्यान ऐप उन्हीं तक जाता है। आशीर्वाद: अगला पाप रद्द।"},
+  ],
+  en:"Every eight turns, an ancient Indian genius materializes from history itself. Aryabhata, who calculated the Earth's circumference to 99.8% accuracy when the world thought the Earth was flat. Sushruta, who performed surgery 2,600 years ago. Chanakya, whose statecraft manual makes Machiavelli look like a child. Panini, whose grammar rules are the world's first programming language. Patanjali, who mapped the architecture of consciousness itself. Answer their question correctly and receive their unique blessing — a real gameplay power that changes your fortune. Answer wrongly, and the Guru departs in disappointment, leaving you with the weight of Papa.",
+  hi:"हर आठवें मोड़ पर, एक प्राचीन भारतीय प्रतिभा इतिहास से प्रकट होती है। आर्यभट, सुश्रुत, चाणक्य, पाणिनि, पतंजलि। उनके प्रश्न का सही उत्तर दो और उनका आशीर्वाद पाओ — एक वास्तविक खेल शक्ति। गलत उत्तर दो और गुरु निराश होकर चले जाते हैं, पाप छोड़कर।",
+  visuals:[{type:"guruGrid"}]},
+
+  {title:"Cosmic Knowledge",icon:"✨",
+  bullets_en:[
+    {icon:"🌍",accent:"#f0d050",title:"Did You Know?",text:"Every 12 turns, the cosmos reveals a mind-blowing fact about ancient India. Real history. Documented science."},
+    {icon:"⚗",accent:"#c09040",title:"Wootz Steel",text:"Ancient Indian crucible steel contained carbon nanotubes — discovered by electron microscopy in 2006. Published in Nature."},
+    {icon:"📐",accent:"#6080c0",title:"Before Pythagoras",text:"Baudhayana's Sulbasutras contained the theorem 300 years before Pythagoras. It should be called the Baudhayana Theorem."},
+    {icon:"🏛",accent:"#8060c0",title:"The Iron Pillar",text:"Delhi's Iron Pillar (402 CE) — 1,600 years without rusting. Phosphorus-rich iron creates self-healing misawite. Accidental nanotechnology."},
+  ],
+  bullets_hi:[
+    {icon:"🌍",accent:"#f0d050",title:"क्या आप जानते हैं?",text:"हर 12 मोड़ पर, ब्रह्मांड प्राचीन भारत के बारे में एक अद्भुत तथ्य प्रकट करता है।"},
+    {icon:"⚗",accent:"#c09040",title:"वूट्ज़ स्टील",text:"प्राचीन भारतीय क्रूसिबल स्टील में कार्बन नैनोट्यूब थे — 2006 में खोजे गए।"},
+    {icon:"📐",accent:"#6080c0",title:"पायथागोरस से पहले",text:"बौधायन के शुल्बसूत्र में प्रमेय पायथागोरस से 300 साल पहले था।"},
+    {icon:"🏛",accent:"#8060c0",title:"लौह स्तंभ",text:"दिल्ली का लौह स्तंभ (402 ई.) — 1,600 साल बिना जंग। आकस्मिक नैनो-तकनीक।"},
+  ],
+  en:"Every twelve turns, the cosmos whispers a secret — a fact about ancient India so extraordinary it sounds impossible. But every single fact is documented history. Aryabhata calculated Earth's circumference to 99.8% accuracy in 499 CE. Wootz steel from South India contained carbon nanotubes, discovered by Nature journal in 2006. Baudhayana wrote the Pythagorean theorem 300 years before Pythagoras was born. The Iron Pillar of Delhi has stood for 1,600 years without rusting — creating an accidental nanotechnology. You don't just play this game. You learn what the world forgot.",
+  hi:"हर बारहवें मोड़ पर ब्रह्मांड एक रहस्य फुसफुसाता है — प्राचीन भारत के बारे में ऐसा तथ्य जो असंभव लगता है लेकिन प्रलेखित इतिहास है। आप सिर्फ खेलते नहीं — आप सीखते हैं जो दुनिया भूल गई।",
+  visuals:[{type:"cosmicDemo"}]},
+
   {title:"The Path to Moksha",icon:"ॐ",
   bullets_en:[
     {icon:"🔱",accent:"#f0d050",title:"Path 1 — Reach Square 108",text:"Roll the exact number to land on 108. But the gate won't open for a tainted soul — Punya must equal or exceed Papa."},
@@ -5813,21 +5869,7 @@ export default function MokshaPatam108(){
             {/* ═══ ACTION BUTTONS — clear visual hierarchy ═══ */}
             <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:8,width:"100%"}}>
 
-              {/* PRIMARY: Cinematic Experience */}
-              <button className="gb gp" onClick={()=>{ ambient.start(); setShowCinematic(true); }}
-                style={{
-                  fontSize:15,padding:"15px 0",letterSpacing:3,
-                  width:"100%",maxWidth:320,marginBottom:6,
-                  boxShadow:"0 0 32px rgba(240,200,80,.25),0 4px 24px rgba(0,0,0,.5)",
-                  position:"relative",overflow:"hidden",
-                }}>
-                <span style={{position:"relative",zIndex:1}}>🎬 THE JOURNEY BEGINS</span>
-                <div style={{position:"absolute",top:0,left:"-60%",width:"40%",height:"100%",
-                  background:"linear-gradient(105deg,transparent,rgba(255,255,255,.1),transparent)",
-                  animation:"shimmer 3s ease infinite",pointerEvents:"none"}}/>
-              </button>
-
-              {/* SECONDARY: Original Story mode */}
+              {/* PRIMARY: Begin Story */}
               <button className="gb gp" onClick={()=>{ ambient.start(); navigateTo("story"); setStoryPage(0); }}
                 style={{
                   fontSize:15,padding:"15px 0",letterSpacing:3,
@@ -5957,6 +5999,85 @@ export default function MokshaPatam108(){
 
       if(vis.type==="dharmaStage") return <DharmaStage key={0}/>;
       if(vis.type==="sacredPathStage") return <SacredPathStage key={0} SACRED_PATH={SACRED_PATH}/>;
+      // ═══ TEMPLE GRID — 9 temples with 3D SVG icons ═══
+      if(vis.type==="templeGrid") return(
+        <div key={0} style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,width:"100%",maxWidth:360,margin:"0 auto",animation:"fadeIn .6s ease"}}>
+          {[
+            {key:'vaidya',name:'वैद्यशाला',en:'Healing',color:'#40a060'},
+            {key:'shilpa',name:'शिल्पशाला',en:'Engineering',color:'#c09040'},
+            {key:'ganita',name:'गणितपीठ',en:'Math',color:'#6080c0'},
+            {key:'shabda',name:'शब्दमन्दिर',en:'Sound',color:'#a080c0'},
+            {key:'jyotish',name:'ज्योतिषपीठ',en:'Stars',color:'#4080c0'},
+            {key:'rajniti',name:'राजनीतिपीठ',en:'Strategy',color:'#c0a040'},
+            {key:'krishi',name:'कृषिपीठ',en:'Earth',color:'#80a040'},
+            {key:'kala',name:'कलापीठ',en:'Arts',color:'#c060a0'},
+            {key:'darshan',name:'दर्शनपीठ',en:'Wisdom',color:'#8060c0'},
+          ].map((t,i)=>(
+            <div key={t.key} style={{
+              background:`${t.color}0a`,border:`1px solid ${t.color}25`,borderRadius:10,
+              padding:"12px 6px",textAlign:"center",
+              animation:`slideUp .5s ease ${i*0.08}s both`,
+            }}>
+              <div style={{display:"flex",justifyContent:"center",marginBottom:4}}>
+                <TempleIcon templeKey={t.key} size={40} color={t.color}/>
+              </div>
+              <div style={{fontSize:11,color:t.color,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:700,lineHeight:1.2}}>{t.name}</div>
+              <div style={{fontSize:8,color:`${t.color}60`,fontFamily:"'Cinzel',serif",letterSpacing:1,marginTop:2}}>{t.en}</div>
+            </div>
+          ))}
+        </div>
+      );
+
+      // ═══ GURU GRID — 8 guru portraits with images ═══
+      if(vis.type==="guruGrid") return(
+        <div key={0} style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8,width:"100%",maxWidth:400,margin:"0 auto",animation:"fadeIn .6s ease"}}>
+          {[
+            {id:'aryabhata',name:'आर्यभट',era:'476 CE',color:'#4080c0'},
+            {id:'sushruta',name:'सुश्रुत',era:'600 BCE',color:'#c04040'},
+            {id:'chanakya',name:'चाणक्य',era:'375 BCE',color:'#c0a040'},
+            {id:'panini',name:'पाणिनि',era:'400 BCE',color:'#a080c0'},
+            {id:'charaka',name:'चरक',era:'300 BCE',color:'#40a060'},
+            {id:'bhaskara',name:'भास्कर',era:'1114 CE',color:'#60a0c0'},
+            {id:'varahamihira',name:'वराहमिहिर',era:'505 CE',color:'#6080a0'},
+            {id:'patanjali',name:'पतञ्जलि',era:'200 BCE',color:'#c08060'},
+          ].map((g,i)=>(
+            <div key={g.id} style={{
+              textAlign:"center",animation:`slideUp .5s ease ${i*0.08}s both`,
+            }}>
+              <div style={{
+                width:64,height:64,borderRadius:"50%",overflow:"hidden",
+                margin:"0 auto 6px",border:`2px solid ${g.color}50`,
+                boxShadow:`0 0 16px ${g.color}25`,
+              }}>
+                <img src={`/gurus/${g.id}.png`} alt={g.name}
+                  style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"top center"}}
+                  onError={(e)=>{e.target.style.display='none'}}/>
+              </div>
+              <div style={{fontSize:12,color:g.color,fontFamily:"'Yatra One',serif",lineHeight:1.2}}>{g.name}</div>
+              <div style={{fontSize:7,color:`${g.color}50`,fontFamily:"'Cinzel',serif",letterSpacing:1}}>{g.era}</div>
+            </div>
+          ))}
+        </div>
+      );
+
+      // ═══ COSMIC DEMO — rotating knowledge cards ═══
+      if(vis.type==="cosmicDemo") return(
+        <div key={0} style={{
+          maxWidth:340,margin:"0 auto",padding:"18px 20px",
+          background:"rgba(240,200,80,.04)",border:"1px solid rgba(240,200,80,.18)",
+          borderRadius:14,textAlign:"center",animation:"fadeIn .8s ease",
+          boxShadow:"0 0 40px rgba(240,200,80,.06)",
+        }}>
+          <div style={{fontSize:9,letterSpacing:5,color:"rgba(240,200,80,.4)",fontFamily:"'Cinzel',serif",marginBottom:10}}>DID YOU KNOW?</div>
+          <div style={{fontSize:30,marginBottom:8,filter:"drop-shadow(0 0 12px rgba(240,200,80,.3))"}}>🌍</div>
+          <div style={{fontSize:14,fontFamily:"'Yatra One',serif",color:"#f0d050",marginBottom:8,letterSpacing:1}}>Aryabhata's Precision</div>
+          <div style={{fontSize:12,color:"rgba(200,180,140,.65)",lineHeight:1.9,fontStyle:"italic"}}>
+            In 499 CE, Aryabhata calculated Earth's circumference as 39,968 km — only 0.2% off the modern value of 40,075 km. No telescope. No satellite. Pure mathematics.
+          </div>
+          <div style={{fontSize:8,color:"rgba(200,160,60,.25)",marginTop:8,fontFamily:"'Cinzel',serif",letterSpacing:2}}>ARYABHATIYA · 499 CE</div>
+        </div>
+      );
+
       if(vis.type==="versus") return(
         <div style={{background:"radial-gradient(ellipse at center,rgba(160,40,40,.12),transparent 70%)",border:"1px solid rgba(160,40,40,.25)",borderRadius:12,padding:"24px 20px",textAlign:"center",animation:"fadeIn .8s ease",position:"relative",overflow:"hidden"}}>
           <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 50% 0%,rgba(160,30,30,.08),transparent 60%)",pointerEvents:"none"}}/>
@@ -6025,7 +6146,7 @@ export default function MokshaPatam108(){
             </div>
 
             {/* ── Responsive layout: full-width for cinematic pages, two-panel otherwise ── */}
-            {(vis?.type==="dharmaStage"||vis?.type==="sacredPathStage") ? (
+            {(vis?.type==="dharmaStage"||vis?.type==="sacredPathStage"||vis?.type==="templeGrid"||vis?.type==="guruGrid"||vis?.type==="cosmicDemo") ? (
               /* FULL-WIDTH CINEMATIC — bullets stacked above visual */
               <div style={{display:"flex",flexDirection:"column",gap:16}}>
                 {/* Compact bullet row */}
