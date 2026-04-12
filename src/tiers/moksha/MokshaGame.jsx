@@ -4209,7 +4209,7 @@ export default function MokshaPatam108(){
   // Game tracking stats (reset each game)
   const gameStats=useRef({startTime:0,turns:0,snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0,grahaHits:{sun:0,moon:0,mars:0,mercury:0,jupiter:0,venus:0,saturn:0,rahu:0,ketu:0}});
 
-  // Auto-load profile data when profile panel opens
+  // Auto-load profile data when profile panel opens OR when auth resolves
   useEffect(()=>{
     if(!showProfile||!auth.user)return;
     log("Profile: Auto-loading data...");
@@ -4220,7 +4220,7 @@ export default function MokshaPatam108(){
     GameDB.getHistory(auth.user.id).then(d=>{setGameHistory(d);setHistLoading(false)});
     // Load leaderboard
     GameDB.getLeaderboard().then(d=>setLeaderboard(d));
-  },[showProfile]);
+  },[showProfile,auth.user]);
 
   const[screen,setScreen]=useState("title"); // title|story|pickcount|setup|chitragupta|game
   const[showCinematic,setShowCinematic]=useState(false);
