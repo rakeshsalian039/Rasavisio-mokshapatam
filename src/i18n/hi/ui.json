@@ -132,6 +132,20 @@
   "tag_epic": "महाकाव्य",
   "choose_wisely": "बुद्धिमानी से मार्ग चुनें",
 
+  "seeker_of": "साधक {n} / {total}",
+  "choose_identity": "अपनी पहचान चुनें",
+  "chitragupta_watches": "चित्रगुप्त देख रहे हैं · वे पहले से जानते हैं",
+  "enter_your_name": "अपना नाम लिखें",
+  "enter_name_placeholder": "नाम लिखें...",
+  "next_seeker": "अगला साधक →",
+  "begin_journey": "यात्रा आरंभ →",
+  "trait_courage": "साहस",
+  "trait_wisdom": "ज्ञान",
+  "trait_compassion": "करुणा",
+  "trait_grace": "लावण्य",
+  "trait_judgment": "विवेक",
+  "trait_renunciation": "त्याग",
+
   "error_title": "ब्रह्मांडीय व्यवस्था में गड़बड़ी",
   "error_desc": "कुछ अप्रत्याशित हुआ। मोक्ष का मार्ग बाधित हो गया।",
   "error_button": "मार्ग पर लौटें"

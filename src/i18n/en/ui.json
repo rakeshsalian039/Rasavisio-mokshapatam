@@ -132,6 +132,20 @@
   "tag_epic": "Epic",
   "choose_wisely": "CHOOSE YOUR PATH WISELY",
 
+  "seeker_of": "SEEKER {n} OF {total}",
+  "choose_identity": "Choose Your Identity",
+  "chitragupta_watches": "Chitragupta watches · He already knows your choice",
+  "enter_your_name": "ENTER YOUR NAME",
+  "enter_name_placeholder": "Enter name...",
+  "next_seeker": "Next Seeker →",
+  "begin_journey": "Begin Journey →",
+  "trait_courage": "Courage",
+  "trait_wisdom": "Wisdom",
+  "trait_compassion": "Compassion",
+  "trait_grace": "Grace",
+  "trait_judgment": "Judgment",
+  "trait_renunciation": "Renunciation",
+
   "error_title": "A disturbance in the cosmic order",
   "error_desc": "Something unexpected happened. The path to Moksha has been disrupted.",
   "error_button": "Return to the Path"

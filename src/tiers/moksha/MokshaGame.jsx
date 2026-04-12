@@ -6462,8 +6462,8 @@ export default function MokshaPatam108(){
         <div style={{maxWidth:680,width:"100%",animation:"slideUp .6s ease"}} key={pidx}>
           <div style={{textAlign:"center",marginBottom:20}}>
             <button onClick={()=>{VoiceEngine.stop();setPlayers([]);setUsedChars([]);setTempName("");setTempChar(-1);navigateTo("pickcount")}} style={{position:"absolute",top:20,left:20,background:"transparent",border:"1px solid rgba(200,160,60,.2)",color:"#8a7a50",padding:"5px 14px",fontSize:11,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1,zIndex:10}}>← Back</button>
-            <div style={{fontSize:10,opacity:.3,letterSpacing:5}}>SEEKER {pidx+1} OF {nP}</div>
-            <h2 style={{fontSize:"clamp(20px,4vw,30px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"8px 0"}}>Choose Your Identity</h2>
+            <div style={{fontSize:10,opacity:.3,letterSpacing:5}}>{t("ui.seeker_of").replace("{n}",pidx+1).replace("{total}",nP)}</div>
+            <h2 style={{fontSize:"clamp(20px,4vw,30px)",fontFamily:"'Yatra One',serif",color:"#f0d050",margin:"8px 0"}}>{t("ui.choose_identity")}</h2>
             {pidx===0&&<div
               onClick={()=>!muted&&VoiceEngine.speakChitragupta('seeker',chosenLang)}
               style={{
@@ -6478,7 +6478,7 @@ export default function MokshaPatam108(){
                 <path d="M5.5 13L5.5 9Q7.5 7 8.5 5" fill="none" stroke="rgba(200,175,90,.55)" strokeWidth=".5"/>
               </svg>
               <span style={{fontSize:8,color:"rgba(200,175,90,.4)",letterSpacing:2,fontFamily:"'Cinzel',serif",fontStyle:"italic"}}>
-                Chitragupta watches · He already knows your choice
+                {t("ui.chitragupta_watches")}
               </span>
             </div>}
           </div>
@@ -6488,7 +6488,7 @@ export default function MokshaPatam108(){
                 <div style={{fontSize:28,marginBottom:6}}>{ch.icon}</div>
                 <div style={{fontSize:13,fontWeight:700,color:ch.color}}>{ch.name}</div>
                 <div style={{fontSize:11,fontFamily:"'Noto Serif Devanagari',serif",color:"#f0d050",opacity:.6,marginBottom:4}}>{ch.skt}</div>
-                <div style={{fontSize:10,opacity:.5,lineHeight:1.6,color:"#c0b080"}}>{ch.trait}</div>
+                <div style={{fontSize:10,opacity:.5,lineHeight:1.6,color:"#c0b080"}}>{t("ui.trait_"+ch.trait.toLowerCase())||ch.trait}</div>
               </div>)})}
           </div>
           {tempChar>=0&&<div style={{background:"rgba(20,16,10,.6)",border:"1px solid rgba(200,160,60,.15)",padding:16,borderRadius:4,marginBottom:16,animation:"fadeIn .4s ease"}}>
@@ -6500,13 +6500,13 @@ export default function MokshaPatam108(){
             <p style={{fontSize:12,lineHeight:1.9,color:"#c0b080",margin:0}}>{CHARS[tempChar].lore}</p>
           </div>}
           <div style={{marginBottom:16}}>
-            <label style={{fontSize:10,opacity:.4,letterSpacing:3,display:"block",marginBottom:6}}>ENTER YOUR NAME</label>
-            <input type="text" value={tempName} onChange={e=>setTempName(e.target.value)} placeholder="Enter name..." maxLength={20} onKeyDown={e=>{if(e.key==="Enter")addPlayer()}}
+            <label style={{fontSize:10,opacity:.4,letterSpacing:3,display:"block",marginBottom:6}}>{t("ui.enter_your_name")}</label>
+            <input type="text" value={tempName} onChange={e=>setTempName(e.target.value)} placeholder={t("ui.enter_name_placeholder")} maxLength={20} onKeyDown={e=>{if(e.key==="Enter")addPlayer()}}
               style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(200,160,60,.3)",color:"#e8c850",padding:"10px 14px",fontSize:14,fontFamily:"'Cinzel',serif",width:"100%",outline:"none",borderRadius:3}}/>
           </div>
           <div style={{display:"flex",justifyContent:"space-between",gap:12}}>
             <button className="gb" onClick={()=>{if(pidx===0)navigateTo("pickcount");else{const lp=players[players.length-1];setPlayers(p=>p.slice(0,-1));setUsedChars(u=>u.filter(x=>x!==lp.charIdx))}}}>← Back</button>
-            <button className="gb gp" onClick={addPlayer} style={{opacity:(!tempName.trim()||tempChar<0)?.4:1}}>{pidx<nP-1?"Next Seeker →":"Begin Journey →"}</button>
+            <button className="gb gp" onClick={addPlayer} style={{opacity:(!tempName.trim()||tempChar<0)?.4:1}}>{pidx<nP-1?t("ui.next_seeker"):t("ui.begin_journey")}</button>
           </div>
           {players.length>0&&<div style={{marginTop:16,borderTop:"1px solid rgba(200,160,60,.1)",paddingTop:12}}>
             <div style={{fontSize:9,letterSpacing:3,opacity:.3,marginBottom:6}}>CHOSEN</div>
