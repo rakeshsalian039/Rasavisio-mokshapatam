@@ -18,8 +18,8 @@ VOICE="ash"
 OUT_DIR="./public/shlokas"
 TOTAL=0; DONE=0; SKIP=0
 
-# Sanskrit shloka voice — reverent, slow, sacred recitation
-SKT_INSTR="You are reciting an ancient Sanskrit shloka with deep reverence. Speak very slowly in a deep baritone voice. Pronounce each Sanskrit word clearly and precisely. Long pauses between lines. Sacred, meditative, like a temple priest chanting at dawn. No rushing. Let each syllable resonate."
+# Sanskrit shloka voice — divine cosmic entity, Vishnu-like
+SKT_INSTR="You are the Supreme Being — Vishnu himself — speaking from beyond the cosmos. Your voice is impossibly deep, thundering yet gentle, as if the universe itself is vibrating. Speak the Sanskrit shloka with extreme slowness. Each word should feel like it echoes across eternity. Massive pauses between lines — 3 to 4 seconds of silence. The listener should feel the weight of 5,000 years in every syllable. This is not a human speaking. This is the voice of creation itself. Pronounce each Sanskrit word with absolute precision and divine authority."
 
 # Hindi narrator — Amitabh Bachchan style
 HI_INSTR="तुम अमिताभ बच्चन की शैली में बोलने वाले एक महान भारतीय सूत्रधार हो — वैसी ही गहरी, भारी, गूँजती हुई बैरीटोन आवाज़। हर शब्द में वज़न हो, हर वाक्य में नाटकीयता। बहुत धीरे बोलो। शुद्ध हिंदुस्तानी हिंदी।"
