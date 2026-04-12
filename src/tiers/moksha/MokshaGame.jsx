@@ -4217,9 +4217,13 @@ export default function MokshaPatam108(){
     auth.refresh();
     // Load history
     setHistLoading(true);
-    GameDB.getHistory(auth.user.id).then(d=>{setGameHistory(d);setHistLoading(false)});
+    GameDB.getHistory(auth.user.id)
+      .then(d=>{setGameHistory(d);setHistLoading(false)})
+      .catch(e=>{console.error("History load failed:",e);setHistLoading(false)});
     // Load leaderboard
-    GameDB.getLeaderboard().then(d=>setLeaderboard(d));
+    GameDB.getLeaderboard()
+      .then(d=>setLeaderboard(d))
+      .catch(e=>console.error("Leaderboard load failed:",e));
   },[showProfile,auth.user]);
 
   const[screen,setScreen]=useState("title"); // title|story|pickcount|setup|chitragupta|game
@@ -5552,7 +5556,7 @@ export default function MokshaPatam108(){
             </div>
             {/* Tabs */}
             <div style={{display:"flex",gap:6,marginBottom:20,justifyContent:"center",flexWrap:"wrap"}}>
-              {[["overview","🔱 Overview"],["history","📜 Past Lives"],["leaderboard","🪶 Agrasandhani"]].map(([key,label])=><button key={key} onClick={()=>{setProfileTab(key);if(key==="history"&&auth.user){setHistLoading(true);GameDB.getHistory(auth.user.id).then(d=>{setGameHistory(d);setHistLoading(false)})}if(key==="leaderboard")GameDB.getLeaderboard().then(d=>setLeaderboard(d))}} style={{padding:"6px 16px",fontSize:11,borderRadius:20,cursor:"pointer",border:`1px solid ${profileTab===key?"rgba(240,200,80,.4)":"rgba(200,160,60,.15)"}`,background:profileTab===key?"rgba(240,200,80,.1)":"transparent",color:profileTab===key?"#f0d050":"#8a7a50",fontFamily:"'Cinzel',serif",letterSpacing:1}}>{label}</button>)}
+              {[["overview","🔱 Overview"],["history","📜 Past Lives"],["leaderboard","🪶 Agrasandhani"]].map(([key,label])=><button key={key} onClick={()=>{setProfileTab(key);if(key==="history"&&auth.user){setHistLoading(true);GameDB.getHistory(auth.user.id).then(d=>{setGameHistory(d);setHistLoading(false)}).catch(()=>setHistLoading(false))}if(key==="leaderboard")GameDB.getLeaderboard().then(d=>setLeaderboard(d)).catch(()=>{})}} style={{padding:"6px 16px",fontSize:11,borderRadius:20,cursor:"pointer",border:`1px solid ${profileTab===key?"rgba(240,200,80,.4)":"rgba(200,160,60,.15)"}`,background:profileTab===key?"rgba(240,200,80,.1)":"transparent",color:profileTab===key?"#f0d050":"#8a7a50",fontFamily:"'Cinzel',serif",letterSpacing:1}}>{label}</button>)}
             </div>
             {/* Overview */}
             {profileTab==="overview"&&<>

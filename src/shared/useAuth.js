@@ -119,8 +119,8 @@ export function useAuth(){
 // ═══ GAME DATABASE SERVICE — Uses Supabase client with user's auth token ═══
 const GameDB={
   async saveGame(userId,d){
-    if(!supabase||!userId){log("GameDB: SKIP - no config or userId");return null}
-    log("GameDB: Saving...");
+    if(!supabase||!userId){console.warn("GameDB: SKIP - no config or userId");return null}
+    console.log("GameDB: Saving game for",userId);
 
     // Step 1: Insert game_history
     try{
@@ -131,26 +131,26 @@ const GameDB={
         final_square:d.square||1,final_punya:d.punya||0,final_papa:d.papa||0,
         snakes_hit:d.snakes||0,ladders_climbed:d.ladders||0,dharma_cards_faced:0,
         riddles_correct:d.riddlesC||0,riddles_wrong:d.riddlesW||0,
-        highest_square:d.highest||1,graha_effects:JSON.stringify({players:d.allPlayers||[],grahaHits:d.grahaHits||{}}),
+        highest_square:d.highest||1,graha_effects:{players:d.allPlayers||[],grahaHits:d.grahaHits||{}},
         ashtanga_reached:d.ashtanga||false,moksha_rejected:d.rejected||0
       });
-      if(err)logError("GameDB: game_history insert error:",err.message);
-      else log("GameDB: game_history inserted");
-    }catch(e){logError("GameDB: game_history FAILED:",e.message)}
+      if(err)console.error("GameDB: game_history insert FAILED:",err.message,err.details,err.hint);
+      else console.log("GameDB: game_history inserted ✓");
+    }catch(e){console.error("GameDB: game_history EXCEPTION:",e.message)}
 
     // Step 2: Read current profile
     let cur=null;
     try{
       const{data,error:err}=await supabase.from('profiles').select('*').eq('id',userId);
-      if(err){logError("GameDB: profile read error:",err.message)}
+      if(err){console.error("GameDB: profile read FAILED:",err.message)}
       else if(data&&data.length>0){cur=data[0]}
       else{
-        log("GameDB: No profile, creating...");
+        console.log("GameDB: No profile, creating...");
         await supabase.from('profiles').insert({id:userId,display_name:d.charName||"Seeker",email:"",provider:"google"});
         const{data:d2}=await supabase.from('profiles').select('*').eq('id',userId);
         cur=d2?.[0]||null;
       }
-    }catch(e){logError("GameDB: profile read FAILED:",e.message)}
+    }catch(e){console.error("GameDB: profile read EXCEPTION:",e.message)}
 
     // Step 3: Update profile
     if(cur){
@@ -171,12 +171,14 @@ const GameDB={
           favorite_character:d.charName||cur.favorite_character,
           last_played_at:new Date().toISOString()
         }).eq('id',userId);
-        if(err)logError("GameDB: profile update error:",err.message);
-        else log("GameDB: profile updated");
-      }catch(e){logError("GameDB: profile update FAILED:",e.message)}
+        if(err)console.error("GameDB: profile update FAILED:",err.message,err.details,err.hint);
+        else console.log("GameDB: profile updated ✓");
+      }catch(e){console.error("GameDB: profile update EXCEPTION:",e.message)}
+    }else{
+      console.warn("GameDB: No profile found — stats not updated");
     }
 
-    log("GameDB: Done");
+    console.log("GameDB: Save complete");
     return true;
   },
   async getHistory(userId,limit=20){
