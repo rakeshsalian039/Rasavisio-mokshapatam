@@ -4,6 +4,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import HowToPlay    from "../../components/HowToPlay.jsx";
+import CinematicOnboarding from "../../components/CinematicOnboarding";
 import Encyclopedia from "../../components/Encyclopedia.jsx";
 import MultiplayerLobby from "../../components/MultiplayerLobby";
 import { useMultiplayer } from "../../hooks/useMultiplayer";
@@ -4161,6 +4162,7 @@ export default function MokshaPatam108(){
   },[showProfile]);
 
   const[screen,setScreen]=useState("title"); // title|story|pickcount|setup|chitragupta|game
+  const[showCinematic,setShowCinematic]=useState(false);
   const[showResume,setShowResume]=useState(()=>{
     try{const s=localStorage.getItem('mp108_savedGame');return s?JSON.parse(s):null}catch(e){return null}
   });
@@ -5409,6 +5411,7 @@ export default function MokshaPatam108(){
     </div>
     {showInfo   && <Encyclopedia onClose={()=>setShowInfo(false)}/>}
     {showGuide  && <HowToPlay    onClose={()=>setShowGuide(false)}/>}
+    {showCinematic && <CinematicOnboarding onComplete={()=>{setShowCinematic(false);navigateTo("pickcount")}} chosenLang={chosenLang} muted={muted}/>}
     {showRiddles&&<div key="riddles-panel" style={{position:"fixed",inset:0,background:"rgba(6,5,3,.95)",zIndex:300,overflowY:"auto",padding:"clamp(12px,3vw,24px)",animation:"fadeIn .3s ease"}}>
       <div style={{maxWidth:700,margin:"0 auto"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
@@ -5810,7 +5813,21 @@ export default function MokshaPatam108(){
             {/* ═══ ACTION BUTTONS — clear visual hierarchy ═══ */}
             <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:8,width:"100%"}}>
 
-              {/* PRIMARY: Begin Story — undeniable hero CTA */}
+              {/* PRIMARY: Cinematic Experience */}
+              <button className="gb gp" onClick={()=>{ ambient.start(); setShowCinematic(true); }}
+                style={{
+                  fontSize:15,padding:"15px 0",letterSpacing:3,
+                  width:"100%",maxWidth:320,marginBottom:6,
+                  boxShadow:"0 0 32px rgba(240,200,80,.25),0 4px 24px rgba(0,0,0,.5)",
+                  position:"relative",overflow:"hidden",
+                }}>
+                <span style={{position:"relative",zIndex:1}}>🎬 THE JOURNEY BEGINS</span>
+                <div style={{position:"absolute",top:0,left:"-60%",width:"40%",height:"100%",
+                  background:"linear-gradient(105deg,transparent,rgba(255,255,255,.1),transparent)",
+                  animation:"shimmer 3s ease infinite",pointerEvents:"none"}}/>
+              </button>
+
+              {/* SECONDARY: Original Story mode */}
               <button className="gb gp" onClick={()=>{ ambient.start(); navigateTo("story"); setStoryPage(0); }}
                 style={{
                   fontSize:15,padding:"15px 0",letterSpacing:3,
