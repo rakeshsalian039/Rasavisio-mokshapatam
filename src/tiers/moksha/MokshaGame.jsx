@@ -618,7 +618,15 @@ const ASHTANGA_RIDDLES={
 function useAmbient(){
   const audioRef=useRef(null);const playing=useRef(false);
   const start=useCallback(()=>{
-    if(playing.current)return;
+    // If already playing and not paused, do nothing
+    if(audioRef.current&&!audioRef.current.paused)return;
+    // If we have an existing audio that's just paused (ducked), resume it
+    if(audioRef.current&&audioRef.current.paused&&playing.current){
+      try{audioRef.current.play().catch(()=>{})}catch(e){}
+      return;
+    }
+    // Stop any existing instance before creating new one
+    if(audioRef.current){try{audioRef.current.pause();audioRef.current.currentTime=0}catch(e){}}
     try{
       const a=new Audio("/ambient.mp3");
       a.loop=true; a.volume=1.0;
@@ -627,8 +635,8 @@ function useAmbient(){
     }catch(e){}
   },[]);
   const stop=useCallback(()=>{
-    if(!playing.current||!audioRef.current)return;
-    try{const a=audioRef.current;a.pause();a.currentTime=0;playing.current=false;audioRef.current=null;}catch(e){}
+    if(!audioRef.current)return;
+    try{audioRef.current.pause();audioRef.current.currentTime=0;playing.current=false;audioRef.current=null;}catch(e){}
   },[]);
   const duck=useCallback(()=>{if(audioRef.current){try{audioRef.current.pause()}catch(e){}}},[]);
   const unduck=useCallback(()=>{if(audioRef.current&&playing.current){try{audioRef.current.play().catch(()=>{})}catch(e){}}},[]);
@@ -6071,7 +6079,7 @@ export default function MokshaPatam108(){
 
         {/* ── Fixed top bar ── */}
         <div style={{position:"fixed",top:0,left:0,right:0,height:56,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 16px",background:"linear-gradient(180deg,rgba(12,10,7,.95),rgba(12,10,7,0))",zIndex:20}}>
-          <button onClick={()=>{VoiceEngine.stop();if(storyPage>0)setStoryPage(storyPage-1);else navigateTo("title")}}
+          <button onClick={()=>{VoiceEngine.stop();if(storyPage>0)setStoryPage(storyPage-1);else{ambient.stop();navigateTo("title")}}}
             style={{background:"transparent",border:"1px solid rgba(200,160,60,.18)",color:"#8a7a50",padding:"5px 14px",fontSize:10,cursor:"pointer",borderRadius:3,fontFamily:"'Cinzel',serif",letterSpacing:1}}>
             ← Back
           </button>
