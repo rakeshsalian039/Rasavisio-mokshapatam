@@ -61,31 +61,23 @@ echo "║   Moksha Patam 108 — Mangalacharan Voice Generator      ║"
 echo "╚══════════════════════════════════════════════════════════╝"
 echo ""
 
-# ── Read shlokas from the data file ──
-SHLOKAS=$(python3 -c "
-import re
-with open('src/data/mangalacharan.js','r') as f:
-    content=f.read()
-# Extract shloka texts
-import json
-shlokas=re.findall(r\"shloka:\s*'(.*?)'\",content,re.DOTALL)
-# Also try backtick strings
-shlokas2=re.findall(r\"shloka:\s*\\\`(.*?)\\\`\",content,re.DOTALL)
-# Clean up
-result=shlokas+shlokas2
-for i,s in enumerate(result[:20]):
-    s=s.replace('\\\\n','\n').replace(\"\\\\\'\",\"'\")
-    print(f'{i}|||{s}')
-")
-
+# ── Read shlokas from the data file and generate ──
 echo "── श्लोक (20 shlokas — Sanskrit is universal) ──"
 echo ""
 
-while IFS='|||' read -r idx text; do
-  [[ -z "$idx" ]] && continue
-  # Sanskrit shloka — one file, same for all languages
+python3 -c "
+import re, json
+with open('src/data/mangalacharan.js','r') as f:
+    content=f.read()
+shlokas=re.findall(r\"shloka:\s*'(.*?)'\",content,re.DOTALL)
+for i,s in enumerate(shlokas[:20]):
+    s=s.replace('\\\\n',' ').replace(\"\\\\\'\",\"'\").strip()
+    print(json.dumps({'id':i,'text':s}))
+" | while read -r line; do
+  idx=$(python3 -c "import json,sys; print(json.loads(sys.argv[1])['id'])" "$line")
+  text=$(python3 -c "import json,sys; print(json.loads(sys.argv[1])['text'])" "$line")
   tts "$OUT_DIR/shloka-${idx}.mp3" "$VOICE" "$SKT_INSTR" "$text"
-done <<< "$SHLOKAS"
+done
 
 echo ""
 echo "── आरम्भ / BEGIN (2 files) ──"
