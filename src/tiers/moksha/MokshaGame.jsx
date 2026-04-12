@@ -14,6 +14,11 @@ import { supabase } from '../../auth/supabaseClient';
 import { useAuth, GoogleIcon, AppleIcon, RASHI, getZodiac } from '../../shared/useAuth';
 import GameDB from '../../shared/useAuth';
 import { log, warn, error as logError } from '../../utils/logger';
+import { t, setLang } from '../../i18n';
+// ── Content translation helpers ──
+// Looks up translated text from locale files, falls back to original
+function tq(key,fallback){return t(key)||fallback||key}
+
 import { TEMPLE_SQUARES, TEMPLES } from '../../data/knowledgeTemples';
 import TempleIcon from '../../components/TempleIcon';
 import SacredPathIcon from '../../components/SacredPathIcon';
@@ -4225,7 +4230,7 @@ export default function MokshaPatam108(){
       setPos(saved.pos);setPunya(saved.punya);setPapa(saved.papa);
       setShieldA(saved.shieldA);setSkipA(saved.skipA);
       setCur(saved.cur);setUsedDharma(saved.usedDharma||[]);
-      setNP(saved.nP||2);setChosenLang(saved.chosenLang||'en');
+      setNP(saved.nP||2);setChosenLang(saved.chosenLang||'en');setLang(saved.chosenLang||'en');
       const restoredPlayers=saved.players.map((p,i)=>{
         const charData=CHARS.find(c=>c.name===p.char?.name)||CHARS[i%CHARS.length];
         return{name:p.name,char:charData,cpu:!!p.cpu};
@@ -4318,15 +4323,25 @@ export default function MokshaPatam108(){
   // Shuffled answer options — computed once when question changes, not on every render
   const templeOptions=useMemo(()=>{
     if(!templeQuiz?.question)return[];
-    const opts=[{text:templeQuiz.question.a,correct:true},{text:templeQuiz.question.b,correct:false}];
-    if(templeQuiz.question.c)opts.push({text:templeQuiz.question.c,correct:false});
+    const tk=templeQuiz.templeKey||'';
+    const qi=templeQuiz.qIdx||0;
+    const opts=[
+      {text:tq(`temples.${tk}_a${qi}`,templeQuiz.question.a),correct:true},
+      {text:tq(`temples.${tk}_b${qi}`,templeQuiz.question.b),correct:false},
+    ];
+    if(templeQuiz.question.c)opts.push({text:tq(`temples.${tk}_c${qi}`,templeQuiz.question.c),correct:false});
     for(let i=opts.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[opts[i],opts[j]]=[opts[j],opts[i]]}
     return opts;
   },[templeQuiz]);
   const guruOptions=useMemo(()=>{
     if(!guruEncounter?.question||guruEncounter.phase!=='question')return[];
-    const opts=[{text:guruEncounter.question.a,correct:true},{text:guruEncounter.question.b,correct:false}];
-    if(guruEncounter.question.c)opts.push({text:guruEncounter.question.c,correct:false});
+    const gid=guruEncounter.guru?.id||'';
+    const gqi=guruEncounter.qIdx||0;
+    const opts=[
+      {text:tq(`gurus.${gid}_a${gqi}`,guruEncounter.question.a),correct:true},
+      {text:tq(`gurus.${gid}_b${gqi}`,guruEncounter.question.b),correct:false},
+    ];
+    if(guruEncounter.question.c)opts.push({text:tq(`gurus.${gid}_c${gqi}`,guruEncounter.question.c),correct:false});
     for(let i=opts.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[opts[i],opts[j]]=[opts[j],opts[i]]}
     return opts;
   },[guruEncounter?.question,guruEncounter?.phase]);
@@ -4741,7 +4756,7 @@ export default function MokshaPatam108(){
           const qIdx=pool[Math.floor(Math.random()*pool.length)];
           usedGuruQRef.current[guru.id]=[...used,qIdx];
           playTempleBell();
-          setGuruEncounter({guru,question:guru.questions[qIdx],phase:'intro',forPlayer:cur});
+          setGuruEncounter({guru,question:guru.questions[qIdx],qIdx,phase:'intro',forPlayer:cur});
           return;
         }
       }
@@ -4977,7 +4992,7 @@ export default function MokshaPatam108(){
                 finishTurn(true);
               }else{
                 play("chime");playTempleBell();
-                setTempleLore({temple,templeKey,question,square:tP,playerIdx:tCur,playerName:tPName});
+                setTempleLore({temple,templeKey,question,qIdx,square:tP,playerIdx:tCur,playerName:tPName});
                 if(!muted){
                   const voiceFile=`/temple-voices/${templeKey}-en.mp3`;
                   setTimeout(()=>VoiceEngine.speakNarrator(temple.lore||temple.intro,chosenLang,voiceFile),600);
@@ -5837,8 +5852,8 @@ export default function MokshaPatam108(){
             {/* Language selector — compact pills */}
             <div style={{display:"flex",justifyContent:"center",gap:6,marginBottom:16}}>
               <div style={{fontSize:9,letterSpacing:3,color:"#5a4a30",alignSelf:"center",marginRight:4}}>VOICE</div>
-              <button onClick={()=>{setChosenLang('en');ambient.start()}} style={{padding:"5px 14px",background:chosenLang==='en'?"rgba(240,200,80,.12)":"transparent",border:`1px solid ${chosenLang==='en'?"rgba(240,200,80,.5)":"rgba(200,160,60,.15)"}`,borderRadius:16,color:chosenLang==='en'?"#f0d050":"#8a7a50",fontSize:11,cursor:"pointer",fontFamily:"'Cinzel',serif",letterSpacing:1,transition:"all .2s"}}>EN</button>
-              <button onClick={()=>{setChosenLang('hi');ambient.start()}} style={{padding:"5px 14px",background:chosenLang==='hi'?"rgba(240,200,80,.12)":"transparent",border:`1px solid ${chosenLang==='hi'?"rgba(240,200,80,.5)":"rgba(200,160,60,.15)"}`,borderRadius:16,color:chosenLang==='hi'?"#f0d050":"#8a7a50",fontSize:11,cursor:"pointer",fontFamily:"'Noto Serif Devanagari',serif",letterSpacing:1,transition:"all .2s"}}>हिन्दी</button>
+              <button onClick={()=>{setChosenLang('en');setLang('en');ambient.start()}} style={{padding:"5px 14px",background:chosenLang==='en'?"rgba(240,200,80,.12)":"transparent",border:`1px solid ${chosenLang==='en'?"rgba(240,200,80,.5)":"rgba(200,160,60,.15)"}`,borderRadius:16,color:chosenLang==='en'?"#f0d050":"#8a7a50",fontSize:11,cursor:"pointer",fontFamily:"'Cinzel',serif",letterSpacing:1,transition:"all .2s"}}>EN</button>
+              <button onClick={()=>{setChosenLang('hi');setLang('hi');ambient.start()}} style={{padding:"5px 14px",background:chosenLang==='hi'?"rgba(240,200,80,.12)":"transparent",border:`1px solid ${chosenLang==='hi'?"rgba(240,200,80,.5)":"rgba(200,160,60,.15)"}`,borderRadius:16,color:chosenLang==='hi'?"#f0d050":"#8a7a50",fontSize:11,cursor:"pointer",fontFamily:"'Noto Serif Devanagari',serif",letterSpacing:1,transition:"all .2s"}}>हिन्दी</button>
             </div>
 
             {/* ═══ ACTION BUTTONS — clear visual hierarchy ═══ */}
@@ -6047,7 +6062,7 @@ export default function MokshaPatam108(){
           borderRadius:14,textAlign:"center",animation:"fadeIn .8s ease",
           boxShadow:"0 0 40px rgba(240,200,80,.06)",
         }}>
-          <div style={{fontSize:9,letterSpacing:5,color:"rgba(240,200,80,.4)",fontFamily:"'Cinzel',serif",marginBottom:10}}>DID YOU KNOW?</div>
+          <div style={{fontSize:9,letterSpacing:5,color:"rgba(240,200,80,.4)",fontFamily:"'Cinzel',serif",marginBottom:10}}>{t("ui.did_you_know")}</div>
           <div style={{fontSize:30,marginBottom:8,filter:"drop-shadow(0 0 12px rgba(240,200,80,.3))"}}>🌍</div>
           <div style={{fontSize:14,fontFamily:"'Yatra One',serif",color:"#f0d050",marginBottom:8,letterSpacing:1}}>Aryabhata's Precision</div>
           <div style={{fontSize:12,color:"rgba(200,180,140,.65)",lineHeight:1.9,fontStyle:"italic"}}>
@@ -6543,7 +6558,7 @@ export default function MokshaPatam108(){
               color:templeInfo.temple.color,padding:"8px 20px",fontSize:11,
               fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:6,letterSpacing:2,
               opacity:0.7,
-            }}>CLOSE</button>
+            }}>{t("ui.close")}</button>
           </div>
         </div>
       )}
@@ -6634,7 +6649,7 @@ export default function MokshaPatam108(){
               color:"rgba(240,200,80,.6)",padding:"10px 24px",fontSize:isMobile?10:12,
               fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:6,letterSpacing:3,
               animation:"grahaNameIn .4s ease 1s both",
-            }}>CLOSE</button>
+            }}>{t("ui.close")}</button>
           </div>
 
           {/* Bottom golden line */}
@@ -6733,9 +6748,9 @@ export default function MokshaPatam108(){
               <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:10}}>
                 <button onClick={()=>{
                   VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){};
-                  const{temple,question,square,playerIdx,playerName}=templeLore;
+                  const{temple,templeKey,question,qIdx,square,playerIdx,playerName}=templeLore;
                   setTempleLore(null);
-                  setTempleQuiz({temple,question,square,playerIdx,playerName});
+                  setTempleQuiz({temple,templeKey,question,qIdx,square,playerIdx,playerName});
                 }} style={{
                   background:`${templeLore.temple.color}15`,
                   border:`1px solid ${templeLore.temple.color}50`,
@@ -6744,18 +6759,18 @@ export default function MokshaPatam108(){
                   fontSize:isMobile?12:14,fontFamily:"'Cinzel',serif",
                   cursor:"pointer",borderRadius:8,letterSpacing:isMobile?2:4,fontWeight:700,
                   boxShadow:`0 0 30px ${templeLore.temple.color}15`,
-                }}>ENTER THE TEMPLE</button>
+                }}>{t("ui.enter_the_temple")}</button>
                 <button onClick={()=>{
                   VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){};
-                  const{temple,question,square,playerIdx,playerName}=templeLore;
+                  const{temple,templeKey,question,qIdx,square,playerIdx,playerName}=templeLore;
                   setTempleLore(null);
-                  setTempleQuiz({temple,question,square,playerIdx,playerName});
+                  setTempleQuiz({temple,templeKey,question,qIdx,square,playerIdx,playerName});
                 }} style={{
                   background:"transparent",border:"none",
                   color:"rgba(200,180,140,.35)",fontSize:isMobile?10:11,
                   fontFamily:"'Cinzel',serif",cursor:"pointer",letterSpacing:2,
                   padding:"4px 12px",
-                }}>SKIP TO QUIZ →</button>
+                }}>{t("ui.skip_to_quiz")}</button>
               </div>
             </div>
           </div>
@@ -6809,17 +6824,17 @@ export default function MokshaPatam108(){
             }}>
               <div style={{fontSize:isMobile?9:10,letterSpacing:3,
                 color:`${templeQuiz.temple.color}55`,fontFamily:"'Cinzel',serif",
-                marginBottom:isMobile?8:10}}>QUESTION</div>
+                marginBottom:isMobile?8:10}}>{t("ui.question")}</div>
               <div style={{fontSize:isMobile?15:18,color:"#f0e8c8",lineHeight:2,
                 fontFamily:"'Noto Serif Devanagari',serif"}}>
-                {templeQuiz.question.q}
+                {tq(`temples.${templeQuiz.templeKey||''}_q${templeQuiz.qIdx||0}`,templeQuiz.question.q)}
               </div>
             </div>
 
             {/* Answers label */}
             <div style={{fontSize:isMobile?9:10,letterSpacing:3,
               color:"rgba(200,180,140,.35)",fontFamily:"'Cinzel',serif",
-              marginBottom:isMobile?10:12,textAlign:"center"}}>CHOOSE YOUR ANSWER</div>
+              marginBottom:isMobile?10:12,textAlign:"center"}}>{t("ui.choose_answer")}</div>
 
             {/* Answer buttons — identical styling, randomized */}
             <div style={{display:"flex",flexDirection:"column",gap:isMobile?10:14}}>
@@ -6888,7 +6903,7 @@ export default function MokshaPatam108(){
                 textAlign:isMobile?"center":"left"}}>
                 <div style={{fontSize:isMobile?8:10,letterSpacing:isMobile?4:8,
                   color:`${guruEncounter.guru.color}45`,fontFamily:"'Cinzel',serif",
-                  marginBottom:isMobile?8:16}}>GURU ENCOUNTER</div>
+                  marginBottom:isMobile?8:16}}>{t("ui.guru_encounter")}</div>
 
                 {/* Sanskrit name */}
                 <div style={{fontFamily:"'Yatra One',serif",
@@ -6927,7 +6942,7 @@ export default function MokshaPatam108(){
                   background:`${guruEncounter.guru.color}08`,
                   borderLeft:`3px solid ${guruEncounter.guru.color}50`,
                   borderRadius:"0 10px 10px 0",marginBottom:isMobile?20:28,
-                }}>"{guruEncounter.guru.introLine}"</div>
+                }}>"{tq(`gurus.${guruEncounter.guru?.id||''}_introLine`,guruEncounter.guru.introLine)}"</div>
 
                 <button onClick={()=>setGuruEncounter(e=>({...e,phase:'question'}))} style={{
                   background:`${guruEncounter.guru.color}12`,
@@ -6937,7 +6952,7 @@ export default function MokshaPatam108(){
                   borderRadius:8,letterSpacing:isMobile?2:4,fontWeight:700,
                   boxShadow:`0 0 30px ${guruEncounter.guru.color}15`,
                   display:"block",margin:isMobile?"0 auto":"0",
-                }}>ACCEPT THE CHALLENGE</button>
+                }}>{t("ui.accept_challenge")}</button>
               </div>
 
               {/* RIGHT: Guru image */}
@@ -7029,17 +7044,17 @@ export default function MokshaPatam108(){
                 }}>
                   <div style={{fontSize:isMobile?8:10,letterSpacing:3,
                     color:`${guruEncounter.guru.color}50`,fontFamily:"'Cinzel',serif",
-                    marginBottom:isMobile?6:8}}>THE GURU ASKS</div>
+                    marginBottom:isMobile?6:8}}>{t("ui.guru_asks")}</div>
                   <div style={{fontSize:isMobile?14:17,color:"#f0e8c8",lineHeight:2,
                     fontFamily:"'Noto Serif Devanagari',serif"}}>
-                    {guruEncounter.question.q}
+                    {tq(`gurus.${guruEncounter.guru?.id||''}_q${guruEncounter.qIdx||0}`,guruEncounter.question.q)}
                   </div>
                 </div>
 
                 {/* Answers label */}
                 <div style={{fontSize:isMobile?8:10,letterSpacing:3,
                   color:"rgba(200,180,140,.3)",fontFamily:"'Cinzel',serif",
-                  marginBottom:isMobile?8:10,textAlign:isMobile?"center":"left"}}>CHOOSE YOUR ANSWER</div>
+                  marginBottom:isMobile?8:10,textAlign:isMobile?"center":"left"}}>{t("ui.choose_answer")}</div>
 
                 {/* Answer buttons — identical, randomized, A/B labels */}
                 <div style={{display:"flex",flexDirection:"column",gap:isMobile?10:12}}>
@@ -7143,7 +7158,7 @@ export default function MokshaPatam108(){
                       color:"#f0d050",letterSpacing:isMobile?3:5,marginBottom:8,
                       textShadow:"0 0 40px rgba(240,200,80,.5), 0 0 80px rgba(240,200,80,.2)",
                       animation:"grahaNameIn .5s ease .2s both",
-                    }}>BLESSED</div>
+                    }}>{t("ui.blessed")}</div>
                     <div style={{fontFamily:"'Yatra One',serif",fontSize:isMobile?16:20,
                       color:guruEncounter.guru.color,marginBottom:12,letterSpacing:2}}>
                       {guruEncounter.guru.name} &middot; {guruEncounter.guru.en}
@@ -7165,7 +7180,7 @@ export default function MokshaPatam108(){
                 ):(
                   <>
                     <div style={{fontFamily:"'Cinzel',serif",fontSize:isMobile?16:20,
-                      color:"rgba(200,140,80,.6)",letterSpacing:3,marginBottom:8}}>THE GURU DEPARTS</div>
+                      color:"rgba(200,140,80,.6)",letterSpacing:3,marginBottom:8}}>{t("ui.guru_departs")}</div>
                     <div style={{fontFamily:"'Yatra One',serif",fontSize:isMobile?14:18,
                       color:`${guruEncounter.guru.color}80`,marginBottom:12,letterSpacing:2}}>
                       {guruEncounter.guru.name}
@@ -7207,7 +7222,7 @@ export default function MokshaPatam108(){
             boxShadow:"0 0 100px rgba(240,200,80,.1), 0 20px 60px rgba(0,0,0,.5)",
           }} onClick={e=>e.stopPropagation()}>
             <div style={{fontSize:9,letterSpacing:6,color:"rgba(240,200,80,.4)",
-              fontFamily:"'Cinzel',serif",marginBottom:10}}>DID YOU KNOW?</div>
+              fontFamily:"'Cinzel',serif",marginBottom:10}}>{t("ui.did_you_know")}</div>
             <div style={{fontSize:38,marginBottom:10,
               filter:"drop-shadow(0 0 15px rgba(240,200,80,.25))"}}>{cosmicCard.icon}</div>
             <div style={{fontSize:isMobile?15:17,fontFamily:"'Yatra One',serif",
@@ -7224,7 +7239,7 @@ export default function MokshaPatam108(){
               background:"transparent",border:"1px solid rgba(240,200,80,.25)",
               color:"#f0d050",padding:"10px 24px",fontSize:11,
               fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:5,letterSpacing:2,
-            }}>CONTINUE</button>
+            }}>{t("ui.continue")}</button>
           </div>
         </div>
       )}
@@ -7375,7 +7390,7 @@ export default function MokshaPatam108(){
           <div style={{position:"absolute",bottom:isMobile?22:30,
             fontSize:isMobile?9:10,color:"rgba(200,160,60,.25)",letterSpacing:6,fontFamily:"'Cinzel',serif",
             opacity:rollingPhase==='settled'?1:0,transition:"opacity .4s 1.2s ease",
-          }}>TAP TO CONTINUE</div>
+          }}>{t("ui.tap_continue")}</div>
         </div>
       )}
 
@@ -7463,7 +7478,7 @@ export default function MokshaPatam108(){
               animation:"grahaNameIn .5s ease .72s both",
             }}>
               <div style={{fontSize:isMobile?8:9,letterSpacing:isMobile?3:5,
-                color:"rgba(240,200,80,.45)",fontFamily:"'Cinzel',serif",marginBottom:5}}>VEDIC ASTRONOMY</div>
+                color:"rgba(240,200,80,.45)",fontFamily:"'Cinzel',serif",marginBottom:5}}>{t("ui.vedic_astronomy")}</div>
               <div style={{fontSize:isMobile?11:13,color:"rgba(200,180,140,.7)",
                 lineHeight:1.8,fontStyle:"italic"}}>{diceReveal.g.science}</div>
             </div>
@@ -7493,7 +7508,7 @@ export default function MokshaPatam108(){
           <div style={{position:"absolute",bottom:isMobile?24:32,
             fontSize:isMobile?9:10,color:"rgba(200,160,60,.28)",letterSpacing:6,fontFamily:"'Cinzel',serif",
             animation:"grahaNameIn .4s ease 1.2s both",
-          }}>TAP TO CONTINUE</div>
+          }}>{t("ui.tap_continue")}</div>
         </div>
       )}
       {turnBanner&&!dil&&!busy&&!diceReveal&&<div style={{position:"fixed",inset:0,zIndex:180,display:"flex",alignItems:"center",justifyContent:"center",pointerEvents:"none"}}>
