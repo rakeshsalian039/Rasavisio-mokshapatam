@@ -17,7 +17,32 @@ import { log, warn, error as logError } from '../../utils/logger';
 import { t, setLang } from '../../i18n';
 // ── Content translation helpers ──
 // Looks up translated text from locale files, falls back to original
-function tq(key,fallback){return t(key)||fallback||key}
+// Uses popupLang override when set (per-popup language toggle)
+let _popupLangOverride=null;
+function setPopupLangOverride(lang){_popupLangOverride=lang}
+function tq(key,fallback){return t(key,_popupLangOverride)||fallback||key}
+
+// ── Per-popup language toggle button ──
+function LangToggle({popupLang,setPopupLang,chosenLang}){
+  const current=popupLang||chosenLang;
+  return(
+    <div style={{display:"flex",gap:4,justifyContent:"center",marginBottom:8}}>
+      <button onClick={(e)=>{e.stopPropagation();setPopupLang('en')}} style={{
+        padding:"3px 10px",fontSize:10,fontFamily:"'Cinzel',serif",
+        background:current==='en'?"rgba(240,200,80,.12)":"transparent",
+        border:`1px solid ${current==='en'?"rgba(240,200,80,.4)":"rgba(200,160,60,.15)"}`,
+        color:current==='en'?"#f0d050":"#8a7a50",borderRadius:12,cursor:"pointer",
+        letterSpacing:1,
+      }}>EN</button>
+      <button onClick={(e)=>{e.stopPropagation();setPopupLang('hi')}} style={{
+        padding:"3px 10px",fontSize:10,fontFamily:"'Noto Serif Devanagari',serif",
+        background:current==='hi'?"rgba(240,200,80,.12)":"transparent",
+        border:`1px solid ${current==='hi'?"rgba(240,200,80,.4)":"rgba(200,160,60,.15)"}`,
+        color:current==='hi'?"#f0d050":"#8a7a50",borderRadius:12,cursor:"pointer",
+      }}>हिन्दी</button>
+    </div>
+  );
+}
 
 import { TEMPLE_SQUARES, TEMPLES } from '../../data/knowledgeTemples';
 import TempleIcon from '../../components/TempleIcon';
@@ -4315,33 +4340,29 @@ export default function MokshaPatam108(){
   const[pendingPlayers,setPendingPlayers]=useState(null); // held during CG intro
   // ── Knowledge Board state ──
   const[templeInfo,setTempleInfo]=useState(null);          // {temple, templeKey} — info-only popup (tap to explore)
+  const[popupLang,setPopupLang]=useState(null);           // per-popup language override (null = use chosenLang)
+  // Sync popup language override with module-level variable
+  useEffect(()=>{setPopupLangOverride(popupLang)},[popupLang]);
+  // ── Audio re-play when popup language is toggled ──
+  // (placed here; references muted/templeLore/etc declared below — safe because effect fires after render)
+  const popupLangToggleRef=useRef(null); // tracks explicit user toggle vs initial null
   const[sacredInfo,setSacredInfo]=useState(null);          // {step} — sacred path info popup
   const[templeLore,setTempleLore]=useState(null);         // {temple, templeKey, question, square, playerIdx, playerName}
   const[templeQuiz,setTempleQuiz]=useState(null);        // {temple, question, onAnswer}
   const[guruEncounter,setGuruEncounter]=useState(null);   // {guru, question, phase:'intro'|'question'|'result'}
   const[cosmicCard,setCosmicCard]=useState(null);         // {title, icon, fact, source}
-  // Shuffled answer options — computed once when question changes, not on every render
+  // Shuffled answer options — shuffle order fixed per question, text resolves on render via tq()
   const templeOptions=useMemo(()=>{
     if(!templeQuiz?.question)return[];
-    const tk=templeQuiz.templeKey||'';
-    const qi=templeQuiz.qIdx||0;
-    const opts=[
-      {text:tq(`temples.${tk}_a${qi}`,templeQuiz.question.a),correct:true},
-      {text:tq(`temples.${tk}_b${qi}`,templeQuiz.question.b),correct:false},
-    ];
-    if(templeQuiz.question.c)opts.push({text:tq(`temples.${tk}_c${qi}`,templeQuiz.question.c),correct:false});
+    const opts=[{key:'a',correct:true},{key:'b',correct:false}];
+    if(templeQuiz.question.c)opts.push({key:'c',correct:false});
     for(let i=opts.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[opts[i],opts[j]]=[opts[j],opts[i]]}
     return opts;
   },[templeQuiz]);
   const guruOptions=useMemo(()=>{
     if(!guruEncounter?.question||guruEncounter.phase!=='question')return[];
-    const gid=guruEncounter.guru?.id||'';
-    const gqi=guruEncounter.qIdx||0;
-    const opts=[
-      {text:tq(`gurus.${gid}_a${gqi}`,guruEncounter.question.a),correct:true},
-      {text:tq(`gurus.${gid}_b${gqi}`,guruEncounter.question.b),correct:false},
-    ];
-    if(guruEncounter.question.c)opts.push({text:tq(`gurus.${gid}_c${gqi}`,guruEncounter.question.c),correct:false});
+    const opts=[{key:'a',correct:true},{key:'b',correct:false}];
+    if(guruEncounter.question.c)opts.push({key:'c',correct:false});
     for(let i=opts.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[opts[i],opts[j]]=[opts[j],opts[i]]}
     return opts;
   },[guruEncounter?.question,guruEncounter?.phase]);
@@ -4389,6 +4410,27 @@ export default function MokshaPatam108(){
   const sfx=useSound();
   const ambient=useAmbient();
   const play=useCallback((t)=>{if(!muted&&!bgMuted)sfx(t)},[muted,bgMuted,sfx]);
+
+  // ── Re-play voice when popup language toggle is pressed ──
+  useEffect(()=>{
+    if(popupLang===null){popupLangToggleRef.current=null;return;}
+    if(popupLangToggleRef.current===popupLang)return;
+    popupLangToggleRef.current=popupLang;
+    VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){}
+    if(muted)return;
+    const sfx2=popupLang==='hi'?'-hi.mp3':'-en.mp3';
+    if(templeLore){
+      setTimeout(()=>VoiceEngine.speakNarrator(tq(`temples.${templeLore.templeKey||""}_lore`,templeLore.temple.lore),popupLang,`/temple-voices/${templeLore.templeKey}${sfx2}`),200);
+    }else if(templeInfo){
+      setTimeout(()=>VoiceEngine.speakNarrator(tq(`temples.${templeInfo.templeKey||""}_lore`,templeInfo.temple.lore),popupLang,`/temple-voices/${templeInfo.templeKey}${sfx2}`),200);
+    }else if(sacredInfo){
+      setTimeout(()=>VoiceEngine.speakNarrator(tq(`sacred.step${sacredInfo.stepIdx}_lore`,sacredInfo.step.lore),popupLang,`/sacred-voices/step${sacredInfo.stepIdx}${sfx2}`),200);
+    }else if(guruEncounter?.phase==='intro'){
+      setTimeout(()=>VoiceEngine.speakNarrator(tq(`gurus.${guruEncounter.guru?.id||""}_intro`,guruEncounter.guru.intro),popupLang,`/gurus/${guruEncounter.guru.id}${sfx2}`),200);
+    }else if(guruEncounter?.phase==='result'&&guruEncounter.correct){
+      setTimeout(()=>VoiceEngine.speakNarrator(tq(`gurus.${guruEncounter.guru?.id||""}_blessingDesc`,guruEncounter.guru.blessingDesc),popupLang,`/guru-voices/${guruEncounter.guru.id}-blessing${sfx2}`),200);
+    }
+  },[popupLang]);
 
   // ── Online multiplayer hook ──────────────────────────────────────────────
   const {
@@ -4644,7 +4686,7 @@ export default function MokshaPatam108(){
     setPos(Array(n).fill(1));setDisplayPos(Array(n).fill(1));setPunya(Array(n).fill(0));setPapa(Array(n).fill(0));
     setShieldA(Array(n).fill(false));setSkipA(Array(n).fill(false));
     setCur(0);setWin(null);setHist([]);setRv(null);setGv(null);setLastRollBy(null);setDiceReveal(null);setBusy(false);setDil(null);setUsedDharma([]);VoiceEngine._audioCtxUnlocked=false;
-    setTempleInfo(null);setSacredInfo(null);setTempleLore(null);setTempleQuiz(null);setGuruEncounter(null);setCosmicCard(null);usedTempleQRef.current={};usedGuruQRef.current={};usedCosmicRef.current=[];guruBlessingRef.current=null;lastKnowledgeTurnRef.current=0;
+    setTempleInfo(null);setSacredInfo(null);setTempleLore(null);setPopupLang(null);setTempleQuiz(null);setPopupLang(null);setGuruEncounter(null);setPopupLang(null);setCosmicCard(null);setPopupLang(null);usedTempleQRef.current={};usedGuruQRef.current={};usedCosmicRef.current=[];guruBlessingRef.current=null;lastKnowledgeTurnRef.current=0;
     setCgEntries([]);setShowMoksha(false);setShowPostGame(false);
     setMsg(`${pList[0].name} the ${pList[0].char.name} — your journey begins.`);
     gameStats.current={startTime:Date.now(),turns:0,humanTurns:0,playerTurns:{},snakes:0,ladders:0,dharma:0,riddlesC:0,riddlesW:0,highest:1,ashtanga:false,rejected:0,grahaHits:{sun:0,moon:0,mars:0,mercury:0,jupiter:0,venus:0,saturn:0,rahu:0,ketu:0}};
@@ -4685,7 +4727,7 @@ export default function MokshaPatam108(){
   const handleTempleAnswer=useCallback((correct)=>{
     if(!templeQuiz)return;
     const{temple,playerIdx,playerName,square}=templeQuiz;
-    setTempleQuiz(null);
+    setTempleQuiz(null);setPopupLang(null);
     if(correct){
       setPunya(prev=>{const n=[...prev];n[playerIdx]+=1;return n});
       setPos(prev=>{const n=[...prev];n[playerIdx]=Math.min(square+3,100);return n});
@@ -6490,12 +6532,13 @@ export default function MokshaPatam108(){
     }}>
       {globalOverlays}
       {/* ═══ TEMPLE INFO — tap to explore (dismissible, no quiz) ═══ */}
+      {/* Lang toggle added to popups */}
       {templeInfo&&(
         <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:256,
           background:"rgba(0,0,0,.85)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",
           display:"flex",alignItems:"center",justifyContent:"center",padding:16,
           animation:"fadeIn .4s ease",
-        }} onClick={()=>{VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){};setTempleInfo(null)}}>
+        }} onClick={()=>{VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){};setTempleInfo(null);setPopupLang(null)}}>
           <div style={{
             maxWidth:isMobile?360:500,width:"min(92vw,calc(100vw-32px))",
             background:`linear-gradient(180deg,${templeInfo.temple.color}0a,#0c0a07)`,
@@ -6521,6 +6564,7 @@ export default function MokshaPatam108(){
               {templeInfo.temple.en.toUpperCase()}
             </div>
 
+            <LangToggle popupLang={popupLang} setPopupLang={setPopupLang} chosenLang={chosenLang}/>
             <div style={{fontSize:isMobile?9:10,color:`${templeInfo.temple.color}45`,
               fontFamily:"'Cinzel',serif",letterSpacing:2,marginBottom:12}}>
               {templeInfo.temple.realm.toUpperCase()}
@@ -6553,7 +6597,7 @@ export default function MokshaPatam108(){
             </div>
 
             {/* Dismiss */}
-            <button onClick={()=>{VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){};setTempleInfo(null)}} style={{
+            <button onClick={()=>{VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){};setTempleInfo(null);setPopupLang(null)}} style={{
               background:"transparent",border:`1px solid ${templeInfo.temple.color}30`,
               color:templeInfo.temple.color,padding:"8px 20px",fontSize:11,
               fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:6,letterSpacing:2,
@@ -6570,7 +6614,7 @@ export default function MokshaPatam108(){
           backdropFilter:"blur(18px)",WebkitBackdropFilter:"blur(18px)",
           display:"flex",flexDirection:"column",overflow:"hidden",
           animation:"fadeIn .8s ease",
-        }} onClick={()=>{VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){};setSacredInfo(null)}}>
+        }} onClick={()=>{VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){};setSacredInfo(null);setPopupLang(null)}}>
           {/* Top golden line */}
           <div style={{width:"100%",height:3,
             background:"linear-gradient(90deg,transparent,rgba(240,200,80,.5),transparent)",opacity:0.6}}/>
@@ -6610,6 +6654,8 @@ export default function MokshaPatam108(){
               animation:"grahaNameIn .4s ease .35s both",
             }}>{sacredInfo.step.desc}</div>
 
+            <LangToggle popupLang={popupLang} setPopupLang={setPopupLang} chosenLang={chosenLang}/>
+
             {/* Divider */}
             <div style={{width:isMobile?60:100,height:2,
               background:"linear-gradient(90deg,transparent,rgba(240,200,80,.6),transparent)",
@@ -6643,7 +6689,7 @@ export default function MokshaPatam108(){
             </div>
 
             {/* Dismiss */}
-            <button onClick={()=>{VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){};setSacredInfo(null)}} style={{
+            <button onClick={()=>{VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){};setSacredInfo(null);setPopupLang(null)}} style={{
               marginTop:isMobile?20:28,background:"transparent",
               border:"1px solid rgba(240,200,80,.25)",
               color:"rgba(240,200,80,.6)",padding:"10px 24px",fontSize:isMobile?10:12,
@@ -6697,6 +6743,8 @@ export default function MokshaPatam108(){
               animation:"grahaNameIn .5s ease .3s both",
             }}>{templeLore.temple.en.toUpperCase()}</div>
 
+            <LangToggle popupLang={popupLang} setPopupLang={setPopupLang} chosenLang={chosenLang}/>
+
             {/* Realm indicator */}
             <div style={{fontSize:isMobile?9:11,color:`${templeLore.temple.color}50`,
               fontFamily:"'Cinzel',serif",letterSpacing:isMobile?2:4,marginBottom:isMobile?8:14,
@@ -6749,7 +6797,7 @@ export default function MokshaPatam108(){
                 <button onClick={()=>{
                   VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){};
                   const{temple,templeKey,question,qIdx,square,playerIdx,playerName}=templeLore;
-                  setTempleLore(null);
+                  setTempleLore(null);setPopupLang(null);
                   setTempleQuiz({temple,templeKey,question,qIdx,square,playerIdx,playerName});
                 }} style={{
                   background:`${templeLore.temple.color}15`,
@@ -6763,7 +6811,7 @@ export default function MokshaPatam108(){
                 <button onClick={()=>{
                   VoiceEngine.stop();try{window.speechSynthesis.cancel()}catch(e){};
                   const{temple,templeKey,question,qIdx,square,playerIdx,playerName}=templeLore;
-                  setTempleLore(null);
+                  setTempleLore(null);setPopupLang(null);
                   setTempleQuiz({temple,templeKey,question,qIdx,square,playerIdx,playerName});
                 }} style={{
                   background:"transparent",border:"none",
@@ -6802,6 +6850,8 @@ export default function MokshaPatam108(){
                 fontFamily:"'Cinzel',serif",letterSpacing:2}}>{templeQuiz.temple.en}</div>
             </div>
           </div>
+
+          <LangToggle popupLang={popupLang} setPopupLang={setPopupLang} chosenLang={chosenLang}/>
 
           {/* Question card */}
           <div style={{maxWidth:isMobile?360:540,width:"100%",
@@ -6854,7 +6904,7 @@ export default function MokshaPatam108(){
                     fontSize:isMobile?11:13,color:"rgba(200,180,140,.5)",fontFamily:"'Cinzel',serif",
                     marginTop:1,
                   }}>{'ABC'[i]}</span>
-                  <span>{opt.text}</span>
+                  <span>{tq(`temples.${templeQuiz.templeKey||''}_${opt.key}${templeQuiz.qIdx||0}`,templeQuiz.question[opt.key])}</span>
                 </button>
               ))}
             </div>
@@ -6924,9 +6974,11 @@ export default function MokshaPatam108(){
 
                 {/* Era + Title */}
                 <div style={{fontSize:isMobile?11:13,color:`${guruEncounter.guru.color}70`,
-                  fontFamily:"'Cinzel',serif",letterSpacing:2,marginBottom:isMobile?14:20}}>
+                  fontFamily:"'Cinzel',serif",letterSpacing:2,marginBottom:isMobile?8:12}}>
                   {guruEncounter.guru.era} &middot; {guruEncounter.guru.title}
                 </div>
+
+                <LangToggle popupLang={popupLang} setPopupLang={setPopupLang} chosenLang={chosenLang}/>
 
                 {/* Cinematic intro narration */}
                 <div style={{fontSize:isMobile?12:15,color:"rgba(200,180,140,.6)",lineHeight:2,
@@ -7027,6 +7079,8 @@ export default function MokshaPatam108(){
                   </div>
                 </div>
 
+                <LangToggle popupLang={popupLang} setPopupLang={setPopupLang} chosenLang={chosenLang}/>
+
                 {/* Player context */}
                 <div style={{fontSize:isMobile?9:10,letterSpacing:isMobile?2:4,
                   color:"rgba(240,200,80,.45)",fontFamily:"'Cinzel',serif",
@@ -7074,14 +7128,14 @@ export default function MokshaPatam108(){
                           setTimeout(()=>VoiceEngine.speakNarrator(blessingText,chosenLang,voiceFile),1500);
                         }
                         // Let blessing voice finish naturally — don't stop it
-                        setTimeout(()=>setGuruEncounter(null),10000);
+                        setTimeout(()=>{setGuruEncounter(null);setPopupLang(null)},10000);
                       }else{
                         play("yamaLaugh");haptic('Heavy');
                         // Wrong guru answer: +1 Papa
                         const nPap=[...papa];nPap[cur]+=1;setPapa(nPap);
                         showKarmaToast(players[cur]?.name||'Seeker',1,'papa','💀');
                         setGuruEncounter(e=>({...e,phase:'result',correct:false}));
-                        setTimeout(()=>{VoiceEngine.stop();setGuruEncounter(null)},5000);
+                        setTimeout(()=>{VoiceEngine.stop();setGuruEncounter(null);setPopupLang(null)},5000);
                       }
                     }} style={{
                       background:"rgba(200,180,140,.04)",border:"1px solid rgba(200,180,140,.18)",
@@ -7096,7 +7150,7 @@ export default function MokshaPatam108(){
                         fontSize:isMobile?11:13,color:"rgba(200,180,140,.5)",fontFamily:"'Cinzel',serif",
                         marginTop:2,
                       }}>{'ABC'[i]}</span>
-                      <span>{opt.text}</span>
+                      <span>{tq(`gurus.${guruEncounter.guru?.id||''}_${opt.key}${guruEncounter.qIdx||0}`,guruEncounter.question[opt.key])}</span>
                     </button>
                   ))}
                 </div>
@@ -7149,6 +7203,8 @@ export default function MokshaPatam108(){
                   </span>
                 </div>
 
+                <LangToggle popupLang={popupLang} setPopupLang={setPopupLang} chosenLang={chosenLang}/>
+
                 {guruEncounter.correct?(
                   <>
                     <div style={{fontSize:isMobile?40:56,marginBottom:8,
@@ -7165,7 +7221,7 @@ export default function MokshaPatam108(){
                     </div>
                     <div style={{fontSize:isMobile?13:15,color:"rgba(240,200,80,.8)",lineHeight:1.8,marginBottom:14,
                       fontFamily:"'Cinzel',serif"}}>
-                      +2 Punya &middot; {guruEncounter.guru.blessingName}
+                      +2 Punya &middot; {tq(`gurus.${guruEncounter.guru?.id||""}_blessingName`,guruEncounter.guru.blessingName)}
                     </div>
                     <div style={{fontSize:isMobile?12:14,color:"rgba(200,180,140,.55)",lineHeight:1.9,
                       fontStyle:"italic",padding:isMobile?"12px 14px":"14px 20px",
@@ -7174,7 +7230,7 @@ export default function MokshaPatam108(){
                       fontFamily:"'Noto Serif Devanagari',serif",
                       textAlign:isMobile?"center":"left",
                     }}>
-                      {guruEncounter.question.explain}
+                      {tq(`gurus.${guruEncounter.guru?.id||""}_explain${guruEncounter.qIdx||0}`,guruEncounter.question.explain)}
                     </div>
                   </>
                 ):(
@@ -7196,8 +7252,8 @@ export default function MokshaPatam108(){
                       border:"1px solid rgba(200,100,60,.12)",
                       textAlign:isMobile?"center":"left",
                     }}>
-                      <span style={{color:"rgba(240,200,80,.5)"}}>Correct answer:</span> {guruEncounter.question.a}
-                      <br/><br/>{guruEncounter.question.explain}
+                      <span style={{color:"rgba(240,200,80,.5)"}}>Correct answer:</span> {tq(`gurus.${guruEncounter.guru?.id||""}_a${guruEncounter.qIdx||0}`,guruEncounter.question.a)}
+                      <br/><br/>{tq(`gurus.${guruEncounter.guru?.id||""}_explain${guruEncounter.qIdx||0}`,guruEncounter.question.explain)}
                     </div>
                   </>
                 )}
@@ -7213,7 +7269,7 @@ export default function MokshaPatam108(){
         <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,
           background:"rgba(0,0,0,.8)",backdropFilter:"blur(8px)",WebkitBackdropFilter:"blur(8px)",
           zIndex:255,display:"flex",alignItems:"center",justifyContent:"center",padding:16}}
-          onClick={()=>setCosmicCard(null)}>
+          onClick={()=>{setCosmicCard(null);setPopupLang(null)}}>
           <div style={{
             background:"linear-gradient(180deg,#1a1810,#0e0c08)",
             border:"2px solid rgba(240,200,80,.25)",borderRadius:14,
@@ -7223,6 +7279,7 @@ export default function MokshaPatam108(){
           }} onClick={e=>e.stopPropagation()}>
             <div style={{fontSize:9,letterSpacing:6,color:"rgba(240,200,80,.4)",
               fontFamily:"'Cinzel',serif",marginBottom:10}}>{t("ui.did_you_know")}</div>
+            <LangToggle popupLang={popupLang} setPopupLang={setPopupLang} chosenLang={chosenLang}/>
             <div style={{fontSize:38,marginBottom:10,
               filter:"drop-shadow(0 0 15px rgba(240,200,80,.25))"}}>{cosmicCard.icon}</div>
             <div style={{fontSize:isMobile?15:17,fontFamily:"'Yatra One',serif",
@@ -7235,7 +7292,7 @@ export default function MokshaPatam108(){
               fontFamily:"'Cinzel',serif",letterSpacing:2,marginBottom:14}}>
               {cosmicCard.source}
             </div>
-            <button onClick={()=>setCosmicCard(null)} style={{
+            <button onClick={()=>{setCosmicCard(null);setPopupLang(null)}} style={{
               background:"transparent",border:"1px solid rgba(240,200,80,.25)",
               color:"#f0d050",padding:"10px 24px",fontSize:11,
               fontFamily:"'Cinzel',serif",cursor:"pointer",borderRadius:5,letterSpacing:2,
