@@ -265,7 +265,7 @@ const STORY_PAGES=[
   en:"Every few squares, life stops you. A Dharma Dilemma appears. An ancient crossroads. These are not simple questions. They are the same moral choices that destroyed kings and elevated sages. Karna gave away his divine armour to a beggar. Knowing it would kill him. Eklavya cut off his own thumb for his guru. Yudhishthira told a half-truth to win a war. These choices are yours now. Choose Punya, the righteous path, and move back but grow purer. Choose Papa, the easy path, advance faster but sin accumulates. The board does not care about your intentions. Only your karma matters at the final gate.",
   hi:"हर कुछ खानों पर, जीवन तुम्हें रोकता है। एक धर्म दुविधा प्रकट होती है। एक प्राचीन चौराहा। ये सरल प्रश्न नहीं हैं। ये वही नैतिक चुनाव हैं जिन्होंने राजाओं को नष्ट किया और ऋषियों को ऊपर उठाया। कर्ण ने अपना दिव्य कवच एक भिखारी को दिया। जानते हुए कि इससे मृत्यु होगी। एकलव्य ने गुरु के लिए अपना अंगूठा काटा। युधिष्ठिर ने युद्ध जीतने के लिए आधा सच बोला। ये चुनाव अब तुम्हारे हैं।",
   visuals:[{type:"dharmaStage"}]},
-  {title:"The 8-Fold Sacred Path",icon:"🪷",
+  // ═══ NEW PAGES: Temples, Gurus ═══
   bullets_en:[
     {icon:"🪷",accent:"#f0d050",title:"Above Square 100 — A Different World",text:"Once you pass square 100, dice rolls no longer matter. You move exactly ONE step per turn."},
     {icon:"📖",accent:"#c0a0e0",title:"Patanjali's Ashtanga Yoga",text:"Each of the 8 steps tests your knowledge of yoga and dharma. Answer correctly — gain Punya. Fail — gain Papa and fall back."},
@@ -319,6 +319,23 @@ const STORY_PAGES=[
   en:"Every eight turns, an ancient Indian genius materializes from history itself. Aryabhata, who calculated the Earth's circumference to 99.8% accuracy when the world thought the Earth was flat. Sushruta, who performed surgery 2,600 years ago. Chanakya, whose statecraft manual makes Machiavelli look like a child. Panini, whose grammar rules are the world's first programming language. Patanjali, who mapped the architecture of consciousness itself. Answer their question correctly and receive their unique blessing — a real gameplay power that changes your fortune. Answer wrongly, and the Guru departs in disappointment, leaving you with the weight of Papa.",
   hi:"हर आठवें मोड़ पर, एक प्राचीन भारतीय प्रतिभा इतिहास से प्रकट होती है। आर्यभट, सुश्रुत, चाणक्य, पाणिनि, पतंजलि। उनके प्रश्न का सही उत्तर दो और उनका आशीर्वाद पाओ — एक वास्तविक खेल शक्ति। गलत उत्तर दो और गुरु निराश होकर चले जाते हैं, पाप छोड़कर।",
   visuals:[{type:"guruGrid"}]},
+
+  {title:"The 8-Fold Sacred Path",icon:"🪷",
+  bullets_en:[
+    {icon:"🪷",accent:"#f0d050",title:"Beyond the Material World",text:"After Square 100, no dice shortcuts. No planetary effects. Move one step per turn. Each step tests your soul."},
+    {icon:"🧘",accent:"#a0c8e0",title:"Patanjali's 8 Gates",text:"Yama · Niyama · Asana · Pranayama · Pratyahara · Dharana · Dhyana · Moksha — each demands wisdom."},
+    {icon:"📿",accent:"#c0a0e0",title:"Riddles of the Soul",text:"Each gate presents a riddle. Answer correctly: +2 Punya and advance. Answer wrongly: Papa, and step back."},
+    {icon:"ॐ",accent:"#f0d050",title:"The Final Gate",text:"At Square 107, Dhyana, you must roll an exact 1 to reach Moksha. Only perfect surrender opens the last door."},
+  ],
+  bullets_hi:[
+    {icon:"🪷",accent:"#f0d050",title:"भौतिक संसार के पार",text:"खाना 100 के बाद, कोई शॉर्टकट नहीं। कोई ग्रह प्रभाव नहीं। एक बारी में एक कदम। हर कदम आत्मा की परीक्षा।"},
+    {icon:"🧘",accent:"#a0c8e0",title:"पतंजलि के 8 द्वार",text:"यम · नियम · आसन · प्राणायाम · प्रत्याहार · धारणा · ध्यान · मोक्ष — हर एक ज्ञान मांगता है।"},
+    {icon:"📿",accent:"#c0a0e0",title:"आत्मा की पहेलियां",text:"हर द्वार एक पहेली प्रस्तुत करता है। सही: +2 पुण्य और आगे। गलत: पाप, और पीछे।"},
+    {icon:"ॐ",accent:"#f0d050",title:"अंतिम द्वार",text:"खाना 107 पर, ध्यान, सटीक 1 फेंकना होगा। केवल पूर्ण समर्पण अंतिम दरवाज़ा खोलता है।"},
+  ],
+  en:"After Square 100, the rules change completely. You have transcended the material world. The Navagraha cannot touch you here. On the Ashtanga Marga, you move one step at a time. Each step, a gate. Each gate, a riddle drawn from the teachings of that path. Yama, self-restraint. Niyama, discipline. Asana, steadiness. Pranayama, life-force. Pratyahara, withdrawal of the senses. Dharana, single-pointed concentration. Dhyana, meditation. And at last, Square 108, Moksha, liberation from the wheel of birth and death. But at Square 107, the gate of Dhyana demands perfection. You must roll an exact 1. Only absolute surrender opens the final gate.",
+  hi:"खाना 100 के बाद, नियम बदल जाते हैं। तुम भौतिक संसार को पार कर चुके हो। नवग्रह तुम्हें नहीं छू सकते। अष्टांग मार्ग पर एक-एक कदम चलते हो। यम, नियम, आसन, प्राणायाम, प्रत्याहार, धारणा, ध्यान। और अंत में, खाना 108 पर मोक्ष — जन्म और मृत्यु के चक्र से मुक्ति। लेकिन खाना 107 पर, ध्यान का द्वार सटीकता मांगता है। सटीक 1 फेंकना होगा। केवल पूर्ण समर्पण अंतिम द्वार खोलता है।",
+  visuals:[{type:"sacredPathStage"}]},
 
   {title:"The Path to Moksha",icon:"ॐ",
   bullets_en:[
