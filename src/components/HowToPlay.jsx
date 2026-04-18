@@ -366,7 +366,7 @@ export default function HowToPlay({ onClose, chosenLang }) {
                     border: `2px solid ${g.color}40`,
                     boxShadow: `0 0 15px ${g.color}20`,
                   }}>
-                    <img src={`/gurus/${g.id}.png`} alt={g.en}
+                    <img src={`/gurus/${g.id}.webp`} alt={g.en} loading="lazy" decoding="async"
                       style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center' }}
                       onError={(e) => { e.target.style.display = 'none' }} />
                   </div>

@@ -19,14 +19,29 @@ if (typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent)) {
   // Inject global perf CSS — runs once at app load
   const perfStyle = document.createElement('style');
   perfStyle.textContent = `
+    /* Kill backdrop-filter + drop-shadow everywhere on Android (GPU-expensive) */
     .is-android *,
     .is-android *::before,
     .is-android *::after {
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
     }
-    /* Drop-shadow filters are GPU-expensive on Android — fall back to text-shadow where possible */
+    /* drop-shadow filter is ~3-4x slower than box-shadow on Android Chrome.
+       The visual fallback is that glows from drop-shadow filters disappear,
+       but box-shadow / text-shadow (cheaper) still work. */
+    .is-android * {
+      filter: none !important;
+    }
+    /* Promote the composited layers we DO want animated */
     .is-android { -webkit-tap-highlight-color: transparent; }
+    /* Respect reduced-motion users */
+    @media (prefers-reduced-motion: reduce) {
+      .is-android *, .is-android *::before, .is-android *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
   `;
   document.head.appendChild(perfStyle);
 }

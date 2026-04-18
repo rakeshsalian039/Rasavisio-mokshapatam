@@ -2,11 +2,13 @@
 // 🪶 To use standalone: import ChitraguptaIntroScreen from './ChitraguptaIntro'
 //    then remove the inline function below (search: function ChitraguptaIntroScreen)
 // ─────────────────────────────────────────────────────────────────────────────
-import { useState, useCallback, useMemo, useEffect, useRef } from "react";
-import HowToPlay    from "../../components/HowToPlay.jsx";
-import CinematicOnboarding from "../../components/CinematicOnboarding";
-import Encyclopedia from "../../components/Encyclopedia.jsx";
-import MultiplayerLobby from "../../components/MultiplayerLobby";
+import { useState, useCallback, useMemo, useEffect, useRef, lazy, Suspense } from "react";
+// ── Lazy-loaded heavy components — only fetched on first open ──
+// Saves ~1,200 lines of JS from the initial bundle
+const HowToPlay    = lazy(() => import("../../components/HowToPlay.jsx"));
+const CinematicOnboarding = lazy(() => import("../../components/CinematicOnboarding"));
+const Encyclopedia = lazy(() => import("../../components/Encyclopedia.jsx"));
+const MultiplayerLobby = lazy(() => import("../../components/MultiplayerLobby"));
 import { useMultiplayer } from "../../hooks/useMultiplayer";
 import { useTurnTimer }   from "../../hooks/useTurnTimer";
 // ═══ AUTH + DATABASE (Supabase) ═══
@@ -5499,7 +5501,22 @@ export default function MokshaPatam108(){
     return()=>{clearTimeout(timer)};
   },[guruEncounter,muted,chosenLang]);
 
-  const board=useMemo(()=>{const s=[];for(let r=0;r<10;r++)for(let c=0;c<10;c++){const a=9-r;s.push({num:a*10+(a%2===0?c:9-c)+1})}return s},[]);
+  // Board with precomputed per-square metadata — avoids 540+ lookups per render
+  const board=useMemo(()=>{
+    const s=[];
+    for(let r=0;r<10;r++)for(let c=0;c<10;c++){
+      const a=9-r;
+      const num=a*10+(a%2===0?c:9-c)+1;
+      const sn=SNAKES[num]||null;
+      const ld=LADDERS[num]||null;
+      const dl=DLM_SQ.includes(num);
+      const templeKey=TEMPLE_SQUARES[num]||null;
+      const tmpl=templeKey?TEMPLES[templeKey]:null;
+      const mk=num===108;
+      s.push({num,sn,ld,dl,templeKey,tmpl,mk});
+    }
+    return s;
+  },[]);
   const conns=useMemo(()=>{const l=[];Object.entries(SNAKES).forEach(([f,{to}])=>{const a=sqP(+f),b=sqP(to);l.push({f:a,t:b,type:"s",id:+f})});Object.entries(LADDERS).forEach(([f,{to}])=>{const a=sqP(+f),b=sqP(to);l.push({f:a,t:b,type:"l",id:+f})});return l},[]);
   const shl=SHLOKAS[shI];
 
@@ -5569,9 +5586,13 @@ export default function MokshaPatam108(){
         </div>
       </button>:<button onClick={auth.signInGoogle} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 16px",background:"rgba(12,10,7,.9)",border:"1.5px solid rgba(200,160,60,.2)",borderRadius:22,cursor:"pointer",color:"#c0b080",fontSize:12,fontFamily:"'Cinzel',serif",backdropFilter:"blur(8px)",boxShadow:"0 2px 12px rgba(0,0,0,.4)",transition:"all .2s"}}><GoogleIcon/><span>Sign In</span></button>}
     </div>
-    {showInfo   && <Encyclopedia onClose={()=>setShowInfo(false)}/>}
-    {showGuide  && <HowToPlay    onClose={()=>setShowGuide(false)} chosenLang={chosenLang}/>}
-    {showCinematic && <CinematicOnboarding onComplete={()=>{setShowCinematic(false);navigateTo("pickcount")}} chosenLang={chosenLang} muted={muted}/>}
+    {(showInfo||showGuide||showCinematic)&&(
+      <Suspense fallback={<div style={{position:"fixed",inset:0,zIndex:300,background:"rgba(6,5,3,.95)",display:"flex",alignItems:"center",justifyContent:"center",color:"#f0d050",fontFamily:"'Cinzel',serif",letterSpacing:3,fontSize:12}}>LOADING...</div>}>
+        {showInfo   && <Encyclopedia onClose={()=>setShowInfo(false)}/>}
+        {showGuide  && <HowToPlay    onClose={()=>setShowGuide(false)} chosenLang={chosenLang}/>}
+        {showCinematic && <CinematicOnboarding onComplete={()=>{setShowCinematic(false);navigateTo("pickcount")}} chosenLang={chosenLang} muted={muted}/>}
+      </Suspense>
+    )}
     {showRiddles&&<div key="riddles-panel" style={{position:"fixed",inset:0,background:"rgba(6,5,3,.95)",zIndex:300,overflowY:"auto",padding:"clamp(12px,3vw,24px)",animation:"fadeIn .3s ease"}}>
       <div style={{maxWidth:700,margin:"0 auto"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
@@ -5816,17 +5837,19 @@ export default function MokshaPatam108(){
 
   // ── Multiplayer overlay (secret access only) ─────────────────────────────
   if(showMultiplayer) return (
-    <MultiplayerLobby
-      userId={auth?.user?.id}
-      userName={auth?.profile?.display_name || auth?.user?.user_metadata?.full_name || "Seeker"}
-      onGameStart={(players, roomId, myPlayerIndex) => {
-        setShowMultiplayer(false);
-        setPlayers(players);
-        if(roomId){setOnlineRoomId(roomId);setMyPlayerIndex(myPlayerIndex);}
-        navigateTo("chitragupta");
-      }}
-      onBack={() => setShowMultiplayer(false)}
-    />
+    <Suspense fallback={<div style={{position:"fixed",inset:0,background:"rgba(6,5,3,.95)",display:"flex",alignItems:"center",justifyContent:"center",color:"#f0d050",fontFamily:"'Cinzel',serif",letterSpacing:3,fontSize:12}}>LOADING...</div>}>
+      <MultiplayerLobby
+        userId={auth?.user?.id}
+        userName={auth?.profile?.display_name || auth?.user?.user_metadata?.full_name || "Seeker"}
+        onGameStart={(players, roomId, myPlayerIndex) => {
+          setShowMultiplayer(false);
+          setPlayers(players);
+          if(roomId){setOnlineRoomId(roomId);setMyPlayerIndex(myPlayerIndex);}
+          navigateTo("chitragupta");
+        }}
+        onBack={() => setShowMultiplayer(false)}
+      />
+    </Suspense>
   );
 
   // ═══ COMING SOON MODAL ═══
@@ -6155,7 +6178,7 @@ export default function MokshaPatam108(){
                 margin:"0 auto 8px",border:`3px solid ${g.color}50`,
                 boxShadow:`0 0 24px ${g.color}30, 0 4px 12px rgba(0,0,0,.4)`,
               }}>
-                <img src={`/gurus/${g.id}.png`} alt={g.name}
+                <img src={`/gurus/${g.id}.webp`} alt={g.name} loading="lazy" decoding="async"
                   style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"top center"}}
                   onError={(e)=>{e.target.style.display='none'}}/>
               </div>
@@ -7990,9 +8013,7 @@ export default function MokshaPatam108(){
                 {conns.map((cn,i)=>{const x1=cn.f.c*10+5,y1=cn.f.r*10+5,x2=cn.t.c*10+5,y2=cn.t.r*10+5;return cn.type==="s"?<Naga key={i} x1={x1} y1={y1} x2={x2} y2={y2} id={cn.id}/>:<Ldr key={i} x1={x1} y1={y1} x2={x2} y2={y2}/>})}
               </svg>
               <div style={{display:"grid",gridTemplateColumns:"repeat(10,1fr)",position:"relative",zIndex:6}}>
-              {board.map(({num})=>{
-                const sn=SNAKES[num],ld=LADDERS[num],dl=DLM_SQ.includes(num),mk=num===108;
-                const tmpl=TEMPLE_SQUARES[num]?TEMPLES[TEMPLE_SQUARES[num]]:null;
+              {board.map(({num,sn,ld,dl,mk,templeKey,tmpl})=>{
                 const ph=[];for(let i=0;i<nP;i++){const rp=isOnline&&i!==myPlayerIndex&&displayPos.length>0?displayPos[i]:pos[i];if((rp||1)===num)ph.push(i)}
                 let bg="transparent",bdr="rgba(200,160,60,.08)";
                 if(mk){bg="radial-gradient(circle,rgba(240,200,80,.2),transparent)";bdr="rgba(240,200,80,.5)"}
@@ -8005,11 +8026,10 @@ export default function MokshaPatam108(){
                   // Temple info — only when idle (not busy, no popups active)
                   if(tmpl&&!busy&&!dil&&!templeLore&&!templeQuiz&&!guruEncounter&&!cosmicCard&&!eventPopup&&!win){
                     playTempleBell();
-                    setTempleInfo({temple:tmpl,templeKey:TEMPLE_SQUARES[num]});
+                    setTempleInfo({temple:tmpl,templeKey});
                     // Speak temple lore when exploring
                     if(!muted){
-                      const tk=TEMPLE_SQUARES[num];
-                      const voiceFile=`/temple-voices/${tk}-${chosenLang==='hi'?'hi':'en'}.mp3`;
+                      const voiceFile=`/temple-voices/${templeKey}-${chosenLang==='hi'?'hi':'en'}.mp3`;
                       setTimeout(()=>VoiceEngine.speakNarrator(tmpl.lore||tmpl.intro,chosenLang,voiceFile),500);
                     }
                   }
@@ -8020,7 +8040,7 @@ export default function MokshaPatam108(){
                   {mk&&<span style={{fontSize:"clamp(14px,2.5vw,22px)",animation:"mp 3s ease infinite",color:"#f0d050"}}>ॐ</span>}
                   {sn&&<><span style={{fontSize:"clamp(10px,2vw,16px)",lineHeight:1}}>𓆙</span><span style={{fontSize:"clamp(7px,1.2vw,11px)",color:"#ffb040",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 1px 4px #000,0 0 12px rgba(180,60,20,.5)"}}>{sn.skt}</span><span style={{fontSize:"clamp(5px,.9vw,8px)",color:"#ffa040",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1.1,textShadow:"0 0 6px #000,0 0 10px rgba(180,60,20,.4)"}}>{sn.en}</span></>}
                   {ld&&<><span style={{fontSize:"clamp(9px,1.8vw,14px)",lineHeight:1}}>🪔</span><span style={{fontSize:"clamp(7px,1.2vw,11px)",color:"#ffe070",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 0 12px rgba(200,160,60,.4)"}}>{ld.skt}</span><span style={{fontSize:"clamp(5px,.9vw,8px)",color:"#f0d060",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1.1,textShadow:"0 0 6px #000"}}>{ld.en}</span></>}
-                  {tmpl&&<><TempleIcon templeKey={TEMPLE_SQUARES[num]} size={isMobile?28:52} color={tmpl.color}/><span style={{fontSize:"clamp(5px,1vw,10px)",color:tmpl.color,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,textShadow:`0 1px 3px #000, 0 0 10px ${tmpl.color}50`,lineHeight:1,letterSpacing:0,marginTop:-2}}>{tmpl.name}</span></>}
+                  {tmpl&&<><TempleIcon templeKey={templeKey} size={isMobile?28:52} color={tmpl.color}/><span style={{fontSize:"clamp(5px,1vw,10px)",color:tmpl.color,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,textShadow:`0 1px 3px #000, 0 0 10px ${tmpl.color}50`,lineHeight:1,letterSpacing:0,marginTop:-2}}>{tmpl.name}</span></>}
                   {dl&&!tmpl&&<><span style={{fontSize:"clamp(8px,1.5vw,13px)",lineHeight:1}}>⚖</span><span style={{fontSize:"clamp(5px,.8vw,7px)",color:"#c8a0f0",fontFamily:"'Cinzel',serif",fontWeight:900,textShadow:"0 0 8px #000",letterSpacing:1}}>DHARMA</span></>}
                   {ph.length>0&&<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",gap:2,zIndex:15,pointerEvents:"none"}}>
                     {ph.map(pi=>{const c=players[pi]?.char;const isMoving=pi===cur&&busy;const isActive=pi===cur;const pc=c?.color||"#fff";return <div key={pi} style={{display:"flex",flexDirection:"column",alignItems:"center",transition:"all .3s ease",transform:isMoving?"scale(1.7) translateY(-8px)":isActive?"scale(1.4)":"scale(0.9)",zIndex:isActive?20:15}}>
