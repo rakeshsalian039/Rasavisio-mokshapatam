@@ -8244,7 +8244,7 @@ export default function MokshaPatam108(){
               </div>
               <div style={{display:"flex",gap:10}}>
                 <div style={{fontSize:22,minWidth:26,color:gv.color}}>{gv.icon}</div>
-                <div><div style={{fontSize:9,fontWeight:700,color:gv.color,letterSpacing:2}}>{gv.n} · {gv.en.toUpperCase()}</div><div style={{fontSize:11,color:"#e0d0a0"}}>{gv.desc}</div></div>
+                <div><div style={{fontSize:9,fontWeight:700,color:gv.color,letterSpacing:2}}>{gv.n} · {gv.en.toUpperCase()}</div><div style={{fontSize:11,color:"#e0d0a0"}}>{tq(`graha.${gv.fx||''}_desc`,gv.desc)}</div></div>
               </div>
             </div>}
             {/* Online: opponent rolling overlay */}
@@ -8521,7 +8521,7 @@ export default function MokshaPatam108(){
                     <span style={{fontSize:20}}>{gv.icon}</span>
                     <div>
                       <div style={{fontSize:11,color:gv.color,fontWeight:700}}>{gv.n} · {gv.en}</div>
-                      <div style={{fontSize:10,color:"#c0b080",lineHeight:1.4}}>{gv.desc}</div>
+                      <div style={{fontSize:10,color:"#c0b080",lineHeight:1.4}}>{tq(`graha.${gv.fx||''}_desc`,gv.desc)}</div>
                     </div>
                   </div>
                 </div>
