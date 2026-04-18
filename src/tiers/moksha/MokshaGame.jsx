@@ -5212,7 +5212,11 @@ export default function MokshaPatam108(){
     // ─── 6-phase dice animation ─────────────────────────────────────────
     const GRAHA_ICONS=GRAHA.map(x=>x.icon);
     let shuffleInterval=null,shuffleCount=0;
-    const totalShuffles=28; // 28×70ms ≈ 2s rolling
+    // Android: fewer shuffles + slower interval to avoid re-render storm
+    // (each setState re-renders the entire 8500-line component)
+    const totalShuffles = IS_ANDROID ? 10 : 28;   // Was 28 always — Android gets 10
+    const shuffleMs     = IS_ANDROID ? 140 : 70;  // Was 70ms — Android gets 140ms
+    // Still ~1.4s on Android, ~2s on iOS/desktop
 
     setRollingPhase('rolling');
     setDisplayKarma(Math.floor(Math.random()*6)+1);
@@ -5270,7 +5274,7 @@ export default function MokshaPatam108(){
           },550);
         },650);
       }
-    },70);
+    },shuffleMs);
   },[cur,nP,dil,win,busy,punya,papa,pos,shieldA,skipA,play,players,showEvent,chosenLang,muted,isOnline,isMyTurn,usedDharma]);
   // Keep ref in sync so timer can call it without circular dependency
   doRollRef.current = doRoll;
