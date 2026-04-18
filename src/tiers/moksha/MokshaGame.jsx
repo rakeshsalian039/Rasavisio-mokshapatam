@@ -4846,13 +4846,18 @@ export default function MokshaPatam108(){
       setMangalShloka(shloka);setMangalPhase(0);
       navigateTo("mangalacharan");
     }
-    // Preload critical audio files in background
-    try{
-      ['/temple-bell.mp3',
-       ...GURUS.map(g=>`/guru-voices/${g.id}-en.mp3`),
-       ...GURUS.map(g=>`/guru-voices/${g.id}-blessing-en.mp3`),
-      ].forEach(url=>{const a=new Audio(url);a.preload='auto';a.load()});
-    }catch(e){}
+    // Preload critical audio files — deferred to not block the board mount.
+    // Previously this fired 17 parallel preloads immediately on startGame(),
+    // flooding bandwidth AND Chrome's audio decode pipeline during the exact
+    // moment the user is trying to enter the board. Now deferred 4s.
+    // Only temple-bell is truly critical (plays often); guru voices are
+    // needed every 8 turns, so there's plenty of time to fetch on-demand.
+    setTimeout(()=>{
+      try{
+        // Only temple bell — used on every landing, small (~600KB)
+        const a=new Audio('/temple-bell.mp3');a.preload='auto';a.load();
+      }catch(e){}
+    },4000);
   };
 
   const addPlayer=()=>{
@@ -5647,6 +5652,14 @@ export default function MokshaPatam108(){
       </div>}
     </div>);
   }),[board,pos,cur,busy,hov,nP,players,isMobile,isOnline,myPlayerIndex,displayPos,muted,chosenLang,dil,templeLore,templeQuiz,guruEncounter,cosmicCard,eventPopup,win]);
+
+  // Snake + Ladder SVG overlay — precomputed from conns, never changes after mount
+  const connsSvg=useMemo(()=>conns.map((cn,i)=>{
+    const x1=cn.f.c*10+5,y1=cn.f.r*10+5,x2=cn.t.c*10+5,y2=cn.t.r*10+5;
+    return cn.type==="s"
+      ?<Naga key={i} x1={x1} y1={y1} x2={x2} y2={y2} id={cn.id}/>
+      :<Ldr key={i} x1={x1} y1={y1} x2={x2} y2={y2}/>;
+  }),[conns]);
 
   // ═══ GLOBAL OVERLAYS — rendered on every screen ═══
   const globalOverlays=<>
@@ -8138,7 +8151,7 @@ export default function MokshaPatam108(){
               <div style={{position:"absolute",top:"33.3%",left:"2%",right:"2%",height:1,background:"linear-gradient(90deg,transparent,rgba(200,160,60,.18),transparent)",pointerEvents:"none",zIndex:10}}/>
               <div style={{position:"absolute",top:"66.6%",left:"2%",right:"2%",height:1,background:"linear-gradient(90deg,transparent,rgba(200,160,60,.18),transparent)",pointerEvents:"none",zIndex:10}}/>
               <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{position:"absolute",inset:0,width:"100%",height:"100%",pointerEvents:"none",zIndex:5}}>
-                {conns.map((cn,i)=>{const x1=cn.f.c*10+5,y1=cn.f.r*10+5,x2=cn.t.c*10+5,y2=cn.t.r*10+5;return cn.type==="s"?<Naga key={i} x1={x1} y1={y1} x2={x2} y2={y2} id={cn.id}/>:<Ldr key={i} x1={x1} y1={y1} x2={x2} y2={y2}/>})}
+                {connsSvg}
               </svg>
               <div style={{display:"grid",gridTemplateColumns:"repeat(10,1fr)",position:"relative",zIndex:6}}>
               {boardSquares}
