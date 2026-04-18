@@ -22,6 +22,13 @@ let _popupLangOverride=null;
 function setPopupLangOverride(lang){_popupLangOverride=lang}
 function tq(key,fallback){return t(key,_popupLangOverride)||fallback||key}
 
+// ── Platform detection for performance optimizations ──
+// Android browsers are ~3-5x slower than iOS at Web Audio + backdrop-filter
+// Skip expensive effects on Android; keep iOS experience pristine
+const IS_ANDROID = typeof navigator!=='undefined' && /Android/i.test(navigator.userAgent);
+const IS_IOS = typeof navigator!=='undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent);
+const IS_MOBILE_BROWSER = IS_ANDROID || IS_IOS;
+
 // ── Per-popup language toggle button ──
 function LangToggle({popupLang,setPopupLang,chosenLang}){
   const current=popupLang||chosenLang;
@@ -1130,32 +1137,45 @@ const VoiceEngine = {
       // Cut muddy low-mids (400Hz)
       const cut = ctx.createBiquadFilter();
       cut.type='peaking'; cut.frequency.value=400; cut.Q.value=1; cut.gain.value=-3;
-      // 5-second heavenly reverb (longer than narrator's 2s)
-      const rvLen = Math.floor(5*ctx.sampleRate);
-      const rvBuf = ctx.createBuffer(2,rvLen,ctx.sampleRate);
-      for(let ch=0;ch<2;ch++){
-        const d=rvBuf.getChannelData(ch);
-        for(let i=0;i<rvLen;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/rvLen,1.4)*(i<ctx.sampleRate*.03?i/(ctx.sampleRate*.03):1);
-      }
-      const conv = ctx.createConvolver(); conv.buffer=rvBuf;
-      const rvMix = ctx.createGain(); rvMix.gain.value=0.32;
-      // 528Hz "miracle tone" — unique signature of Chitragupta's voice
-      const bowl = ctx.createOscillator(); bowl.type='sine'; bowl.frequency.value=528;
-      const bowlG = ctx.createGain(); bowlG.gain.value=0.016;
-      const bowlF = ctx.createBiquadFilter(); bowlF.type='bandpass'; bowlF.frequency.value=528; bowlF.Q.value=12;
-      bowl.connect(bowlF); bowlF.connect(bowlG);
-      // Route
+
+      // ═══ Master + routing ═══
       const master = ctx.createGain(); master.gain.value=0.85;
-      src.connect(cut); cut.connect(pres); pres.connect(air);
-      air.connect(master); air.connect(conv); conv.connect(rvMix); rvMix.connect(master);
-      bowlG.connect(master); master.connect(ctx.destination);
-      this.speaking = true;
-      src.onended = () => {
-        this.speaking = false;
-        bowlG.gain.linearRampToValueAtTime(0, ctx.currentTime+2.5);
-        setTimeout(()=>{try{bowl.stop();if(ctx!==this._sharedCtx)ctx.close();}catch(e){}this._cgCtx=null;},3000);
-      };
-      src.start(0); bowl.start(0);
+
+      if (IS_ANDROID) {
+        // Android: skip reverb convolver + 528Hz bowl oscillator (too expensive)
+        src.connect(cut); cut.connect(pres); pres.connect(air);
+        air.connect(master); master.connect(ctx.destination);
+        this.speaking = true;
+        src.onended = () => {
+          this.speaking = false;
+          setTimeout(()=>{try{if(ctx!==this._sharedCtx)ctx.close();}catch(e){}this._cgCtx=null;},500);
+        };
+        src.start(0);
+      } else {
+        // Desktop + iOS: full processing chain with reverb + bowl tone
+        const rvLen = Math.floor(5*ctx.sampleRate);
+        const rvBuf = ctx.createBuffer(2,rvLen,ctx.sampleRate);
+        for(let ch=0;ch<2;ch++){
+          const d=rvBuf.getChannelData(ch);
+          for(let i=0;i<rvLen;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/rvLen,1.4)*(i<ctx.sampleRate*.03?i/(ctx.sampleRate*.03):1);
+        }
+        const conv = ctx.createConvolver(); conv.buffer=rvBuf;
+        const rvMix = ctx.createGain(); rvMix.gain.value=0.32;
+        const bowl = ctx.createOscillator(); bowl.type='sine'; bowl.frequency.value=528;
+        const bowlG = ctx.createGain(); bowlG.gain.value=0.016;
+        const bowlF = ctx.createBiquadFilter(); bowlF.type='bandpass'; bowlF.frequency.value=528; bowlF.Q.value=12;
+        bowl.connect(bowlF); bowlF.connect(bowlG);
+        src.connect(cut); cut.connect(pres); pres.connect(air);
+        air.connect(master); air.connect(conv); conv.connect(rvMix); rvMix.connect(master);
+        bowlG.connect(master); master.connect(ctx.destination);
+        this.speaking = true;
+        src.onended = () => {
+          this.speaking = false;
+          bowlG.gain.linearRampToValueAtTime(0, ctx.currentTime+2.5);
+          setTimeout(()=>{try{bowl.stop();if(ctx!==this._sharedCtx)ctx.close();}catch(e){}this._cgCtx=null;},3000);
+        };
+        src.start(0); bowl.start(0);
+      }
     } catch(e) {
       this._browserSpeak(text, lang);
     }
@@ -1433,84 +1453,96 @@ const VoiceEngine = {
       delayFb.connect(delay);
       delay.connect(delayMix);
 
-      // ═══ TEMPLE REVERB (hall, 2s decay, 20% mix) ═══
-      const rvLen = 2.0 * ctx.sampleRate;
-      const rvBuf = ctx.createBuffer(2, rvLen, ctx.sampleRate);
-      for (let ch = 0; ch < 2; ch++) {
-        const d = rvBuf.getChannelData(ch);
-        for (let i = 0; i < rvLen; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / rvLen, 2.0);
-      }
-      const conv = ctx.createConvolver();
-      conv.buffer = rvBuf;
-      const rvMix = ctx.createGain();
-      rvMix.gain.value = 0.20;
-
-      // ═══ OM DRONE (tanpura-like background hum) ═══
-      // Layer 3 oscillators: fundamental + fifth + octave for rich drone
-      const droneGain = ctx.createGain();
-      droneGain.gain.value = 0.04; // Very subtle — felt not heard
-
-      const droneBass = ctx.createBiquadFilter();
-      droneBass.type = 'lowpass';
-      droneBass.frequency.value = 200; // Keep only low frequencies
-
-      // Sa (fundamental) — ~130 Hz (C3)
-      const osc1 = ctx.createOscillator();
-      osc1.type = 'sine';
-      osc1.frequency.value = 130.81;
-
-      // Pa (perfect fifth) — ~196 Hz (G3)
-      const osc2 = ctx.createOscillator();
-      osc2.type = 'sine';
-      osc2.frequency.value = 196.00;
-      const osc2Gain = ctx.createGain();
-      osc2Gain.gain.value = 0.6;
-
-      // Low Sa (octave below) — ~65 Hz
-      const osc3 = ctx.createOscillator();
-      osc3.type = 'sine';
-      osc3.frequency.value = 65.41;
-      const osc3Gain = ctx.createGain();
-      osc3Gain.gain.value = 0.8;
-
-      osc1.connect(droneBass);
-      osc2.connect(osc2Gain);
-      osc2Gain.connect(droneBass);
-      osc3.connect(osc3Gain);
-      osc3Gain.connect(droneBass);
-      droneBass.connect(droneGain);
-
       // ═══ MASTER ═══
       const master = ctx.createGain();
       master.gain.value = volume || 1.1;
 
-      // ═══ ROUTING ═══
-      source.connect(bass);
-      bass.connect(mid);
-      mid.connect(highCut);
-      highCut.connect(master);
-      highCut.connect(delay);
-      highCut.connect(conv);
-      delayMix.connect(master);
-      conv.connect(rvMix);
-      rvMix.connect(master);
-      droneGain.connect(master);
-      master.connect(ctx.destination);
+      if (IS_ANDROID) {
+        // Android: skip reverb convolver + 3 drone oscillators (too expensive)
+        // Keep: bass, mid, highcut, delay — these are cheap biquad filters
+        source.connect(bass);
+        bass.connect(mid);
+        mid.connect(highCut);
+        highCut.connect(master);
+        highCut.connect(delay);
+        delayMix.connect(master);
+        master.connect(ctx.destination);
 
-      // ═══ PLAY ═══
-      if (this._stopToken !== myToken) { try{osc1.stop();osc2.stop();osc3.stop();ctx.close()}catch(e){} return; }
-      this.speaking = true;
-      source.onended = () => {
-        this.speaking = false;
-        // Fade out drone gracefully
-        droneGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.5);
-        setTimeout(()=>{try{osc1.stop();osc2.stop();osc3.stop();if(ctx!==this._sharedCtx)ctx.close()}catch(e){}this._yamaCtx=null},2000);
-      };
-      source.start(0);
+        if (this._stopToken !== myToken) { try{ctx.close()}catch(e){} return; }
+        this.speaking = true;
+        source.onended = () => {
+          this.speaking = false;
+          setTimeout(()=>{try{if(ctx!==this._sharedCtx)ctx.close()}catch(e){}this._yamaCtx=null},500);
+        };
+        source.start(0);
+      } else {
+        // ═══ TEMPLE REVERB (hall, 2s decay, 20% mix) ═══
+        const rvLen = 2.0 * ctx.sampleRate;
+        const rvBuf = ctx.createBuffer(2, rvLen, ctx.sampleRate);
+        for (let ch = 0; ch < 2; ch++) {
+          const d = rvBuf.getChannelData(ch);
+          for (let i = 0; i < rvLen; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / rvLen, 2.0);
+        }
+        const conv = ctx.createConvolver();
+        conv.buffer = rvBuf;
+        const rvMix = ctx.createGain();
+        rvMix.gain.value = 0.20;
+
+        // ═══ OM DRONE (tanpura-like background hum) ═══
+        const droneGain = ctx.createGain();
+        droneGain.gain.value = 0.04;
+
+        const droneBass = ctx.createBiquadFilter();
+        droneBass.type = 'lowpass';
+        droneBass.frequency.value = 200;
+
+        const osc1 = ctx.createOscillator();
+        osc1.type = 'sine';
+        osc1.frequency.value = 130.81;
+
+        const osc2 = ctx.createOscillator();
+        osc2.type = 'sine';
+        osc2.frequency.value = 196.00;
+        const osc2Gain = ctx.createGain();
+        osc2Gain.gain.value = 0.6;
+
+        const osc3 = ctx.createOscillator();
+        osc3.type = 'sine';
+        osc3.frequency.value = 65.41;
+        const osc3Gain = ctx.createGain();
+        osc3Gain.gain.value = 0.8;
+
+        osc1.connect(droneBass);
+        osc2.connect(osc2Gain);
+        osc2Gain.connect(droneBass);
+        osc3.connect(osc3Gain);
+        osc3Gain.connect(droneBass);
+        droneBass.connect(droneGain);
+
+        // ═══ ROUTING ═══
+        source.connect(bass);
+        bass.connect(mid);
+        mid.connect(highCut);
+        highCut.connect(master);
+        highCut.connect(delay);
+        highCut.connect(conv);
+        delayMix.connect(master);
+        conv.connect(rvMix);
+        rvMix.connect(master);
+        droneGain.connect(master);
+        master.connect(ctx.destination);
+
+        if (this._stopToken !== myToken) { try{osc1.stop();osc2.stop();osc3.stop();ctx.close()}catch(e){} return; }
+        this.speaking = true;
+        source.onended = () => {
+          this.speaking = false;
+          droneGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.5);
+          setTimeout(()=>{try{osc1.stop();osc2.stop();osc3.stop();if(ctx!==this._sharedCtx)ctx.close()}catch(e){}this._yamaCtx=null},2000);
+        };
+        source.start(0);
+        osc1.start(0); osc2.start(0); osc3.start(0);
+      }
       onAudioStart && onAudioStart(); // ← fires exactly when audio begins
-      osc1.start(0);
-      osc2.start(0);
-      osc3.start(0);
       return;
     } catch(e) {
       warn('Narrator processing failed:', e.message);
@@ -6433,21 +6465,23 @@ export default function MokshaPatam108(){
           {/* Deep space gradient */}
           <div style={{position:"absolute",inset:0,
             background:"radial-gradient(ellipse at 50% 40%, #0a0818 0%, #020108 50%, #000 100%)"}}/>
-          {/* Nebula glow — purple/gold */}
+          {/* Nebula glow — purple/gold (skip blur filter on Android) */}
           <div style={{position:"absolute",top:"15%",left:"30%",width:"50vw",height:"50vw",borderRadius:"50%",
             background:"radial-gradient(circle,rgba(100,60,180,.12),transparent 60%)",
-            animation:"nebulaBreath 8s ease infinite",filter:"blur(40px)"}}/>
+            animation:"nebulaBreath 8s ease infinite",
+            filter:IS_ANDROID?"none":"blur(40px)"}}/>
           <div style={{position:"absolute",top:"50%",right:"20%",width:"35vw",height:"35vw",borderRadius:"50%",
             background:"radial-gradient(circle,rgba(240,180,60,.06),transparent 60%)",
-            animation:"nebulaBreath 12s ease 3s infinite",filter:"blur(30px)"}}/>
-          {/* Stars — CSS box-shadow trick for dozens of dots */}
-          {[1,2,3].map(layer=>(
+            animation:"nebulaBreath 12s ease 3s infinite",
+            filter:IS_ANDROID?"none":"blur(30px)"}}/>
+          {/* Stars — CSS box-shadow trick. Android: 1 layer × 40 stars. iOS/desktop: 3 layers × 80 stars */}
+          {(IS_ANDROID?[1]:[1,2,3]).map(layer=>(
             <div key={layer} style={{
               position:"absolute",top:0,left:0,
               width:2/layer,height:2/layer,borderRadius:"50%",
               background:"#fff",
               animation:`cosmicDrift ${60+layer*20}s linear infinite`,
-              boxShadow:Array.from({length:80},()=>{
+              boxShadow:Array.from({length:IS_ANDROID?40:80},()=>{
                 const x=Math.floor(Math.random()*2000);
                 const y=Math.floor(Math.random()*4000);
                 const s=Math.random()*1.5+0.3;
