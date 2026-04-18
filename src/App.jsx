@@ -19,40 +19,30 @@ if (typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent)) {
   // Inject global perf CSS — runs once at app load
   const perfStyle = document.createElement('style');
   perfStyle.textContent = `
-    /* Kill backdrop-filter + drop-shadow everywhere on Android (GPU-expensive) */
+    /* Android Chrome perf overrides.
+       DevTools trace showed: forced reflow + slow style recalc + massive
+       Layout block on every click. Root cause: too many expensive CSS
+       animations and layer-promoting filters competing for the compositor. */
+
+    /* Kill backdrop-filter + drop-shadow / blur universally */
     .is-android *,
     .is-android *::before,
     .is-android *::after {
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
-    }
-    /* drop-shadow / blur filter is ~3-4x slower than box-shadow on Android Chrome.
-       Glows from drop-shadow disappear but box/text-shadow still work. */
-    .is-android * {
       filter: none !important;
     }
-    /* Kill expensive INFINITE animations that paint (text-shadow/box-shadow/
-       filter) or layout (height) every frame on Android. These animations
-       run 24/7 on multiple elements and destroy scroll perf on flagships
-       just as much as on low-end devices. iOS handles them fine. */
-    .is-android [style*="yamaBreath"],
-    .is-android [style*="activeGlow"],
-    .is-android [style*="sacredGlow"],
-    .is-android [style*="diceGlow"],
-    .is-android [style*="rollPulse"],
-    .is-android [style*="mp 3s"],
-    .is-android [style*="waveBar"],
-    .is-android [style*="cgGoldPulse"],
-    .is-android [style*="ladderShine"],
-    .is-android [style*="snakePulse"],
-    .is-android [style*="shimmer"],
-    .is-android [style*="shlokaGlow"],
-    .is-android [style*="nebulaBreath"] {
-      animation: none !important;
+
+    /* Convert ALL infinite animations to run-once. Decorative breathe/glow
+       effects briefly animate then settle — imperceptible loss.
+       Functional one-shot animations (fadeIn, slideUp, reveal, roll, etc)
+       are unaffected since they already have iteration-count:1. */
+    .is-android * {
+      animation-iteration-count: 1 !important;
     }
-    /* Promote the composited layers we DO want animated */
+
     .is-android { -webkit-tap-highlight-color: transparent; }
-    /* Respect reduced-motion users */
+
     @media (prefers-reduced-motion: reduce) {
       .is-android *, .is-android *::before, .is-android *::after {
         animation-duration: 0.01ms !important;

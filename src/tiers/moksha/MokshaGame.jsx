@@ -4153,12 +4153,23 @@ const CSS=`
 const PG={minHeight:"100vh",background:"linear-gradient(170deg,#0c0a07,#1a1408,#0c0a07)",fontFamily:"'Cinzel',serif",color:"#e8c850",position:"relative",overflow:"hidden"};
 
 // ═══ useIsMobile ═══
+// Resize handler is rAF-throttled: Android fires resize dozens of times
+// during keyboard/orientation changes, and each fire triggers a full
+// 8500-line re-render + forced reflow if width crossed the 640 breakpoint.
 function useIsMobile(){
   const[m,setM]=useState(typeof window!=='undefined'&&window.innerWidth<640);
   useEffect(()=>{
-    const fn=()=>setM(window.innerWidth<640);
+    let raf=null;
+    const fn=()=>{
+      if(raf)return;
+      raf=requestAnimationFrame(()=>{
+        raf=null;
+        const next=window.innerWidth<640;
+        setM(prev=>prev===next?prev:next); // skip setState if unchanged
+      });
+    };
     window.addEventListener('resize',fn,{passive:true});
-    return()=>window.removeEventListener('resize',fn);
+    return()=>{if(raf)cancelAnimationFrame(raf);window.removeEventListener('resize',fn)};
   },[]);
   return m;
 }
