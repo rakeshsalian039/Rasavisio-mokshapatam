@@ -670,6 +670,10 @@ function useAmbient(){
     try{
       const a=new Audio("/ambient.mp3");
       a.loop=true; a.volume=1.0;
+      a.preload='auto';
+      // Tell the browser this isn't critical — avoids main-thread stalls
+      // while Web Audio decodes the narrator voice in parallel
+      if ('fetchPriority' in a) a.fetchPriority = 'low';
       audioRef.current=a;
       a.play().then(()=>{playing.current=true}).catch(()=>{});
     }catch(e){}
