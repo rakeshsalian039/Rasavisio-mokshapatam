@@ -26,11 +26,29 @@ if (typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent)) {
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
     }
-    /* drop-shadow filter is ~3-4x slower than box-shadow on Android Chrome.
-       The visual fallback is that glows from drop-shadow filters disappear,
-       but box-shadow / text-shadow (cheaper) still work. */
+    /* drop-shadow / blur filter is ~3-4x slower than box-shadow on Android Chrome.
+       Glows from drop-shadow disappear but box/text-shadow still work. */
     .is-android * {
       filter: none !important;
+    }
+    /* Kill expensive INFINITE animations that paint (text-shadow/box-shadow/
+       filter) or layout (height) every frame on Android. These animations
+       run 24/7 on multiple elements and destroy scroll perf on flagships
+       just as much as on low-end devices. iOS handles them fine. */
+    .is-android [style*="yamaBreath"],
+    .is-android [style*="activeGlow"],
+    .is-android [style*="sacredGlow"],
+    .is-android [style*="diceGlow"],
+    .is-android [style*="rollPulse"],
+    .is-android [style*="mp 3s"],
+    .is-android [style*="waveBar"],
+    .is-android [style*="cgGoldPulse"],
+    .is-android [style*="ladderShine"],
+    .is-android [style*="snakePulse"],
+    .is-android [style*="shimmer"],
+    .is-android [style*="shlokaGlow"],
+    .is-android [style*="nebulaBreath"] {
+      animation: none !important;
     }
     /* Promote the composited layers we DO want animated */
     .is-android { -webkit-tap-highlight-color: transparent; }
