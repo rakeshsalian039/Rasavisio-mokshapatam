@@ -5609,6 +5609,49 @@ export default function MokshaPatam108(){
   const conns=useMemo(()=>{const l=[];Object.entries(SNAKES).forEach(([f,{to}])=>{const a=sqP(+f),b=sqP(to);l.push({f:a,t:b,type:"s",id:+f})});Object.entries(LADDERS).forEach(([f,{to}])=>{const a=sqP(+f),b=sqP(to);l.push({f:a,t:b,type:"l",id:+f})});return l},[]);
   const shl=SHLOKAS[shI];
 
+  // ═══ BOARD SQUARES — memoized to avoid re-rendering 108 DOM nodes on
+  //    every dice shuffle / popup open / mangalacharan / etc. The 8500-line
+  //    component has 32+ state hooks; without this, every setState on
+  //    displayKarma or rollingPhase re-renders all 108 squares (major
+  //    Android lag during dice roll and popup mounts).
+  const boardSquares=useMemo(()=>board.map(({num,sn,ld,dl,mk,templeKey,tmpl})=>{
+    const ph=[];for(let i=0;i<nP;i++){const rp=isOnline&&i!==myPlayerIndex&&displayPos.length>0?displayPos[i]:pos[i];if((rp||1)===num)ph.push(i)}
+    let bg="transparent",bdr="rgba(200,160,60,.08)";
+    if(mk){bg="radial-gradient(circle,rgba(240,200,80,.2),transparent)";bdr="rgba(240,200,80,.5)"}
+    else if(sn){bg="radial-gradient(circle,rgba(180,60,20,.2),transparent)";bdr="rgba(180,60,20,.3)"}
+    else if(ld){bg="radial-gradient(circle,rgba(200,160,60,.15),transparent)";bdr="rgba(200,160,60,.2)"}
+    else if(tmpl){bg=`linear-gradient(160deg,${tmpl.color}35,${tmpl.color}10 50%,${tmpl.color}20)`;bdr=`${tmpl.color}70`}
+    else if(dl){bg="radial-gradient(circle,rgba(120,80,180,.2),transparent)";bdr="rgba(140,100,200,.35)"}
+    return(<div key={num} onMouseEnter={()=>!isMobile&&setHov(num)} onMouseLeave={()=>!isMobile&&setHov(null)} onClick={()=>{
+      if(isMobile)setHov(h=>h===num?null:num);
+      // Temple info — only when idle (not busy, no popups active)
+      if(tmpl&&!busy&&!dil&&!templeLore&&!templeQuiz&&!guruEncounter&&!cosmicCard&&!eventPopup&&!win){
+        playTempleBell();
+        setTempleInfo({temple:tmpl,templeKey});
+        if(!muted){
+          const voiceFile=`/temple-voices/${templeKey}-${chosenLang==='hi'?'hi':'en'}.mp3`;
+          setTimeout(()=>VoiceEngine.speakNarrator(tmpl.lore||tmpl.intro,chosenLang,voiceFile),500);
+        }
+      }
+    }} style={{aspectRatio:"1",background:bg,border:`0.5px solid ${hov===num?"rgba(240,200,80,.6)":bdr}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .2s",
+      ...(tmpl?{boxShadow:`inset 0 -2px 6px ${tmpl.color}20, inset 0 1px 3px ${tmpl.color}15, 0 2px 8px ${tmpl.color}18`,borderWidth:1,borderRadius:2}:{}),
+    }}>
+      <span style={{position:"absolute",top:1,left:2,fontSize:"clamp(7px,1.2vw,11px)",color:"rgba(240,210,130,.5)",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:700}}>{num}</span>
+      {mk&&<span style={{fontSize:"clamp(14px,2.5vw,22px)",animation:"mp 3s ease infinite",color:"#f0d050"}}>ॐ</span>}
+      {sn&&<><span style={{fontSize:"clamp(10px,2vw,16px)",lineHeight:1}}>𓆙</span><span style={{fontSize:"clamp(7px,1.2vw,11px)",color:"#ffb040",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 1px 4px #000,0 0 12px rgba(180,60,20,.5)"}}>{sn.skt}</span><span style={{fontSize:"clamp(5px,.9vw,8px)",color:"#ffa040",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1.1,textShadow:"0 0 6px #000,0 0 10px rgba(180,60,20,.4)"}}>{sn.en}</span></>}
+      {ld&&<><span style={{fontSize:"clamp(9px,1.8vw,14px)",lineHeight:1}}>🪔</span><span style={{fontSize:"clamp(7px,1.2vw,11px)",color:"#ffe070",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 0 12px rgba(200,160,60,.4)"}}>{ld.skt}</span><span style={{fontSize:"clamp(5px,.9vw,8px)",color:"#f0d060",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1.1,textShadow:"0 0 6px #000"}}>{ld.en}</span></>}
+      {tmpl&&<><TempleIcon templeKey={templeKey} size={isMobile?28:52} color={tmpl.color}/><span style={{fontSize:"clamp(5px,1vw,10px)",color:tmpl.color,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,textShadow:`0 1px 3px #000, 0 0 10px ${tmpl.color}50`,lineHeight:1,letterSpacing:0,marginTop:-2}}>{tmpl.name}</span></>}
+      {dl&&!tmpl&&<><span style={{fontSize:"clamp(8px,1.5vw,13px)",lineHeight:1}}>⚖</span><span style={{fontSize:"clamp(5px,.8vw,7px)",color:"#c8a0f0",fontFamily:"'Cinzel',serif",fontWeight:900,textShadow:"0 0 8px #000",letterSpacing:1}}>DHARMA</span></>}
+      {ph.length>0&&<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",gap:2,zIndex:15,pointerEvents:"none"}}>
+        {ph.map(pi=>{const c=players[pi]?.char;const isMoving=pi===cur&&busy;const isActive=pi===cur;const pc=c?.color||"#fff";return <div key={pi} style={{display:"flex",flexDirection:"column",alignItems:"center",transition:"all .3s ease",transform:isMoving?"scale(1.7) translateY(-8px)":isActive?"scale(1.4)":"scale(0.9)",zIndex:isActive?20:15}}>
+          {isActive&&<div style={{position:"absolute",inset:-2,borderRadius:4,background:`${pc}15`,border:`1.5px solid ${pc}40`,animation:"activeGlow 1.5s ease infinite","--pc":pc}}/>}
+          <div style={{width:isMobile?"clamp(22px,6vw,28px)":"clamp(20px,3.2vw,30px)",height:isMobile?"clamp(22px,6vw,28px)":"clamp(20px,3.2vw,30px)",borderRadius:"50%",background:`radial-gradient(circle at 35% 30%,${pc},${pc}40 70%,#0c0a07)`,border:`2.5px solid ${pc}`,boxShadow:`0 0 ${isMoving?20:isActive?12:5}px ${pc}${isMoving?"dd":isActive?"99":"30"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"clamp(11px,2vw,17px)",lineHeight:1,animation:isActive&&!isMoving?"activeGlow 1.5s ease infinite":"none","--pc":pc}}>{c?.icon}</div>
+          {!isMobile&&<div style={{fontSize:"clamp(5px,.8vw,8px)",color:pc,fontWeight:900,marginTop:1,textShadow:`0 0 4px #000,0 0 8px #000,0 0 12px ${pc}40`,whiteSpace:"nowrap",letterSpacing:1,opacity:isActive?1:.7}}>{players[pi]?.name?.slice(0,6)}</div>}
+        </div>})}
+      </div>}
+    </div>);
+  }),[board,pos,cur,busy,hov,nP,players,isMobile,isOnline,myPlayerIndex,displayPos,muted,chosenLang,dil,templeLore,templeQuiz,guruEncounter,cosmicCard,eventPopup,win]);
+
   // ═══ GLOBAL OVERLAYS — rendered on every screen ═══
   const globalOverlays=<>
     <style>{CSS}</style>
@@ -8102,44 +8145,7 @@ export default function MokshaPatam108(){
                 {conns.map((cn,i)=>{const x1=cn.f.c*10+5,y1=cn.f.r*10+5,x2=cn.t.c*10+5,y2=cn.t.r*10+5;return cn.type==="s"?<Naga key={i} x1={x1} y1={y1} x2={x2} y2={y2} id={cn.id}/>:<Ldr key={i} x1={x1} y1={y1} x2={x2} y2={y2}/>})}
               </svg>
               <div style={{display:"grid",gridTemplateColumns:"repeat(10,1fr)",position:"relative",zIndex:6}}>
-              {board.map(({num,sn,ld,dl,mk,templeKey,tmpl})=>{
-                const ph=[];for(let i=0;i<nP;i++){const rp=isOnline&&i!==myPlayerIndex&&displayPos.length>0?displayPos[i]:pos[i];if((rp||1)===num)ph.push(i)}
-                let bg="transparent",bdr="rgba(200,160,60,.08)";
-                if(mk){bg="radial-gradient(circle,rgba(240,200,80,.2),transparent)";bdr="rgba(240,200,80,.5)"}
-                else if(sn){bg="radial-gradient(circle,rgba(180,60,20,.2),transparent)";bdr="rgba(180,60,20,.3)"}
-                else if(ld){bg="radial-gradient(circle,rgba(200,160,60,.15),transparent)";bdr="rgba(200,160,60,.2)"}
-                else if(tmpl){bg=`linear-gradient(160deg,${tmpl.color}35,${tmpl.color}10 50%,${tmpl.color}20)`;bdr=`${tmpl.color}70`}
-                else if(dl){bg="radial-gradient(circle,rgba(120,80,180,.2),transparent)";bdr="rgba(140,100,200,.35)"}
-                return(<div key={num} onMouseEnter={()=>!isMobile&&setHov(num)} onMouseLeave={()=>!isMobile&&setHov(null)} onClick={()=>{
-                  if(isMobile)setHov(h=>h===num?null:num);
-                  // Temple info — only when idle (not busy, no popups active)
-                  if(tmpl&&!busy&&!dil&&!templeLore&&!templeQuiz&&!guruEncounter&&!cosmicCard&&!eventPopup&&!win){
-                    playTempleBell();
-                    setTempleInfo({temple:tmpl,templeKey});
-                    // Speak temple lore when exploring
-                    if(!muted){
-                      const voiceFile=`/temple-voices/${templeKey}-${chosenLang==='hi'?'hi':'en'}.mp3`;
-                      setTimeout(()=>VoiceEngine.speakNarrator(tmpl.lore||tmpl.intro,chosenLang,voiceFile),500);
-                    }
-                  }
-                }} style={{aspectRatio:"1",background:bg,border:`0.5px solid ${hov===num?"rgba(240,200,80,.6)":bdr}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .2s",
-                  ...(tmpl?{boxShadow:`inset 0 -2px 6px ${tmpl.color}20, inset 0 1px 3px ${tmpl.color}15, 0 2px 8px ${tmpl.color}18`,borderWidth:1,borderRadius:2}:{}),
-                }}>
-                  <span style={{position:"absolute",top:1,left:2,fontSize:"clamp(7px,1.2vw,11px)",color:"rgba(240,210,130,.5)",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:700}}>{num}</span>
-                  {mk&&<span style={{fontSize:"clamp(14px,2.5vw,22px)",animation:"mp 3s ease infinite",color:"#f0d050"}}>ॐ</span>}
-                  {sn&&<><span style={{fontSize:"clamp(10px,2vw,16px)",lineHeight:1}}>𓆙</span><span style={{fontSize:"clamp(7px,1.2vw,11px)",color:"#ffb040",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 1px 4px #000,0 0 12px rgba(180,60,20,.5)"}}>{sn.skt}</span><span style={{fontSize:"clamp(5px,.9vw,8px)",color:"#ffa040",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1.1,textShadow:"0 0 6px #000,0 0 10px rgba(180,60,20,.4)"}}>{sn.en}</span></>}
-                  {ld&&<><span style={{fontSize:"clamp(9px,1.8vw,14px)",lineHeight:1}}>🪔</span><span style={{fontSize:"clamp(7px,1.2vw,11px)",color:"#ffe070",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 0 12px rgba(200,160,60,.4)"}}>{ld.skt}</span><span style={{fontSize:"clamp(5px,.9vw,8px)",color:"#f0d060",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1.1,textShadow:"0 0 6px #000"}}>{ld.en}</span></>}
-                  {tmpl&&<><TempleIcon templeKey={templeKey} size={isMobile?28:52} color={tmpl.color}/><span style={{fontSize:"clamp(5px,1vw,10px)",color:tmpl.color,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,textShadow:`0 1px 3px #000, 0 0 10px ${tmpl.color}50`,lineHeight:1,letterSpacing:0,marginTop:-2}}>{tmpl.name}</span></>}
-                  {dl&&!tmpl&&<><span style={{fontSize:"clamp(8px,1.5vw,13px)",lineHeight:1}}>⚖</span><span style={{fontSize:"clamp(5px,.8vw,7px)",color:"#c8a0f0",fontFamily:"'Cinzel',serif",fontWeight:900,textShadow:"0 0 8px #000",letterSpacing:1}}>DHARMA</span></>}
-                  {ph.length>0&&<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",gap:2,zIndex:15,pointerEvents:"none"}}>
-                    {ph.map(pi=>{const c=players[pi]?.char;const isMoving=pi===cur&&busy;const isActive=pi===cur;const pc=c?.color||"#fff";return <div key={pi} style={{display:"flex",flexDirection:"column",alignItems:"center",transition:"all .3s ease",transform:isMoving?"scale(1.7) translateY(-8px)":isActive?"scale(1.4)":"scale(0.9)",zIndex:isActive?20:15}}>
-                      {isActive&&<div style={{position:"absolute",inset:-2,borderRadius:4,background:`${pc}15`,border:`1.5px solid ${pc}40`,animation:"activeGlow 1.5s ease infinite","--pc":pc}}/>}
-                      <div style={{width:isMobile?"clamp(22px,6vw,28px)":"clamp(20px,3.2vw,30px)",height:isMobile?"clamp(22px,6vw,28px)":"clamp(20px,3.2vw,30px)",borderRadius:"50%",background:`radial-gradient(circle at 35% 30%,${pc},${pc}40 70%,#0c0a07)`,border:`2.5px solid ${pc}`,boxShadow:`0 0 ${isMoving?20:isActive?12:5}px ${pc}${isMoving?"dd":isActive?"99":"30"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"clamp(11px,2vw,17px)",lineHeight:1,animation:isActive&&!isMoving?"activeGlow 1.5s ease infinite":"none","--pc":pc}}>{c?.icon}</div>
-                      {!isMobile&&<div style={{fontSize:"clamp(5px,.8vw,8px)",color:pc,fontWeight:900,marginTop:1,textShadow:`0 0 4px #000,0 0 8px #000,0 0 12px ${pc}40`,whiteSpace:"nowrap",letterSpacing:1,opacity:isActive?1:.7}}>{players[pi]?.name?.slice(0,6)}</div>}
-                    </div>})}
-                  </div>}
-                </div>);
-              })}
+              {boardSquares}
             </div>
             </div>{/* close position:relative wrapper */}
           </div>
