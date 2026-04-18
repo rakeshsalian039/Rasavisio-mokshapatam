@@ -1075,6 +1075,8 @@ const VoiceEngine = {
     if (this._yamaCtx && this._yamaCtx !== this._sharedCtx) { try { this._yamaCtx.close(); } catch(e){} } this._yamaCtx = null;
     if (this._yamaSource) { try { this._yamaSource.stop(); } catch(e){} this._yamaSource = null; }
     if (this._yamaSource2) { try { this._yamaSource2.stop(); } catch(e){} this._yamaSource2 = null; }
+    if (this._cgSource) { try { this._cgSource.stop(); } catch(e){} this._cgSource = null; }
+    if (this._cgBowl)   { try { this._cgBowl.stop();   } catch(e){} this._cgBowl = null; }
     if (this._cgCtx && this._cgCtx !== this._sharedCtx) { try { this._cgCtx.close(); } catch(e){} } this._cgCtx = null;
     try { window.speechSynthesis.cancel(); } catch (e) {}
     this.speaking = false;
@@ -1146,8 +1148,10 @@ const VoiceEngine = {
         src.connect(cut); cut.connect(pres); pres.connect(air);
         air.connect(master); master.connect(ctx.destination);
         this.speaking = true;
+        this._cgSource = src; // tracked so stop() can kill it mid-playback
         src.onended = () => {
           this.speaking = false;
+          if (this._cgSource === src) this._cgSource = null;
           setTimeout(()=>{try{if(ctx!==this._sharedCtx)ctx.close();}catch(e){}this._cgCtx=null;},500);
         };
         src.start(0);
@@ -1169,10 +1173,13 @@ const VoiceEngine = {
         air.connect(master); air.connect(conv); conv.connect(rvMix); rvMix.connect(master);
         bowlG.connect(master); master.connect(ctx.destination);
         this.speaking = true;
+        this._cgSource = src;  // tracked for mid-playback stop
+        this._cgBowl = bowl;   // also tracked so it doesn't linger
         src.onended = () => {
           this.speaking = false;
+          if (this._cgSource === src) this._cgSource = null;
           bowlG.gain.linearRampToValueAtTime(0, ctx.currentTime+2.5);
-          setTimeout(()=>{try{bowl.stop();if(ctx!==this._sharedCtx)ctx.close();}catch(e){}this._cgCtx=null;},3000);
+          setTimeout(()=>{try{bowl.stop();if(this._cgBowl===bowl)this._cgBowl=null;if(ctx!==this._sharedCtx)ctx.close();}catch(e){}this._cgCtx=null;},3000);
         };
         src.start(0); bowl.start(0);
       }
@@ -4453,7 +4460,8 @@ export default function MokshaPatam108(){
     if(screen!=="mangalacharan"||!mangalShloka)return;
     if(!muted){
       const url=`/shlokas/shloka-${mangalShloka.id}.mp3`;
-      setTimeout(()=>VoiceEngine.speakNarrator(mangalShloka.shloka,chosenLang,url,null,1.6),800);
+      // Longer delay (1200ms) so any lingering Chitragupta audio fully dies before shloka starts
+      setTimeout(()=>VoiceEngine.speakNarrator(mangalShloka.shloka,chosenLang,url,null,2.2),1200);
     }
     const t1=setTimeout(()=>setMangalPhase(1),4000);
     const t2=setTimeout(()=>setMangalPhase(2),8000);
