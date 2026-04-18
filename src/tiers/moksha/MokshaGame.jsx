@@ -2,7 +2,7 @@
 // 🪶 To use standalone: import ChitraguptaIntroScreen from './ChitraguptaIntro'
 //    then remove the inline function below (search: function ChitraguptaIntroScreen)
 // ─────────────────────────────────────────────────────────────────────────────
-import { useState, useCallback, useMemo, useEffect, useRef, lazy, Suspense } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef, lazy, Suspense, memo } from "react";
 // ── Lazy-loaded heavy components — only fetched on first open ──
 // Saves ~1,200 lines of JS from the initial bundle
 const HowToPlay    = lazy(() => import("../../components/HowToPlay.jsx"));
@@ -1919,7 +1919,7 @@ const GRAHA_NARRATE_TIMING = [
   [8,  4500],   // Ketu — "strips all shields"
 ];
 
-function DiceStage({ GRAHA_INFO, chosenLang, isNarrating, narrateStartedAt }) {
+const DiceStage = memo(function DiceStage({ GRAHA_INFO, chosenLang, isNarrating, narrateStartedAt }) {
   const [karmaDie, setKarmaDie] = useState(4);
   const [grahaIdx, setGrahaIdx] = useState(-1); // -1 = intro (no planet)
   const [showEffect, setShowEffect] = useState(false);
@@ -2153,7 +2153,7 @@ function DiceStage({ GRAHA_INFO, chosenLang, isNarrating, narrateStartedAt }) {
       )}
     </div>
   );
-}
+});
 
 // ═══════════════════════════════════════════════════════════════════════
 // DHARMA STAGE — cinematic moral choice experience
@@ -2604,7 +2604,7 @@ function SacredPathStage({SACRED_PATH}) {
 // 🪶 CHITRAGUPTA'S AGRASANDHANI — The Living Cosmic Ledger
 //    Real-time balance scale + quill-written entries + soul purity ring
 // ══════════════════════════════════════════════════════════════════════
-function ChitraguptaPanel({ entries, players, punya, papa, cur, win }) {
+const ChitraguptaPanel = memo(function ChitraguptaPanel({ entries, players, punya, papa, cur, win }) {
   const nP = players.length;
   // Compute aggregate punya/papa for balance scale
   const totalPunya = punya.reduce((a,b)=>a+b,0);
@@ -2745,7 +2745,7 @@ function ChitraguptaPanel({ entries, players, punya, papa, cur, win }) {
       </div>
     </div>
   );
-}
+});
 
 // ══════════════════════════════════════════════════════════════════════
 // ✨ MOKSHA SCREEN — Full-screen canvas ascension cinematic
@@ -5661,6 +5661,61 @@ export default function MokshaPatam108(){
       :<Ldr key={i} x1={x1} y1={y1} x2={x2} y2={y2}/>;
   }),[conns]);
 
+  // Desktop stats panel — player karma cards. Memoized so it doesn't
+  // re-render on every state change (displayKarma, rollingPhase, etc).
+  // Only re-renders when actual player stats change.
+  const playerCards=useMemo(()=>players.map((pl,i)=>{
+    const isActive=cur===i;const pn=punya[i]||0;const pp=papa[i]||0;
+    const total=Math.max(pn+pp,1);const pc=pl.char.color;
+    return(<div key={i} style={{background:isActive?`${pc}12`:"transparent",borderLeft:`4px solid ${isActive?pc:"transparent"}`,border:`1px solid ${isActive?pc+"50":"rgba(200,160,60,.08)"}`,borderLeftWidth:4,borderLeftColor:isActive?pc:"rgba(200,160,60,.08)",borderRadius:4,padding:"10px 12px",marginBottom:i<nP-1?8:0,transition:"all .3s",boxShadow:isActive?`inset 0 0 20px ${pc}10, 0 0 12px ${pc}15`:"none"}}>
+      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
+        <div style={{fontSize:isActive?24:20,width:32,height:32,display:"flex",alignItems:"center",justifyContent:"center",borderRadius:"50%",background:isActive?`${pc}20`:"transparent",border:isActive?`2px solid ${pc}50`:"2px solid transparent",transition:"all .3s"}}>{pl.char.icon}</div>
+        <div style={{flex:1}}>
+          <div style={{fontSize:isActive?14:12,color:pc,fontWeight:700,transition:"all .3s"}}>{pl.name}{pl.cpu?" ☠️":""}{isActive?" ◄":""}{shieldA[i]?" 🛡":""}{skipA[i]?" ⏭":""}</div>
+          <div style={{fontSize:10,opacity:.5,letterSpacing:1}}>Square {pos[i]||1} · {rlm(pos[i]||1)==="bhuloka"?"भूलोक":rlm(pos[i]||1)==="antarloka"?"अन्तर्लोक":"स्वर्गलोक"}</div>
+        </div>
+      </div>
+      <div style={{display:"flex",gap:12}}>
+        <div style={{flex:1}}>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}><span style={{fontSize:10,color:"#f0d050",fontWeight:700}}>पुण्य</span><span style={{fontSize:14,color:"#f0d050",fontWeight:900}}>{pn}</span></div>
+          <div style={{height:6,background:"rgba(0,0,0,.3)",borderRadius:3,overflow:"hidden"}}><div style={{height:"100%",width:`${(pn/total)*100}%`,background:"linear-gradient(90deg,#f0d050,#c0a030)",borderRadius:3,transition:"width .6s"}}/></div>
+        </div>
+        <div style={{flex:1}}>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}><span style={{fontSize:10,color:"#e06030",fontWeight:700}}>पाप</span><span style={{fontSize:14,color:"#e06030",fontWeight:900}}>{pp}</span></div>
+          <div style={{height:6,background:"rgba(0,0,0,.3)",borderRadius:3,overflow:"hidden"}}><div style={{height:"100%",width:`${(pp/total)*100}%`,background:"linear-gradient(90deg,#e06030,#a03020)",borderRadius:3,transition:"width .6s"}}/></div>
+        </div>
+      </div>
+    </div>);
+  }),[players,cur,punya,papa,shieldA,skipA,pos,nP]);
+
+  // Sacred Crown (8 Ashtanga steps, 101-108) — memoized similar to board
+  const sacredCrown=useMemo(()=>SACRED_PATH.map((sq)=>{
+    const ph=[];for(let i=0;i<nP;i++){const rp=isOnline&&i!==myPlayerIndex&&displayPos.length>0?displayPos[i]:pos[i];if((rp||1)===sq.num)ph.push(i)}
+    const isMoksha=sq.num===108;
+    const stepIdx=sq.num-101;
+    return(<div key={sq.num} onMouseEnter={()=>!isMobile&&setHov(sq.num)} onMouseLeave={()=>!isMobile&&setHov(null)} onClick={()=>{
+      if(isMobile)setHov(h=>h===sq.num?null:sq.num);
+      if(!busy&&!dil&&!templeLore&&!templeQuiz&&!guruEncounter&&!cosmicCard&&!eventPopup&&!win&&!sacredInfo){
+        playTempleBell();
+        setSacredInfo({step:sq,stepIdx});
+        if(!muted){
+          const voiceFile=`/sacred-voices/step${stepIdx}-${chosenLang==='hi'?'hi':'en'}.mp3`;
+          setTimeout(()=>VoiceEngine.speakNarrator(sq.lore,chosenLang,voiceFile),500);
+        }
+      }
+    }} style={{aspectRatio:"1",background:isMoksha?"radial-gradient(circle,rgba(240,200,80,.2),rgba(240,200,80,.04))":"radial-gradient(circle,rgba(240,200,80,.06),transparent)",border:`1px solid ${hov===sq.num?"rgba(240,200,80,.7)":isMoksha?"rgba(240,200,80,.4)":"rgba(240,200,80,.12)"}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .3s",borderRadius:isMoksha?4:2,animation:isMoksha?"mp 3s ease infinite":"sacredGlow 4s ease infinite",animationDelay:`${stepIdx*0.3}s`,boxShadow:isMoksha?"0 0 20px rgba(240,200,80,.15)":"none"}}>
+      <span style={{position:"absolute",top:1,left:2,fontSize:"clamp(6px,1vw,9px)",color:"rgba(240,210,130,.5)",fontWeight:700}}>{sq.num}</span>
+      <SacredPathIcon stepIndex={stepIdx} size={isMobile?28:48}/>
+      <span style={{fontSize:isMoksha?"clamp(7px,1.2vw,13px)":"clamp(6px,1vw,11px)",color:isMoksha?"#f0d050":"#e8c850",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1,textShadow:"0 0 8px #000,0 0 16px rgba(240,200,80,.2)",marginTop:isMobile?-1:0}}>{sq.skt}</span>
+      <span style={{fontSize:"clamp(4px,.7vw,8px)",color:"#c0a050",letterSpacing:isMobile?0:1,lineHeight:1,fontFamily:"'Cinzel',serif",fontWeight:700,textShadow:"0 0 6px #000"}}>{sq.en}</span>
+      {ph.length>0&&<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",gap:2,zIndex:15,pointerEvents:"none"}}>
+        {ph.map(pi=>{const c=players[pi]?.char;const isActive=pi===cur;const pc=c?.color||"#fff";return <div key={pi} style={{display:"flex",flexDirection:"column",alignItems:"center",transform:isActive?"scale(1.3)":"scale(0.9)",zIndex:isActive?20:15}}>
+          <div style={{width:"clamp(18px,2.8vw,26px)",height:"clamp(18px,2.8vw,26px)",borderRadius:"50%",background:`radial-gradient(circle at 35% 30%,${pc},${pc}40 70%,#0c0a07)`,border:`2px solid ${pc}`,boxShadow:`0 0 ${isActive?12:4}px ${pc}${isActive?"99":"30"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"clamp(10px,1.6vw,15px)",lineHeight:1,animation:isActive?"activeGlow 1.5s ease infinite":"none","--pc":pc}}>{c?.icon}</div>
+        </div>})}
+      </div>}
+    </div>);
+  }),[pos,cur,busy,hov,nP,players,isMobile,isOnline,myPlayerIndex,displayPos,muted,chosenLang,dil,templeLore,templeQuiz,guruEncounter,cosmicCard,eventPopup,win,sacredInfo]);
+
   // ═══ GLOBAL OVERLAYS — rendered on every screen ═══
   const globalOverlays=<>
     <style>{CSS}</style>
@@ -8098,33 +8153,7 @@ export default function MokshaPatam108(){
               </svg>
               <div style={{fontSize:"clamp(6px,1vw,9px)",textAlign:"center",letterSpacing:isMobile?2:5,color:"#f0d050",opacity:.5,marginBottom:4,fontFamily:"'Cinzel',serif",textShadow:"0 0 10px rgba(240,200,80,.3)"}}>꧁ अष्टांग मार्ग · The 8-Fold Sacred Path ꧂</div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(8,1fr)",gap:isMobile?1:2}}>
-                {SACRED_PATH.map((sq)=>{
-                  const ph=[];for(let i=0;i<nP;i++){const rp=isOnline&&i!==myPlayerIndex&&displayPos.length>0?displayPos[i]:pos[i];if((rp||1)===sq.num)ph.push(i)}
-                  const isMoksha=sq.num===108;
-                  const stepIdx=sq.num-101;
-                  return(<div key={sq.num} onMouseEnter={()=>!isMobile&&setHov(sq.num)} onMouseLeave={()=>!isMobile&&setHov(null)} onClick={()=>{
-                    if(isMobile)setHov(h=>h===sq.num?null:sq.num);
-                    // Sacred path info — only when idle
-                    if(!busy&&!dil&&!templeLore&&!templeQuiz&&!guruEncounter&&!cosmicCard&&!eventPopup&&!win&&!sacredInfo){
-                      playTempleBell();
-                      setSacredInfo({step:sq,stepIdx});
-                      if(!muted){
-                        const voiceFile=`/sacred-voices/step${stepIdx}-${chosenLang==='hi'?'hi':'en'}.mp3`;
-                        setTimeout(()=>VoiceEngine.speakNarrator(sq.lore,chosenLang,voiceFile),500);
-                      }
-                    }
-                  }} style={{aspectRatio:"1",background:isMoksha?"radial-gradient(circle,rgba(240,200,80,.2),rgba(240,200,80,.04))":"radial-gradient(circle,rgba(240,200,80,.06),transparent)",border:`1px solid ${hov===sq.num?"rgba(240,200,80,.7)":isMoksha?"rgba(240,200,80,.4)":"rgba(240,200,80,.12)"}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .3s",borderRadius:isMoksha?4:2,animation:isMoksha?"mp 3s ease infinite":"sacredGlow 4s ease infinite",animationDelay:`${stepIdx*0.3}s`,boxShadow:isMoksha?"0 0 20px rgba(240,200,80,.15)":"none"}}>
-                    <span style={{position:"absolute",top:1,left:2,fontSize:"clamp(6px,1vw,9px)",color:"rgba(240,210,130,.5)",fontWeight:700}}>{sq.num}</span>
-                    <SacredPathIcon stepIndex={stepIdx} size={isMobile?28:48}/>
-                    <span style={{fontSize:isMoksha?"clamp(7px,1.2vw,13px)":"clamp(6px,1vw,11px)",color:isMoksha?"#f0d050":"#e8c850",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1,textShadow:"0 0 8px #000,0 0 16px rgba(240,200,80,.2)",marginTop:isMobile?-1:0}}>{sq.skt}</span>
-                    <span style={{fontSize:"clamp(4px,.7vw,8px)",color:"#c0a050",letterSpacing:isMobile?0:1,lineHeight:1,fontFamily:"'Cinzel',serif",fontWeight:700,textShadow:"0 0 6px #000"}}>{sq.en}</span>
-                    {ph.length>0&&<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",gap:2,zIndex:15,pointerEvents:"none"}}>
-                      {ph.map(pi=>{const c=players[pi]?.char;const isActive=pi===cur;const pc=c?.color||"#fff";return <div key={pi} style={{display:"flex",flexDirection:"column",alignItems:"center",transform:isActive?"scale(1.3)":"scale(0.9)",zIndex:isActive?20:15}}>
-                        <div style={{width:"clamp(18px,2.8vw,26px)",height:"clamp(18px,2.8vw,26px)",borderRadius:"50%",background:`radial-gradient(circle at 35% 30%,${pc},${pc}40 70%,#0c0a07)`,border:`2px solid ${pc}`,boxShadow:`0 0 ${isActive?12:4}px ${pc}${isActive?"99":"30"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"clamp(10px,1.6vw,15px)",lineHeight:1,animation:isActive?"activeGlow 1.5s ease infinite":"none","--pc":pc}}>{c?.icon}</div>
-                      </div>})}
-                    </div>}
-                  </div>);
-                })}
+                {sacredCrown}
               </div>
             </div>
             {/* ═══ MAIN 10×10 BOARD — with SVG overlay aligned ═══ */}
@@ -8412,27 +8441,7 @@ export default function MokshaPatam108(){
                 Auth: {auth.user?auth.profile?.display_name||auth.user.email:"Not signed in"}
               </div>
             </div>}
-            {players.map((pl,i)=>{const isActive=cur===i;const pn=punya[i]||0;const pp=papa[i]||0;const total=Math.max(pn+pp,1);const pc=pl.char.color;
-              return(<div key={i} style={{background:isActive?`${pc}12`:"transparent",borderLeft:`4px solid ${isActive?pc:"transparent"}`,border:`1px solid ${isActive?pc+"50":"rgba(200,160,60,.08)"}`,borderLeftWidth:4,borderLeftColor:isActive?pc:"rgba(200,160,60,.08)",borderRadius:4,padding:"10px 12px",marginBottom:i<nP-1?8:0,transition:"all .3s",boxShadow:isActive?`inset 0 0 20px ${pc}10, 0 0 12px ${pc}15`:"none"}}>
-                <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
-                  <div style={{fontSize:isActive?24:20,width:32,height:32,display:"flex",alignItems:"center",justifyContent:"center",borderRadius:"50%",background:isActive?`${pc}20`:"transparent",border:isActive?`2px solid ${pc}50`:"2px solid transparent",transition:"all .3s"}}>{pl.char.icon}</div>
-                  <div style={{flex:1}}>
-                    <div style={{fontSize:isActive?14:12,color:pc,fontWeight:700,transition:"all .3s"}}>{pl.name}{pl.cpu?" ☠️":""}{isActive?" ◄":""}{shieldA[i]?" 🛡":""}{skipA[i]?" ⏭":""}</div>
-                    <div style={{fontSize:10,opacity:.5,letterSpacing:1}}>Square {pos[i]||1} · {rlm(pos[i]||1)==="bhuloka"?"भूलोक":rlm(pos[i]||1)==="antarloka"?"अन्तर्लोक":"स्वर्गलोक"}</div>
-                  </div>
-                </div>
-                <div style={{display:"flex",gap:12}}>
-                  <div style={{flex:1}}>
-                    <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}><span style={{fontSize:10,color:"#f0d050",fontWeight:700}}>पुण्य</span><span style={{fontSize:14,color:"#f0d050",fontWeight:900}}>{pn}</span></div>
-                    <div style={{height:6,background:"rgba(0,0,0,.3)",borderRadius:3,overflow:"hidden"}}><div style={{height:"100%",width:`${(pn/total)*100}%`,background:"linear-gradient(90deg,#f0d050,#c0a030)",borderRadius:3,transition:"width .6s"}}/></div>
-                  </div>
-                  <div style={{flex:1}}>
-                    <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}><span style={{fontSize:10,color:"#e06030",fontWeight:700}}>पाप</span><span style={{fontSize:14,color:"#e06030",fontWeight:900}}>{pp}</span></div>
-                    <div style={{height:6,background:"rgba(0,0,0,.3)",borderRadius:3,overflow:"hidden"}}><div style={{height:"100%",width:`${(pp/total)*100}%`,background:"linear-gradient(90deg,#e06030,#a03020)",borderRadius:3,transition:"width .6s"}}/></div>
-                  </div>
-                </div>
-              </div>)
-            })}
+            {playerCards}
           </div>
           {hd&&<div style={{background:"#1a1408",border:"1px solid rgba(200,160,60,.15)",padding:10}}>
             <div style={{fontSize:8,opacity:.5,letterSpacing:3,color:hd.cl,fontWeight:700}}>{hd.type}</div>
