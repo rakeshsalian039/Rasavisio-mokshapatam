@@ -1078,6 +1078,9 @@ const VoiceEngine = {
   stop() {
     this._stopToken++;
     if (this.audio) { try { this.audio.pause(); this.audio.currentTime = 0; } catch (e) {} this.audio = null; }
+    // Android fast-path HTMLAudio refs
+    if (this._yamaHtmlAudio) { try { this._yamaHtmlAudio.pause(); this._yamaHtmlAudio.src = ''; } catch(e){} this._yamaHtmlAudio = null; }
+    if (this._cgHtmlAudio)   { try { this._cgHtmlAudio.pause();   this._cgHtmlAudio.src   = ''; } catch(e){} this._cgHtmlAudio = null; }
     if (this._yamaCtx && this._yamaCtx !== this._sharedCtx) { try { this._yamaCtx.close(); } catch(e){} } this._yamaCtx = null;
     if (this._yamaSource) { try { this._yamaSource.stop(); } catch(e){} this._yamaSource = null; }
     if (this._yamaSource2) { try { this._yamaSource2.stop(); } catch(e){} this._yamaSource2 = null; }
@@ -1101,6 +1104,23 @@ const VoiceEngine = {
     const staticBase = CG_STATIC[key];
     const staticUrl = staticBase ? `${staticBase}-${l}.mp3` : null;
     const myToken = this._stopToken;
+
+    // ═══ ANDROID FAST PATH ═══
+    if (IS_ANDROID && staticUrl) {
+      try {
+        const a = new Audio(staticUrl);
+        a.preload = 'auto';
+        this._cgHtmlAudio = a;
+        this.speaking = true;
+        a.addEventListener('ended', () => {
+          this.speaking = false;
+          if (this._cgHtmlAudio === a) this._cgHtmlAudio = null;
+        });
+        a.addEventListener('error', () => { this.speaking = false; });
+        a.play().catch(() => { this.speaking = false; });
+        return;
+      } catch(e) { /* fall through */ }
+    }
 
     // iOS: reuse shared unlocked AudioContext from unlockAudio() if available
     let ctx = this._sharedCtx || null;
@@ -1201,6 +1221,23 @@ const VoiceEngine = {
 
     // Use static MP3 file — zero API cost
     const staticUrl = STATIC_VOICES.yama[lang==='hi'?'hi':'en'];
+
+    // ═══ ANDROID FAST PATH — skip Web Audio decode ═══
+    if (IS_ANDROID) {
+      try {
+        const a = new Audio(staticUrl);
+        a.preload = 'auto';
+        this._yamaHtmlAudio = a;
+        this.speaking = true;
+        a.addEventListener('ended', () => {
+          this.speaking = false;
+          if (this._yamaHtmlAudio === a) this._yamaHtmlAudio = null;
+        });
+        a.addEventListener('error', () => { this.speaking = false; });
+        a.play().catch(() => { this.speaking = false; });
+        return;
+      } catch(e) { /* fall through */ }
+    }
 
     try {
       const resp = await fetch(staticUrl);
@@ -1383,6 +1420,31 @@ const VoiceEngine = {
     this.stop();
     const myToken = this._stopToken;
 
+    // ═══ ANDROID FAST PATH — HTMLAudioElement, no Web Audio decode ═══
+    // decodeAudioData + Web Audio filter chain blocks the main thread on
+    // Android Chrome for 300-800ms per MP3. Using plain <audio> streams
+    // playback as it downloads, starting in ~50ms.
+    if (IS_ANDROID && staticUrl) {
+      try {
+        const a = new Audio(staticUrl);
+        a.preload = 'auto';
+        a.volume = Math.min(1, volume || 1);
+        this._yamaHtmlAudio = a;
+        this.speaking = true;
+        a.addEventListener('play', () => { onAudioStart && onAudioStart(); });
+        a.addEventListener('ended', () => {
+          this.speaking = false;
+          if (this._yamaHtmlAudio === a) this._yamaHtmlAudio = null;
+        });
+        a.addEventListener('error', () => {
+          this.speaking = false;
+          if (this._yamaHtmlAudio === a) this._yamaHtmlAudio = null;
+        });
+        a.play().catch(() => { this.speaking = false; });
+        return;
+      } catch(e) { /* fall through to Web Audio path */ }
+    }
+
     // iOS CRITICAL: reuse the shared AudioContext from unlockAudio() if available.
     let ctx = this._sharedCtx || null;
     if (!ctx) {
@@ -1398,13 +1460,9 @@ const VoiceEngine = {
 
     let audioUrl = null;
 
-    // 1. Static pre-generated file (highest priority — always free)
-    if (staticUrl) {
-      try {
-        const r = await fetch(staticUrl, { method: 'HEAD' });
-        if (r.ok) { audioUrl = staticUrl; }
-      } catch(e) {}
-    }
+    // 1. Static pre-generated file — skip the wasteful HEAD preflight,
+    // just try to GET it. If it 404s, the catch falls through.
+    if (staticUrl) audioUrl = staticUrl;
 
     if (this._stopToken !== myToken) return;
 
