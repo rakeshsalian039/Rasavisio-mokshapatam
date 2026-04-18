@@ -658,6 +658,10 @@ const ASHTANGA_RIDDLES={
 function useAmbient(){
   const audioRef=useRef(null);const playing=useRef(false);
   const start=useCallback(()=>{
+    // DIAGNOSTIC: disable ambient music on Android to rule it out as lag source.
+    // If lag persists without ambient, the issue is elsewhere (rendering).
+    // If lag disappears, we need to re-investigate ambient loading/decoding.
+    if(IS_ANDROID)return;
     // If already playing and not paused, do nothing
     if(audioRef.current&&!audioRef.current.paused)return;
     // If we have an existing audio that's just paused (ducked), resume it
@@ -4771,7 +4775,15 @@ export default function MokshaPatam108(){
   }, [ambient,bgMuted]);
 
   useEffect(()=>{try{window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices()}catch(e){}},[]);
-  useEffect(()=>{const iv=setInterval(()=>{setShF(false);setTimeout(()=>{setShI(i=>(i+1)%SHLOKAS.length);setShF(true)},700)},6e3);return()=>clearInterval(iv)},[]);
+  // Shloka rotator — only run when visible (title screen). Gating to avoid
+  // 3x re-renders every 6s during gameplay of the entire 8500-line tree.
+  // Also paused on Android to eliminate background churn entirely.
+  useEffect(()=>{
+    if(IS_ANDROID)return;
+    if(screen!=='title')return;
+    const iv=setInterval(()=>{setShF(false);setTimeout(()=>{setShI(i=>(i+1)%SHLOKAS.length);setShF(true)},700)},12000);
+    return()=>clearInterval(iv);
+  },[screen]);
 
   // Yama intro screen — speak with full audio processing then transition
   useEffect(()=>{
