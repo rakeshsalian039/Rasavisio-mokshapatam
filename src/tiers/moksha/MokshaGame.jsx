@@ -658,10 +658,6 @@ const ASHTANGA_RIDDLES={
 function useAmbient(){
   const audioRef=useRef(null);const playing=useRef(false);
   const start=useCallback(()=>{
-    // DIAGNOSTIC: disable ambient music on Android to rule it out as lag source.
-    // If lag persists without ambient, the issue is elsewhere (rendering).
-    // If lag disappears, we need to re-investigate ambient loading/decoding.
-    if(IS_ANDROID)return;
     // If already playing and not paused, do nothing
     if(audioRef.current&&!audioRef.current.paused)return;
     // If we have an existing audio that's just paused (ducked), resume it

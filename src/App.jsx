@@ -19,26 +19,17 @@ if (typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent)) {
   // Inject global perf CSS — runs once at app load
   const perfStyle = document.createElement('style');
   perfStyle.textContent = `
-    /* Android Chrome perf overrides.
-       DevTools trace showed: forced reflow + slow style recalc + massive
-       Layout block on every click. Root cause: too many expensive CSS
-       animations and layer-promoting filters competing for the compositor. */
+    /* Android Chrome perf overrides — MINIMAL scope.
+       After board memoization + rAF-throttled resize + compressed audio,
+       the heavy-hitters are gone. We only kill the two things that still
+       cost a lot and aren't worth the visual: filter: drop-shadow (cheap
+       alternative is box-shadow which we already use) and heavy blur on
+       large animated elements. */
 
-    /* Kill backdrop-filter + drop-shadow / blur universally */
-    .is-android *,
-    .is-android *::before,
-    .is-android *::after {
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-      filter: none !important;
-    }
-
-    /* Convert ALL infinite animations to run-once. Decorative breathe/glow
-       effects briefly animate then settle — imperceptible loss.
-       Functional one-shot animations (fadeIn, slideUp, reveal, roll, etc)
-       are unaffected since they already have iteration-count:1. */
+    /* Filter: drop-shadow is 3-4× slower than box-shadow on Android Chrome.
+       Elements that need a glow still get box-shadow / text-shadow. */
     .is-android * {
-      animation-iteration-count: 1 !important;
+      filter: none !important;
     }
 
     .is-android { -webkit-tap-highlight-color: transparent; }
