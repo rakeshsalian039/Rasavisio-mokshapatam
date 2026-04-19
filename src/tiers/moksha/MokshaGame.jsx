@@ -5588,18 +5588,20 @@ export default function MokshaPatam108(){
       }
     }
     // CPU auto-play after a delay.
-    // NOTE: `busy` was previously in this effect's deps, which caused the
-    // effect to re-run — and the CPU timer to be re-scheduled — every
-    // time `busy` toggled during the step-by-step pawn animation. That
-    // was the "thinking stutter" users felt during CPU turns. By moving
-    // the busy-check to a ref (mirrored below) we keep the guard without
-    // re-running the effect on every animation tick.
-    if(p.cpu&&!dil&&!busyRef.current){
+    // IMPORTANT: `busy` MUST stay in deps. When a human turn ends and
+    // `cur` advances to a CPU player, `busy` may still be true (pawn
+    // animation finishing). If `busy` is NOT in deps, the effect runs
+    // once with busy=true, skips the schedule, and never re-runs when
+    // busy flips false — so the CPU gets stuck waiting for a manual
+    // click. This was a regression from a misguided "optimization".
+    // Setting a timer is cheap; the real perf issue lived in
+    // `boardSquares` deps, not this effect.
+    if(p.cpu&&!dil&&!busy){
       const cpuTimer=setTimeout(()=>{doRoll()},2500);
       return()=>{clearTimeout(bannerTimer);clearTimeout(cpuTimer)};
     }
     return()=>clearTimeout(bannerTimer);
-  },[cur,screen,win,players,dil,isOnline,myPlayerIndex,muted]);
+  },[cur,screen,win,players,dil,busy,isOnline,myPlayerIndex,muted]);
 
   // CPU auto-solve dharma dilemmas (picks randomly, leans papa for difficulty)
   useEffect(()=>{
@@ -5684,10 +5686,8 @@ export default function MokshaPatam108(){
   useEffect(()=>{
     popupsOpenRef.current=!!(dil||templeLore||templeQuiz||guruEncounter||cosmicCard||eventPopup||win);
   },[dil,templeLore,templeQuiz,guruEncounter,cosmicCard,eventPopup,win]);
-  // `busy` ref — used by the CPU turn scheduler below to avoid re-running
-  // its effect every time `busy` toggles during pawn step animation.
-  const busyRef=useRef(false);
-  useEffect(()=>{ busyRef.current=busy; },[busy]);
+  // (Removed busyRef — CPU scheduler needs `busy` as a real effect dep
+  // so it re-runs when busy flips false; see that useEffect below.)
 
   // ═══ BOARD SQUARES — memoized to avoid re-rendering 108 DOM nodes on
   //    every dice shuffle / popup open / mangalacharan / etc. The 8500-line
@@ -5722,12 +5722,16 @@ export default function MokshaPatam108(){
     }} style={{aspectRatio:"1",background:bg,border:`0.5px solid ${hov===num?"rgba(240,200,80,.6)":bdr}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .2s",
       ...(tmpl?{boxShadow:`inset 0 -2px 6px ${tmpl.color}20, inset 0 1px 3px ${tmpl.color}15, 0 2px 8px ${tmpl.color}18`,borderWidth:1,borderRadius:2}:{}),
     }}>
-      <span style={{position:"absolute",top:1,left:2,fontSize:"clamp(7px,1.2vw,11px)",color:"rgba(240,210,130,.5)",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:700}}>{num}</span>
-      {mk&&<span style={{fontSize:"clamp(14px,2.5vw,22px)",animation:"mp 3s ease infinite",color:"#f0d050"}}>ॐ</span>}
-      {sn&&<><span style={{fontSize:"clamp(10px,2vw,16px)",lineHeight:1}}>𓆙</span><span style={{fontSize:"clamp(7px,1.2vw,11px)",color:"#ffb040",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 1px 4px #000,0 0 12px rgba(180,60,20,.5)"}}>{sn.skt}</span><span style={{fontSize:"clamp(5px,.9vw,8px)",color:"#ffa040",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1.1,textShadow:"0 0 6px #000,0 0 10px rgba(180,60,20,.4)"}}>{sn.en}</span></>}
-      {ld&&<><span style={{fontSize:"clamp(9px,1.8vw,14px)",lineHeight:1}}>🪔</span><span style={{fontSize:"clamp(7px,1.2vw,11px)",color:"#ffe070",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 0 12px rgba(200,160,60,.4)"}}>{ld.skt}</span><span style={{fontSize:"clamp(5px,.9vw,8px)",color:"#f0d060",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1.1,textShadow:"0 0 6px #000"}}>{ld.en}</span></>}
-      {tmpl&&<><TempleIcon templeKey={templeKey} size={isMobile?28:52} color={tmpl.color}/><span style={{fontSize:"clamp(5px,1vw,10px)",color:tmpl.color,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,textShadow:`0 1px 3px #000, 0 0 10px ${tmpl.color}50`,lineHeight:1,letterSpacing:0,marginTop:-2}}>{tmpl.name}</span></>}
-      {dl&&!tmpl&&<><span style={{fontSize:"clamp(8px,1.5vw,13px)",lineHeight:1}}>⚖</span><span style={{fontSize:"clamp(5px,.8vw,7px)",color:"#c8a0f0",fontFamily:"'Cinzel',serif",fontWeight:900,textShadow:"0 0 8px #000",letterSpacing:1}}>DHARMA</span></>}
+      {/* Font sizes tightened so long Skt/EN words (पाइथागोरस, दम्भ-ईर्ष्या,
+          "ABHYASA", etc.) no longer overflow on narrow mobile squares.
+          overflow:hidden + maxWidth on each text span guards against any
+          residual edge cases. Base sizes reduced ~15-25% across the board. */}
+      <span style={{position:"absolute",top:1,left:2,fontSize:"clamp(6px,1vw,9px)",color:"rgba(240,210,130,.5)",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:700}}>{num}</span>
+      {mk&&<span style={{fontSize:"clamp(12px,2.2vw,20px)",animation:"mp 3s ease infinite",color:"#f0d050"}}>ॐ</span>}
+      {sn&&<><span style={{fontSize:"clamp(9px,1.7vw,14px)",lineHeight:1}}>𓆙</span><span style={{fontSize:"clamp(6px,1vw,9px)",color:"#ffb040",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 1px 4px #000,0 0 12px rgba(180,60,20,.5)",maxWidth:"100%",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",padding:"0 1px"}}>{sn.skt}</span><span style={{fontSize:"clamp(4px,.7vw,7px)",color:"#ffa040",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1.1,textShadow:"0 0 6px #000,0 0 10px rgba(180,60,20,.4)",maxWidth:"100%",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",padding:"0 1px"}}>{sn.en}</span></>}
+      {ld&&<><span style={{fontSize:"clamp(8px,1.5vw,12px)",lineHeight:1}}>🪔</span><span style={{fontSize:"clamp(6px,1vw,9px)",color:"#ffe070",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 0 12px rgba(200,160,60,.4)",maxWidth:"100%",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",padding:"0 1px"}}>{ld.skt}</span><span style={{fontSize:"clamp(4px,.7vw,7px)",color:"#f0d060",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1.1,textShadow:"0 0 6px #000",maxWidth:"100%",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",padding:"0 1px"}}>{ld.en}</span></>}
+      {tmpl&&<><TempleIcon templeKey={templeKey} size={isMobile?24:44} color={tmpl.color}/><span style={{fontSize:"clamp(4px,.85vw,9px)",color:tmpl.color,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,textShadow:`0 1px 3px #000, 0 0 10px ${tmpl.color}50`,lineHeight:1,letterSpacing:0,marginTop:-2,maxWidth:"100%",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",padding:"0 1px"}}>{tmpl.name}</span></>}
+      {dl&&!tmpl&&<><span style={{fontSize:"clamp(7px,1.3vw,11px)",lineHeight:1}}>⚖</span><span style={{fontSize:"clamp(4px,.7vw,6px)",color:"#c8a0f0",fontFamily:"'Cinzel',serif",fontWeight:900,textShadow:"0 0 8px #000",letterSpacing:1}}>DHARMA</span></>}
     </div>);
   // Deps trimmed to the bare minimum. Board entries are static; hov changes
   // on pointer enter; nP/isMobile/muted/chosenLang change rarely. Pos/cur/
