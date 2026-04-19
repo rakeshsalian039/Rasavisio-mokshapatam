@@ -4806,7 +4806,10 @@ export default function MokshaPatam108(){
         VoiceEngine.speakNarrator(popup.subtitle,chosenLang,null);
       }
     }
-    // Graha popups auto-advance after 8s so busy never gets stuck
+    // Graha popups auto-advance after 15s — enough for the longest
+    // narrator voice (Shani, Ketu, Jupiter at ~100-160 chars Hindi) to
+    // finish plus a moment to read the on-screen effect text. Was 8s,
+    // which cut off longer explanations before they completed.
     if(popup.type==="graha"&&onDismiss){
       autoAdvanceTimerRef.current=setTimeout(()=>{
         autoAdvanceTimerRef.current=null;
@@ -4815,7 +4818,7 @@ export default function MokshaPatam108(){
           setEventPopup(null);
           setTimeout(()=>cb(),150);
         }
-      },8000);
+      },15000);
     }
   }, [muted,chosenLang,ambient]);
   const dismissEvent = useCallback(() => {
