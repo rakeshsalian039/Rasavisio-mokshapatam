@@ -42,11 +42,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;700&family=Yatra+One&family=Cinzel:wght@400;700;900&family=Cinzel+Decorative:wght@700&family=Baloo+2:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;700&family=Yatra+One&family=Cinzel:wght@400;700;900&family=Cinzel+Decorative:wght@700&family=Baloo+2:wght@400;700&display=swap"/></noscript>
 
-<!-- ── Prefetch audio that will play on "Begin Journey" / "Play Solo" click ──
-     Lower priority than preload — runs during browser idle time, so it
-     doesn't block first paint. By the time user clicks play, these are cached.
-     This is critical for Android where audio decode blocks the main thread. -->
-<link rel="prefetch" href="/ambient.mp3" as="audio"/>
+<!-- ── Ambient audio preload ──
+     Android WebView ignores <link rel="prefetch" as="audio"> — the file gets
+     re-fetched on every click (we measured 1.8MB transfer on "Play Solo").
+     A real <audio preload="auto"> element is honored by every engine and
+     keeps the decoded buffer in memory so later `new Audio(same-url)`
+     instances hit cache. Hidden + muted so nothing plays until user action.
+     -->
+<audio id="preload-ambient" src="/ambient.mp3" preload="auto" muted
+       style="display:none;position:absolute;pointer-events:none" aria-hidden="true"></audio>
+
+<!-- Lower-priority audio still uses prefetch — only used after user action
+     and works well enough over HTTP cache on browser; Android can live
+     without them preloaded since they're tiny compared to ambient.mp3. -->
 <link rel="prefetch" href="/temple-bell.mp3" as="audio"/>
 <link rel="prefetch" href="/onboarding/story-0-en.mp3" as="audio"/>
 <link rel="prefetch" href="/onboarding/story-0-hi.mp3" as="audio"/>

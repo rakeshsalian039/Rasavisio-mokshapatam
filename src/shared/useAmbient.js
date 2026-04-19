@@ -9,12 +9,27 @@ export function useAmbient(){
   const audioRef=useRef(null);const playing=useRef(false);
   const start=useCallback(()=>{
     if(playing.current)return;
-    try{
-      const a=new Audio("/ambient.mp3");
-      a.loop=true; a.volume=1.0;
-      audioRef.current=a;
-      a.play().then(()=>{playing.current=true}).catch(()=>{});
-    }catch(e){}
+    // Defer audio setup off the click's critical frame (see MokshaGame
+    // useAmbient for the full rationale — presentation delay 183ms → <50ms).
+    const run = () => {
+      try{
+        let a = typeof document !== 'undefined'
+          ? document.getElementById('preload-ambient') : null;
+        if (a && a.tagName === 'AUDIO') {
+          a.muted = false; a.style.display = 'none';
+        } else {
+          a = new Audio("/ambient.mp3");
+        }
+        a.loop=true; a.volume=1.0;
+        audioRef.current=a;
+        a.play().then(()=>{playing.current=true}).catch(()=>{});
+      }catch(e){}
+    };
+    if (typeof window !== 'undefined' && typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(run, { timeout: 600 });
+    } else {
+      requestAnimationFrame(() => requestAnimationFrame(run));
+    }
   },[]);
   const stop=useCallback(()=>{
     if(!playing.current||!audioRef.current)return;

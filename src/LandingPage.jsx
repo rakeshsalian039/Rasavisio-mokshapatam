@@ -395,8 +395,21 @@ function SacredCanvas() {
     const canvas = ref.current; if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let raf, frame = 0;
-    const resize = () => { canvas.width = canvas.parentElement.offsetWidth; canvas.height = canvas.parentElement.offsetHeight; };
-    resize();
+    // DevTools "forced reflow" warning traced here: two sequential
+    // offsetWidth/offsetHeight reads during mount while layout was dirty.
+    // getBoundingClientRect() returns both dimensions in one layout read,
+    // and ResizeObserver fires only AFTER layout is clean (no reflow cost).
+    const resize = () => {
+      const parent = canvas.parentElement;
+      if (!parent) return;
+      const r = parent.getBoundingClientRect();
+      canvas.width = r.width;
+      canvas.height = r.height;
+    };
+    // Defer the first measurement one rAF so initial layout is committed
+    // before we read it — eliminates the mount-time forced reflow.
+    // (A ResizeObserver is attached further below to track future resizes.)
+    requestAnimationFrame(resize);
 
     // ── 216 particles tracing 108-petal rose ──
     const particles = Array.from({length:216},(_,i)=>({

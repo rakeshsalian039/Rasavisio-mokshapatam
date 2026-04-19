@@ -10,6 +10,10 @@ import ErrorBoundary from './components/ErrorBoundary.jsx';
 const isOAuthReturn = window.location.hash.includes('access_token');
 const savedTier = localStorage.getItem('mp108_lastTier');
 
+// Detect Capacitor native runtime as early as possible (synchronously)
+const IS_CAPACITOR = typeof window !== 'undefined'
+  && window.Capacitor?.isNativePlatform?.() === true;
+
 // ─── Native platform integrations (Capacitor) ───────────────────────────────
 // These imports are tree-shaken out on web builds because Capacitor.isNativePlatform()
 // returns false and plugins aren't called.
@@ -29,8 +33,12 @@ async function initNativeBridges() {
     try { await StatusBar.setStyle({ style: Style.Light }); } catch(e) {}
     try { await StatusBar.setBackgroundColor({ color: '#0c0a07' }); } catch(e) {}
 
-    // Hide splash once React has rendered first screen
-    setTimeout(() => { SplashScreen.hide().catch(() => {}); }, 300);
+    // Hide Capacitor native splash on next animation frame (React has rendered by then).
+    // Previously used a 300ms timeout — caused a visible gap + flicker between
+    // native splash disappearing and React content appearing.
+    requestAnimationFrame(() => {
+      SplashScreen.hide({ fadeOutDuration: 150 }).catch(() => {});
+    });
 
     // Hardware back button: go back through app state, minimize at root
     CapApp.addListener('backButton', () => {
@@ -106,20 +114,66 @@ if (typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent)) {
   // Inject global perf CSS — runs once at app load
   const perfStyle = document.createElement('style');
   perfStyle.textContent = `
-    /* Android Chrome perf overrides — MINIMAL scope.
-       After board memoization + rAF-throttled resize + compressed audio,
-       the heavy-hitters are gone. We only kill the two things that still
-       cost a lot and aren't worth the visual: filter: drop-shadow (cheap
-       alternative is box-shadow which we already use) and heavy blur on
-       large animated elements. */
+    /* Android Chrome perf overrides.
+       Perf audit found continuous text-shadow + box-shadow + SVG stroke
+       animations running 20+ simultaneously on game screen. These trigger
+       paint every frame which Android WebView handles 3-4× slower than iOS.
 
-    /* Filter: drop-shadow is 3-4× slower than box-shadow on Android Chrome.
-       Elements that need a glow still get box-shadow / text-shadow. */
+       Strategy: redefine expensive paint-triggering @keyframes as no-ops
+       (keyframes are global, but the game only runs in .is-android so these
+       override the originals by being defined AFTER). Transform/opacity
+       animations (pulse, cymaticRotate, grahaOrbit, templeFloat) kept —
+       they're GPU-composited and cheap. */
+
+    /* Filter: drop-shadow is 3-4× slower than box-shadow. */
     .is-android * {
       filter: none !important;
     }
-
+    /* Backdrop-filter: blur() is 3-5× slower on Android WebView than iOS/desktop.
+       14 places in MokshaGame use it for popup overlays (dharma, graha,
+       temple, mangalacharan, etc.). Each triggers compositor-rasterization
+       of the entire page behind it on popup open → visible popup-mount jank.
+       Strip globally — existing rgba backgrounds still give plenty of dim. */
+    .is-android *, .is-android *::before, .is-android *::after {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
     .is-android { -webkit-tap-highlight-color: transparent; }
+
+    /* Kill expensive INFINITE paint-triggering animations.
+       These are animations that change text-shadow / box-shadow / filter /
+       height on visible elements. On Android these saturate the compositor
+       and cause continuous jank even when idle. */
+    @keyframes mp { from, to { text-shadow: 0 0 15px rgba(240,200,80,.3); } }
+    @keyframes activeGlow { from, to { box-shadow: 0 0 8px var(--pc), 0 0 16px var(--pc); } }
+    @keyframes sacredGlow { from, to { box-shadow: 0 0 4px rgba(240,200,80,.05); } }
+    @keyframes diceGlow { from, to { box-shadow: 0 0 20px rgba(240,200,80,.2); } }
+    @keyframes rollPulse { from, to { box-shadow: 0 0 8px rgba(240,200,80,.2), inset 0 0 8px rgba(240,200,80,.05); } }
+    @keyframes yamaBreath { from, to { text-shadow: 0 0 20px #a04040, 0 0 40px #a04040; } }
+    @keyframes cymaticPulse { from, to { transform: scale(1); opacity: 0.14; } }
+    @keyframes cgGoldPulse { from, to { filter: brightness(1); } }
+    @keyframes ladderShine { from, to { opacity: 0.55; } }
+    @keyframes snakePulse { from, to { stroke-width: 1.2; opacity: 0.45; } }
+    @keyframes nebulaBreath { from, to { opacity: 0.2; } }
+    @keyframes shimmer { from, to { transform: translateX(0); } }
+    @keyframes shlokaGlow { from, to { text-shadow: 0 0 25px rgba(240,200,80,.25); } }
+    @keyframes waveBar { from, to { height: 14px; } }
+
+    /* Pulse: used by 20+ icons across landing + pickcount + popups
+       (see LandingPage.jsx, MokshaGame.jsx, Chitragupta, SacredPath…).
+       Even though pulse is opacity-only (GPU-cheap) having 10+ running
+       concurrently was the source of the 4-second dropped-frame window
+       after clicking "Play Solo" in DevTools trace. Freezing pulse on
+       Android recovers ~60 frames of budget across transitions. */
+    @keyframes pulse { 0%, 50%, 100% { opacity: 1; transform: none; } }
+
+    /* ── Board-specific paint reduction ──
+       The 108 squares each have static box-shadow on temple squares.
+       Even static shadows require per-element paint work every scroll/repaint.
+       Strip them on Android — glow/depth still comes from gradients + borders. */
+    .is-android [style*="aspect-ratio"] {
+      box-shadow: none !important;
+    }
 
     @media (prefers-reduced-motion: reduce) {
       .is-android *, .is-android *::before, .is-android *::after {
@@ -133,8 +187,13 @@ if (typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent)) {
 }
 
 export default function App() {
-  // Skip splash if returning from login or resuming session
-  const [splashDone, setSplashDone] = useState(isOAuthReturn || !!savedTier);
+  // Skip the heavy React splash animation on:
+  //   - OAuth redirect return (quicker resume)
+  //   - Returning user with savedTier
+  //   - Native Capacitor builds (Android/iOS) — native splash already handles launch;
+  //     showing a 3-second React splash with 12 particle animations on top causes
+  //     the flickerish double-splash the user reported.
+  const [splashDone, setSplashDone] = useState(isOAuthReturn || !!savedTier || IS_CAPACITOR);
   const [tier, setTier] = useState(isOAuthReturn && savedTier ? savedTier : null);
 
   // Save tier choice to localStorage

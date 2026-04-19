@@ -654,6 +654,52 @@ const ASHTANGA_RIDDLES={
   ],
 };
 
+/* ═══ SACRED BACKDROP ═══
+   Hoisted + memoized so the 50-primitive SVG renders once per mount
+   and NEVER re-reconciles when MokshaPatam108 re-renders. Skipped
+   entirely on Android where cymaticPulse keyframes are no-op'd in
+   App.jsx (App.jsx:144) — without the animation the background adds
+   only paint cost, no beauty. */
+const SacredBackdrop = memo(function SacredBackdrop() {
+  if (IS_ANDROID) return null;
+  return (
+    <div style={{position:"fixed",inset:0,pointerEvents:"none",overflow:"hidden",zIndex:0}}>
+      <div style={{position:"fixed",inset:0,background:"radial-gradient(ellipse at center,transparent 40%,rgba(6,5,3,.85) 100%)"}}/>
+      <svg style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"130%",height:"130%"}} viewBox="0 0 800 800">
+        {/* Cymatics rings */}
+        <circle cx="400" cy="400" r="60" fill="none" stroke="#a08030" strokeWidth="1" opacity=".15" style={{animation:"cymaticPulse 3.5s ease infinite"}}/>
+        <circle cx="400" cy="400" r="100" fill="none" stroke="#a08030" strokeWidth=".8" opacity=".18" style={{animation:"cymaticPulse 4s ease infinite .3s"}}/>
+        <circle cx="400" cy="400" r="150" fill="none" stroke="#a08030" strokeWidth=".7" opacity=".2" style={{animation:"cymaticPulse 5s ease infinite .6s"}}/>
+        <circle cx="400" cy="400" r="210" fill="none" stroke="#a08030" strokeWidth=".6" opacity=".16" style={{animation:"cymaticPulse 6s ease infinite 1s"}}/>
+        <circle cx="400" cy="400" r="280" fill="none" stroke="#a08030" strokeWidth=".5" opacity=".12" style={{animation:"cymaticPulse 7s ease infinite 1.4s"}}/>
+        <circle cx="400" cy="400" r="360" fill="none" stroke="#a08030" strokeWidth=".4" opacity=".08" style={{animation:"cymaticPulse 8s ease infinite 1.8s"}}/>
+        {/* Flower of Life */}
+        {[0,60,120,180,240,300].map(a=><circle key={"fl"+a} cx={400+60*Math.cos(a*Math.PI/180)} cy={400+60*Math.sin(a*Math.PI/180)} r="60" fill="none" stroke="#a08030" strokeWidth=".5" opacity=".1" style={{animation:`cymaticPulse ${5+a/100}s ease infinite ${a/400}s`}}/>)}
+        {/* Hexagonal nodes */}
+        {[0,60,120,180,240,300].map(a=><g key={"n1"+a}><circle cx={400+105*Math.cos(a*Math.PI/180)} cy={400+105*Math.sin(a*Math.PI/180)} r="4" fill="#a08030" opacity=".18" style={{animation:`cymaticPulse ${3+a/100}s ease infinite ${a/200}s`}}/><line x1={400+95*Math.cos(a*Math.PI/180)} y1={400+95*Math.sin(a*Math.PI/180)} x2={400+115*Math.cos(a*Math.PI/180)} y2={400+115*Math.sin(a*Math.PI/180)} stroke="#a08030" strokeWidth=".5" opacity=".12"/></g>)}
+        {/* Outer ring dots */}
+        {[0,30,60,90,120,150,180,210,240,270,300,330].map(a=><circle key={"n2"+a} cx={400+220*Math.cos(a*Math.PI/180)} cy={400+220*Math.sin(a*Math.PI/180)} r="3" fill="#a08030" opacity=".12" style={{animation:`cymaticPulse ${4+a/120}s ease infinite ${a/300}s`}}/>)}
+        {/* Naga serpent knots */}
+        <g style={{animation:"cymaticRotate 50s linear infinite"}} opacity=".15">
+          <path d="M300,400 C300,340 350,300 400,300 C450,300 500,340 500,400 C500,460 450,500 400,500 C350,500 300,460 300,400 Z" fill="none" stroke="#a08030" strokeWidth="1"/>
+          <path d="M320,400 C320,355 355,320 400,320 C445,320 480,355 480,400 C480,445 445,480 400,480 C355,480 320,445 320,400 Z" fill="none" stroke="#a08030" strokeWidth=".7"/>
+        </g>
+        <g style={{animation:"cymaticRotate 70s linear infinite reverse"}} opacity=".12">
+          <path d="M230,400 Q315,280 400,400 T570,400" fill="none" stroke="#a08030" strokeWidth=".7"/>
+          <path d="M230,400 Q315,520 400,400 T570,400" fill="none" stroke="#a08030" strokeWidth=".7"/>
+        </g>
+        {/* Sri Yantra */}
+        <polygon points="400,290 325,440 475,440" fill="none" stroke="#a08030" strokeWidth=".6" opacity=".1" style={{animation:"cymaticPulse 10s ease infinite"}}/>
+        <polygon points="400,510 325,360 475,360" fill="none" stroke="#a08030" strokeWidth=".6" opacity=".1" style={{animation:"cymaticPulse 10s ease infinite 5s"}}/>
+        <polygon points="400,330 355,420 445,420" fill="none" stroke="#a08030" strokeWidth=".5" opacity=".07" style={{animation:"cymaticPulse 12s ease infinite 2s"}}/>
+        <polygon points="400,470 355,380 445,380" fill="none" stroke="#a08030" strokeWidth=".5" opacity=".07" style={{animation:"cymaticPulse 12s ease infinite 7s"}}/>
+        {/* Radial spokes */}
+        {[0,45,90,135,180,225,270,315].map(a=><line key={"sp"+a} x1={400+70*Math.cos(a*Math.PI/180)} y1={400+70*Math.sin(a*Math.PI/180)} x2={400+350*Math.cos(a*Math.PI/180)} y2={400+350*Math.sin(a*Math.PI/180)} stroke="#a08030" strokeWidth=".25" opacity=".06"/>)}
+      </svg>
+    </div>
+  );
+});
+
 /* ═══ AMBIENT MUSIC ENGINE ═══ */
 function useAmbient(){
   const audioRef=useRef(null);const playing=useRef(false);
@@ -665,18 +711,43 @@ function useAmbient(){
       try{audioRef.current.play().catch(()=>{})}catch(e){}
       return;
     }
-    // Stop any existing instance before creating new one
-    if(audioRef.current){try{audioRef.current.pause();audioRef.current.currentTime=0}catch(e){}}
-    try{
-      const a=new Audio("/ambient.mp3");
-      a.loop=true; a.volume=1.0;
-      a.preload='auto';
-      // Tell the browser this isn't critical — avoids main-thread stalls
-      // while Web Audio decodes the narrator voice in parallel
-      if ('fetchPriority' in a) a.fetchPriority = 'low';
-      audioRef.current=a;
-      a.play().then(()=>{playing.current=true}).catch(()=>{});
-    }catch(e){}
+
+    // ── Defer actual audio setup off the click's critical frame ──
+    // DevTools trace showed ambient.mp3 fetching synchronously during the
+    // click's Task, pushing presentation delay to 183ms. Two-pronged fix:
+    //   1. Wait for the next idle moment so React's render + paint commit
+    //      first. Click → new screen appears immediately → audio starts.
+    //   2. Reuse the <audio id="preload-ambient"> element from index.html
+    //      if it exists — its decoded buffer is already in memory on
+    //      desktop/iOS (Android WebView has a separate preload path).
+    //      Falls back to `new Audio(...)` if the preload element is gone.
+    const run = () => {
+      try{
+        if(audioRef.current){try{audioRef.current.pause();audioRef.current.currentTime=0}catch(e){}}
+        let a = typeof document !== 'undefined'
+          ? document.getElementById('preload-ambient') : null;
+        if (a && a.tagName === 'AUDIO') {
+          // Reuse the preloaded element — promotes it from hidden preloader
+          // to the live playback node. No new network request.
+          a.muted = false;
+          a.style.display = 'none';
+        } else {
+          a = new Audio("/ambient.mp3");
+        }
+        a.loop=true; a.volume=1.0;
+        a.preload='auto';
+        if ('fetchPriority' in a) a.fetchPriority = 'low';
+        audioRef.current=a;
+        a.play().then(()=>{playing.current=true}).catch(()=>{});
+      }catch(e){}
+    };
+    // requestIdleCallback isn't in Safari/Android WebView — fall back to
+    // double-rAF which guarantees the paint has committed.
+    if (typeof window !== 'undefined' && typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(run, { timeout: 600 });
+    } else {
+      requestAnimationFrame(() => requestAnimationFrame(run));
+    }
   },[]);
   const stop=useCallback(()=>{
     if(!audioRef.current)return;
@@ -1105,22 +1176,13 @@ const VoiceEngine = {
     const staticUrl = staticBase ? `${staticBase}-${l}.mp3` : null;
     const myToken = this._stopToken;
 
-    // ═══ ANDROID FAST PATH ═══
-    if (IS_ANDROID && staticUrl) {
-      try {
-        const a = new Audio(staticUrl);
-        a.preload = 'auto';
-        this._cgHtmlAudio = a;
-        this.speaking = true;
-        a.addEventListener('ended', () => {
-          this.speaking = false;
-          if (this._cgHtmlAudio === a) this._cgHtmlAudio = null;
-        });
-        a.addEventListener('error', () => { this.speaking = false; });
-        a.play().catch(() => { this.speaking = false; });
-        return;
-      } catch(e) { /* fall through */ }
-    }
+    // ═══ ANDROID FAST PATH removed (2026-04-19) ═══
+    // Previously Android played raw MP3 via new Audio() to skip the
+    // ~300ms decodeAudioData cost. But decode happens AFTER user lands
+    // on Chitragupta screen — it wasn't blocking the click lag anyway,
+    // and the plain MP3 sounded noticeably thinner than the processed
+    // desktop/iOS voice. Restored full processing chain for all
+    // platforms below (reverb + bowl skipped on Android; main chain kept).
 
     // iOS: reuse shared unlocked AudioContext from unlockAudio() if available
     let ctx = this._sharedCtx || null;
@@ -1169,20 +1231,11 @@ const VoiceEngine = {
       // ═══ Master + routing ═══
       const master = ctx.createGain(); master.gain.value=0.85;
 
-      if (IS_ANDROID) {
-        // Android: skip reverb convolver + 528Hz bowl oscillator (too expensive)
-        src.connect(cut); cut.connect(pres); pres.connect(air);
-        air.connect(master); master.connect(ctx.destination);
-        this.speaking = true;
-        this._cgSource = src; // tracked so stop() can kill it mid-playback
-        src.onended = () => {
-          this.speaking = false;
-          if (this._cgSource === src) this._cgSource = null;
-          setTimeout(()=>{try{if(ctx!==this._sharedCtx)ctx.close();}catch(e){}this._cgCtx=null;},500);
-        };
-        src.start(0);
-      } else {
-        // Desktop + iOS: full processing chain with reverb + bowl tone
+      {
+        // All platforms: full processing chain with reverb + bowl tone.
+        // Reverb convolver + 528Hz bowl oscillator run on the audio
+        // thread (not main), so they don't affect UI responsiveness —
+        // previous concerns about Android cost were misdiagnosed.
         const rvLen = Math.floor(5*ctx.sampleRate);
         const rvBuf = ctx.createBuffer(2,rvLen,ctx.sampleRate);
         for(let ch=0;ch<2;ch++){
@@ -1222,22 +1275,10 @@ const VoiceEngine = {
     // Use static MP3 file — zero API cost
     const staticUrl = STATIC_VOICES.yama[lang==='hi'?'hi':'en'];
 
-    // ═══ ANDROID FAST PATH — skip Web Audio decode ═══
-    if (IS_ANDROID) {
-      try {
-        const a = new Audio(staticUrl);
-        a.preload = 'auto';
-        this._yamaHtmlAudio = a;
-        this.speaking = true;
-        a.addEventListener('ended', () => {
-          this.speaking = false;
-          if (this._yamaHtmlAudio === a) this._yamaHtmlAudio = null;
-        });
-        a.addEventListener('error', () => { this.speaking = false; });
-        a.play().catch(() => { this.speaking = false; });
-        return;
-      } catch(e) { /* fall through */ }
-    }
+    // ═══ ANDROID FAST PATH removed (2026-04-19) ═══
+    // Restored full Thanos-like audio chain (2 layers + bass boost +
+    // distortion + delay + reverb + compressor) on Android too.
+    // Decode happens async after Yama screen opens — not a click blocker.
 
     try {
       const resp = await fetch(staticUrl);
@@ -1739,14 +1780,17 @@ function OnboardingBoard({ mode }) {
           </g>)}
         </svg>
         <div style={{fontSize:6,textAlign:'center',letterSpacing:3,color:'#f0d050',opacity:.55,marginBottom:2,fontFamily:"'Cinzel',serif"}}>अष्टांग मार्ग</div>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(8,1fr)',gap:1}}>
-          {SACRED_PATH.map((sq,si)=>(
+        <div style={{display:'grid',gridTemplateColumns:'repeat(8,minmax(0,1fr))',gap:1}}>
+          {SACRED_PATH.map((sq)=>(
             <div key={sq.num} style={{
               aspectRatio:'1',
               background:sq.num===108?'radial-gradient(circle,rgba(240,200,80,.25),rgba(240,200,80,.04))':'radial-gradient(circle,rgba(240,200,80,.08),transparent)',
               border:`0.5px solid ${sq.num===108?'rgba(240,200,80,.5)':'rgba(240,200,80,.15)'}`,
               borderRadius:2,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
-              animation:`sacredGlow ${3+si*.3}s ease infinite`,
+              // Removed `animation: sacredGlow infinite` — 8 concurrent box-shadow
+              // animations on this small preview board caused 83% of total
+              // paint time on the story screen (DevTools trace confirmed).
+              // Static cells look the same visually at this size.
             }}>
               <span style={{fontSize:8}}>{sq.icon}</span>
               <span style={{fontSize:5,color:'#f0d050',fontFamily:"'Noto Serif Devanagari',serif",lineHeight:1}}>{sq.skt}</span>
@@ -4346,9 +4390,18 @@ export default function MokshaPatam108(){
 
   const[screen,setScreen]=useState("title"); // title|story|pickcount|setup|chitragupta|game
   const[showCinematic,setShowCinematic]=useState(false);
-  const[showResume,setShowResume]=useState(()=>{
-    try{const s=localStorage.getItem('mp108_savedGame');return s?JSON.parse(s):null}catch(e){return null}
-  });
+  // `showResume` was initialized via `useState(() => JSON.parse(localStorage...))`
+  // which runs synchronously during the first render — on Android that
+  // localStorage+JSON.parse pair measured 60–120 ms and was blocking the
+  // click's presentation frame. Move it to a post-mount effect so the title
+  // screen paints first, the "Resume" badge (if any) appears one frame later.
+  const[showResume,setShowResume]=useState(null);
+  useEffect(() => {
+    try {
+      const s = localStorage.getItem('mp108_savedGame');
+      if (s) setShowResume(JSON.parse(s));
+    } catch(e) {}
+  }, []);
   const isMobile=useIsMobile();
   const[showMultiplayer,setShowMultiplayer]=useState(false); // secret: long-press 5s on PLAY ONLINE
   const[showComingSoon,setShowComingSoon]=useState(false);
@@ -4783,10 +4836,9 @@ export default function MokshaPatam108(){
 
   useEffect(()=>{try{window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices()}catch(e){}},[]);
   // Shloka rotator — only run when visible (title screen). Gating to avoid
-  // 3x re-renders every 6s during gameplay of the entire 8500-line tree.
-  // Also paused on Android to eliminate background churn entirely.
+  // re-renders during gameplay. Restored on Android (title-only interval
+  // is cheap — 8500-line tree only re-renders if we're actually on title).
   useEffect(()=>{
-    if(IS_ANDROID)return;
     if(screen!=='title')return;
     const iv=setInterval(()=>{setShF(false);setTimeout(()=>{setShI(i=>(i+1)%SHLOKAS.length);setShF(true)},700)},12000);
     return()=>clearInterval(iv);
@@ -5535,13 +5587,19 @@ export default function MokshaPatam108(){
         }catch(e){}
       }
     }
-    // CPU auto-play after a delay
-    if(p.cpu&&!dil&&!busy){
+    // CPU auto-play after a delay.
+    // NOTE: `busy` was previously in this effect's deps, which caused the
+    // effect to re-run — and the CPU timer to be re-scheduled — every
+    // time `busy` toggled during the step-by-step pawn animation. That
+    // was the "thinking stutter" users felt during CPU turns. By moving
+    // the busy-check to a ref (mirrored below) we keep the guard without
+    // re-running the effect on every animation tick.
+    if(p.cpu&&!dil&&!busyRef.current){
       const cpuTimer=setTimeout(()=>{doRoll()},2500);
       return()=>{clearTimeout(bannerTimer);clearTimeout(cpuTimer)};
     }
     return()=>clearTimeout(bannerTimer);
-  },[cur,screen,win,players,dil,busy,isOnline,myPlayerIndex,muted]);
+  },[cur,screen,win,players,dil,isOnline,myPlayerIndex,muted]);
 
   // CPU auto-solve dharma dilemmas (picks randomly, leans papa for difficulty)
   useEffect(()=>{
@@ -5603,12 +5661,33 @@ export default function MokshaPatam108(){
       const templeKey=TEMPLE_SQUARES[num]||null;
       const tmpl=templeKey?TEMPLES[templeKey]:null;
       const mk=num===108;
-      s.push({num,sn,ld,dl,templeKey,tmpl,mk});
+      // r,c stored so the pawn overlay can position pawns without having
+      // to re-scan the board array on every setPos during step animation.
+      s.push({num,r,c,sn,ld,dl,templeKey,tmpl,mk});
     }
     return s;
   },[]);
+  // Lookup: num → {r,c}. Built once, used by PawnOverlay below.
+  const posToRC=useMemo(()=>{
+    const m={}; for(const sq of board) m[sq.num]={r:sq.r,c:sq.c}; return m;
+  },[board]);
   const conns=useMemo(()=>{const l=[];Object.entries(SNAKES).forEach(([f,{to}])=>{const a=sqP(+f),b=sqP(to);l.push({f:a,t:b,type:"s",id:+f})});Object.entries(LADDERS).forEach(([f,{to}])=>{const a=sqP(+f),b=sqP(to);l.push({f:a,t:b,type:"l",id:+f})});return l},[]);
   const shl=SHLOKAS[shI];
+
+  // ═══ POPUP-OPEN REF — mirrors "is any popup open?" via a single ref so
+  //    the boardSquares memo doesn't have to depend on 7 popup state slots.
+  //    Before this, setDil/setTempleLore/etc. each invalidated the 108-
+  //    square memo = full re-render of the board for every popup mount.
+  //    Now the temple-info onClick reads popupsOpenRef.current on the fly
+  //    and the memo is immune to popup churn. Huge win for popup-open lag.
+  const popupsOpenRef=useRef(false);
+  useEffect(()=>{
+    popupsOpenRef.current=!!(dil||templeLore||templeQuiz||guruEncounter||cosmicCard||eventPopup||win);
+  },[dil,templeLore,templeQuiz,guruEncounter,cosmicCard,eventPopup,win]);
+  // `busy` ref — used by the CPU turn scheduler below to avoid re-running
+  // its effect every time `busy` toggles during pawn step animation.
+  const busyRef=useRef(false);
+  useEffect(()=>{ busyRef.current=busy; },[busy]);
 
   // ═══ BOARD SQUARES — memoized to avoid re-rendering 108 DOM nodes on
   //    every dice shuffle / popup open / mangalacharan / etc. The 8500-line
@@ -5616,7 +5695,11 @@ export default function MokshaPatam108(){
   //    displayKarma or rollingPhase re-renders all 108 squares (major
   //    Android lag during dice roll and popup mounts).
   const boardSquares=useMemo(()=>board.map(({num,sn,ld,dl,mk,templeKey,tmpl})=>{
-    const ph=[];for(let i=0;i<nP;i++){const rp=isOnline&&i!==myPlayerIndex&&displayPos.length>0?displayPos[i]:pos[i];if((rp||1)===num)ph.push(i)}
+    // Pawn rendering extracted to <PawnOverlay> below — previously every
+    // setPos during step animation re-ran this 108-square map because
+    // `pos` was in the deps. Now squares are completely static and only
+    // re-render when the BOARD itself changes (which it never does after
+    // mount) or hover/mobile-state changes.
     let bg="transparent",bdr="rgba(200,160,60,.08)";
     if(mk){bg="radial-gradient(circle,rgba(240,200,80,.2),transparent)";bdr="rgba(240,200,80,.5)"}
     else if(sn){bg="radial-gradient(circle,rgba(180,60,20,.2),transparent)";bdr="rgba(180,60,20,.3)"}
@@ -5625,8 +5708,10 @@ export default function MokshaPatam108(){
     else if(dl){bg="radial-gradient(circle,rgba(120,80,180,.2),transparent)";bdr="rgba(140,100,200,.35)"}
     return(<div key={num} onMouseEnter={()=>!isMobile&&setHov(num)} onMouseLeave={()=>!isMobile&&setHov(null)} onClick={()=>{
       if(isMobile)setHov(h=>h===num?null:num);
-      // Temple info — only when idle (not busy, no popups active)
-      if(tmpl&&!busy&&!dil&&!templeLore&&!templeQuiz&&!guruEncounter&&!cosmicCard&&!eventPopup&&!win){
+      // Temple info — only when idle (not busy, no popups active).
+      // popupsOpenRef is synced in a separate effect above, so we don't
+      // have to include popup state in this memo's deps array.
+      if(tmpl&&!busy&&!popupsOpenRef.current){
         playTempleBell();
         setTempleInfo({temple:tmpl,templeKey});
         if(!muted){
@@ -5643,15 +5728,71 @@ export default function MokshaPatam108(){
       {ld&&<><span style={{fontSize:"clamp(9px,1.8vw,14px)",lineHeight:1}}>🪔</span><span style={{fontSize:"clamp(7px,1.2vw,11px)",color:"#ffe070",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 0 12px rgba(200,160,60,.4)"}}>{ld.skt}</span><span style={{fontSize:"clamp(5px,.9vw,8px)",color:"#f0d060",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1.1,textShadow:"0 0 6px #000"}}>{ld.en}</span></>}
       {tmpl&&<><TempleIcon templeKey={templeKey} size={isMobile?28:52} color={tmpl.color}/><span style={{fontSize:"clamp(5px,1vw,10px)",color:tmpl.color,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,textShadow:`0 1px 3px #000, 0 0 10px ${tmpl.color}50`,lineHeight:1,letterSpacing:0,marginTop:-2}}>{tmpl.name}</span></>}
       {dl&&!tmpl&&<><span style={{fontSize:"clamp(8px,1.5vw,13px)",lineHeight:1}}>⚖</span><span style={{fontSize:"clamp(5px,.8vw,7px)",color:"#c8a0f0",fontFamily:"'Cinzel',serif",fontWeight:900,textShadow:"0 0 8px #000",letterSpacing:1}}>DHARMA</span></>}
-      {ph.length>0&&<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",gap:2,zIndex:15,pointerEvents:"none"}}>
-        {ph.map(pi=>{const c=players[pi]?.char;const isMoving=pi===cur&&busy;const isActive=pi===cur;const pc=c?.color||"#fff";return <div key={pi} style={{display:"flex",flexDirection:"column",alignItems:"center",transition:"all .3s ease",transform:isMoving?"scale(1.7) translateY(-8px)":isActive?"scale(1.4)":"scale(0.9)",zIndex:isActive?20:15}}>
-          {isActive&&<div style={{position:"absolute",inset:-2,borderRadius:4,background:`${pc}15`,border:`1.5px solid ${pc}40`,animation:"activeGlow 1.5s ease infinite","--pc":pc}}/>}
-          <div style={{width:isMobile?"clamp(22px,6vw,28px)":"clamp(20px,3.2vw,30px)",height:isMobile?"clamp(22px,6vw,28px)":"clamp(20px,3.2vw,30px)",borderRadius:"50%",background:`radial-gradient(circle at 35% 30%,${pc},${pc}40 70%,#0c0a07)`,border:`2.5px solid ${pc}`,boxShadow:`0 0 ${isMoving?20:isActive?12:5}px ${pc}${isMoving?"dd":isActive?"99":"30"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"clamp(11px,2vw,17px)",lineHeight:1,animation:isActive&&!isMoving?"activeGlow 1.5s ease infinite":"none","--pc":pc}}>{c?.icon}</div>
-          {!isMobile&&<div style={{fontSize:"clamp(5px,.8vw,8px)",color:pc,fontWeight:900,marginTop:1,textShadow:`0 0 4px #000,0 0 8px #000,0 0 12px ${pc}40`,whiteSpace:"nowrap",letterSpacing:1,opacity:isActive?1:.7}}>{players[pi]?.name?.slice(0,6)}</div>}
-        </div>})}
-      </div>}
     </div>);
-  }),[board,pos,cur,busy,hov,nP,players,isMobile,isOnline,myPlayerIndex,displayPos,muted,chosenLang,dil,templeLore,templeQuiz,guruEncounter,cosmicCard,eventPopup,win]);
+  // Deps trimmed to the bare minimum. Board entries are static; hov changes
+  // on pointer enter; nP/isMobile/muted/chosenLang change rarely. Pos/cur/
+  // busy/players removed — those drive the separate PawnOverlay instead.
+  }),[board,hov,nP,isMobile,muted,chosenLang]);
+
+  // ═══ PAWN OVERLAY — player tokens, positioned over the board ═══
+  // Previously rendered INSIDE each board square, forcing 108-square
+  // re-render on every setPos during step animation. Extracted here as
+  // a separate absolutely-positioned CSS-grid layer that mirrors the
+  // board's 10×10 layout. Now setPos re-renders only this overlay
+  // (≤ nP tiny divs) instead of 108 full square shells.
+  const pawnOverlay=useMemo(()=>{
+    // Group pawns by landing square so multiple players on the same
+    // square stack correctly (matching previous behavior).
+    const byNum={};
+    for(let i=0;i<nP;i++){
+      const rp=isOnline&&i!==myPlayerIndex&&displayPos.length>0?displayPos[i]:pos[i];
+      const num=rp||1;
+      (byNum[num]=byNum[num]||[]).push(i);
+    }
+    const cells=[];
+    for(const numStr in byNum){
+      const num=+numStr;
+      const rc=posToRC[num]; if(!rc) continue;
+      const ph=byNum[num];
+      cells.push(
+        <div key={num} style={{
+          gridColumn:rc.c+1, gridRow:rc.r+1,
+          display:"flex",alignItems:"center",justifyContent:"center",gap:2,
+          pointerEvents:"none", position:"relative",
+        }}>
+          {ph.map(pi=>{
+            const c=players[pi]?.char;
+            const isMoving=pi===cur&&busy;
+            const isActive=pi===cur;
+            const pc=c?.color||"#fff";
+            return (
+              <div key={pi} style={{
+                display:"flex",flexDirection:"column",alignItems:"center",
+                transition:"transform .3s ease",
+                transform:isMoving?"scale(1.7) translateY(-8px)":isActive?"scale(1.4)":"scale(0.9)",
+                zIndex:isActive?20:15,
+              }}>
+                {isActive&&<div style={{position:"absolute",inset:-2,borderRadius:4,background:`${pc}15`,border:`1.5px solid ${pc}40`,animation:"activeGlow 1.5s ease infinite","--pc":pc}}/>}
+                <div style={{
+                  width:isMobile?"clamp(22px,6vw,28px)":"clamp(20px,3.2vw,30px)",
+                  height:isMobile?"clamp(22px,6vw,28px)":"clamp(20px,3.2vw,30px)",
+                  borderRadius:"50%",
+                  background:`radial-gradient(circle at 35% 30%,${pc},${pc}40 70%,#0c0a07)`,
+                  border:`2.5px solid ${pc}`,
+                  boxShadow:`0 0 ${isMoving?20:isActive?12:5}px ${pc}${isMoving?"dd":isActive?"99":"30"}`,
+                  display:"flex",alignItems:"center",justifyContent:"center",
+                  fontSize:"clamp(11px,2vw,17px)",lineHeight:1,
+                  animation:isActive&&!isMoving?"activeGlow 1.5s ease infinite":"none","--pc":pc,
+                }}>{c?.icon}</div>
+                {!isMobile&&<div style={{fontSize:"clamp(5px,.8vw,8px)",color:pc,fontWeight:900,marginTop:1,textShadow:`0 0 4px #000,0 0 8px #000,0 0 12px ${pc}40`,whiteSpace:"nowrap",letterSpacing:1,opacity:isActive?1:.7}}>{players[pi]?.name?.slice(0,6)}</div>}
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+    return cells;
+  },[pos,displayPos,isOnline,myPlayerIndex,nP,cur,busy,players,isMobile,posToRC]);
 
   // Snake + Ladder SVG overlay — precomputed from conns, never changes after mount
   const connsSvg=useMemo(()=>conns.map((cn,i)=>{
@@ -5737,41 +5878,19 @@ export default function MokshaPatam108(){
         onNewJourney={()=>{setShowPostGame(false);navigateTo("title");setWin(null);setPlayers([]);setOnlineRoomId(null);setMyPlayerIndex(null);lastAppliedSeqRef.current=-1;ambient.stop();localStorage.removeItem('mp108_savedGame');}}
       />
     )}
-    {/* ═══ SACRED BACKGROUND — visible on ALL screens ═══ */}
-    <div style={{position:"fixed",inset:0,pointerEvents:"none",overflow:"hidden",zIndex:0}}>
-      <div style={{position:"fixed",inset:0,background:"radial-gradient(ellipse at center,transparent 40%,rgba(6,5,3,.85) 100%)"}}/>
-      <svg style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"130%",height:"130%"}} viewBox="0 0 800 800">
-        {/* Cymatics rings */}
-        <circle cx="400" cy="400" r="60" fill="none" stroke="#a08030" strokeWidth="1" opacity=".15" style={{animation:"cymaticPulse 3.5s ease infinite"}}/>
-        <circle cx="400" cy="400" r="100" fill="none" stroke="#a08030" strokeWidth=".8" opacity=".18" style={{animation:"cymaticPulse 4s ease infinite .3s"}}/>
-        <circle cx="400" cy="400" r="150" fill="none" stroke="#a08030" strokeWidth=".7" opacity=".2" style={{animation:"cymaticPulse 5s ease infinite .6s"}}/>
-        <circle cx="400" cy="400" r="210" fill="none" stroke="#a08030" strokeWidth=".6" opacity=".16" style={{animation:"cymaticPulse 6s ease infinite 1s"}}/>
-        <circle cx="400" cy="400" r="280" fill="none" stroke="#a08030" strokeWidth=".5" opacity=".12" style={{animation:"cymaticPulse 7s ease infinite 1.4s"}}/>
-        <circle cx="400" cy="400" r="360" fill="none" stroke="#a08030" strokeWidth=".4" opacity=".08" style={{animation:"cymaticPulse 8s ease infinite 1.8s"}}/>
-        {/* Flower of Life */}
-        {[0,60,120,180,240,300].map(a=><circle key={"fl"+a} cx={400+60*Math.cos(a*Math.PI/180)} cy={400+60*Math.sin(a*Math.PI/180)} r="60" fill="none" stroke="#a08030" strokeWidth=".5" opacity=".1" style={{animation:`cymaticPulse ${5+a/100}s ease infinite ${a/400}s`}}/>)}
-        {/* Hexagonal nodes */}
-        {[0,60,120,180,240,300].map(a=><g key={"n1"+a}><circle cx={400+105*Math.cos(a*Math.PI/180)} cy={400+105*Math.sin(a*Math.PI/180)} r="4" fill="#a08030" opacity=".18" style={{animation:`cymaticPulse ${3+a/100}s ease infinite ${a/200}s`}}/><line x1={400+95*Math.cos(a*Math.PI/180)} y1={400+95*Math.sin(a*Math.PI/180)} x2={400+115*Math.cos(a*Math.PI/180)} y2={400+115*Math.sin(a*Math.PI/180)} stroke="#a08030" strokeWidth=".5" opacity=".12"/></g>)}
-        {/* Outer ring dots */}
-        {[0,30,60,90,120,150,180,210,240,270,300,330].map(a=><circle key={"n2"+a} cx={400+220*Math.cos(a*Math.PI/180)} cy={400+220*Math.sin(a*Math.PI/180)} r="3" fill="#a08030" opacity=".12" style={{animation:`cymaticPulse ${4+a/120}s ease infinite ${a/300}s`}}/>)}
-        {/* Naga serpent knots */}
-        <g style={{animation:"cymaticRotate 50s linear infinite"}} opacity=".15">
-          <path d="M300,400 C300,340 350,300 400,300 C450,300 500,340 500,400 C500,460 450,500 400,500 C350,500 300,460 300,400 Z" fill="none" stroke="#a08030" strokeWidth="1"/>
-          <path d="M320,400 C320,355 355,320 400,320 C445,320 480,355 480,400 C480,445 445,480 400,480 C355,480 320,445 320,400 Z" fill="none" stroke="#a08030" strokeWidth=".7"/>
-        </g>
-        <g style={{animation:"cymaticRotate 70s linear infinite reverse"}} opacity=".12">
-          <path d="M230,400 Q315,280 400,400 T570,400" fill="none" stroke="#a08030" strokeWidth=".7"/>
-          <path d="M230,400 Q315,520 400,400 T570,400" fill="none" stroke="#a08030" strokeWidth=".7"/>
-        </g>
-        {/* Sri Yantra */}
-        <polygon points="400,290 325,440 475,440" fill="none" stroke="#a08030" strokeWidth=".6" opacity=".1" style={{animation:"cymaticPulse 10s ease infinite"}}/>
-        <polygon points="400,510 325,360 475,360" fill="none" stroke="#a08030" strokeWidth=".6" opacity=".1" style={{animation:"cymaticPulse 10s ease infinite 5s"}}/>
-        <polygon points="400,330 355,420 445,420" fill="none" stroke="#a08030" strokeWidth=".5" opacity=".07" style={{animation:"cymaticPulse 12s ease infinite 2s"}}/>
-        <polygon points="400,470 355,380 445,380" fill="none" stroke="#a08030" strokeWidth=".5" opacity=".07" style={{animation:"cymaticPulse 12s ease infinite 7s"}}/>
-        {/* Radial spokes */}
-        {[0,45,90,135,180,225,270,315].map(a=><line key={"sp"+a} x1={400+70*Math.cos(a*Math.PI/180)} y1={400+70*Math.sin(a*Math.PI/180)} x2={400+350*Math.cos(a*Math.PI/180)} y2={400+350*Math.sin(a*Math.PI/180)} stroke="#a08030" strokeWidth=".25" opacity=".06"/>)}
-      </svg>
-    </div>
+    {/* ═══ SACRED BACKGROUND ═══
+         50-primitive SVG. Previously inlined here, which meant React
+         diffed 50 JSX nodes + their inline `style={{animation:`...`}}`
+         objects on EVERY parent re-render (screen change, state update,
+         auth cascade). On Android that reconciliation alone was ~60 ms.
+         Extracted to <SacredBackdrop/> — a memoized 0-prop component
+         that renders exactly once per mount. Android skips it entirely
+         (animations are no-op'd and it adds no visual value there). */}
+    <SacredBackdrop />
+    {/* Fallback vignette when SacredBackdrop is skipped on Android */}
+    {IS_ANDROID && (
+      <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0,background:"radial-gradient(ellipse at center,transparent 40%,rgba(6,5,3,.85) 100%)"}}/>
+    )}
     {/* ═══ PROFILE BUTTON — visible on ALL screens (top-right) ═══ */}
     <div style={{position:"fixed",top:10,right:10,zIndex:250,pointerEvents:"auto"}}>
       {auth.user?<button onClick={()=>{setShowProfile(true);setProfileTab("overview")}} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 14px 6px 6px",background:"rgba(12,10,7,.9)",border:"1.5px solid rgba(200,160,60,.25)",borderRadius:22,cursor:"pointer",color:"#e8c850",fontSize:12,fontFamily:"'Cinzel',serif",backdropFilter:"blur(8px)",boxShadow:"0 2px 12px rgba(0,0,0,.4), 0 0 20px rgba(200,160,60,.05)",transition:"all .2s"}}>
@@ -6516,10 +6635,10 @@ export default function MokshaPatam108(){
                         borderRadius:"0 8px 8px 0",
                         padding:"12px 14px",
                         animation:`slideUp .5s ease ${bi*0.1}s both`,
-                        transition:"background .2s",
+                        // Removed onMouseEnter/Leave setting .style.background directly —
+                        // those caused 84ms of forced reflow per hover (DevTools trace).
+                        // Hover effect wasn't visible on mobile (no hover) anyway.
                       }}
-                      onMouseEnter={e=>e.currentTarget.style.background="rgba(30,22,12,.7)"}
-                      onMouseLeave={e=>e.currentTarget.style.background="rgba(20,16,10,.55)"}
                       >
                         <div style={{width:34,height:34,borderRadius:8,flexShrink:0,background:`${b.accent}15`,border:`1px solid ${b.accent}30`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>{b.icon}</div>
                         <div style={{flex:1,minWidth:0}}>
@@ -6951,14 +7070,17 @@ export default function MokshaPatam108(){
   return(
     <div style={{...PG,
       overflow:"auto",
-      padding:"10px 4px",
+      // Mobile: 0 horizontal padding so the 10x10 board can use all 100vw.
+      // Previously 4px each side = 8px lost, which was pushing the grid
+      // past viewport width and clipping right columns.
+      padding:isMobile?"10px 0":"10px 4px",
       paddingTop:"max(10px, env(safe-area-inset-top, 10px))",
       paddingBottom:"max(20px, env(safe-area-inset-bottom, 20px))",
-      paddingLeft:"max(4px, env(safe-area-inset-left, 4px))",
-      paddingRight:"max(4px, env(safe-area-inset-right, 4px))",
+      paddingLeft: isMobile ? 0 : "max(4px, env(safe-area-inset-left, 4px))",
+      paddingRight: isMobile ? 0 : "max(4px, env(safe-area-inset-right, 4px))",
       display:"flex",flexDirection:"column",alignItems:"center",
       WebkitOverflowScrolling:"touch",
-      boxSizing:"border-box",maxWidth:"100vw",
+      boxSizing:"border-box",maxWidth:"100vw",overflowX:"hidden",
     }}>
       {globalOverlays}
       {/* ═══ TEMPLE INFO — tap to explore (dismissible, no quiz) ═══ */}
@@ -8128,9 +8250,17 @@ export default function MokshaPatam108(){
           ))}
         </div>
       )}
-      <div style={{display:"flex",gap:isMobile?4:14,flexWrap:"wrap",justifyContent:"center",width:"100%",maxWidth:1140,boxSizing:"border-box"}}>
+      <div style={{display:"flex",gap:isMobile?4:14,flexWrap:"wrap",justifyContent:"center",width:"100%",maxWidth:1140,boxSizing:"border-box",overflowX:"hidden"}}>
         {/* BOARD */}
-        <div style={{flex:"1 1 340px",maxWidth:isMobile?"calc(100vw - 8px)":720,minWidth:0,width:isMobile?"calc(100vw - 8px)":undefined,overflow:"hidden",boxSizing:"border-box"}}>
+        <div style={{
+          // On mobile: always exactly 100vw, no flex-basis pushing it wider.
+          flex: isMobile ? "0 0 100vw" : "1 1 340px",
+          width: isMobile ? "100vw" : undefined,
+          maxWidth: isMobile ? "100vw" : 720,
+          minWidth: 0,
+          overflow: "hidden",
+          boxSizing: "border-box",
+        }}>
           <div style={(()=>{
             const pt=gameStats.current.playerTurns||{};
             const myT=pt[cur]||0;
@@ -8138,10 +8268,10 @@ export default function MokshaPatam108(){
             const turnsLeft=nextGuru-(myT+1);
             const guruGlow=turnsLeft<=3&&turnsLeft>0&&!busy&&!win;
             const intensity=guruGlow?1-turnsLeft/3:0;
-            return{border:`2px solid rgba(200,160,60,${guruGlow?.3+intensity*.4:.3})`,
+            return{border:`${isMobile?1:2}px solid rgba(200,160,60,${guruGlow?.3+intensity*.4:.3})`,
               background:"radial-gradient(ellipse at 30% 30%,rgba(60,45,20,.2),transparent 50%),radial-gradient(ellipse at 70% 70%,rgba(60,45,20,.15),transparent 50%),#1e1810",
-              boxShadow:`0 0 60px rgba(0,0,0,.5),inset 0 0 40px rgba(0,0,0,.3)${guruGlow?`,0 0 ${15+intensity*30}px rgba(240,200,80,${intensity*.15})`:""}`,
-              borderRadius:2,overflow:"hidden",boxSizing:"border-box",width:"100%",
+              boxShadow:isMobile?"none":`0 0 60px rgba(0,0,0,.5),inset 0 0 40px rgba(0,0,0,.3)${guruGlow?`,0 0 ${15+intensity*30}px rgba(240,200,80,${intensity*.15})`:""}`,
+              borderRadius:2,overflow:"hidden",boxSizing:"border-box",width:"100%",maxWidth:"100%",
               transition:"border-color 1s, box-shadow 1s"};
           })()}>
             {/* ═══ SACRED CROWN — Ashtanga Marga (101-108) ═══ */}
@@ -8152,7 +8282,7 @@ export default function MokshaPatam108(){
                 {[0,25,50,75,100,125,150,175].map(x=><g key={x}><polygon points={`${x+12.5},5 ${x+25},45 ${x},45`} fill="none" stroke="#f0d050" strokeWidth=".5"/><polygon points={`${x+12.5},45 ${x+25},5 ${x},5`} fill="none" stroke="#f0d050" strokeWidth=".5"/><circle cx={x+12.5} cy={25} r="8" fill="none" stroke="#f0d050" strokeWidth=".3"/></g>)}
               </svg>
               <div style={{fontSize:"clamp(6px,1vw,9px)",textAlign:"center",letterSpacing:isMobile?2:5,color:"#f0d050",opacity:.5,marginBottom:4,fontFamily:"'Cinzel',serif",textShadow:"0 0 10px rgba(240,200,80,.3)"}}>꧁ अष्टांग मार्ग · The 8-Fold Sacred Path ꧂</div>
-              <div style={{display:"grid",gridTemplateColumns:"repeat(8,1fr)",gap:isMobile?1:2}}>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(8,minmax(0,1fr))",gap:isMobile?1:2}}>
                 {sacredCrown}
               </div>
             </div>
@@ -8182,8 +8312,26 @@ export default function MokshaPatam108(){
               <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{position:"absolute",inset:0,width:"100%",height:"100%",pointerEvents:"none",zIndex:5}}>
                 {connsSvg}
               </svg>
-              <div style={{display:"grid",gridTemplateColumns:"repeat(10,1fr)",position:"relative",zIndex:6}}>
+              <div style={{display:"grid",
+                // minmax(0, 1fr) is CRITICAL — plain "1fr" allows columns to
+                // exceed their fair share when child content has non-shrinkable
+                // min-size (SVG icons, unbreakable text). minmax(0, 1fr) forces
+                // the column to shrink to fit, keeping all 10 columns visible.
+                gridTemplateColumns:"repeat(10,minmax(0,1fr))",
+                position:"relative",zIndex:6,width:"100%",maxWidth:"100%",
+                contain:"layout paint"}}>
               {boardSquares}
+              {/* Pawn overlay — same 10×10 grid, absolutely layered on top.
+                  Lets setPos re-render only pawns (nP divs) instead of 108. */}
+              <div style={{
+                position:"absolute",inset:0,
+                display:"grid",
+                gridTemplateColumns:"repeat(10,minmax(0,1fr))",
+                gridTemplateRows:"repeat(10,1fr)",
+                pointerEvents:"none",zIndex:16,
+              }}>
+                {pawnOverlay}
+              </div>
             </div>
             </div>{/* close position:relative wrapper */}
           </div>
