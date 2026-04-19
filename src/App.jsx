@@ -10,6 +10,93 @@ import ErrorBoundary from './components/ErrorBoundary.jsx';
 const isOAuthReturn = window.location.hash.includes('access_token');
 const savedTier = localStorage.getItem('mp108_lastTier');
 
+// ─── Native platform integrations (Capacitor) ───────────────────────────────
+// These imports are tree-shaken out on web builds because Capacitor.isNativePlatform()
+// returns false and plugins aren't called.
+const isNative = typeof window !== 'undefined'
+  && (window.Capacitor?.isNativePlatform?.() === true);
+
+async function initNativeBridges() {
+  if (!isNative) return;
+  try {
+    const { SplashScreen } = await import('@capacitor/splash-screen');
+    const { StatusBar, Style } = await import('@capacitor/status-bar');
+    const { App: CapApp } = await import('@capacitor/app');
+    const { Browser } = await import('@capacitor/browser');
+    const { supabase } = await import('./auth/supabaseClient');
+
+    // Style the status bar to match our dark theme
+    try { await StatusBar.setStyle({ style: Style.Light }); } catch(e) {}
+    try { await StatusBar.setBackgroundColor({ color: '#0c0a07' }); } catch(e) {}
+
+    // Hide splash once React has rendered first screen
+    setTimeout(() => { SplashScreen.hide().catch(() => {}); }, 300);
+
+    // Hardware back button: go back through app state, minimize at root
+    CapApp.addListener('backButton', () => {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        CapApp.minimizeApp();
+      }
+    });
+
+    // Pause/resume ambient audio when app moves to background
+    CapApp.addListener('appStateChange', ({ isActive }) => {
+      try {
+        const ambientEl = document.querySelector('audio[src*="ambient"]');
+        if (ambientEl) {
+          if (isActive) ambientEl.play?.().catch(() => {});
+          else ambientEl.pause?.();
+        }
+      } catch(e) {}
+    });
+
+    // ─── OAuth deep-link handler ──────────────────────────────────
+    // When Google sign-in completes, the system redirects back to
+    // com.rasavisio.mokshapatam://auth/callback#access_token=…
+    // Android routes this to us via the intent-filter in AndroidManifest.
+    CapApp.addListener('appUrlOpen', async ({ url }) => {
+      console.log('[Native] appUrlOpen:', url);
+      if (!url || !url.startsWith('com.rasavisio.mokshapatam://')) return;
+
+      // Close the in-app browser tab
+      try { await Browser.close(); } catch(e) {}
+
+      // Parse tokens. Supabase returns them in the URL fragment (#...)
+      const hashIdx = url.indexOf('#');
+      if (hashIdx < 0) return;
+      const hashParams = new URLSearchParams(url.substring(hashIdx + 1));
+      const access_token = hashParams.get('access_token');
+      const refresh_token = hashParams.get('refresh_token');
+
+      if (access_token && refresh_token) {
+        try {
+          const { error } = await supabase.auth.setSession({
+            access_token, refresh_token,
+          });
+          if (error) console.error('[Native OAuth] setSession error:', error);
+          else console.log('[Native OAuth] Session restored from deep link ✓');
+        } catch (e) {
+          console.error('[Native OAuth] Exception:', e);
+        }
+      } else {
+        // PKCE flow: ?code=...
+        const code = new URL(url.replace('com.rasavisio.mokshapatam://', 'https://dummy/')).searchParams.get('code');
+        if (code) {
+          try {
+            await supabase.auth.exchangeCodeForSession(code);
+            console.log('[Native OAuth] PKCE session restored ✓');
+          } catch (e) { console.error('[Native OAuth PKCE] Exception:', e); }
+        }
+      }
+    });
+  } catch (e) {
+    console.warn('Capacitor bridge init failed:', e.message);
+  }
+}
+initNativeBridges();
+
 // ── Android performance optimizations ──
 // Android browsers struggle with backdrop-filter, heavy drop-shadows, and
 // complex compositing. Tag the root so CSS can disable these selectively.

@@ -103,7 +103,36 @@ export function useAuth(){
 
   const signInGoogle=useCallback(async()=>{
     if(!supabase){alert("Supabase not configured. Set REACT_APP_SUPABASE_URL and REACT_APP_SUPABASE_ANON_KEY in Vercel env vars.");return}
-    try{const{error}=await supabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.origin}});if(error){logError("Google sign-in error:",error);alert("Google sign-in failed: "+error.message)}}catch(e){logError("Sign-in error:",e);alert("Sign-in error: "+e.message)}
+
+    const isNative = typeof window!=='undefined' && window.Capacitor?.isNativePlatform?.()===true;
+
+    try{
+      if(isNative){
+        // Native: OAuth must redirect back to the app via deep link scheme.
+        // The scheme com.rasavisio.mokshapatam:// is registered in AndroidManifest.xml
+        // and the URL listener in App.jsx catches the redirect to set the session.
+        // IMPORTANT: The redirect URL below MUST be whitelisted in Supabase
+        // Dashboard → Authentication → URL Configuration → Redirect URLs.
+        const redirectTo = 'com.rasavisio.mokshapatam://auth/callback';
+        const {data,error} = await supabase.auth.signInWithOAuth({
+          provider:"google",
+          options:{ redirectTo, skipBrowserRedirect:true },
+        });
+        if(error){ logError("Google sign-in error:",error); alert("Google sign-in failed: "+error.message); return; }
+        if(data?.url){
+          // Open the OAuth flow in the system browser (not in-app)
+          const { Browser } = await import('@capacitor/browser');
+          await Browser.open({ url: data.url, presentationStyle: 'popover' });
+        }
+      }else{
+        // Web: regular redirect flow
+        const {error} = await supabase.auth.signInWithOAuth({
+          provider:"google",
+          options:{ redirectTo: window.location.origin },
+        });
+        if(error){ logError("Google sign-in error:",error); alert("Google sign-in failed: "+error.message); }
+      }
+    }catch(e){ logError("Sign-in error:",e); alert("Sign-in error: "+e.message); }
   },[]);
 
   const signOut=useCallback(async()=>{if(!supabase)return;await supabase.auth.signOut();setUser(null);setProfile(null)},[]);

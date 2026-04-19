@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Splash screen: 2732x2732 (iPad landscape/portrait both handled by Capacitor) -->
+<svg xmlns="http://www.w3.org/2000/svg" width="2732" height="2732" viewBox="0 0 2732 2732">
+  <defs>
+    <radialGradient id="splashGrad" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#2a1f10"/>
+      <stop offset="60%" stop-color="#12100a"/>
+      <stop offset="100%" stop-color="#0c0a07"/>
+    </radialGradient>
+    <radialGradient id="splashGold" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#FFE580"/>
+      <stop offset="50%" stop-color="#F0D050"/>
+      <stop offset="100%" stop-color="#B8860B"/>
+    </radialGradient>
+    <filter id="splashGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="25" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="2732" height="2732" fill="url(#splashGrad)"/>
+
+  <!-- Large central Om -->
+  <g filter="url(#splashGlow)">
+    <text x="1366" y="1520"
+          font-family="'Noto Serif Devanagari', 'Yatra One', serif"
+          font-size="900"
+          font-weight="900"
+          text-anchor="middle"
+          fill="url(#splashGold)">ॐ</text>
+  </g>
+
+  <!-- Game title -->
+  <text x="1366" y="1820"
+        font-family="'Yatra One', 'Noto Serif Devanagari', serif"
+        font-size="130"
+        font-weight="900"
+        text-anchor="middle"
+        fill="#F0D050"
+        opacity="0.9">मोक्ष पटम्</text>
+
+  <!-- English subtitle -->
+  <text x="1366" y="1930"
+        font-family="'Cinzel', serif"
+        font-size="56"
+        font-weight="700"
+        letter-spacing="24"
+        text-anchor="middle"
+        fill="#F0D050"
+        opacity="0.55">MOKSHA PATAM 108</text>
+</svg>
