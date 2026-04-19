@@ -700,6 +700,121 @@ const SacredBackdrop = memo(function SacredBackdrop() {
   );
 });
 
+/* ═══ PAWN PIECE ═══
+   Classic 3D game-piece silhouette (body + head + base) drawn in SVG
+   with gradient fill in the player's color. The character's icon sits
+   on the "head" as a face, giving each piece a clear identity while
+   still reading as a proper board-game pawn from a distance.
+
+   Previously the pawn was a flat colored circle with the emoji inside,
+   which many players felt looked like a medal / token rather than a
+   player. This version uses a recognizable pawn shape (inspired by
+   chess/chaupar pieces) to make it immediately read as "a player".
+
+   Gradients are defined with per-color IDs so multiple pawns with
+   different colors don't clash in the same SVG namespace. */
+const PawnPiece = memo(function PawnPiece({ color, icon, isMoving, isActive, isMobile, name }) {
+  // The color may contain `#` — strip for a safe CSS id
+  const gid = (color || '#fff').replace('#', '').toLowerCase();
+  // Size scales with viewport; pawn is taller than wide (ratio ~0.72)
+  const w = isMobile ? 'clamp(22px,6vw,30px)' : 'clamp(22px,3.2vw,32px)';
+  return (
+    <div style={{
+      position: 'relative',
+      width: w,
+      aspectRatio: '0.72',
+      filter: isMoving
+        ? `drop-shadow(0 4px 10px ${color}dd)`
+        : isActive
+          ? `drop-shadow(0 2px 6px ${color}aa)`
+          : `drop-shadow(0 1px 2px ${color}40)`,
+    }}>
+      <svg viewBox="0 0 40 56" width="100%" height="100%" preserveAspectRatio="xMidYMid meet"
+           style={{ display: 'block', overflow: 'visible' }}>
+        <defs>
+          {/* Head — radial gradient gives the "ball" a 3D highlight */}
+          <radialGradient id={`pawn-h-${gid}`} cx="35%" cy="25%" r="70%">
+            <stop offset="0%"  stopColor="#fff" stopOpacity="0.9"/>
+            <stop offset="35%" stopColor={color}/>
+            <stop offset="100%" stopColor="#1a1208"/>
+          </radialGradient>
+          {/* Body — linear gradient gives a "lit from the side" look */}
+          <linearGradient id={`pawn-b-${gid}`} x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%"  stopColor={color} stopOpacity="0.55"/>
+            <stop offset="45%" stopColor={color}/>
+            <stop offset="100%" stopColor="#0c0a07" stopOpacity="0.9"/>
+          </linearGradient>
+          {/* Base ring — slightly darker for a "metallic" feel */}
+          <linearGradient id={`pawn-base-${gid}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={color}/>
+            <stop offset="100%" stopColor="#1a1208"/>
+          </linearGradient>
+        </defs>
+
+        {/* Cast shadow under the pawn (subtle) */}
+        <ellipse cx="20" cy="54" rx="14" ry="2" fill="#000" opacity="0.55"/>
+
+        {/* Base — broad footprint */}
+        <ellipse cx="20" cy="50" rx="14" ry="3.5" fill={`url(#pawn-base-${gid})`}/>
+        <ellipse cx="20" cy="48.5" rx="14" ry="2" fill={color} opacity="0.4"/>
+
+        {/* Body — chess-pawn curve (wider base, narrow neck, then flare) */}
+        <path d="
+            M 8,49
+            Q 10,36 12,30
+            Q 13,28 14,26
+            Q 11,26 11,24
+            Q 11,22 13,21
+            L 27,21
+            Q 29,22 29,24
+            Q 29,26 26,26
+            Q 27,28 28,30
+            Q 30,36 32,49
+            Z"
+          fill={`url(#pawn-b-${gid})`}
+          stroke={color}
+          strokeWidth="0.6"
+          strokeOpacity="0.8"/>
+
+        {/* Neck ring (decorative detail — gives it depth) */}
+        <rect x="11" y="20" width="18" height="2" rx="1" fill={color} opacity="0.6"/>
+
+        {/* Head — the "ball" on top of a chess pawn */}
+        <circle cx="20" cy="13" r="8.5" fill={`url(#pawn-h-${gid})`}
+                stroke={color} strokeWidth="0.8"/>
+        {/* Head specular highlight */}
+        <ellipse cx="17" cy="9.5" rx="3" ry="2" fill="#fff" opacity="0.4"/>
+      </svg>
+
+      {/* Character icon on the pawn's head as a face.
+          Position it OVER the head circle in the SVG, size ~35% of total. */}
+      <div style={{
+        position: 'absolute',
+        top: '8%', left: 0, right: 0,
+        textAlign: 'center',
+        fontSize: isMobile ? 'clamp(9px,2.2vw,13px)' : 'clamp(9px,1.5vw,13px)',
+        lineHeight: 1,
+        filter: 'drop-shadow(0 0 2px rgba(0,0,0,.9))',
+        pointerEvents: 'none',
+      }}>{icon}</div>
+
+      {/* Active-player ambient glow ring (replaces old activeGlow on circle) */}
+      {isActive && (
+        <div style={{
+          position: 'absolute',
+          inset: '-4px -6px 0 -6px',
+          borderRadius: '50%',
+          background: `radial-gradient(ellipse at 50% 40%, ${color}35, transparent 60%)`,
+          animation: 'activeGlow 1.5s ease infinite',
+          '--pc': color,
+          pointerEvents: 'none',
+          zIndex: -1,
+        }}/>
+      )}
+    </div>
+  );
+});
+
 /* ═══ AMBIENT MUSIC ENGINE ═══ */
 function useAmbient(){
   const audioRef=useRef(null);const playing=useRef(false);
@@ -5777,21 +5892,16 @@ export default function MokshaPatam108(){
               <div key={pi} style={{
                 display:"flex",flexDirection:"column",alignItems:"center",
                 transition:"transform .3s ease",
-                transform:isMoving?"scale(1.7) translateY(-8px)":isActive?"scale(1.4)":"scale(0.9)",
+                transform:isMoving?"scale(1.35) translateY(-8px)":isActive?"scale(1.15)":"scale(0.9)",
                 zIndex:isActive?20:15,
               }}>
-                {isActive&&<div style={{position:"absolute",inset:-2,borderRadius:4,background:`${pc}15`,border:`1.5px solid ${pc}40`,animation:"activeGlow 1.5s ease infinite","--pc":pc}}/>}
-                <div style={{
-                  width:isMobile?"clamp(22px,6vw,28px)":"clamp(20px,3.2vw,30px)",
-                  height:isMobile?"clamp(22px,6vw,28px)":"clamp(20px,3.2vw,30px)",
-                  borderRadius:"50%",
-                  background:`radial-gradient(circle at 35% 30%,${pc},${pc}40 70%,#0c0a07)`,
-                  border:`2.5px solid ${pc}`,
-                  boxShadow:`0 0 ${isMoving?20:isActive?12:5}px ${pc}${isMoving?"dd":isActive?"99":"30"}`,
-                  display:"flex",alignItems:"center",justifyContent:"center",
-                  fontSize:"clamp(11px,2vw,17px)",lineHeight:1,
-                  animation:isActive&&!isMoving?"activeGlow 1.5s ease infinite":"none","--pc":pc,
-                }}>{c?.icon}</div>
+                <PawnPiece
+                  color={pc}
+                  icon={c?.icon}
+                  isMoving={isMoving}
+                  isActive={isActive}
+                  isMobile={isMobile}
+                />
                 {!isMobile&&<div style={{fontSize:"clamp(5px,.8vw,8px)",color:pc,fontWeight:900,marginTop:1,textShadow:`0 0 4px #000,0 0 8px #000,0 0 12px ${pc}40`,whiteSpace:"nowrap",letterSpacing:1,opacity:isActive?1:.7}}>{players[pi]?.name?.slice(0,6)}</div>}
               </div>
             );
