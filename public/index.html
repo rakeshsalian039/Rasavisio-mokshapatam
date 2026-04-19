@@ -42,7 +42,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;700&family=Yatra+One&family=Cinzel:wght@400;700;900&family=Cinzel+Decorative:wght@700&family=Baloo+2:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;700&family=Yatra+One&family=Cinzel:wght@400;700;900&family=Cinzel+Decorative:wght@700&family=Baloo+2:wght@400;700&display=swap"/></noscript>
 
-<script src="https://js.puter.com/v2/" onload="window.__puterOk=true" onerror="window.__puterFail=true"></script>
+<!-- ── Prefetch audio that will play on "Begin Journey" / "Play Solo" click ──
+     Lower priority than preload — runs during browser idle time, so it
+     doesn't block first paint. By the time user clicks play, these are cached.
+     This is critical for Android where audio decode blocks the main thread. -->
+<link rel="prefetch" href="/ambient.mp3" as="audio"/>
+<link rel="prefetch" href="/temple-bell.mp3" as="audio"/>
+<link rel="prefetch" href="/onboarding/story-0-en.mp3" as="audio"/>
+<link rel="prefetch" href="/onboarding/story-0-hi.mp3" as="audio"/>
+<link rel="prefetch" href="/yama-en.mp3" as="audio"/>
+<link rel="prefetch" href="/yama-hi.mp3" as="audio"/>
+
+<!-- Puter.js removed — was loaded but never used (dead weight, ~50KB + DNS+TLS handshake) -->
 <style>
   html {
     background: #0c0a07;

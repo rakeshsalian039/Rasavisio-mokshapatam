@@ -106,22 +106,21 @@ if (typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent)) {
   // Inject global perf CSS — runs once at app load
   const perfStyle = document.createElement('style');
   perfStyle.textContent = `
-    /* Kill backdrop-filter + drop-shadow everywhere on Android (GPU-expensive) */
-    .is-android *,
-    .is-android *::before,
-    .is-android *::after {
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-    }
-    /* drop-shadow filter is ~3-4x slower than box-shadow on Android Chrome.
-       The visual fallback is that glows from drop-shadow filters disappear,
-       but box-shadow / text-shadow (cheaper) still work. */
+    /* Android Chrome perf overrides — MINIMAL scope.
+       After board memoization + rAF-throttled resize + compressed audio,
+       the heavy-hitters are gone. We only kill the two things that still
+       cost a lot and aren't worth the visual: filter: drop-shadow (cheap
+       alternative is box-shadow which we already use) and heavy blur on
+       large animated elements. */
+
+    /* Filter: drop-shadow is 3-4× slower than box-shadow on Android Chrome.
+       Elements that need a glow still get box-shadow / text-shadow. */
     .is-android * {
       filter: none !important;
     }
-    /* Promote the composited layers we DO want animated */
+
     .is-android { -webkit-tap-highlight-color: transparent; }
-    /* Respect reduced-motion users */
+
     @media (prefers-reduced-motion: reduce) {
       .is-android *, .is-android *::before, .is-android *::after {
         animation-duration: 0.01ms !important;
