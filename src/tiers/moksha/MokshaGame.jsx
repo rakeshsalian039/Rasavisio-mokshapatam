@@ -3178,15 +3178,44 @@ function MokshaScreen({ winner, players, punya, papa, onClose, muted }) {
         <YamaJudgment loser={lp} papa={papa[loserIdx]} punya={punya[loserIdx]} isYama={!!lp.cpu}/>
       )}
 
-      {/* Close button */}
+      {/* Close + Share buttons */}
       {phase>=2&&(
-        <div style={{position:'absolute',bottom:24,left:'50%',transform:'translateX(-50%)',display:'flex',gap:12,animation:'fadeIn 1s ease'}}>
+        <div style={{position:'absolute',bottom:'calc(24px + var(--sab, 0px))',left:'50%',transform:'translateX(-50%)',display:'flex',gap:12,animation:'fadeIn 1s ease'}}>
           <button onClick={onClose} style={{
             background:'linear-gradient(180deg,rgba(200,160,60,.2),rgba(200,160,60,.08))',
             border:'1px solid rgba(200,160,60,.4)',color:'#e8c850',
             padding:'10px 28px',fontSize:11,fontFamily:"'Cinzel',serif",
             cursor:'pointer',borderRadius:4,letterSpacing:3,
           }}>नया जन्म · NEW JOURNEY</button>
+          {/* Native share — "I attained Moksha" for social. Only the
+              winning player (first place) needs to brag about this. */}
+          <button onClick={async ()=>{
+            const who = wp?.name || 'A seeker';
+            const text = `🕉 ${who} attained Moksha in Moksha Patam 108!\nPunya: ${wPunya}  ·  Papa: ${wPapa}\n\nPlay the ancient Indian game of the soul:`;
+            try {
+              const { Haptics, ImpactStyle } = await import('@capacitor/haptics');
+              Haptics.impact({ style: ImpactStyle.Medium }).catch(()=>{});
+            } catch(e) {}
+            try {
+              const { Share } = await import('@capacitor/share');
+              await Share.share({
+                title:'🕉 Moksha Attained — Moksha Patam 108',
+                text, url:'https://rasavisio.in/',
+                dialogTitle:'Share your liberation',
+              });
+            } catch(e) {
+              // Web fallback
+              if (navigator.share) {
+                navigator.share({ title:'Moksha Patam 108', text, url:'https://rasavisio.in/' }).catch(()=>{});
+              }
+            }
+          }} style={{
+            background:'linear-gradient(180deg,rgba(100,180,100,.2),rgba(100,180,100,.08))',
+            border:'1px solid rgba(120,200,120,.4)',color:'#a8e0a8',
+            padding:'10px 22px',fontSize:11,fontFamily:"'Cinzel',serif",
+            cursor:'pointer',borderRadius:4,letterSpacing:3,
+            display:'inline-flex',alignItems:'center',gap:6,
+          }}>📤 SHARE</button>
         </div>
       )}
     </div>
@@ -6499,7 +6528,7 @@ export default function MokshaPatam108(){
               </div>
 
               {/* SECONDARY: Play solo — smaller, clearly subordinate */}
-              <button className="gb" onClick={()=>{ ambient.start(); navigateTo("pickcount"); }}
+              <button className="gb" onClick={()=>{ haptic('Light'); ambient.start(); navigateTo("pickcount"); }}
                 style={{fontSize:11,padding:"9px 36px",letterSpacing:2,opacity:.5,
                   transition:"opacity .2s"}}
                 onMouseEnter={e=>e.currentTarget.style.opacity=".75"}
@@ -8628,7 +8657,7 @@ export default function MokshaPatam108(){
                 ⚡ Reconnecting{reconnectAttempts>0?` (${reconnectAttempts}/5)`:''}...
               </div>
             )}
-            <button onClick={()=>{VoiceEngine.unlockAudio();doRoll(false);}}
+            <button onClick={()=>{VoiceEngine.unlockAudio();haptic('Light');doRoll(false);}}
               disabled={!!dil||busy||(isOnline&&!isMyTurn)}
               className="gb gp"
               style={{width:"100%",padding:"clamp(10px,1.5vw,14px)",fontSize:"clamp(14px,2vw,16px)",letterSpacing:4,

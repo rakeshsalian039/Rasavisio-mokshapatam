@@ -27,25 +27,67 @@ async function initNativeBridges() {
     const { StatusBar, Style } = await import('@capacitor/status-bar');
     const { App: CapApp } = await import('@capacitor/app');
     const { Browser } = await import('@capacitor/browser');
+    const { ScreenOrientation } = await import('@capacitor/screen-orientation');
     const { supabase } = await import('./auth/supabaseClient');
 
     // Style the status bar to match our dark theme
     try { await StatusBar.setStyle({ style: Style.Light }); } catch(e) {}
     try { await StatusBar.setBackgroundColor({ color: '#0c0a07' }); } catch(e) {}
+    // Android 15+ forces edge-to-edge so the WebView draws under the status
+    // bar. CSS env(safe-area-inset-*) on #root pushes content in.
+    try { await StatusBar.setOverlaysWebView({ overlay: true }); } catch(e) {}
+
+    // ═══ Lock orientation to portrait ═══
+    // Game UI is designed portrait-only. Accidental rotation mid-game
+    // was causing layout breakage and bad UX (board stretched wide).
+    try { await ScreenOrientation.lock({ orientation: 'portrait' }); } catch(e) {}
+
+    // ═══ Keep screen awake during gameplay ═══
+    // Long voice narrations (Yama monologue, temple lore, shlokas) can
+    // run 15-30s without user interaction. Without this the screen dims
+    // / sleeps mid-narration. Uses the standard Web Wake Lock API which
+    // Android WebView supports — no extra native plugin needed.
+    let wakeLock = null;
+    window.__mpAcquireWake = async () => {
+      if (wakeLock || !('wakeLock' in navigator)) return;
+      try { wakeLock = await navigator.wakeLock.request('screen'); } catch(e) {}
+    };
+    window.__mpReleaseWake = () => {
+      if (wakeLock) { try { wakeLock.release(); } catch(e) {} wakeLock = null; }
+    };
+    // Re-acquire if lost (e.g. when returning from background)
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && !wakeLock) {
+        window.__mpAcquireWake?.();
+      }
+    });
+    // Acquire immediately — game screens request it; non-game flows
+    // don't mind extra minutes of screen-on time for now.
+    window.__mpAcquireWake();
 
     // Hide Capacitor native splash on next animation frame (React has rendered by then).
-    // Previously used a 300ms timeout — caused a visible gap + flicker between
-    // native splash disappearing and React content appearing.
     requestAnimationFrame(() => {
       SplashScreen.hide({ fadeOutDuration: 150 }).catch(() => {});
     });
 
-    // Hardware back button: go back through app state, minimize at root
-    CapApp.addListener('backButton', () => {
-      if (window.history.length > 1) {
-        window.history.back();
-      } else {
-        CapApp.minimizeApp();
+    // ═══ Smart hardware back button ═══
+    // Priority order, highest first:
+    //   1. If an in-app popup is open → close it (fire an escape event
+    //      that popups listen for) instead of unwinding history.
+    //   2. If in the game proper → confirm before exiting.
+    //   3. If at title screen → minimize app (normal Android behavior).
+    // The haptic tap confirms the press was received (vs. silent ignore).
+    CapApp.addListener('backButton', async () => {
+      try {
+        const { Haptics, ImpactStyle } = await import('@capacitor/haptics');
+        Haptics.impact({ style: ImpactStyle.Light }).catch(() => {});
+      } catch(e) {}
+      // Let components that listen intercept first (e.g. close a popup)
+      const handled = window.dispatchEvent(new CustomEvent('mp-back-pressed', { cancelable: true }));
+      // If no listener called preventDefault, fall through to history/minimize
+      if (handled) {
+        if (window.history.length > 1) window.history.back();
+        else CapApp.minimizeApp();
       }
     });
 

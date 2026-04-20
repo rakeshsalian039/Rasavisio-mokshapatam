@@ -18,16 +18,13 @@ const config: CapacitorConfig = {
       splashImmersive: true,
     },
     StatusBar: {
-      // LIGHT icons visible on our dark background
       style: 'LIGHT',
       backgroundColor: '#0c0a07',
-      // overlaysWebView:false — WebView is sandboxed BETWEEN the status
-      // bar and the navigation/gesture bar. Both bars are painted by
-      // Android OS using theme colors (set explicitly in styles.xml to
-      // #0c0a07 so they match the app). This avoids content bleeding
-      // into the status bar and into the bottom gesture area, which
-      // position:fixed overlays can't easily respect.
-      overlaysWebView: false,
+      // overlaysWebView:true — Android 15+ (targetSdk 35+) FORCES apps
+      // into edge-to-edge mode. Setting overlaysWebView:false was being
+      // silently ignored. Embracing edge-to-edge: WebView draws under
+      // status bar + nav bar, we handle insets via CSS env() vars.
+      overlaysWebView: true,
     },
   },
   ios: {
