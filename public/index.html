@@ -112,6 +112,39 @@
   * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
   /* Prevent flash of unstyled content */
   #root:empty { display: none; }
+
+  /* ═══ Native-style ripple on button press ═══
+     Material-inspired radial ripple from the tap point. Applied to
+     <button> tags globally (plus anything with class="ripple"). Uses
+     a pseudo-element scaled from 0 → 1 on :active, then fades. Pure
+     CSS; zero JS; GPU-composited (scale + opacity only).
+
+     The ripple color is slightly translucent white — plays well against
+     our mostly-dark palette without needing to know each button's bg. */
+  button, .ripple {
+    position: relative;
+    overflow: hidden;
+  }
+  button::after, .ripple::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: rgba(255, 220, 140, 0.35);
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+  }
+  button:active::after, .ripple:active::after {
+    transform: translate(-50%, -50%) scale(40);
+    opacity: 1;
+    transition: transform 0s, opacity 0s;
+  }
+  /* Opt-out on buttons that already have their own hover/pressed effects
+     that would conflict (e.g. tabs, icon-only buttons). Add class="no-ripple". */
+  button.no-ripple::after, .no-ripple::after { display: none; }
 </style>
 </head>
 <body>

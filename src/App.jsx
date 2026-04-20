@@ -37,6 +37,36 @@ async function initNativeBridges() {
     // bar. CSS env(safe-area-inset-*) on #root pushes content in.
     try { await StatusBar.setOverlaysWebView({ overlay: true }); } catch(e) {}
 
+    // ═══ Dynamic status-bar color API ═══
+    // Exposes window.__mpStatusBar.flash(hex, ms) so game events can
+    // briefly tint the status bar with emotional color: red for snake
+    // bites, gold for ladder/moksha, dark red for Yama, etc. Reverts
+    // to the app's default dark color after the duration expires.
+    // Also exposes hide/show for immersive gameplay moments.
+    const DEFAULT_BG = '#0c0a07';
+    let flashTimer = null;
+    let isHidden = false;
+    window.__mpStatusBar = {
+      flash: async (color, ms = 2000) => {
+        if (flashTimer) clearTimeout(flashTimer);
+        try { await StatusBar.setBackgroundColor({ color }); } catch(e) {}
+        flashTimer = setTimeout(async () => {
+          flashTimer = null;
+          try { await StatusBar.setBackgroundColor({ color: DEFAULT_BG }); } catch(e) {}
+        }, ms);
+      },
+      setColor: async (color) => {
+        if (flashTimer) { clearTimeout(flashTimer); flashTimer = null; }
+        try { await StatusBar.setBackgroundColor({ color }); } catch(e) {}
+      },
+      reset: async () => {
+        if (flashTimer) { clearTimeout(flashTimer); flashTimer = null; }
+        try { await StatusBar.setBackgroundColor({ color: DEFAULT_BG }); } catch(e) {}
+      },
+      hide: async () => { if (!isHidden) { isHidden = true; try { await StatusBar.hide(); } catch(e) {} } },
+      show: async () => { if (isHidden)  { isHidden = false; try { await StatusBar.show(); } catch(e) {} } },
+    };
+
     // ═══ Lock orientation to portrait ═══
     // Game UI is designed portrait-only. Accidental rotation mid-game
     // was causing layout breakage and bad UX (board stretched wide).

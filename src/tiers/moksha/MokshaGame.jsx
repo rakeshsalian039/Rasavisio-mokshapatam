@@ -5028,6 +5028,40 @@ export default function MokshaPatam108(){
   }, [ambient,bgMuted]);
 
   useEffect(()=>{try{window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices()}catch(e){}},[]);
+
+  // ═══ STATUS BAR TINTING BY SCREEN ═══
+  // Gives the app a subtle emotional palette change as you move through
+  // its chapters — iOS Music-style "now playing color" for the system
+  // chrome. Reset to default when leaving a mood-specific screen.
+  useEffect(()=>{
+    const sb = (typeof window !== 'undefined') ? window.__mpStatusBar : null;
+    if (!sb) return;
+    if (screen === 'yama')               sb.setColor('#2a0a0a');  // deep blood red — god of death
+    else if (screen === 'chitragupta')   sb.setColor('#0a0a20');  // midnight blue — divine scribe
+    else if (screen === 'mangalacharan') sb.setColor('#1a1408');  // warm amber — sacred invocation
+    else                                 sb.reset();
+  },[screen]);
+
+  // ═══ IMMERSIVE GAMEPLAY MODE ═══
+  // During actual gameplay (screen='game' AND no popup open), hide the
+  // status bar so the board gets the full screen height. As soon as
+  // anything opens (dharma dilemma, graha, temple lore, guru, cosmic
+  // card, event popup, or Moksha win), bring the status bar back so
+  // the popup content doesn't bleed into the notch/camera area.
+  // Also restored on any non-game screen (title, story, pickcount, setup,
+  // chitragupta, yama, mangalacharan — all benefit from time display).
+  useEffect(()=>{
+    const sb = (typeof window !== 'undefined') ? window.__mpStatusBar : null;
+    if (!sb) return;
+    const inGame = screen === 'game';
+    const anyPopupOpen = !!(dil || templeLore || templeQuiz || guruEncounter || cosmicCard || eventPopup || win);
+    if (inGame && !anyPopupOpen) sb.hide();
+    else sb.show();
+    // Failsafe: always restore on unmount so nav away never leaves a
+    // hidden status bar stuck offscreen.
+    return () => { try { sb.show(); } catch(e) {} };
+  },[screen,dil,templeLore,templeQuiz,guruEncounter,cosmicCard,eventPopup,win]);
+
   // Shloka rotator — only run when visible (title screen). Gating to avoid
   // re-renders during gameplay. Restored on Android (title-only interval
   // is cheap — 8500-line tree only re-renders if we're actually on title).
@@ -5362,7 +5396,9 @@ export default function MokshaPatam108(){
             setHist(h=>[...h.slice(-12),`${pName}→${p}`]);
             if(nPunya[cur]>=50&&!win){setWin(cur);setMsg(t("ui.karma_transcends").replace("{name}",pName));play("victory");
               addCGEntry('moksha',p,`30 पुण्य · कर्म विजय`);
-              showEvent({icon:"ॐ",title:t("ui.karma_victory"),subtitle:t("ui.karma_victory_desc").replace("{name}",pName),color:"#f0d050"},()=>{speakCG('moksha',300);setTimeout(()=>setShowMoksha(true),1200);});
+              showEvent({icon:"ॐ",title:t("ui.karma_victory"),subtitle:t("ui.karma_victory_desc").replace("{name}",pName),color:"#f0d050"},()=>{speakCG('moksha',300);/* Status bar flashes bright gold for 4s — Moksha is a celebration */
+try{window.__mpStatusBar?.flash('#f0d050',4000);}catch(e){}
+setTimeout(()=>setShowMoksha(true),1200);});
             }
             // Balance warning — Chitragupta watches when it's knife-edge
             const pu=nPunya[cur],pa=nPapa[cur];
@@ -5402,6 +5438,8 @@ export default function MokshaPatam108(){
             // Snake bites — drag player down
             const o=p;p=sn.to;eMsg=`𓆙 ${o}→${p}`;nPapa[cur]+=2;gameStats.current.snakes++;
             showKarmaToast(pName,2,'papa','𓆙');play("snake");setTimeout(()=>play("yamaLaugh"),320);haptic('Heavy');
+            // Status bar flashes red — visceral "something bad happened"
+            try{window.__mpStatusBar?.flash('#a04040',1800);}catch(e){}
             showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} caught you! ${sn.tale} Dragged from ${o} to ${p}. +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`,staticKey:"snake_hit"},()=>{
               addCGEntry('snake',p,`${sn.skt} · ${o}→${p}`);
               if(!muted){if(yamaTimerRef.current)clearTimeout(yamaTimerRef.current);yamaTimerRef.current=setTimeout(()=>{yamaTimerRef.current=null;VoiceEngine.playYamaTaunt("snake",chosenLang);},300);}
@@ -5410,6 +5448,8 @@ export default function MokshaPatam108(){
             });
           }}
           else if(LADDERS[p]){const ld=LADDERS[p];const o=p;p=ld.to;eMsg=`🪔 ${o}→${p}`;nPunya[cur]+=1;gameStats.current.ladders++;play("ladder");showKarmaToast(pName,1,'punya','🪔');
+            // Status bar flashes warm gold — "virtuous ascent"
+            try{window.__mpStatusBar?.flash('#c8a030',1800);}catch(e){}
             showEvent({icon:"🪔",title:`${ld.skt} — ${ld.en}`,subtitle:`${pName}, the virtue of ${ld.en} lifts you! ${ld.tale} Rise from ${o} to ${p}. +1 PUNYA.`,color:"#f0d050",extra:`${o} → ${p}`,staticKey:"ladder_rise"},()=>{addCGEntry('ladder',p,`${ld.skt} · ${o}→${p}`);speakCG('ladder',500);finishTurn(true)});
           }
           // ═══ KNOWLEDGE TEMPLE CHECK ═══
@@ -5513,7 +5553,9 @@ export default function MokshaPatam108(){
             });
           }
           else if(p===108){if(nPunya[cur]>=nPapa[cur]){setWin(cur);eMsg=`ॐ MOKSHA!`;play("victory");
-            showEvent({icon:"ॐ",title:"मोक्ष प्राप्त — MOKSHA!",subtitle:`${pName} reached Square 108 — Moksha! Punya (${nPunya[cur]}) ≥ Papa (${nPapa[cur]}). Liberation! The cycle of Samsara ends.`,color:"#f0d050",staticKey:"moksha_gate"},()=>{addCGEntry('moksha',108,`${nPunya[cur]} पुण्य · मुक्ति`);speakCG('moksha',600);setTimeout(()=>setShowMoksha(true),1200);finishTurn()});
+            showEvent({icon:"ॐ",title:"मोक्ष प्राप्त — MOKSHA!",subtitle:`${pName} reached Square 108 — Moksha! Punya (${nPunya[cur]}) ≥ Papa (${nPapa[cur]}). Liberation! The cycle of Samsara ends.`,color:"#f0d050",staticKey:"moksha_gate"},()=>{addCGEntry('moksha',108,`${nPunya[cur]} पुण्य · मुक्ति`);speakCG('moksha',600);/* Status bar flashes bright gold for 4s — Moksha is a celebration */
+try{window.__mpStatusBar?.flash('#f0d050',4000);}catch(e){}
+setTimeout(()=>setShowMoksha(true),1200);finishTurn()});
           }else{p=67;eMsg="Impure → 67";showKarmaToast(pName,-1,'papa','⚠');play("snake");play("yamaLaugh");
             showEvent({icon:"⚠",title:"Gates of Moksha REJECT You!",subtitle:`${pName}, your soul is impure! Punya (${nPunya[cur]}) < Papa (${nPapa[cur]}). Cast back to 67.`,color:"#e06030"},()=>{
               addCGEntry('reject',67,`${nPunya[cur]}P < ${nPapa[cur]}X`);
