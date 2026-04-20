@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"/>
 <meta name="theme-color" content="#0c0a07"/>
 <title>Moksha Patam — मोक्षपटम् — The Ancient Game of Karma</title>
 <meta name="description" content="Play the original sacred Indian board game that the British renamed 'Snakes and Ladders.' 10 Nāga serpents. 10 divine ladders. 15 Dharma dilemmas from the Mahābhārata. Navagraha cosmic dice. AI voice narration in English and Hindi."/>
@@ -80,6 +80,22 @@
     touch-action: manipulation;
     -webkit-text-size-adjust: 100%;
     height: 100%;
+  }
+  /* Edge-to-edge safe-area handling for Android/iOS.
+     WebView now draws UNDER the status bar (overlaysWebView:true in
+     capacitor.config.ts) and under the gesture-nav bar at bottom.
+     env(safe-area-inset-*) pushes #root's content in by the exact
+     inset so nothing overlaps the system chrome. Works on any device
+     — zero effect on desktop web (insets are 0). */
+  #root {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    min-height: 100vh;
+    min-height: 100dvh;  /* dynamic viewport — adjusts when Chrome URL bar hides */
+    background: #0c0a07;
+    box-sizing: border-box;
   }
   * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
   /* Prevent flash of unstyled content */
