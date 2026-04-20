@@ -129,15 +129,15 @@ if (typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent)) {
     .is-android * {
       filter: none !important;
     }
-    /* Backdrop-filter: blur() is 3-5× slower on Android WebView than iOS/desktop.
-       14 places in MokshaGame use it for popup overlays (dharma, graha,
-       temple, mangalacharan, etc.). Each triggers compositor-rasterization
-       of the entire page behind it on popup open → visible popup-mount jank.
-       Strip globally — existing rgba backgrounds still give plenty of dim. */
-    .is-android *, .is-android *::before, .is-android *::after {
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-    }
+    /* Backdrop-filter: blur() — restored on Android so popup backgrounds
+       (temple, sacred path, graha, dharma, etc.) match the web look.
+       It was previously stripped for perf, but the popup-mount lag that
+       motivated that override was fixed upstream by other changes (the
+       boardSquares memo deps trim, SacredBackdrop memoization, and the
+       showResume localStorage move). With those in place the compositor
+       has enough headroom to handle blur on popup open.
+       If a specific popup feels laggy on low-end Android, disable blur
+       just on THAT component's style rather than globally. */
     .is-android { -webkit-tap-highlight-color: transparent; }
 
     /* Kill expensive INFINITE paint-triggering animations.
