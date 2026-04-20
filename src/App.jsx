@@ -167,6 +167,12 @@ if (typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent)) {
        Android recovers ~60 frames of budget across transitions. */
     @keyframes pulse { 0%, 50%, 100% { opacity: 1; transform: none; } }
 
+    /* Pawn aura pulse: kept on Android (GPU-composited scale+opacity,
+       only runs on the active player — max 1 at a time). If this ever
+       shows up in traces, override here as no-op. pawnShadowBreath
+       also kept — same reasoning, only nP pawns animate and transforms
+       are free on the compositor. templeFloat already kept above. */
+
     /* ── Board-specific paint reduction ──
        The 108 squares each have static box-shadow on temple squares.
        Even static shadows require per-element paint work every scroll/repaint.

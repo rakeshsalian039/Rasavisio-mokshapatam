@@ -714,103 +714,144 @@ const SacredBackdrop = memo(function SacredBackdrop() {
    Gradients are defined with per-color IDs so multiple pawns with
    different colors don't clash in the same SVG namespace. */
 const PawnPiece = memo(function PawnPiece({ color, icon, isMoving, isActive, isMobile, name }) {
-  // The color may contain `#` — strip for a safe CSS id
+  // Color-specific SVG id to avoid gradient namespace collisions
   const gid = (color || '#fff').replace('#', '').toLowerCase();
-  // Size scales with viewport; pawn is taller than wide (ratio ~0.72)
   const w = isMobile ? 'clamp(22px,6vw,30px)' : 'clamp(22px,3.2vw,32px)';
+
+  // Per-pawn unique float timing — derived from the color hash so each
+  // player's piece bobs independently instead of marching in lockstep.
+  // Range 2.6-3.4s duration, 0-1s stagger. Gives a "living" feel where
+  // pieces hover at slightly different phases like candles on water.
+  const hash = parseInt(gid.slice(0, 6) || '0', 16) || 0;
+  const floatDur = 2.6 + ((hash % 9) * 0.1);      // 2.6-3.4s
+  const floatDelay = ((hash >> 4) % 10) * 0.1;    // 0-0.9s
+  // Active player bobs faster & deeper — feels more alert
+  const activeBoost = isActive ? 0.75 : 1;
+
   return (
     <div style={{
       position: 'relative',
       width: w,
       aspectRatio: '0.72',
-      filter: isMoving
-        ? `drop-shadow(0 4px 10px ${color}dd)`
-        : isActive
-          ? `drop-shadow(0 2px 6px ${color}aa)`
-          : `drop-shadow(0 1px 2px ${color}40)`,
+      overflow: 'visible',
     }}>
-      <svg viewBox="0 0 40 56" width="100%" height="100%" preserveAspectRatio="xMidYMid meet"
-           style={{ display: 'block', overflow: 'visible' }}>
-        <defs>
-          {/* Head — radial gradient gives the "ball" a 3D highlight */}
-          <radialGradient id={`pawn-h-${gid}`} cx="35%" cy="25%" r="70%">
-            <stop offset="0%"  stopColor="#fff" stopOpacity="0.9"/>
-            <stop offset="35%" stopColor={color}/>
-            <stop offset="100%" stopColor="#1a1208"/>
-          </radialGradient>
-          {/* Body — linear gradient gives a "lit from the side" look */}
-          <linearGradient id={`pawn-b-${gid}`} x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%"  stopColor={color} stopOpacity="0.55"/>
-            <stop offset="45%" stopColor={color}/>
-            <stop offset="100%" stopColor="#0c0a07" stopOpacity="0.9"/>
-          </linearGradient>
-          {/* Base ring — slightly darker for a "metallic" feel */}
-          <linearGradient id={`pawn-base-${gid}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={color}/>
-            <stop offset="100%" stopColor="#1a1208"/>
-          </linearGradient>
-        </defs>
-
-        {/* Cast shadow under the pawn (subtle) */}
-        <ellipse cx="20" cy="54" rx="14" ry="2" fill="#000" opacity="0.55"/>
-
-        {/* Base — broad footprint */}
-        <ellipse cx="20" cy="50" rx="14" ry="3.5" fill={`url(#pawn-base-${gid})`}/>
-        <ellipse cx="20" cy="48.5" rx="14" ry="2" fill={color} opacity="0.4"/>
-
-        {/* Body — chess-pawn curve (wider base, narrow neck, then flare) */}
-        <path d="
-            M 8,49
-            Q 10,36 12,30
-            Q 13,28 14,26
-            Q 11,26 11,24
-            Q 11,22 13,21
-            L 27,21
-            Q 29,22 29,24
-            Q 29,26 26,26
-            Q 27,28 28,30
-            Q 30,36 32,49
-            Z"
-          fill={`url(#pawn-b-${gid})`}
-          stroke={color}
-          strokeWidth="0.6"
-          strokeOpacity="0.8"/>
-
-        {/* Neck ring (decorative detail — gives it depth) */}
-        <rect x="11" y="20" width="18" height="2" rx="1" fill={color} opacity="0.6"/>
-
-        {/* Head — the "ball" on top of a chess pawn */}
-        <circle cx="20" cy="13" r="8.5" fill={`url(#pawn-h-${gid})`}
-                stroke={color} strokeWidth="0.8"/>
-        {/* Head specular highlight */}
-        <ellipse cx="17" cy="9.5" rx="3" ry="2" fill="#fff" opacity="0.4"/>
-      </svg>
-
-      {/* Character icon on the pawn's head as a face.
-          Position it OVER the head circle in the SVG, size ~35% of total. */}
+      {/* ═══ GROUNDED CAST SHADOW ═══
+          Sits on the square surface and does NOT float with the pawn.
+          Pulses subtly in sync with the float — tighter when the pawn
+          has risen, wider when it's lower. Pure transform+opacity so
+          GPU-composited; cheap even on Android. */}
       <div style={{
         position: 'absolute',
-        top: '8%', left: 0, right: 0,
-        textAlign: 'center',
-        fontSize: isMobile ? 'clamp(9px,2.2vw,13px)' : 'clamp(9px,1.5vw,13px)',
-        lineHeight: 1,
-        filter: 'drop-shadow(0 0 2px rgba(0,0,0,.9))',
+        bottom: '-4%',
+        left: '15%', right: '15%',
+        height: '8%',
+        borderRadius: '50%',
+        background: `radial-gradient(ellipse, rgba(0,0,0,.75), transparent 72%)`,
+        filter: 'blur(1.5px)',
+        animation: isMoving
+          ? 'none'
+          : `pawnShadowBreath ${floatDur * activeBoost}s ease-in-out ${floatDelay}s infinite`,
+        zIndex: 0,
         pointerEvents: 'none',
-      }}>{icon}</div>
+      }}/>
 
-      {/* Active-player ambient glow ring (replaces old activeGlow on circle) */}
+      {/* ═══ ACTIVE-PLAYER RADIAL AURA ═══
+          Behind the pawn, in the player's color. Gives the active
+          piece a "spotlight" that fades into the square — reads as
+          glowing energy holding the piece aloft. */}
       {isActive && (
         <div style={{
           position: 'absolute',
-          inset: '-4px -6px 0 -6px',
-          borderRadius: '50%',
-          background: `radial-gradient(ellipse at 50% 40%, ${color}35, transparent 60%)`,
-          animation: 'activeGlow 1.5s ease infinite',
-          '--pc': color,
+          inset: '-20% -30% -10% -30%',
+          background: `radial-gradient(ellipse at 50% 55%, ${color}55, ${color}15 40%, transparent 70%)`,
+          animation: `pawnAuraBreath ${floatDur}s ease-in-out infinite`,
           pointerEvents: 'none',
-          zIndex: -1,
+          zIndex: 0,
+          filter: IS_ANDROID ? 'none' : 'blur(3px)',
         }}/>
       )}
+
+      {/* ═══ FLOATING PAWN BODY ═══
+          This is the only layer that translates up/down. The shadow
+          and aura above remain on the ground, so the piece appears to
+          lift OFF the square, not slide the whole assembly. */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        animation: isMoving
+          ? 'none'
+          : `templeFloat ${floatDur * activeBoost}s ease-in-out ${floatDelay}s infinite`,
+        // Layered drop-shadow matches temple icon style (sharp black +
+        // colored glow halo). Active + moving get stronger halos.
+        filter: isMoving
+          ? `drop-shadow(0 4px 6px rgba(0,0,0,.7)) drop-shadow(0 0 18px ${color}ee) drop-shadow(0 0 32px ${color}aa)`
+          : isActive
+            ? `drop-shadow(0 3px 5px rgba(0,0,0,.7)) drop-shadow(0 0 14px ${color}cc) drop-shadow(0 0 24px ${color}66)`
+            : `drop-shadow(0 2px 3px rgba(0,0,0,.65)) drop-shadow(0 0 8px ${color}90)`,
+        zIndex: 1,
+      }}>
+        <svg viewBox="0 0 40 56" width="100%" height="100%" preserveAspectRatio="xMidYMid meet"
+             style={{ display: 'block', overflow: 'visible' }}>
+          <defs>
+            <radialGradient id={`pawn-h-${gid}`} cx="35%" cy="25%" r="70%">
+              <stop offset="0%"  stopColor="#fff" stopOpacity="0.9"/>
+              <stop offset="35%" stopColor={color}/>
+              <stop offset="100%" stopColor="#1a1208"/>
+            </radialGradient>
+            <linearGradient id={`pawn-b-${gid}`} x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%"  stopColor={color} stopOpacity="0.55"/>
+              <stop offset="45%" stopColor={color}/>
+              <stop offset="100%" stopColor="#0c0a07" stopOpacity="0.9"/>
+            </linearGradient>
+            <linearGradient id={`pawn-base-${gid}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={color}/>
+              <stop offset="100%" stopColor="#1a1208"/>
+            </linearGradient>
+          </defs>
+
+          {/* Base — broad footprint */}
+          <ellipse cx="20" cy="50" rx="14" ry="3.5" fill={`url(#pawn-base-${gid})`}/>
+          <ellipse cx="20" cy="48.5" rx="14" ry="2" fill={color} opacity="0.4"/>
+
+          {/* Body — chess-pawn curve */}
+          <path d="
+              M 8,49
+              Q 10,36 12,30
+              Q 13,28 14,26
+              Q 11,26 11,24
+              Q 11,22 13,21
+              L 27,21
+              Q 29,22 29,24
+              Q 29,26 26,26
+              Q 27,28 28,30
+              Q 30,36 32,49
+              Z"
+            fill={`url(#pawn-b-${gid})`}
+            stroke={color}
+            strokeWidth="0.6"
+            strokeOpacity="0.8"/>
+
+          {/* Neck ring */}
+          <rect x="11" y="20" width="18" height="2" rx="1" fill={color} opacity="0.6"/>
+
+          {/* Head */}
+          <circle cx="20" cy="13" r="8.5" fill={`url(#pawn-h-${gid})`}
+                  stroke={color} strokeWidth="0.8"/>
+          {/* Specular highlight */}
+          <ellipse cx="17" cy="9.5" rx="3" ry="2" fill="#fff" opacity="0.4"/>
+        </svg>
+
+        {/* Character icon on the pawn's head as a face */}
+        <div style={{
+          position: 'absolute',
+          top: '8%', left: 0, right: 0,
+          textAlign: 'center',
+          fontSize: isMobile ? 'clamp(9px,2.2vw,13px)' : 'clamp(9px,1.5vw,13px)',
+          lineHeight: 1,
+          filter: 'drop-shadow(0 0 2px rgba(0,0,0,.9))',
+          pointerEvents: 'none',
+        }}>{icon}</div>
+      </div>
     </div>
   );
 });
@@ -4240,6 +4281,11 @@ const CSS=`
 @keyframes dt{0%{transform:rotate(0) scale(1)}50%{transform:rotate(180deg) scale(1.1)}100%{transform:rotate(360deg) scale(1)}}
 @keyframes mp{0%,100%{text-shadow:0 0 15px rgba(240,200,80,.3)}50%{text-shadow:0 0 40px rgba(240,200,80,.7)}}
 @keyframes templeFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+/* Pawn floating effects — shadow and aura stay on the ground while
+   the pawn body translateY's above them, selling the "floating" feel.
+   Pure opacity + transform (scaleX) = GPU-composited, cheap on Android. */
+@keyframes pawnShadowBreath{0%,100%{opacity:0.75;transform:scaleX(1)}50%{opacity:0.45;transform:scaleX(0.82)}}
+@keyframes pawnAuraBreath{0%,100%{opacity:0.85;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
 @keyframes reveal{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
 @keyframes breathe{0%,100%{border-color:rgba(200,160,60,.15)}50%{border-color:rgba(200,160,60,.35)}}
 @keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
