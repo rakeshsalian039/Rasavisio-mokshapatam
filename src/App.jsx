@@ -30,41 +30,24 @@ async function initNativeBridges() {
     const { ScreenOrientation } = await import('@capacitor/screen-orientation');
     const { supabase } = await import('./auth/supabaseClient');
 
-    // Style the status bar to match our dark theme
+    // System bars are fully hidden by MainActivity.java (both status bar
+    // AND navigation/gesture bar, from onCreate — before WebView loads).
+    // The JS StatusBar plugin calls below are no-ops in that case, but
+    // left in for the dev/browser preview where the Java path doesn't
+    // run. Status bar style LIGHT here covers any transient reveal
+    // (user swipes from top) — icons stay readable on our dark bg.
     try { await StatusBar.setStyle({ style: Style.Light }); } catch(e) {}
     try { await StatusBar.setBackgroundColor({ color: '#0c0a07' }); } catch(e) {}
-    // Android 15+ forces edge-to-edge so the WebView draws under the status
-    // bar. CSS env(safe-area-inset-*) on #root pushes content in.
     try { await StatusBar.setOverlaysWebView({ overlay: true }); } catch(e) {}
+    try { await StatusBar.hide(); } catch(e) {}
 
-    // ═══ Dynamic status-bar color API ═══
-    // Exposes window.__mpStatusBar.flash(hex, ms) so game events can
-    // briefly tint the status bar with emotional color: red for snake
-    // bites, gold for ladder/moksha, dark red for Yama, etc. Reverts
-    // to the app's default dark color after the duration expires.
-    // Also exposes hide/show for immersive gameplay moments.
-    const DEFAULT_BG = '#0c0a07';
-    let flashTimer = null;
-    let isHidden = false;
+    // The previous __mpStatusBar color-flash / mood-tinting API is
+    // removed — per user feedback it was more distracting than delightful,
+    // and with the system bars permanently hidden there's no surface to
+    // tint anyway. Kept as a no-op shim so callers don't explode.
     window.__mpStatusBar = {
-      flash: async (color, ms = 2000) => {
-        if (flashTimer) clearTimeout(flashTimer);
-        try { await StatusBar.setBackgroundColor({ color }); } catch(e) {}
-        flashTimer = setTimeout(async () => {
-          flashTimer = null;
-          try { await StatusBar.setBackgroundColor({ color: DEFAULT_BG }); } catch(e) {}
-        }, ms);
-      },
-      setColor: async (color) => {
-        if (flashTimer) { clearTimeout(flashTimer); flashTimer = null; }
-        try { await StatusBar.setBackgroundColor({ color }); } catch(e) {}
-      },
-      reset: async () => {
-        if (flashTimer) { clearTimeout(flashTimer); flashTimer = null; }
-        try { await StatusBar.setBackgroundColor({ color: DEFAULT_BG }); } catch(e) {}
-      },
-      hide: async () => { if (!isHidden) { isHidden = true; try { await StatusBar.hide(); } catch(e) {} } },
-      show: async () => { if (isHidden)  { isHidden = false; try { await StatusBar.show(); } catch(e) {} } },
+      flash: () => {}, setColor: () => {}, reset: () => {},
+      hide: () => {}, show: () => {},
     };
 
     // ═══ Lock orientation to portrait ═══

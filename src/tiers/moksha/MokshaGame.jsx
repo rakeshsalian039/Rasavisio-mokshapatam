@@ -5029,38 +5029,10 @@ export default function MokshaPatam108(){
 
   useEffect(()=>{try{window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices()}catch(e){}},[]);
 
-  // ═══ STATUS BAR TINTING BY SCREEN ═══
-  // Gives the app a subtle emotional palette change as you move through
-  // its chapters — iOS Music-style "now playing color" for the system
-  // chrome. Reset to default when leaving a mood-specific screen.
-  useEffect(()=>{
-    const sb = (typeof window !== 'undefined') ? window.__mpStatusBar : null;
-    if (!sb) return;
-    if (screen === 'yama')               sb.setColor('#2a0a0a');  // deep blood red — god of death
-    else if (screen === 'chitragupta')   sb.setColor('#0a0a20');  // midnight blue — divine scribe
-    else if (screen === 'mangalacharan') sb.setColor('#1a1408');  // warm amber — sacred invocation
-    else                                 sb.reset();
-  },[screen]);
-
-  // ═══ IMMERSIVE GAMEPLAY MODE ═══
-  // During actual gameplay (screen='game' AND no popup open), hide the
-  // status bar so the board gets the full screen height. As soon as
-  // anything opens (dharma dilemma, graha, temple lore, guru, cosmic
-  // card, event popup, or Moksha win), bring the status bar back so
-  // the popup content doesn't bleed into the notch/camera area.
-  // Also restored on any non-game screen (title, story, pickcount, setup,
-  // chitragupta, yama, mangalacharan — all benefit from time display).
-  useEffect(()=>{
-    const sb = (typeof window !== 'undefined') ? window.__mpStatusBar : null;
-    if (!sb) return;
-    const inGame = screen === 'game';
-    const anyPopupOpen = !!(dil || templeLore || templeQuiz || guruEncounter || cosmicCard || eventPopup || win);
-    if (inGame && !anyPopupOpen) sb.hide();
-    else sb.show();
-    // Failsafe: always restore on unmount so nav away never leaves a
-    // hidden status bar stuck offscreen.
-    return () => { try { sb.show(); } catch(e) {} };
-  },[screen,dil,templeLore,templeQuiz,guruEncounter,cosmicCard,eventPopup,win]);
+  // Status-bar tinting + immersive-toggle effects removed. The Android
+  // MainActivity now keeps BOTH the status bar and the navigation bar
+  // permanently hidden (with swipe-to-reveal), so there's no bar to
+  // tint and nothing for React to show/hide.
 
   // Shloka rotator — only run when visible (title screen). Gating to avoid
   // re-renders during gameplay. Restored on Android (title-only interval
@@ -5396,9 +5368,7 @@ export default function MokshaPatam108(){
             setHist(h=>[...h.slice(-12),`${pName}→${p}`]);
             if(nPunya[cur]>=50&&!win){setWin(cur);setMsg(t("ui.karma_transcends").replace("{name}",pName));play("victory");
               addCGEntry('moksha',p,`30 पुण्य · कर्म विजय`);
-              showEvent({icon:"ॐ",title:t("ui.karma_victory"),subtitle:t("ui.karma_victory_desc").replace("{name}",pName),color:"#f0d050"},()=>{speakCG('moksha',300);/* Status bar flashes bright gold for 4s — Moksha is a celebration */
-try{window.__mpStatusBar?.flash('#f0d050',4000);}catch(e){}
-setTimeout(()=>setShowMoksha(true),1200);});
+              showEvent({icon:"ॐ",title:t("ui.karma_victory"),subtitle:t("ui.karma_victory_desc").replace("{name}",pName),color:"#f0d050"},()=>{speakCG('moksha',300);setTimeout(()=>setShowMoksha(true),1200);});
             }
             // Balance warning — Chitragupta watches when it's knife-edge
             const pu=nPunya[cur],pa=nPapa[cur];
@@ -5438,8 +5408,6 @@ setTimeout(()=>setShowMoksha(true),1200);});
             // Snake bites — drag player down
             const o=p;p=sn.to;eMsg=`𓆙 ${o}→${p}`;nPapa[cur]+=2;gameStats.current.snakes++;
             showKarmaToast(pName,2,'papa','𓆙');play("snake");setTimeout(()=>play("yamaLaugh"),320);haptic('Heavy');
-            // Status bar flashes red — visceral "something bad happened"
-            try{window.__mpStatusBar?.flash('#a04040',1800);}catch(e){}
             showEvent({icon:"𓆙",title:`${sn.skt} — ${sn.en}`,subtitle:`${pName}, the serpent of ${sn.en} caught you! ${sn.tale} Dragged from ${o} to ${p}. +2 PAPA.`,color:"#e06030",extra:`${o} → ${p}`,staticKey:"snake_hit"},()=>{
               addCGEntry('snake',p,`${sn.skt} · ${o}→${p}`);
               if(!muted){if(yamaTimerRef.current)clearTimeout(yamaTimerRef.current);yamaTimerRef.current=setTimeout(()=>{yamaTimerRef.current=null;VoiceEngine.playYamaTaunt("snake",chosenLang);},300);}
@@ -5448,8 +5416,6 @@ setTimeout(()=>setShowMoksha(true),1200);});
             });
           }}
           else if(LADDERS[p]){const ld=LADDERS[p];const o=p;p=ld.to;eMsg=`🪔 ${o}→${p}`;nPunya[cur]+=1;gameStats.current.ladders++;play("ladder");showKarmaToast(pName,1,'punya','🪔');
-            // Status bar flashes warm gold — "virtuous ascent"
-            try{window.__mpStatusBar?.flash('#c8a030',1800);}catch(e){}
             showEvent({icon:"🪔",title:`${ld.skt} — ${ld.en}`,subtitle:`${pName}, the virtue of ${ld.en} lifts you! ${ld.tale} Rise from ${o} to ${p}. +1 PUNYA.`,color:"#f0d050",extra:`${o} → ${p}`,staticKey:"ladder_rise"},()=>{addCGEntry('ladder',p,`${ld.skt} · ${o}→${p}`);speakCG('ladder',500);finishTurn(true)});
           }
           // ═══ KNOWLEDGE TEMPLE CHECK ═══
@@ -5553,9 +5519,7 @@ setTimeout(()=>setShowMoksha(true),1200);});
             });
           }
           else if(p===108){if(nPunya[cur]>=nPapa[cur]){setWin(cur);eMsg=`ॐ MOKSHA!`;play("victory");
-            showEvent({icon:"ॐ",title:"मोक्ष प्राप्त — MOKSHA!",subtitle:`${pName} reached Square 108 — Moksha! Punya (${nPunya[cur]}) ≥ Papa (${nPapa[cur]}). Liberation! The cycle of Samsara ends.`,color:"#f0d050",staticKey:"moksha_gate"},()=>{addCGEntry('moksha',108,`${nPunya[cur]} पुण्य · मुक्ति`);speakCG('moksha',600);/* Status bar flashes bright gold for 4s — Moksha is a celebration */
-try{window.__mpStatusBar?.flash('#f0d050',4000);}catch(e){}
-setTimeout(()=>setShowMoksha(true),1200);finishTurn()});
+            showEvent({icon:"ॐ",title:"मोक्ष प्राप्त — MOKSHA!",subtitle:`${pName} reached Square 108 — Moksha! Punya (${nPunya[cur]}) ≥ Papa (${nPapa[cur]}). Liberation! The cycle of Samsara ends.`,color:"#f0d050",staticKey:"moksha_gate"},()=>{addCGEntry('moksha',108,`${nPunya[cur]} पुण्य · मुक्ति`);speakCG('moksha',600);setTimeout(()=>setShowMoksha(true),1200);finishTurn()});
           }else{p=67;eMsg="Impure → 67";showKarmaToast(pName,-1,'papa','⚠');play("snake");play("yamaLaugh");
             showEvent({icon:"⚠",title:"Gates of Moksha REJECT You!",subtitle:`${pName}, your soul is impure! Punya (${nPunya[cur]}) < Papa (${nPapa[cur]}). Cast back to 67.`,color:"#e06030"},()=>{
               addCGEntry('reject',67,`${nPunya[cur]}P < ${nPapa[cur]}X`);
@@ -5954,7 +5918,7 @@ setTimeout(()=>setShowMoksha(true),1200);finishTurn()});
           setTimeout(()=>VoiceEngine.speakNarrator(tmpl.lore||tmpl.intro,chosenLang,voiceFile),500);
         }
       }
-    }} style={{aspectRatio:"1",background:bg,border:`0.5px solid ${hov===num?"rgba(240,200,80,.6)":bdr}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"all .2s",
+    }} style={{aspectRatio:"1",background:bg,border:`0.5px solid ${hov===num?"rgba(240,200,80,.6)":bdr}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",position:"relative",transition:"border-color .2s",
       ...(tmpl?{boxShadow:`inset 0 -2px 6px ${tmpl.color}20, inset 0 1px 3px ${tmpl.color}15, 0 2px 8px ${tmpl.color}18`,borderWidth:1,borderRadius:2}:{}),
     }}>
       {/* Font sizes: web/iOS keep the ORIGINAL larger values. Android
@@ -5967,8 +5931,13 @@ setTimeout(()=>setShowMoksha(true),1200);finishTurn()});
       {mk&&<span style={{fontSize:IS_ANDROID?"clamp(10px,1.8vw,16px)":"clamp(14px,2.5vw,22px)",animation:"mp 3s ease infinite",color:"#f0d050"}}>ॐ</span>}
       {sn&&<><span style={{fontSize:IS_ANDROID?"clamp(7px,1.3vw,11px)":"clamp(10px,2vw,16px)",lineHeight:1}}>𓆙</span><span style={{fontSize:IS_ANDROID?"clamp(5px,.8vw,7px)":"clamp(7px,1.2vw,11px)",color:"#ffb040",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 1px 4px #000,0 0 12px rgba(180,60,20,.5)",maxWidth:"100%",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",padding:"0 1px"}}>{sn.skt}</span>{!IS_ANDROID&&<span style={{fontSize:"clamp(5px,.9vw,8px)",color:"#ffa040",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1.1,textShadow:"0 0 6px #000,0 0 10px rgba(180,60,20,.4)",maxWidth:"100%",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",padding:"0 1px"}}>{sn.en}</span>}</>}
       {ld&&<><span style={{fontSize:IS_ANDROID?"clamp(6px,1.2vw,10px)":"clamp(9px,1.8vw,14px)",lineHeight:1}}>🪔</span><span style={{fontSize:IS_ANDROID?"clamp(5px,.8vw,7px)":"clamp(7px,1.2vw,11px)",color:"#ffe070",fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,lineHeight:1.1,textShadow:"0 0 8px #000,0 0 12px rgba(200,160,60,.4)",maxWidth:"100%",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",padding:"0 1px"}}>{ld.skt}</span>{!IS_ANDROID&&<span style={{fontSize:"clamp(5px,.9vw,8px)",color:"#f0d060",fontFamily:"'Cinzel',serif",fontWeight:700,lineHeight:1.1,textShadow:"0 0 6px #000",maxWidth:"100%",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",padding:"0 1px"}}>{ld.en}</span>}</>}
-      {tmpl&&<><TempleIcon templeKey={templeKey} size={isMobile?(IS_ANDROID?36:28):52} color={tmpl.color}/>{!IS_ANDROID&&<span style={{fontSize:"clamp(5px,1vw,10px)",color:tmpl.color,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,textShadow:`0 1px 3px #000, 0 0 10px ${tmpl.color}50`,lineHeight:1,letterSpacing:0,marginTop:-2,maxWidth:"100%",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",padding:"0 1px"}}>{tmpl.name}</span>}</>}
-      {dl&&!tmpl&&<><span style={{fontSize:IS_ANDROID?"clamp(6px,1.1vw,9px)":"clamp(8px,1.5vw,13px)",lineHeight:1}}>⚖</span>{!IS_ANDROID&&<span style={{fontSize:"clamp(5px,.8vw,7px)",color:"#c8a0f0",fontFamily:"'Cinzel',serif",fontWeight:900,textShadow:"0 0 8px #000",letterSpacing:1}}>DHARMA</span>}</>}
+      {/* Temple: icon + name (restored on Android — user reported name was
+          missing). Icon slightly smaller on Android (28 instead of 36) so
+          the name has room to fit below it without overflowing the square. */}
+      {tmpl&&<><TempleIcon templeKey={templeKey} size={isMobile?(IS_ANDROID?28:28):52} color={tmpl.color}/><span style={{fontSize:IS_ANDROID?"clamp(4px,.75vw,6px)":"clamp(5px,1vw,10px)",color:tmpl.color,fontFamily:"'Noto Serif Devanagari',serif",fontWeight:900,textShadow:`0 1px 3px #000, 0 0 10px ${tmpl.color}50`,lineHeight:1,letterSpacing:0,marginTop:-2,maxWidth:"100%",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",padding:"0 1px"}}>{tmpl.name}</span></>}
+      {/* Dharma: ⚖ + DHARMA label (restored on Android — user reported
+          label was missing). Tiny letterspacing on Android. */}
+      {dl&&!tmpl&&<><span style={{fontSize:IS_ANDROID?"clamp(6px,1.1vw,9px)":"clamp(8px,1.5vw,13px)",lineHeight:1}}>⚖</span><span style={{fontSize:IS_ANDROID?"clamp(4px,.6vw,5px)":"clamp(5px,.8vw,7px)",color:"#c8a0f0",fontFamily:"'Cinzel',serif",fontWeight:900,textShadow:"0 0 8px #000",letterSpacing:IS_ANDROID?0:1}}>DHARMA</span></>}
     </div>);
   // Deps trimmed to the bare minimum. Board entries are static; hov changes
   // on pointer enter; nP/isMobile/muted/chosenLang change rarely. Pos/cur/
