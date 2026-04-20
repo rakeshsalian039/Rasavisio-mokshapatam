@@ -738,8 +738,7 @@ const PawnPiece = memo(function PawnPiece({ color, icon, isMoving, isActive, isM
       {/* ═══ GROUNDED CAST SHADOW ═══
           Sits on the square surface and does NOT float with the pawn.
           Pulses subtly in sync with the float — tighter when the pawn
-          has risen, wider when it's lower. Pure transform+opacity so
-          GPU-composited; cheap even on Android. */}
+          has risen, wider when it's lower. */}
       <div style={{
         position: 'absolute',
         bottom: '-4%',
@@ -747,7 +746,10 @@ const PawnPiece = memo(function PawnPiece({ color, icon, isMoving, isActive, isM
         height: '8%',
         borderRadius: '50%',
         background: `radial-gradient(ellipse, rgba(0,0,0,.75), transparent 72%)`,
-        filter: 'blur(1.5px)',
+        // Note: blur filter removed on Android (our global
+        // .is-android * { filter: none } kills it) — shadow is still
+        // legible via its own gradient falloff.
+        filter: IS_ANDROID ? 'none' : 'blur(1.5px)',
         animation: isMoving
           ? 'none'
           : `pawnShadowBreath ${floatDur * activeBoost}s ease-in-out ${floatDelay}s infinite`,
@@ -755,21 +757,24 @@ const PawnPiece = memo(function PawnPiece({ color, icon, isMoving, isActive, isM
         pointerEvents: 'none',
       }}/>
 
-      {/* ═══ ACTIVE-PLAYER RADIAL AURA ═══
-          Behind the pawn, in the player's color. Gives the active
-          piece a "spotlight" that fades into the square — reads as
-          glowing energy holding the piece aloft. */}
-      {isActive && (
-        <div style={{
-          position: 'absolute',
-          inset: '-20% -30% -10% -30%',
-          background: `radial-gradient(ellipse at 50% 55%, ${color}55, ${color}15 40%, transparent 70%)`,
-          animation: `pawnAuraBreath ${floatDur}s ease-in-out infinite`,
-          pointerEvents: 'none',
-          zIndex: 0,
-          filter: IS_ANDROID ? 'none' : 'blur(3px)',
-        }}/>
-      )}
+      {/* ═══ COLORED GLOW AURA ═══
+          Always visible behind the pawn so every player has a visible
+          colored halo regardless of platform. Intensity scales with
+          state: moving → brightest, active → strong pulse, resting →
+          soft. Uses background radial-gradient (NOT filter) so it
+          survives the Android `filter: none` perf override.
+          Replaces the previous drop-shadow filter approach which was
+          invisible on Android. */}
+      <div style={{
+        position: 'absolute',
+        inset: '-18% -28% -6% -28%',
+        background: `radial-gradient(ellipse at 50% 55%, ${color}${isMoving?'aa':isActive?'66':'40'}, ${color}${isMoving?'44':isActive?'22':'14'} 38%, transparent 72%)`,
+        animation: isActive && !isMoving
+          ? `pawnAuraBreath ${floatDur}s ease-in-out infinite`
+          : 'none',
+        pointerEvents: 'none',
+        zIndex: 0,
+      }}/>
 
       {/* ═══ FLOATING PAWN BODY ═══
           This is the only layer that translates up/down. The shadow
@@ -7062,10 +7067,14 @@ export default function MokshaPatam108(){
           animation:"fadeIn 1s ease both",position:"relative",zIndex:2,
         }}>{t("ui.mangalacharan_title")}</div>
 
-        {/* OM symbol */}
+        {/* OM symbol — text-shadow (not filter:drop-shadow) so the
+            Android perf override `.is-android * { filter: none }` doesn't
+            kill the glow. text-shadow is a text-rendering property and
+            survives the override, plus it paints cheaper than drop-shadow. */}
         <div style={{fontSize:48,marginBottom:16,position:"relative",zIndex:2,
+          color:"#f0d050",
           animation:"fadeIn 1.5s ease both",
-          filter:"drop-shadow(0 0 30px rgba(240,200,80,.5)) drop-shadow(0 0 60px rgba(240,200,80,.2))",
+          textShadow:"0 0 30px rgba(240,200,80,.6), 0 0 60px rgba(240,200,80,.35), 0 2px 4px rgba(0,0,0,.8)",
         }}>ॐ</div>
 
         {/* Sanskrit Shloka — large Devanagari */}
